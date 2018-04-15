@@ -1,0 +1,24 @@
+version: '2'
+services: 
+  db:
+    image: postgres
+    ports: 
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=foxxy
+      - POSTGRES_PASSWORD=foxxy
+      - POSTGRES_DB=foxxy
+  web:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - '8080:8080'
+    environment:
+      - FOXXY_DB_PORT=5432
+      - FOXXY_DB_ADDR="127.0.0.1"
+      - FOXXY_DB_NAME=foxxy
+      - FOXXY_DB_USER=foxxy
+      - FOXXY_DB_USER_PASSWORD=foxxy
+    volumes:
+      - ./dist:/app/dist
