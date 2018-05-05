@@ -13,6 +13,15 @@ install:
 before_script:
   - go run ./app/main.go &
 script:
-  - go test ./...
+  - go test ./... -coverprofile=/tmp/go-code-cover
   - npm test
 services: postgresql
+env:
+  - FOXXY_DB_PORT=5432
+  - FOXXY_DB_ADDR="127.0.0.1"
+  - FOXXY_DB_NAME=foxxy
+  - FOXXY_DB_USER=foxxy
+  - FOXXY_DB_USER_PASSWORD=foxxy
+  - POSTGRES_USER=foxxy
+  - POSTGRES_PASSWORD=foxxy
+  - POSTGRES_DB=foxxy
