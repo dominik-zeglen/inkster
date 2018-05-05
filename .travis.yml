@@ -17,7 +17,7 @@ before_script:
   - go run ./app/main.go &
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
-  - npm test
+  # - npm test
 services: postgresql
 env:
   global:
