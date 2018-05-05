@@ -68,11 +68,13 @@ func (adapter *Adapter) GetContainerChildrenList(id int32) ([]core.Container, er
 	return result, nil
 }
 
-// RemoveContainer removes container from a pg database
-// func (adapter *Adapter) RemoveContainer(id int32) error {
-// 	db := pg.Connect(&adapter.ConnectionOptions)
-// 	defer db.Close()
-// 	container := core.Container{ID: id}
-// 	err := db.Delete(&container)
-// 	return err
-// }
+// RemoveContainer removes container from a in-memory array
+func (adapter *Adapter) RemoveContainer(id int32) error {
+	for containerID := range containers {
+		if containers[containerID].ID == id {
+			containers = append(containers[:containerID], containers[:containerID+1]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("Could not remove container with ID: %d. Container does not exist", id)
+}

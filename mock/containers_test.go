@@ -78,3 +78,17 @@ func TestGetContainerList(t *testing.T) {
 	containers, _ := dataSource.GetContainerList()
 	cupaloy.SnapshotT(t, containers)
 }
+
+func TestRemoveContainer(t *testing.T) {
+	err := dataSource.RemoveContainer(2)
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestRemoveNonExistingContainer(t *testing.T) {
+	err := dataSource.RemoveContainer(5)
+	if err == nil {
+		t.Error("Did not return error")
+	}
+}
