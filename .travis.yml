@@ -5,6 +5,9 @@ go:
 node_js:
   - "8.11.1"
   - master
+cache:
+  directories:
+    - node_modules
 before_install:                                                                 
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
 install:
@@ -23,6 +26,6 @@ env:
     - FOXXY_DB_NAME=foxxy
     - FOXXY_DB_USER=foxxy
     - FOXXY_DB_USER_PASSWORD=foxxy
-    - POSTGRES_USER=foxxy
-    - POSTGRES_PASSWORD=foxxy
+    - POSTGRES_USER=travis
+    - POSTGRES_PASSWORD=
     - POSTGRES_DB=foxxy
