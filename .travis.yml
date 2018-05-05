@@ -17,11 +17,12 @@ script:
   - npm test
 services: postgresql
 env:
-  - FOXXY_DB_PORT=5432
-  - FOXXY_DB_ADDR="127.0.0.1"
-  - FOXXY_DB_NAME=foxxy
-  - FOXXY_DB_USER=foxxy
-  - FOXXY_DB_USER_PASSWORD=foxxy
-  - POSTGRES_USER=foxxy
-  - POSTGRES_PASSWORD=foxxy
-  - POSTGRES_DB=foxxy
+  global:
+    - FOXXY_DB_PORT=5432
+    - FOXXY_DB_ADDR="127.0.0.1"
+    - FOXXY_DB_NAME=foxxy
+    - FOXXY_DB_USER=foxxy
+    - FOXXY_DB_USER_PASSWORD=foxxy
+    - POSTGRES_USER=foxxy
+    - POSTGRES_PASSWORD=foxxy
+    - POSTGRES_DB=foxxy
