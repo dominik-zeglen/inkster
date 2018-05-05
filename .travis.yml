@@ -24,8 +24,5 @@ env:
     - FOXXY_DB_PORT=5432
     - FOXXY_DB_ADDR="127.0.0.1"
     - FOXXY_DB_NAME=foxxy
-    - FOXXY_DB_USER=foxxy
-    - FOXXY_DB_USER_PASSWORD=foxxy
-    - POSTGRES_USER=travis
-    - POSTGRES_PASSWORD=
-    - POSTGRES_DB=foxxy
+    - FOXXY_DB_USER=travis
+    - FOXXY_DB_USER_PASSWORD=
