@@ -1,10 +1,18 @@
-language: node_js
+language: go
+go: 
+  - "1.10.1"
+  - master
 node_js:
-  - "8"
+  - "8.11.1"
+  - master
+before_install:                                                                 
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
+install:
+  - dep ensure
+  - npm i
 before_script:
-  - npm i gulp-cli
-  - sleep 15
+  - go run ./app/main.go &
 script:
-  - gulp
+  - go test ./...
   - npm test
 services: postgresql

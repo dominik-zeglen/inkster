@@ -1,37 +1,50 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
-	graphqlConfig "github.com/dominik-zeglen/foxxy/graphql"
-	"github.com/dominik-zeglen/foxxy/migrations"
+	gql "github.com/dominik-zeglen/ecoknow/graphql"
+	"github.com/dominik-zeglen/ecoknow/migrations"
+	"github.com/dominik-zeglen/ecoknow/postgres"
+	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
 
 var schema *graphql.Schema
+var dataSource = postgres.Adapter{ConnectionOptions: pg.Options{
+	User:     os.Getenv("FOXXY_DB_USER"),
+	Password: os.Getenv("FOXXY_DB_USER_PASSWORD"),
+	Database: os.Getenv("FOXXY_DB_NAME"),
+	Addr: fmt.Sprintf("%s:%s",
+		os.Getenv("FOXXY_DB_ADDR"),
+		os.Getenv("FOXXY_DB_PORT"),
+	),
+}}
 
 func init() {
-	schema = graphql.MustParseSchema(graphqlConfig.Schema, &graphqlConfig.Resolver{})
+	resolver := gql.NewResolver(&dataSource)
+	schema = graphql.MustParseSchema(gql.Schema, &resolver)
 }
 
 func main() {
-	err := migrations.ApplyMigrations()
+	err := migrations.ApplyMigrations(dataSource)
 	if err != nil {
 		panic(err)
-		return
 	}
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.Handle("/panel/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(page)
 	}))
-	http.Handle("/panel/graphiql", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/graphiql/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(graphiql)
 	}))
 
-	http.Handle("/panel/graphql", &relay.Handler{Schema: schema})
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.Handle("/graphql/", &relay.Handler{Schema: schema})
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 var page = []byte(`
@@ -60,7 +73,7 @@ var graphiql = []byte(`
 		<div id="graphiql" style="height: 100vh;">Loading...</div>
 		<script>
 			function graphQLFetcher(graphQLParams) {
-				return fetch("/panel/graphql", {
+				return fetch("/graphql/", {
 					method: "post",
 					body: JSON.stringify(graphQLParams),
 					credentials: "include",

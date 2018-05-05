@@ -2,17 +2,40 @@ package core
 
 import (
 	"fmt"
-	"os"
-
-	"github.com/go-pg/pg"
 )
 
-var DbOptions = &pg.Options{
-	User:     os.Getenv("FOXXY_DB_USER"),
-	Password: os.Getenv("FOXXY_DB_USER_PASSWORD"),
-	Database: os.Getenv("FOXXY_DB_NAME"),
-	Addr: fmt.Sprintf("%s:%s",
-		os.Getenv("FOXXY_DB_ADDR"),
-		os.Getenv("FOXXY_DB_PORT"),
-	),
+// Adapter interface provides abstraction over different data sources
+type Adapter interface {
+	AddContainer(Container) (Container, error)
+	GetContainer(int32) (Container, error)
+	GetContainerList() ([]Container, error)
+	GetRootContainerList() ([]Container, error)
+	GetContainerChildrenList(int32) ([]Container, error)
+	RemoveContainer(int32) error
+}
+
+// Container is used to create tree-like structures
+type Container struct {
+	ID       int32
+	Name     string
+	ParentID int32
+}
+
+func (container Container) String() string {
+	return fmt.Sprintf("Container<%d %s>", container.ID, container.Name)
+}
+
+func (container Container) Json() string {
+	return fmt.Sprintf(
+		"{ ID: %d, Name: \"%s\", ParentID: %d }",
+		container.ID,
+		container.Name,
+		container.ParentID,
+	)
+}
+
+type Migration struct {
+	ID   int32
+	Name string
+	Date int32
 }

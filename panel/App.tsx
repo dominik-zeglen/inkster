@@ -15,7 +15,7 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
     credentials: "same-origin",
-    uri: "/panel/graphql"
+    uri: "/graphql/"
   })
 });
 

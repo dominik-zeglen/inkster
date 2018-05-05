@@ -1,7 +1,7 @@
 package graphql
 
 import (
-	"github.com/dominik-zeglen/foxxy/core"
+	"github.com/dominik-zeglen/ecoknow/core"
 )
 
 var Schema = `
@@ -18,7 +18,7 @@ var Schema = `
 	
 	type Mutation {
 		createContainer(name: String!, parentId: Int): Container
-		removeContainer(id: Int!): String
+		removeContainer(id: Int!): OperationResult
 	}
 	
 	type Container {
@@ -27,104 +27,35 @@ var Schema = `
 		parent: Container
 		children: [Container]
 	}
+
+	type OperationResult {
+		success: Boolean!
+		message: String!
+	}
 `
 
-type Resolver struct{}
-
-// Type resolvers ----
-type containerResolver struct {
-	data *core.Container
+type Resolver struct {
+	dataSource core.Adapter
 }
 
-func (container *containerResolver) Id() int32 {
-	return container.data.Id
-}
-func (container *containerResolver) Name() string {
-	return container.data.Name
-}
-func (container *containerResolver) Parent() *containerResolver {
-	if &container.data.ParentId == nil {
-		return nil
-	}
-	parent, err := core.GetContainer(container.data.ParentId)
-	if err != nil {
-		if err.Error() == "pg: no rows in result set" {
-			return nil
-		}
-		panic(err)
-	}
-	return &containerResolver{&parent}
-}
-func (container *containerResolver) Children() *[]*containerResolver {
-	var resolverList []*containerResolver
-	containers, err := core.GetContainerChildrenList(container.data.Id)
-	if err != nil {
-		panic(err)
-	}
-	for index := range containers {
-		resolverList = append(resolverList, &containerResolver{&containers[index]})
-	}
-	return &resolverList
+func NewResolver(dataSource core.Adapter) Resolver {
+	return Resolver{dataSource: dataSource}
 }
 
-// Query resolvers ----
-type addContainerArgs struct {
-	Name     string
-	ParentId *int32
+type operationResult struct {
+	success bool
+	message string
 }
 
-func (res *Resolver) CreateContainer(args addContainerArgs) *containerResolver {
-	var container core.Container
-	if args.ParentId != nil {
-		container = core.Container{
-			Name:     args.Name,
-			ParentId: *args.ParentId,
-		}
-	} else {
-		container = core.Container{
-			Name: args.Name,
-		}
-	}
-	container, err := core.AddContainer(container)
-	if err != nil {
-		panic(err)
-	}
-	return &containerResolver{&container}
+type operationResultResolver struct {
+	dataSource core.Adapter
+	data       *operationResult
 }
 
-func (res *Resolver) GetContainer(args struct{ Id int32 }) *containerResolver {
-	container, err := core.GetContainer(args.Id)
-	if err != nil {
-		panic(err)
-	}
-	return &containerResolver{&container}
+func (res *operationResultResolver) Success() bool {
+	return res.data.success
 }
 
-func (res *Resolver) GetContainers() *[]*containerResolver {
-	var resolverList []*containerResolver
-	containers, err := core.GetContainerList()
-	if err != nil {
-		panic(err)
-	}
-	for index := range containers {
-		resolverList = append(resolverList, &containerResolver{&containers[index]})
-	}
-	return &resolverList
-}
-
-func (res *Resolver) GetRootContainers() *[]*containerResolver {
-	var resolverList []*containerResolver
-	containers, err := core.GetRootContainerList()
-	if err != nil {
-		panic(err)
-	}
-	for index := range containers {
-		resolverList = append(resolverList, &containerResolver{&containers[index]})
-	}
-	return &resolverList
-}
-
-func (res *Resolver) RemoveContainer(args struct{ Id int32 }) *string {
-	err := core.RemoveContainer(args.Id).Error()
-	return &err
+func (res *operationResultResolver) Message() string {
+	return res.data.message
 }

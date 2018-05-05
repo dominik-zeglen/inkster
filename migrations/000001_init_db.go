@@ -1,20 +1,24 @@
 package migrations
 
 import (
-	"github.com/dominik-zeglen/foxxy/core"
+	"fmt"
+
+	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/ecoknow/postgres"
 	"github.com/go-pg/pg"
 )
 
-func InitDB() error {
-	db := pg.Connect(core.DbOptions)
+func InitDB(adapter postgres.Adapter) error {
+	db := pg.Connect(&adapter.ConnectionOptions)
 	defer db.Close()
 
-	_, err := core.CheckMigrationIfApplied(1)
-	if err == nil {
+	applied := CheckMigrationIfApplied(adapter, 1)
+	if applied {
+		fmt.Println("Migration applied, skipping...")
 		return nil
 	}
 
-	err = db.CreateTable(&core.Container{}, nil)
+	err := db.CreateTable(&core.Container{}, nil)
 	if err != nil {
 		return err
 	}
@@ -24,7 +28,7 @@ func InitDB() error {
 		return err
 	}
 
-	err = core.ApplyMigration(1, "init_db")
+	err = ApplyMigration(adapter, 1, "init_db")
 	if err != nil {
 		return err
 	}

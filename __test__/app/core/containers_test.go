@@ -3,12 +3,12 @@ package test
 import (
 	"testing"
 
-	"github.com/dominik-zeglen/foxxy/core"
+	"github.com/dominik-zeglen/ecoknow/core"
 )
 
 // TODO: Write a lot of tests
 func TestGetContainer(t *testing.T) {
-	container, _ := core.GetContainer(1)
+	container, _ := core.DataSource.GetContainer(1)
 
 	if container.Id != 1 {
 		t.Error("IDs not matching")

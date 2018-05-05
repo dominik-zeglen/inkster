@@ -1,5 +1,5 @@
 {
-  "name": "foxxyjs",
+  "name": "foxxy",
   "version": "0.0.0",
   "description": "(Yet another) CMS utilizing TypeScript and React, with Golang backend",
   "scripts": {
