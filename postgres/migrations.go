@@ -1,15 +1,14 @@
-package migrations
+package postgres
 
 import (
 	"fmt"
 	"os"
 
 	"github.com/dominik-zeglen/ecoknow/core"
-	"github.com/dominik-zeglen/ecoknow/postgres"
 	"github.com/go-pg/pg"
 )
 
-func CheckMigrationIfApplied(dataSource postgres.Adapter, migrationID int32) bool {
+func CheckMigrationIfApplied(dataSource Adapter, migrationID int32) bool {
 	db := pg.Connect(&dataSource.ConnectionOptions)
 	migration := core.Migration{ID: migrationID}
 	err := db.Select(&migration)
@@ -20,7 +19,7 @@ func CheckMigrationIfApplied(dataSource postgres.Adapter, migrationID int32) boo
 	return true
 }
 
-func ApplyMigration(dataSource postgres.Adapter, ID int32, name string) error {
+func ApplyMigration(dataSource Adapter, ID int32, name string) error {
 	db := pg.Connect(&dataSource.ConnectionOptions)
 	defer db.Close()
 	migration := core.Migration{ID: ID, Name: name}
@@ -32,8 +31,8 @@ func ApplyMigration(dataSource postgres.Adapter, ID int32, name string) error {
 }
 
 // ApplyMigrations writes migrations to database
-func ApplyMigrations(dataSource postgres.Adapter) error {
-	migrations := []func(postgres.Adapter) error{
+func ApplyMigrations(dataSource Adapter) error {
+	migrations := []func(Adapter) error{
 		InitDB,
 	}
 

@@ -22,7 +22,7 @@ type Container struct {
 }
 
 func (container Container) String() string {
-	return fmt.Sprintf("Container<%d %s>", container.ID, container.Name)
+	return fmt.Sprintf("Container<#%d %s>", container.ID, container.Name)
 }
 
 func (container Container) Json() string {
@@ -32,6 +32,58 @@ func (container Container) Json() string {
 		container.Name,
 		container.ParentID,
 	)
+}
+
+type PageField struct {
+	ID    int32
+	Type  string
+	Value string
+}
+
+func (pageField PageField) String() string {
+	return fmt.Sprintf(
+		"PageField<#%d %s: %s>",
+		pageField.ID,
+		pageField.Type,
+		pageField.Value,
+	)
+}
+
+func (pageField PageField) Json() string {
+	return fmt.Sprintf(
+		"{ ID: %d, Type: \"%s\", Value: \"%s\" }",
+		pageField.ID,
+		pageField.Type,
+		pageField.Value,
+	)
+}
+
+type PageType struct {
+	ID   int32
+	Name string
+}
+
+func (pageType PageType) String() string {
+	return fmt.Sprintf(
+		"PageType<#%d %s>",
+		pageType.ID,
+		pageType.Name,
+	)
+}
+
+func (pageType PageType) Json() string {
+	return fmt.Sprintf(
+		"{ ID: %d, Name: \"%s\" }",
+		pageType.ID,
+		pageType.Name,
+	)
+}
+
+type Page struct {
+	ID       int32
+	Name     string
+	ParentID int32
+	TypeID   int32
 }
 
 type Migration struct {

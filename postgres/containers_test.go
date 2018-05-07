@@ -1,41 +1,72 @@
-package mock
+package postgres
 
 import (
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
 	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/go-pg/pg"
 )
 
-var dataSource = Adapter{}
+var connectionOptions = pg.Options{
+	User:     os.Getenv("FOXXY_DB_USER"),
+	Password: os.Getenv("FOXXY_DB_USER_PASSWORD"),
+	Database: os.Getenv("FOXXY_DB_NAME"),
+	Addr: fmt.Sprintf("%s:%s",
+		os.Getenv("FOXXY_DB_ADDR"),
+		os.Getenv("FOXXY_DB_PORT"),
+	),
+}
+var dataSource = Adapter{ConnectionOptions: connectionOptions}
+
+func init() {
+	err := ApplyMigrations(dataSource)
+	if err != nil {
+		panic(err)
+	}
+	containers := []core.Container{
+		core.Container{Name: "Container 1"},
+		core.Container{Name: "Container 2"},
+		core.Container{Name: "Container 3"},
+		core.Container{Name: "Container 1.1", ParentID: 1},
+	}
+	for id := range containers {
+		db := pg.Connect(&connectionOptions)
+		err = db.Insert(&containers[id])
+		if err != nil {
+			panic(err)
+		}
+	}
+}
 
 func TestAddContainer(t *testing.T) {
-	defer dataSource.ResetMockDatabase()
 	container := core.Container{
 		Name:     "New Container",
 		ParentID: 2,
 	}
-	_, err := dataSource.AddContainer(container)
+	result, err := dataSource.AddContainer(container)
 	if err != nil {
 		t.Error(err)
 	}
+	cupaloy.SnapshotT(t, result.Json())
 }
 
 func TestAddContainerWithExplicitID(t *testing.T) {
-	defer dataSource.ResetMockDatabase()
 	container := core.Container{
-		ID:       5,
+		ID:       6,
 		Name:     "New Container",
 		ParentID: 2,
 	}
-	_, err := dataSource.AddContainer(container)
+	result, err := dataSource.AddContainer(container)
 	if err != nil {
 		t.Error(err)
 	}
+	cupaloy.SnapshotT(t, result.Json())
 }
 
 func TestAddContainerWithTooSmallExplicitID(t *testing.T) {
-	defer dataSource.ResetMockDatabase()
 	container := core.Container{
 		ID:       3,
 		Name:     "New Container",
@@ -47,7 +78,7 @@ func TestAddContainerWithTooSmallExplicitID(t *testing.T) {
 	}
 }
 
-// Test if mock function is able to retrieve existing container
+// Test if pg function is able to retrieve existing container
 func TestGetContainer(t *testing.T) {
 	container, err := dataSource.GetContainer(1)
 	if err != nil {
@@ -56,9 +87,9 @@ func TestGetContainer(t *testing.T) {
 	cupaloy.SnapshotT(t, container.Json())
 }
 
-// Test if mock function is able to throw error if getting non-existing container
+// Test if pg function is able to throw error if getting non-existing container
 func TestGetNonExistingContainer(t *testing.T) {
-	_, err := dataSource.GetContainer(5)
+	_, err := dataSource.GetContainer(99)
 	if err == nil {
 		t.Error("Did not return error")
 	}
@@ -80,8 +111,7 @@ func TestGetContainerList(t *testing.T) {
 }
 
 func TestRemoveContainer(t *testing.T) {
-	defer dataSource.ResetMockDatabase()
-	err := dataSource.RemoveContainer(2)
+	err := dataSource.RemoveContainer(5)
 	if err != nil {
 		t.Error(err)
 	}

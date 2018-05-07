@@ -7,7 +7,6 @@ import (
 	"os"
 
 	gql "github.com/dominik-zeglen/ecoknow/graphql"
-	"github.com/dominik-zeglen/ecoknow/migrations"
 	"github.com/dominik-zeglen/ecoknow/postgres"
 	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
@@ -31,7 +30,7 @@ func init() {
 }
 
 func main() {
-	err := migrations.ApplyMigrations(dataSource)
+	err := postgres.ApplyMigrations(dataSource)
 	if err != nil {
 		panic(err)
 	}

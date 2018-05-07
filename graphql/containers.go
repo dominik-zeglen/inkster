@@ -15,7 +15,7 @@ func (res *containerResolver) Name() string {
 	return res.data.Name
 }
 func (res *containerResolver) Parent() *containerResolver {
-	if &res.data.ParentID == nil {
+	if res.data.ParentID == 0 {
 		return nil
 	}
 	parent, err := res.dataSource.GetContainer(res.data.ParentID)
