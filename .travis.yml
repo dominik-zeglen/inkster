@@ -14,7 +14,7 @@ install:
   - dep ensure
   - npm i
 before_script:
-  - go run ./app/main.go &
+  - psql -c 'create database foxxy;' -U postgres
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
   # - npm test
