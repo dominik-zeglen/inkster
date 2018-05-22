@@ -1,13 +1,13 @@
 version: '2'
 services: 
   db:
-    image: postgres
+    image: mongo:latest
     ports: 
-      - '5432:5432'
+      - '27017:27017'
     environment:
-      - POSTGRES_USER=foxxy
-      - POSTGRES_PASSWORD=foxxy
-      - POSTGRES_DB=foxxy
+      - MONGO_INITDB_ROOT_USERNAME=foxxy
+      - MONGO_INITDB_ROOT_PASSWORD=foxxy
+      - MONGO_INITDB_ROOT_DATABASE=foxxy
   web:
     depends_on:
       - db

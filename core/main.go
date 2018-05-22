@@ -2,36 +2,29 @@ package core
 
 import (
 	"fmt"
+
+	"github.com/globalsign/mgo/bson"
 )
 
 // Adapter interface provides abstraction over different data sources
 type Adapter interface {
 	AddContainer(Container) (Container, error)
-	GetContainer(int32) (Container, error)
+	GetContainer(bson.ObjectId) (Container, error)
 	GetContainerList() ([]Container, error)
 	GetRootContainerList() ([]Container, error)
-	GetContainerChildrenList(int32) ([]Container, error)
-	RemoveContainer(int32) error
+	GetContainerChildrenList(bson.ObjectId) ([]Container, error)
+	RemoveContainer(bson.ObjectId) error
 }
 
 // Container is used to create tree-like structures
 type Container struct {
-	ID       int32
-	Name     string
-	ParentID int32
+	ID       bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	Name     string        `json:"name"`
+	ParentID bson.ObjectId `bson:"parentId,omitempty" json:"parentId"`
 }
 
 func (container Container) String() string {
-	return fmt.Sprintf("Container<#%d %s>", container.ID, container.Name)
-}
-
-func (container Container) Json() string {
-	return fmt.Sprintf(
-		"{ ID: %d, Name: \"%s\", ParentID: %d }",
-		container.ID,
-		container.Name,
-		container.ParentID,
-	)
+	return fmt.Sprintf("Container<#%s %s>", container.ID, container.Name)
 }
 
 type PageField struct {
