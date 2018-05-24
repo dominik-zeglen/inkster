@@ -22,10 +22,12 @@ func init() {
 		core.Container{ID: "000000000003", Name: "Container 3"},
 		core.Container{ID: "000000000004", Name: "Container 1.1", ParentID: "000000000001"},
 	}
+	session, err := mgo.Dial(dataSource.ConnectionURI)
+	session.SetSafe(&mgo.Safe{})
+	db := session.DB(dataSource.DBName)
+	collection := db.C("containers")
+	collection.DropCollection()
 	for id := range containers {
-		db, err := mgo.Dial(dataSource.ConnectionURI)
-		db.SetSafe(&mgo.Safe{})
-		collection := db.DB(dataSource.DBName).C("containers")
 		err = collection.Insert(containers[id])
 		if err != nil {
 			panic(err)
@@ -52,21 +54,50 @@ func TestAddContainer(t *testing.T) {
 	dataSource.RemoveContainer(id)
 }
 
-func TestAddContainerWithExplicitID(t *testing.T) {
-	container := core.Container{
-		ID:       "000000000005",
-		Name:     "New Container",
-		ParentID: "000000000001",
+func TestBuildTree(t *testing.T) {
+	parent := core.Container{
+		ID:   "200000000000",
+		Name: "Parent",
 	}
-	result, err := dataSource.AddContainer(container)
+	result, err := dataSource.AddContainer(parent)
+	parentID := result.ID
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	data, err := json.Marshal(&result)
 	if err != nil {
 		t.Error(err)
 	}
 	cupaloy.SnapshotT(t, data)
+
+	child := core.Container{
+		ID:       "200000000001",
+		Name:     "Child",
+		ParentID: parentID,
+	}
+	result, err = dataSource.AddContainer(child)
+	childID := result.ID
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err = json.Marshal(&result)
+	if err != nil {
+		t.Error(err)
+	}
+	cupaloy.SnapshotMulti("Child", data)
+
+	resultList, err := dataSource.GetContainerChildrenList(parentID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err = json.Marshal(&resultList)
+	if err != nil {
+		t.Error(err)
+	}
+	cupaloy.SnapshotMulti("Parent's children", data)
+
+	dataSource.RemoveContainer(childID)
+	dataSource.RemoveContainer(parentID)
 }
 
 func TestGetContainer(t *testing.T) {
@@ -116,7 +147,7 @@ func TestGetContainerList(t *testing.T) {
 }
 
 func TestRemoveContainer(t *testing.T) {
-	err := dataSource.RemoveContainer("000000000005")
+	err := dataSource.RemoveContainer("000000000004")
 	if err != nil {
 		t.Error(err)
 	}
