@@ -1,10 +1,12 @@
 package mock
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
 	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/globalsign/mgo/bson"
 )
 
 var dataSource = Adapter{}
@@ -13,7 +15,7 @@ func TestAddContainer(t *testing.T) {
 	defer dataSource.ResetMockDatabase()
 	container := core.Container{
 		Name:     "New Container",
-		ParentID: 2,
+		ParentID: bson.ObjectId("000000000001"),
 	}
 	_, err := dataSource.AddContainer(container)
 	if err != nil {
@@ -24,9 +26,9 @@ func TestAddContainer(t *testing.T) {
 func TestAddContainerWithExplicitID(t *testing.T) {
 	defer dataSource.ResetMockDatabase()
 	container := core.Container{
-		ID:       5,
+		ID:       bson.ObjectId("000000000005"),
 		Name:     "New Container",
-		ParentID: 2,
+		ParentID: bson.ObjectId("000000000001"),
 	}
 	_, err := dataSource.AddContainer(container)
 	if err != nil {
@@ -37,9 +39,9 @@ func TestAddContainerWithExplicitID(t *testing.T) {
 func TestAddContainerWithTooSmallExplicitID(t *testing.T) {
 	defer dataSource.ResetMockDatabase()
 	container := core.Container{
-		ID:       3,
+		ID:       bson.ObjectId("000000000002"),
 		Name:     "New Container",
-		ParentID: 2,
+		ParentID: bson.ObjectId("000000000001"),
 	}
 	_, err := dataSource.AddContainer(container)
 	if err == nil {
@@ -49,16 +51,20 @@ func TestAddContainerWithTooSmallExplicitID(t *testing.T) {
 
 // Test if mock function is able to retrieve existing container
 func TestGetContainer(t *testing.T) {
-	container, err := dataSource.GetContainer(1)
+	container, err := dataSource.GetContainer(bson.ObjectId("000000000001"))
 	if err != nil {
 		t.Error(err)
 	}
-	cupaloy.SnapshotT(t, container.Json())
+	data, err := json.Marshal(container)
+	if err != nil {
+		t.Error(err)
+	}
+	cupaloy.SnapshotT(t, data)
 }
 
 // Test if mock function is able to throw error if getting non-existing container
 func TestGetNonExistingContainer(t *testing.T) {
-	_, err := dataSource.GetContainer(5)
+	_, err := dataSource.GetContainer(bson.ObjectId("000000000099"))
 	if err == nil {
 		t.Error("Did not return error")
 	}
@@ -70,7 +76,7 @@ func TestGetRootContainerList(t *testing.T) {
 }
 
 func TestGetContainerChildren(t *testing.T) {
-	containers, _ := dataSource.GetContainerChildrenList(1)
+	containers, _ := dataSource.GetContainerChildrenList(bson.ObjectId("000000000001"))
 	cupaloy.SnapshotT(t, containers)
 }
 
@@ -81,14 +87,14 @@ func TestGetContainerList(t *testing.T) {
 
 func TestRemoveContainer(t *testing.T) {
 	defer dataSource.ResetMockDatabase()
-	err := dataSource.RemoveContainer(2)
+	err := dataSource.RemoveContainer(bson.ObjectId("000000000002"))
 	if err != nil {
 		t.Error(err)
 	}
 }
 
 func TestRemoveNonExistingContainer(t *testing.T) {
-	err := dataSource.RemoveContainer(5)
+	err := dataSource.RemoveContainer(bson.ObjectId("000000000099"))
 	if err == nil {
 		t.Error("Did not return error")
 	}

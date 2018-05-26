@@ -24,7 +24,7 @@ type Container struct {
 }
 
 func (container Container) String() string {
-	return fmt.Sprintf("Container<#%s %s>", container.ID, container.Name)
+	return fmt.Sprintf("Container<%s>", container.Name)
 }
 
 type PageField struct {

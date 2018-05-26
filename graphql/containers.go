@@ -1,6 +1,9 @@
 package graphql
 
-import "github.com/dominik-zeglen/ecoknow/core"
+import (
+	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/globalsign/mgo/bson"
+)
 
 // Type resolvers
 type containerResolver struct {
@@ -8,14 +11,14 @@ type containerResolver struct {
 	data       *core.Container
 }
 
-func (res *containerResolver) Id() int32 {
-	return res.data.ID
+func (res *containerResolver) Id() string {
+	return toGlobalID("container", res.data.ID)
 }
 func (res *containerResolver) Name() string {
 	return res.data.Name
 }
 func (res *containerResolver) Parent() *containerResolver {
-	if res.data.ParentID == 0 {
+	if res.data.ParentID == "" {
 		return nil
 	}
 	parent, err := res.dataSource.GetContainer(res.data.ParentID)
@@ -48,15 +51,19 @@ func (res *containerResolver) Children() *[]*containerResolver {
 // Query resolvers ----
 type addContainerArgs struct {
 	Name     string
-	ParentId *int32
+	ParentId *string
 }
 
 func (res *Resolver) CreateContainer(args addContainerArgs) *containerResolver {
 	var container core.Container
 	if args.ParentId != nil {
+		parentID, err := fromGlobalID("container", *args.ParentId)
+		if err != nil {
+			return nil
+		}
 		container = core.Container{
 			Name:     args.Name,
-			ParentID: *args.ParentId,
+			ParentID: parentID,
 		}
 	} else {
 		container = core.Container{
@@ -73,8 +80,8 @@ func (res *Resolver) CreateContainer(args addContainerArgs) *containerResolver {
 	}
 }
 
-func (res *Resolver) GetContainer(args struct{ Id int32 }) *containerResolver {
-	container, err := res.dataSource.GetContainer(args.Id)
+func (res *Resolver) GetContainer(args struct{ Id string }) *containerResolver {
+	container, err := res.dataSource.GetContainer(bson.ObjectId(args.Id))
 	if err != nil {
 		panic(err)
 	}
@@ -121,8 +128,18 @@ func (res *Resolver) GetRootContainers() *[]*containerResolver {
 }
 
 // RemoveContainer resolves RemoveContainer query
-func (res *Resolver) RemoveContainer(args struct{ Id int32 }) *operationResultResolver {
-	err := res.dataSource.RemoveContainer(args.Id)
+func (res *Resolver) RemoveContainer(args struct{ Id string }) *operationResultResolver {
+	localID, err := fromGlobalID("container", args.Id)
+	if err != nil {
+		return &operationResultResolver{
+			dataSource: res.dataSource,
+			data: &operationResult{
+				success: false,
+				message: err.Error(),
+			},
+		}
+	}
+	err = res.dataSource.RemoveContainer(localID)
 	if err != nil {
 		message := err.Error()
 		return &operationResultResolver{

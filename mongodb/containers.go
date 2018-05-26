@@ -30,7 +30,11 @@ func (adapter *Adapter) GetContainer(id bson.ObjectId) (core.Container, error) {
 		return core.Container{}, err
 	}
 	var container core.Container
-	err = db.DB(adapter.DBName).C("containers").FindId(id).One(&container)
+	err = db.
+		DB(adapter.DBName).
+		C("containers").
+		FindId(id).
+		One(&container)
 	return container, err
 }
 
@@ -42,7 +46,11 @@ func (adapter *Adapter) GetContainerList() ([]core.Container, error) {
 		return nil, err
 	}
 	var containers []core.Container
-	err = db.DB(adapter.DBName).C("containers").Find(bson.M{}).All(&containers)
+	err = db.
+		DB(adapter.DBName).
+		C("containers").
+		Find(bson.M{}).
+		All(&containers)
 	return containers, err
 }
 
@@ -54,7 +62,11 @@ func (adapter *Adapter) GetRootContainerList() ([]core.Container, error) {
 		return nil, err
 	}
 	var containers []core.Container
-	err = db.DB(adapter.DBName).C("containers").Find(bson.M{"parentId": 0}).All(&containers)
+	err = db.
+		DB(adapter.DBName).
+		C("containers").
+		Find(bson.M{"parentId": bson.M{"$not": bson.M{"$type": 7}}}).
+		All(&containers)
 	return containers, err
 }
 
@@ -66,7 +78,11 @@ func (adapter *Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Conta
 		return nil, err
 	}
 	var containers []core.Container
-	err = db.DB(adapter.DBName).C("containers").Find(bson.M{"parentId": id}).All(&containers)
+	err = db.
+		DB(adapter.DBName).
+		C("containers").
+		Find(bson.M{"parentId": id}).
+		All(&containers)
 	return containers, err
 }
 
@@ -77,6 +93,9 @@ func (adapter *Adapter) RemoveContainer(id bson.ObjectId) error {
 	if err != nil {
 		return err
 	}
-	err = db.DB(adapter.DBName).C("containers").RemoveId(id)
+	err = db.
+		DB(adapter.DBName).
+		C("containers").
+		RemoveId(id)
 	return err
 }

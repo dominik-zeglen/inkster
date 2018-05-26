@@ -12,7 +12,7 @@ import (
 
 var dataSource = Adapter{
 	ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-	DBName:        os.Getenv("FOXXY_DB_NAME"),
+	DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
 }
 
 func init() {
