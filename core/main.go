@@ -23,64 +23,51 @@ type Container struct {
 	ParentID bson.ObjectId `bson:"parentId,omitempty" json:"parentId"`
 }
 
+// UpdateContainerArguments is transactional model of an update properties
+type UpdateContainerArguments struct {
+	Name     string        `bson:",omitempty"`
+	ParentID bson.ObjectId `bson:"parentId,omitempty"`
+}
+
 func (container Container) String() string {
 	return fmt.Sprintf("Container<%s>", container.Name)
 }
 
-type PageField struct {
-	ID    int32
-	Type  string
-	Value string
+// Template allows user to quickly create new pages without repeatedly
+// adding the same fields each time
+type Template struct {
+	ID     bson.ObjectId   `bson:"_id,omitempty" json:"id"`
+	Name   string          `json:"name"`
+	Fields []TemplateField `json:"fields"`
 }
 
-func (pageField PageField) String() string {
-	return fmt.Sprintf(
-		"PageField<#%d %s: %s>",
-		pageField.ID,
-		pageField.Type,
-		pageField.Value,
-	)
+// UpdateTemplateArguments is transactional model of an update properties
+type UpdateTemplateArguments struct {
+	Name string `bson:",omitempty"`
 }
 
-func (pageField PageField) Json() string {
-	return fmt.Sprintf(
-		"{ ID: %d, Type: \"%s\", Value: \"%s\" }",
-		pageField.ID,
-		pageField.Type,
-		pageField.Value,
-	)
+func (template Template) String() string {
+	return fmt.Sprintf("Template<%s>", template.Name)
 }
 
-type PageType struct {
-	ID   int32
-	Name string
+// TemplateFieldTypes holds all allowed template field type names
+var TemplateFieldTypes = []string{
+	"container",
+	"file",
+	"image",
+	"longText",
+	"page",
+	"text",
+	"unique",
 }
 
-func (pageType PageType) String() string {
-	return fmt.Sprintf(
-		"PageType<#%d %s>",
-		pageType.ID,
-		pageType.Name,
-	)
+// TemplateField represents a single field in template
+type TemplateField struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
 }
 
-func (pageType PageType) Json() string {
-	return fmt.Sprintf(
-		"{ ID: %d, Name: \"%s\" }",
-		pageType.ID,
-		pageType.Name,
-	)
-}
-
-type Page struct {
-	ID       int32
-	Name     string
-	ParentID int32
-	TypeID   int32
-}
-
-type Migration struct {
-	ID   int32
-	Name string
-	Date int32
+// ErrNoEmpty returns error informing about missing field
+func ErrNoEmpty(key string) error {
+	return fmt.Errorf("Field cannot be omitted: %s", key)
 }

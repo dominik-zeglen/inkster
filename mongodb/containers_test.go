@@ -1,38 +1,14 @@
 package mongodb
 
 import (
-	"encoding/json"
-	"os"
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
 	"github.com/dominik-zeglen/ecoknow/core"
-	"github.com/globalsign/mgo"
 )
 
-var dataSource = Adapter{
-	ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-	DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
-}
-
 func init() {
-	containers := []core.Container{
-		core.Container{ID: "000000000001", Name: "Container 1"},
-		core.Container{ID: "000000000002", Name: "Container 2"},
-		core.Container{ID: "000000000003", Name: "Container 3"},
-		core.Container{ID: "000000000004", Name: "Container 1.1", ParentID: "000000000001"},
-	}
-	session, err := mgo.Dial(dataSource.ConnectionURI)
-	session.SetSafe(&mgo.Safe{})
-	db := session.DB(dataSource.DBName)
-	collection := db.C("containers")
-	collection.DropCollection()
-	for id := range containers {
-		err = collection.Insert(containers[id])
-		if err != nil {
-			panic(err)
-		}
-	}
+	resetDatabase()
 }
 
 func TestAddContainer(t *testing.T) {
@@ -46,12 +22,22 @@ func TestAddContainer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
 	cupaloy.SnapshotT(t, data)
 	dataSource.RemoveContainer(id)
+}
+
+func TestAddContainerWithoutName(t *testing.T) {
+	container := core.Container{
+		ParentID: "000000000001",
+	}
+	_, err := dataSource.AddContainer(container)
+	if err == nil {
+		t.Error(ErrNoError)
+	}
 }
 
 func TestBuildTree(t *testing.T) {
@@ -64,7 +50,7 @@ func TestBuildTree(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -80,7 +66,7 @@ func TestBuildTree(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err = json.Marshal(&result)
+	data, err = ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -90,7 +76,7 @@ func TestBuildTree(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err = json.Marshal(&resultList)
+	data, err = ToJSON(resultList)
 	if err != nil {
 		t.Error(err)
 	}
@@ -105,7 +91,7 @@ func TestGetContainer(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -115,13 +101,13 @@ func TestGetContainer(t *testing.T) {
 func TestGetNonExistingContainer(t *testing.T) {
 	_, err := dataSource.GetContainer("000000000099")
 	if err == nil {
-		t.Error("Did not return error")
+		t.Error(ErrNoError)
 	}
 }
 
 func TestGetRootContainerList(t *testing.T) {
 	result, _ := dataSource.GetRootContainerList()
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -130,7 +116,7 @@ func TestGetRootContainerList(t *testing.T) {
 
 func TestGetContainerChildren(t *testing.T) {
 	result, _ := dataSource.GetContainerChildrenList("000000000001")
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -139,7 +125,46 @@ func TestGetContainerChildren(t *testing.T) {
 
 func TestGetContainerList(t *testing.T) {
 	result, _ := dataSource.GetContainerList()
-	data, err := json.Marshal(&result)
+	data, err := ToJSON(result)
+	if err != nil {
+		t.Error(err)
+	}
+	cupaloy.SnapshotT(t, data)
+}
+
+func TestUpdateContainer(t *testing.T) {
+	defer resetDatabase()
+	err := dataSource.UpdateContainer("000000000001", core.UpdateContainerArguments{
+		Name:     "Updated container name",
+		ParentID: "000000000002",
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	result, err := dataSource.GetContainer("000000000001")
+	if err != nil {
+		t.Error(err)
+	}
+	data, err := ToJSON(result)
+	if err != nil {
+		t.Error(err)
+	}
+	cupaloy.SnapshotT(t, data)
+}
+
+func TestUpdateContainerName(t *testing.T) {
+	defer resetDatabase()
+	err := dataSource.UpdateContainer("000000000004", core.UpdateContainerArguments{
+		Name: "Updated container name",
+	})
+	if err != nil {
+		t.Error(err)
+	}
+	result, err := dataSource.GetContainer("000000000004")
+	if err != nil {
+		t.Error(err)
+	}
+	data, err := ToJSON(result)
 	if err != nil {
 		t.Error(err)
 	}
@@ -156,6 +181,6 @@ func TestRemoveContainer(t *testing.T) {
 func TestRemoveNonExistingContainer(t *testing.T) {
 	err := dataSource.RemoveContainer("000000000099")
 	if err == nil {
-		t.Error("Did not return error")
+		t.Error(ErrNoError)
 	}
 }

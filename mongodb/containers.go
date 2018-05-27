@@ -8,6 +8,9 @@ import (
 
 // AddContainer puts container in the database
 func (adapter *Adapter) AddContainer(container core.Container) (core.Container, error) {
+	if container.Name == "" {
+		return core.Container{}, core.ErrNoEmpty("Name")
+	}
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -84,6 +87,24 @@ func (adapter *Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Conta
 		Find(bson.M{"parentId": id}).
 		All(&containers)
 	return containers, err
+}
+
+// UpdateContainer allows container properties updaing
+func (adapter *Adapter) UpdateContainer(
+	containerID bson.ObjectId,
+	data core.UpdateContainerArguments,
+) error {
+	db, err := mgo.Dial(adapter.ConnectionURI)
+	defer db.Close()
+	if err != nil {
+		return err
+	}
+	collection := db.
+		DB(adapter.DBName).
+		C("containers")
+	return collection.UpdateId(containerID, bson.M{
+		"$set": data,
+	})
 }
 
 // RemoveContainer removes container from a pg database
