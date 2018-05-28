@@ -21,6 +21,12 @@ func (adapter *Adapter) AddTemplate(template core.Template) (core.Template, erro
 		return core.Template{}, err
 	}
 	collection := db.DB(adapter.DBName).C("templates")
+	found, err := collection.
+		Find(bson.M{"name": template.Name}).
+		Count()
+	if found > 0 {
+		return core.Template{}, core.ErrTemplateExists(template.Name)
+	}
 	if template.ID == "" {
 		template.ID = bson.NewObjectId()
 	}
@@ -100,6 +106,12 @@ func (adapter *Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Updat
 		return err
 	}
 	collection := db.DB(adapter.DBName).C("templates")
+	found, err := collection.
+		Find(bson.M{"name": data.Name}).
+		Count()
+	if found > 0 {
+		return core.ErrTemplateExists(data.Name)
+	}
 	return collection.UpdateId(templateID, bson.M{
 		"$set": data,
 	})

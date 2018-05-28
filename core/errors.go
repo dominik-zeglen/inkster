@@ -21,3 +21,8 @@ func ErrNoFieldType(fieldType string) error {
 func ErrFieldExists(field string) error {
 	return fmt.Errorf("Field %s already exists", field)
 }
+
+// ErrTemplateExists informs about existing template
+func ErrTemplateExists(template string) error {
+	return fmt.Errorf("Template %s already exists", template)
+}
