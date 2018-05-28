@@ -10,8 +10,9 @@ import (
 
 // AddTemplate puts template in the database
 func (adapter *Adapter) AddTemplate(template core.Template) (core.Template, error) {
-	if template.Name == "" {
-		return core.Template{}, core.ErrNoEmpty("Name")
+	err := template.Validate()
+	if err != nil {
+		return core.Template{}, err
 	}
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
@@ -29,11 +30,9 @@ func (adapter *Adapter) AddTemplate(template core.Template) (core.Template, erro
 
 // AddTemplateField adds to template a new field at the end of it's field list
 func (adapter *Adapter) AddTemplateField(templateID bson.ObjectId, field core.TemplateField) error {
-	if field.Name == "" {
-		return core.ErrNoEmpty("Name")
-	}
-	if field.Type == "" {
-		return core.ErrNoEmpty("Type")
+	err := field.Validate()
+	if err != nil {
+		return err
 	}
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
@@ -139,7 +138,7 @@ func (adapter *Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFi
 		return err
 	}
 	if found == 0 {
-		return fmt.Errorf("Could not remove field %s; field does not exist", templateFieldName)
+		return core.ErrNoField(templateFieldName)
 	}
 	return collection.UpdateId(templateID, bson.M{
 		"$pull": bson.M{
