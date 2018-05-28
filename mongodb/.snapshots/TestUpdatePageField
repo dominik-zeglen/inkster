@@ -1,0 +1,18 @@
+{
+    "id": "303030303030303030303031",
+    "name": "Updated page name",
+    "slug": "",
+    "parentId": "303030303030303030303031",
+    "fields": [
+        {
+            "type": "unique",
+            "name": "Field 1",
+            "value": "99"
+        },
+        {
+            "type": "text",
+            "name": "Field 2",
+            "value": "Some text"
+        }
+    ]
+}
