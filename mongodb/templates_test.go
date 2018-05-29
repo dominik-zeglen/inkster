@@ -41,6 +41,21 @@ func TestAddTemplateWithoutName(t *testing.T) {
 	}
 }
 
+func TestAddTemplateWithDuplicatedFields(t *testing.T) {
+	defer resetDatabase()
+	template := core.Template{
+		Name: "New Template",
+		Fields: []core.TemplateField{
+			core.TemplateField{Type: "unique", Name: "Field"},
+			core.TemplateField{Type: "text", Name: "Field"},
+		},
+	}
+	_, err := dataSource.AddTemplate(template)
+	if err == nil {
+		t.Error(ErrNoError)
+	}
+}
+
 func TestAddTemplateWithoutFields(t *testing.T) {
 	defer resetDatabase()
 	template := core.Template{

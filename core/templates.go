@@ -28,10 +28,20 @@ func (template Template) Validate() error {
 	if template.Name == "" {
 		return ErrNoEmpty("Name")
 	}
-	for fieldID := range template.Fields {
-		err := template.Fields[fieldID].Validate()
-		if err != nil {
-			return err
+	if template.Fields != nil {
+		for fieldIndex, field := range template.Fields {
+			err := field.Validate()
+			if err != nil {
+				return err
+			}
+			for comparisonFieldIndex, comparisonField := range template.Fields {
+				if fieldIndex == comparisonFieldIndex {
+					continue
+				}
+				if field.Name == comparisonField.Name {
+					return ErrFieldExists(field.Name)
+				}
+			}
 		}
 	}
 	return nil

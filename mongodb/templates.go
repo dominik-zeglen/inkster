@@ -1,8 +1,6 @@
 package mongodb
 
 import (
-	"fmt"
-
 	"github.com/dominik-zeglen/ecoknow/core"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -55,8 +53,8 @@ func (adapter *Adapter) AddTemplateField(templateID bson.ObjectId, field core.Te
 			},
 		},
 	}).Count()
-	if found != 0 {
-		return fmt.Errorf("Could not add field %s; field already exists", field.Name)
+	if found > 0 {
+		return core.ErrFieldExists(field.Name)
 	}
 	return collection.UpdateId(templateID, bson.M{
 		"$push": bson.M{
