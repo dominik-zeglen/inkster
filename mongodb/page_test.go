@@ -90,6 +90,30 @@ func TestAddPageWithExistingSlug(t *testing.T) {
 	}
 }
 
+func TestAddPageWithDuplicatedField(t *testing.T) {
+	defer resetDatabase()
+	page := core.Page{
+		Name: "New Page",
+		Slug: pages[0].Slug,
+		Fields: []core.PageField{
+			core.PageField{
+				Type:  "unique",
+				Name:  "Field 1",
+				Value: "1",
+			},
+			core.PageField{
+				Type:  "text",
+				Name:  "Field 1",
+				Value: "Some text",
+			},
+		},
+	}
+	_, err := dataSource.AddPage(page)
+	if err == nil {
+		t.Error(ErrNoError)
+	}
+}
+
 func TestAddFieldToPage(t *testing.T) {
 	defer resetDatabase()
 	field := core.PageField{

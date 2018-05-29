@@ -27,6 +27,18 @@ func (page Page) Validate() error {
 	if page.ParentID == "" {
 		return ErrNoEmpty("ParentID")
 	}
+	if page.Fields != nil {
+		for fieldIndex, field := range page.Fields {
+			for comparisonFieldIndex, comparisonField := range page.Fields {
+				if fieldIndex == comparisonFieldIndex {
+					continue
+				}
+				if field.Name == comparisonField.Name {
+					return ErrFieldExists(field.Name)
+				}
+			}
+		}
+	}
 	return nil
 }
 
