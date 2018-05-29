@@ -66,6 +66,30 @@ func TestAddPageWithoutParentID(t *testing.T) {
 	}
 }
 
+func TestAddPageWithExistingSlug(t *testing.T) {
+	defer resetDatabase()
+	page := core.Page{
+		Name: "New Page",
+		Slug: pages[0].Slug,
+		Fields: []core.PageField{
+			core.PageField{
+				Type:  "unique",
+				Name:  "Field 1",
+				Value: "1",
+			},
+			core.PageField{
+				Type:  "text",
+				Name:  "Field 2",
+				Value: "Some text",
+			},
+		},
+	}
+	_, err := dataSource.AddPage(page)
+	if err == nil {
+		t.Error(ErrNoError)
+	}
+}
+
 func TestAddFieldToPage(t *testing.T) {
 	defer resetDatabase()
 	field := core.PageField{
@@ -162,6 +186,7 @@ func TestGetPagesFromContainer(t *testing.T) {
 }
 
 func TestUpdatePage(t *testing.T) {
+	defer resetDatabase()
 	err := dataSource.UpdatePage(pages[0].ID, core.UpdatePageArguments{
 		Name: "Updated page name",
 	})
@@ -177,6 +202,16 @@ func TestUpdatePage(t *testing.T) {
 		t.Error(err)
 	}
 	cupaloy.SnapshotT(t, data)
+}
+
+func TestUpdatePageWithExistingSlug(t *testing.T) {
+	defer resetDatabase()
+	err := dataSource.UpdatePage(pages[0].ID, core.UpdatePageArguments{
+		Slug: pages[1].Slug,
+	})
+	if err == nil {
+		t.Error(ErrNoError)
+	}
 }
 
 func TestUpdatePageField(t *testing.T) {

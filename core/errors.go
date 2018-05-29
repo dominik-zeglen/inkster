@@ -26,3 +26,8 @@ func ErrFieldExists(field string) error {
 func ErrTemplateExists(template string) error {
 	return fmt.Errorf("Template %s already exists", template)
 }
+
+// ErrPageExists informs about existing page
+func ErrPageExists(page string) error {
+	return fmt.Errorf("Page %s already exists", page)
+}

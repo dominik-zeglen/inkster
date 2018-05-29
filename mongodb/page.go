@@ -19,6 +19,17 @@ func (adapter *Adapter) AddPage(page core.Page) (core.Page, error) {
 		return core.Page{}, err
 	}
 	collection := db.DB(adapter.DBName).C("pages")
+	if page.Slug != "" {
+		found, err := collection.
+			Find(bson.M{"slug": page.Slug}).
+			Count()
+		if err != nil {
+			return core.Page{}, err
+		}
+		if found > 0 {
+			return core.Page{}, core.ErrPageExists(page.Name)
+		}
+	}
 	if page.ID == "" {
 		page.ID = bson.NewObjectId()
 	}
