@@ -7,7 +7,7 @@ import (
 )
 
 // AddPage puts page in the database
-func (adapter *Adapter) AddPage(page core.Page) (core.Page, error) {
+func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	err := page.Validate()
 	if err != nil {
 		return core.Page{}, err
@@ -38,11 +38,14 @@ func (adapter *Adapter) AddPage(page core.Page) (core.Page, error) {
 }
 
 // AddPageFromTemplate creates new page based on a chosen template
-func (adapter *Adapter) AddPageFromTemplate(
-	name string,
-	parentID bson.ObjectId,
-	template core.Template,
+func (adapter Adapter) AddPageFromTemplate(
+	page core.PageInput,
+	templateID bson.ObjectId,
 ) (core.Page, error) {
+	template, err := adapter.GetTemplate(templateID)
+	if err != nil {
+		return core.Page{}, err
+	}
 	var fields []core.PageField
 	for _, field := range template.Fields {
 		fields = append(fields, core.PageField{
@@ -51,16 +54,19 @@ func (adapter *Adapter) AddPageFromTemplate(
 			Value: "",
 		})
 	}
-	page := core.Page{
-		Name:     name,
-		ParentID: parentID,
+	inputPage := core.Page{
+		Name:     page.Name,
+		ParentID: page.ParentID,
 		Fields:   fields,
 	}
-	return adapter.AddPage(page)
+	if page.Slug != nil {
+		inputPage.Slug = *page.Slug
+	}
+	return adapter.AddPage(inputPage)
 }
 
 // AddPageField adds to page a new field at the end of it's field list
-func (adapter *Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
+func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
 	err := field.Validate()
 	if err != nil {
 		return err
@@ -91,7 +97,7 @@ func (adapter *Adapter) AddPageField(pageID bson.ObjectId, field core.PageField)
 }
 
 // GetPage allows user to fetch page by ID from database
-func (adapter *Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
+func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -110,7 +116,7 @@ func (adapter *Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
 }
 
 // GetPageBySlug allows user to fetch page by slug from database
-func (adapter *Adapter) GetPageBySlug(slug string) (core.Page, error) {
+func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -129,7 +135,7 @@ func (adapter *Adapter) GetPageBySlug(slug string) (core.Page, error) {
 }
 
 // GetPagesFromContainer allows user to fetch pages by their parentId from database
-func (adapter *Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
+func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -148,7 +154,7 @@ func (adapter *Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, er
 }
 
 // UpdatePage allows user to update page properties
-func (adapter *Adapter) UpdatePage(pageID bson.ObjectId, data core.UpdatePageArguments) error {
+func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.UpdatePageArguments) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -162,7 +168,7 @@ func (adapter *Adapter) UpdatePage(pageID bson.ObjectId, data core.UpdatePageArg
 }
 
 // UpdatePageField removes field from page
-func (adapter *Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
+func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -195,7 +201,7 @@ func (adapter *Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName stri
 }
 
 // RemovePage removes page from database
-func (adapter *Adapter) RemovePage(pageID bson.ObjectId) error {
+func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -207,7 +213,7 @@ func (adapter *Adapter) RemovePage(pageID bson.ObjectId) error {
 }
 
 // RemovePageField removes field from page
-func (adapter *Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
+func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()

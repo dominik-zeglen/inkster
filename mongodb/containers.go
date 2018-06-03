@@ -7,7 +7,7 @@ import (
 )
 
 // AddContainer puts container in the database
-func (adapter *Adapter) AddContainer(container core.Container) (core.Container, error) {
+func (adapter Adapter) AddContainer(container core.Container) (core.Container, error) {
 	if container.Name == "" {
 		return core.Container{}, core.ErrNoEmpty("Name")
 	}
@@ -26,7 +26,7 @@ func (adapter *Adapter) AddContainer(container core.Container) (core.Container, 
 }
 
 // GetContainer gets container from the database
-func (adapter *Adapter) GetContainer(id bson.ObjectId) (core.Container, error) {
+func (adapter Adapter) GetContainer(id bson.ObjectId) (core.Container, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
 	if err != nil {
@@ -42,7 +42,7 @@ func (adapter *Adapter) GetContainer(id bson.ObjectId) (core.Container, error) {
 }
 
 // GetContainerList gets all containers from the database
-func (adapter *Adapter) GetContainerList() ([]core.Container, error) {
+func (adapter Adapter) GetContainerList() ([]core.Container, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
 	if err != nil {
@@ -58,7 +58,7 @@ func (adapter *Adapter) GetContainerList() ([]core.Container, error) {
 }
 
 // GetRootContainerList gets only containers from a pg database that don't have parent
-func (adapter *Adapter) GetRootContainerList() ([]core.Container, error) {
+func (adapter Adapter) GetRootContainerList() ([]core.Container, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
 	if err != nil {
@@ -74,7 +74,7 @@ func (adapter *Adapter) GetRootContainerList() ([]core.Container, error) {
 }
 
 // GetContainerChildrenList gets containers from a pg database which have same parent
-func (adapter *Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Container, error) {
+func (adapter Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Container, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
 	if err != nil {
@@ -90,9 +90,9 @@ func (adapter *Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Conta
 }
 
 // UpdateContainer allows container properties updaing
-func (adapter *Adapter) UpdateContainer(
+func (adapter Adapter) UpdateContainer(
 	containerID bson.ObjectId,
-	data core.UpdateContainerArguments,
+	data core.ContainerInput,
 ) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
@@ -108,7 +108,7 @@ func (adapter *Adapter) UpdateContainer(
 }
 
 // RemoveContainer removes container from a pg database
-func (adapter *Adapter) RemoveContainer(id bson.ObjectId) error {
+func (adapter Adapter) RemoveContainer(id bson.ObjectId) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	defer db.Close()
 	if err != nil {

@@ -134,3 +134,5 @@ func resetDatabase() {
 		}
 	}
 }
+
+var ResetTestDatabase = resetDatabase

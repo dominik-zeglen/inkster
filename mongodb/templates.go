@@ -7,7 +7,7 @@ import (
 )
 
 // AddTemplate puts template in the database
-func (adapter *Adapter) AddTemplate(template core.Template) (core.Template, error) {
+func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error) {
 	err := template.Validate()
 	if err != nil {
 		return core.Template{}, err
@@ -33,7 +33,7 @@ func (adapter *Adapter) AddTemplate(template core.Template) (core.Template, erro
 }
 
 // AddTemplateField adds to template a new field at the end of it's field list
-func (adapter *Adapter) AddTemplateField(templateID bson.ObjectId, field core.TemplateField) error {
+func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.TemplateField) error {
 	err := field.Validate()
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (adapter *Adapter) AddTemplateField(templateID bson.ObjectId, field core.Te
 }
 
 // GetTemplate allows user to fetch template from database
-func (adapter *Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, error) {
+func (adapter Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -80,7 +80,7 @@ func (adapter *Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, er
 }
 
 // GetTemplateList allows user to fetch all templates from database
-func (adapter *Adapter) GetTemplateList() ([]core.Template, error) {
+func (adapter Adapter) GetTemplateList() ([]core.Template, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -96,7 +96,7 @@ func (adapter *Adapter) GetTemplateList() ([]core.Template, error) {
 }
 
 // UpdateTemplate allows user to update template properties
-func (adapter *Adapter) UpdateTemplate(templateID bson.ObjectId, data core.UpdateTemplateArguments) error {
+func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.TemplateInput) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -116,7 +116,7 @@ func (adapter *Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Updat
 }
 
 // RemoveTemplate removes template from database
-func (adapter *Adapter) RemoveTemplate(templateID bson.ObjectId) error {
+func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -128,7 +128,7 @@ func (adapter *Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 }
 
 // RemoveTemplateField removes field from template
-func (adapter *Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFieldName string) error {
+func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFieldName string) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
