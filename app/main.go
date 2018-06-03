@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,7 +21,6 @@ var dataSource = mongodb.Adapter{
 func init() {
 	resolver := gql.NewResolver(&dataSource)
 	schema = graphql.MustParseSchema(gql.Schema, &resolver)
-	fmt.Printf("Using database %s at %s", dataSource.DBName, dataSource.ConnectionURI)
 }
 
 func check(err error) {
