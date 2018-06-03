@@ -54,9 +54,15 @@ func (adapter Adapter) AddPageFromTemplate(
 			Value: "",
 		})
 	}
+	if page.Name == nil {
+		return core.Page{}, core.ErrNoEmpty("name")
+	}
+	if page.ParentID == nil {
+		return core.Page{}, core.ErrNoEmpty("parentID")
+	}
 	inputPage := core.Page{
-		Name:     page.Name,
-		ParentID: page.ParentID,
+		Name:     *page.Name,
+		ParentID: *page.ParentID,
 		Fields:   fields,
 	}
 	if page.Slug != nil {
@@ -154,7 +160,7 @@ func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, err
 }
 
 // UpdatePage allows user to update page properties
-func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.UpdatePageArguments) error {
+func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()
@@ -162,6 +168,20 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.UpdatePageArgu
 		return err
 	}
 	collection := db.DB(adapter.DBName).C("pages")
+
+	if data.Slug != nil {
+		count, err := collection.
+			Find(bson.M{
+				"slug": *data.Slug,
+			}).
+			Count()
+		if err != nil {
+			return err
+		}
+		if count != 0 {
+			return core.ErrPageExists(*data.Slug)
+		}
+	}
 	return collection.UpdateId(pageID, bson.M{
 		"$set": data,
 	})

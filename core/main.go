@@ -28,10 +28,16 @@ type Adapter interface {
 	GetPage(bson.ObjectId) (Page, error)
 	GetPageBySlug(string) (Page, error)
 	GetPagesFromContainer(bson.ObjectId) ([]Page, error)
-	UpdatePage(bson.ObjectId, UpdatePageArguments) error
+	UpdatePage(bson.ObjectId, PageInput) error
 	UpdatePageField(bson.ObjectId, string, string) error
 	RemovePage(bson.ObjectId) error
 	RemovePageField(bson.ObjectId, string) error
+
+	ResetMockDatabase(
+		containers []Container,
+		templates []Template,
+		pages []Page,
+	)
 }
 
 // FieldTypes holds all allowed template field type names

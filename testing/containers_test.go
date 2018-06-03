@@ -1,4 +1,4 @@
-package mongodb
+package testing
 
 import (
 	"testing"
@@ -12,7 +12,7 @@ func init() {
 	resetDatabase()
 }
 
-func TestContainers(t *testing.T) {
+func testContainers(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add container", func(t *testing.T) {
 			container := core.Container{

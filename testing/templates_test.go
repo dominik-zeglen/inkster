@@ -1,4 +1,4 @@
-package mongodb
+package testing
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ func init() {
 	resetDatabase()
 }
 
-func TestTemplates(t *testing.T) {
+func testTemplates(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add template", func(t *testing.T) {
 			defer resetDatabase()

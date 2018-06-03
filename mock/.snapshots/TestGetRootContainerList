@@ -1,5 +1,0 @@
-([]core.Container) (len=3) {
-  (core.Container) Container<Container 1>,
-  (core.Container) Container<Container 2>,
-  (core.Container) Container<Container 3>
-}

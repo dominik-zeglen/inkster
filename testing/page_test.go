@@ -1,4 +1,4 @@
-package mongodb
+package testing
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ func init() {
 	resetDatabase()
 }
 
-func TestPages(t *testing.T) {
+func testPages(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add page", func(t *testing.T) {
 			defer resetDatabase()
@@ -114,10 +114,11 @@ func TestPages(t *testing.T) {
 		})
 		t.Run("Add page from a template", func(t *testing.T) {
 			defer resetDatabase()
+			pageName := "New page"
 			result, err := dataSource.AddPageFromTemplate(
 				core.PageInput{
-					Name:     "New page",
-					ParentID: containers[0].ID,
+					Name:     &pageName,
+					ParentID: &containers[0].ID,
 				},
 				templates[0].ID,
 			)
@@ -171,8 +172,9 @@ func TestPages(t *testing.T) {
 		})
 		t.Run("Update page", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.UpdatePage(pages[0].ID, core.UpdatePageArguments{
-				Name: "Updated page name",
+			pageName := "Updated page name"
+			err := dataSource.UpdatePage(pages[0].ID, core.PageInput{
+				Name: &pageName,
 			})
 			if err != nil {
 				t.Error(err)
@@ -189,8 +191,8 @@ func TestPages(t *testing.T) {
 		})
 		t.Run("Update page with another's page slug", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.UpdatePage(pages[0].ID, core.UpdatePageArguments{
-				Slug: pages[1].Slug,
+			err := dataSource.UpdatePage(pages[0].ID, core.PageInput{
+				Slug: &pages[1].Slug,
 			})
 			if err == nil {
 				t.Error(ErrNoError)

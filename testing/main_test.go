@@ -1,19 +1,24 @@
-package mongodb
+package testing
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
+	"testing"
 
 	"github.com/dominik-zeglen/ecoknow/core"
-	"github.com/globalsign/mgo"
+	"github.com/dominik-zeglen/ecoknow/mongodb"
 )
 
-var dataSource = Adapter{
-	ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-	DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
+var dataSources = []core.Adapter{
+	mongodb.Adapter{
+		ConnectionURI: os.Getenv("FOXXY_DB_URI"),
+		DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
+	},
+	// mock.Adapter{},
 }
+var dataSource = dataSources[0]
 
 var ErrNoError = fmt.Errorf("Did not return error")
 
@@ -103,34 +108,14 @@ var pages = []core.Page{
 }
 
 func resetDatabase() {
-	session, err := mgo.Dial(dataSource.ConnectionURI)
-	session.SetSafe(&mgo.Safe{})
-	db := session.DB(dataSource.DBName)
+	dataSource.ResetMockDatabase(containers, templates, pages)
+}
 
-	collection := db.C("containers")
-	collection.DropCollection()
-	for id := range containers {
-		err = collection.Insert(containers[id])
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	collection = db.C("templates")
-	collection.DropCollection()
-	for id := range templates {
-		err = collection.Insert(templates[id])
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	collection = db.C("pages")
-	collection.DropCollection()
-	for id := range pages {
-		err = collection.Insert(pages[id])
-		if err != nil {
-			panic(err)
-		}
+func TestMain(t *testing.T) {
+	for index := range dataSources {
+		dataSource = dataSources[index]
+		t.Run("Test containers", testContainers)
+		t.Run("Test templates", testTemplates)
+		t.Run("Test pages", testPages)
 	}
 }
