@@ -14,8 +14,8 @@ type Template struct {
 	Fields []TemplateField `json:"fields"`
 }
 
-// UpdateTemplateArguments is transactional model of an update properties
-type UpdateTemplateArguments struct {
+// TemplateInput is transactional model of an update properties
+type TemplateInput struct {
 	Name string `bson:",omitempty"`
 }
 

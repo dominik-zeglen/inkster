@@ -13,10 +13,10 @@ type Container struct {
 	ParentID bson.ObjectId `bson:"parentId,omitempty" json:"parentId"`
 }
 
-// UpdateContainerArguments is transactional model of an update properties
-type UpdateContainerArguments struct {
-	Name     string        `bson:",omitempty"`
-	ParentID bson.ObjectId `bson:"parentId,omitempty"`
+// ContainerInput is transactional model of an update properties
+type ContainerInput struct {
+	Name     string         `bson:",omitempty"`
+	ParentID *bson.ObjectId `bson:"parentId,omitempty"`
 }
 
 func (container Container) String() string {

@@ -83,6 +83,13 @@ func (field PageField) String() string {
 	)
 }
 
+// PageInput is transactional model of an creation properties
+type PageInput struct {
+	Name     string
+	Slug     *string
+	ParentID bson.ObjectId
+}
+
 // UpdatePageFieldArguments is transactional model of an update properties
 type UpdatePageFieldArguments struct {
 	Name  string `bson:",omitempty"`
