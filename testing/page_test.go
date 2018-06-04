@@ -199,6 +199,7 @@ func testPages(t *testing.T) {
 			}
 		})
 		t.Run("Update page's field", func(t *testing.T) {
+			defer resetDatabase()
 			err := dataSource.UpdatePageField(pages[0].ID, "Field 1", "99")
 			if err != nil {
 				t.Error(err)

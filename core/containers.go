@@ -15,7 +15,7 @@ type Container struct {
 
 // ContainerInput is transactional model of an update properties
 type ContainerInput struct {
-	Name     string         `bson:",omitempty"`
+	Name     *string        `bson:",omitempty"`
 	ParentID *bson.ObjectId `bson:"parentId,omitempty"`
 }
 

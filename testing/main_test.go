@@ -8,17 +8,9 @@ import (
 	"testing"
 
 	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/ecoknow/mock"
 	"github.com/dominik-zeglen/ecoknow/mongodb"
 )
-
-var dataSources = []core.Adapter{
-	mongodb.Adapter{
-		ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-		DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
-	},
-	// mock.Adapter{},
-}
-var dataSource = dataSources[0]
 
 var ErrNoError = fmt.Errorf("Did not return error")
 
@@ -107,13 +99,22 @@ var pages = []core.Page{
 	},
 }
 
+var dataSources = []core.Adapter{
+	mongodb.Adapter{
+		ConnectionURI: os.Getenv("FOXXY_DB_URI"),
+		DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
+	},
+	mock.NewAdapter(containers, templates, pages),
+}
+var dataSource = dataSources[0]
+
 func resetDatabase() {
 	dataSource.ResetMockDatabase(containers, templates, pages)
 }
 
 func TestMain(t *testing.T) {
-	for index := range dataSources {
-		dataSource = dataSources[index]
+	for _, dataSource := range dataSources {
+		fmt.Printf("Testing adapter %s...\n", dataSource.String())
 		t.Run("Test containers", testContainers)
 		t.Run("Test templates", testTemplates)
 		t.Run("Test pages", testPages)

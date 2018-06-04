@@ -13,6 +13,10 @@ type Adapter struct {
 	DBName        string
 }
 
+func (adapter Adapter) String() string {
+	return "MongoDB"
+}
+
 func (adapter Adapter) ResetMockDatabase(
 	containers []core.Container,
 	templates []core.Template,

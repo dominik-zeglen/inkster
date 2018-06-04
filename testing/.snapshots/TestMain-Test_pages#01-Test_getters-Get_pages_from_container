@@ -1,0 +1,38 @@
+[
+    {
+        "id": "303030303030303030303031",
+        "name": "Page 1",
+        "slug": "",
+        "parentId": "303030303030303030303031",
+        "fields": [
+            {
+                "type": "unique",
+                "name": "Field 1",
+                "value": "1"
+            },
+            {
+                "type": "text",
+                "name": "Field 2",
+                "value": "Some text"
+            }
+        ]
+    },
+    {
+        "id": "303030303030303030303032",
+        "name": "Page 2",
+        "slug": "",
+        "parentId": "303030303030303030303031",
+        "fields": [
+            {
+                "type": "unique",
+                "name": "Field 3",
+                "value": "2"
+            },
+            {
+                "type": "file",
+                "name": "Field 4",
+                "value": "example.com/file"
+            }
+        ]
+    }
+]

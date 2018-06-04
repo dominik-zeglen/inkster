@@ -15,6 +15,7 @@ func init() {
 func testContainers(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add container", func(t *testing.T) {
+			defer resetDatabase()
 			container := core.Container{
 				Name:     "New Container",
 				ParentID: containers[0].ID,
@@ -43,9 +44,10 @@ func testContainers(t *testing.T) {
 		})
 		t.Run("Update container", func(t *testing.T) {
 			defer resetDatabase()
+			name := "Updated container name"
 			parentID := bson.ObjectId(containers[1].ID)
 			err := dataSource.UpdateContainer(containers[0].ID, core.ContainerInput{
-				Name:     "Updated container name",
+				Name:     &name,
 				ParentID: &parentID,
 			})
 			if err != nil {
@@ -63,8 +65,9 @@ func testContainers(t *testing.T) {
 		})
 		t.Run("Update container's name", func(t *testing.T) {
 			defer resetDatabase()
+			name := "Updated container name"
 			err := dataSource.UpdateContainer(containers[3].ID, core.ContainerInput{
-				Name: "Updated container name",
+				Name: &name,
 			})
 			if err != nil {
 				t.Error(err)
@@ -80,12 +83,14 @@ func testContainers(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Remove container", func(t *testing.T) {
+			defer resetDatabase()
 			err := dataSource.RemoveContainer(containers[3].ID)
 			if err != nil {
 				t.Error(err)
 			}
 		})
 		t.Run("Remove container that does not exist", func(t *testing.T) {
+			defer resetDatabase()
 			err := dataSource.RemoveContainer("000000000099")
 			if err == nil {
 				t.Error(ErrNoError)

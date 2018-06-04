@@ -104,6 +104,7 @@ func testTemplates(t *testing.T) {
 			}
 		})
 		t.Run("Update template", func(t *testing.T) {
+			defer resetDatabase()
 			err := dataSource.UpdateTemplate(templates[0].ID, core.TemplateInput{
 				Name: "Updated template name",
 			})
@@ -156,7 +157,7 @@ func testTemplates(t *testing.T) {
 		})
 		t.Run("Remove field from template", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveTemplateField(templates[0].ID, "Field 1")
+			err := dataSource.RemoveTemplateField(templates[0].ID, templates[0].Fields[0].Name)
 			if err != nil {
 				t.Error(err)
 			}

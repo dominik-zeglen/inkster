@@ -33,6 +33,7 @@ type Adapter interface {
 	RemovePage(bson.ObjectId) error
 	RemovePageField(bson.ObjectId, string) error
 
+	String() string
 	ResetMockDatabase(
 		containers []Container,
 		templates []Template,

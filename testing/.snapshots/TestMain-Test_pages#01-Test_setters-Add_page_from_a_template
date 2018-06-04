@@ -1,0 +1,18 @@
+{
+    "id": "",
+    "name": "New page",
+    "slug": "",
+    "parentId": "303030303030303030303031",
+    "fields": [
+        {
+            "type": "text",
+            "name": "Field 1",
+            "value": ""
+        },
+        {
+            "type": "image",
+            "name": "Field 2",
+            "value": ""
+        }
+    ]
+}
