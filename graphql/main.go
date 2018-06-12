@@ -10,11 +10,6 @@ import (
 )
 
 var Schema = `
-	schema {
-		query: Query
-		mutation: Mutation
-	}
-	
 	type Query {
 		getContainer(id: String!): Container
 		getContainers: [Container]
@@ -22,8 +17,8 @@ var Schema = `
 	}
 	
 	type Mutation {
-		createContainer(name: String!, parentId: String): Container
-		removeContainer(id: String!): OperationResult
+		createContainer(input: ContainerInput!): Container
+		removeContainer(id: String!): Boolean!	
 	}
 	
 	type Container {
@@ -32,10 +27,14 @@ var Schema = `
 		parent: Container
 		children: [Container]
 	}
-
-	type OperationResult {
-		success: Boolean!
-		message: String!
+	input ContainerInput {
+		name: String!
+		parentId: String
+	}
+	
+	schema {
+		query: Query
+		mutation: Mutation
 	}
 `
 
@@ -62,22 +61,4 @@ func fromGlobalID(dataType string, ID string) (bson.ObjectId, error) {
 		return bson.ObjectId(portionedData[1]), nil
 	}
 	return "", fmt.Errorf("Object types do not match")
-}
-
-type operationResult struct {
-	success bool
-	message string
-}
-
-type operationResultResolver struct {
-	dataSource core.Adapter
-	data       *operationResult
-}
-
-func (res *operationResultResolver) Success() bool {
-	return res.data.success
-}
-
-func (res *operationResultResolver) Message() string {
-	return res.data.message
 }

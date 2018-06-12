@@ -48,26 +48,29 @@ func (res *containerResolver) Children() *[]*containerResolver {
 	return &resolverList
 }
 
-// Query resolvers ----
-type addContainerArgs struct {
+type containerAddInput struct {
 	Name     string
-	ParentId *string
+	ParentID *string
+}
+type createContainerArgs struct {
+	Input containerAddInput
 }
 
-func (res *Resolver) CreateContainer(args addContainerArgs) *containerResolver {
+func (res *Resolver) CreateContainer(args createContainerArgs) *containerResolver {
 	var container core.Container
-	if args.ParentId != nil {
-		parentID, err := fromGlobalID("container", *args.ParentId)
+	input := args.Input
+	if input.ParentID != nil {
+		parentID, err := fromGlobalID("container", *input.ParentID)
 		if err != nil {
 			return nil
 		}
 		container = core.Container{
-			Name:     args.Name,
+			Name:     input.Name,
 			ParentID: parentID,
 		}
 	} else {
 		container = core.Container{
-			Name: args.Name,
+			Name: input.Name,
 		}
 	}
 	container, err := res.dataSource.AddContainer(container)
@@ -127,34 +130,18 @@ func (res *Resolver) GetRootContainers() *[]*containerResolver {
 	return &resolverList
 }
 
-// RemoveContainer resolves RemoveContainer query
-func (res *Resolver) RemoveContainer(args struct{ Id string }) *operationResultResolver {
+type removeContainerArgs struct {
+	Id string
+}
+
+func (res *Resolver) RemoveContainer(args removeContainerArgs) (bool, error) {
 	localID, err := fromGlobalID("container", args.Id)
 	if err != nil {
-		return &operationResultResolver{
-			dataSource: res.dataSource,
-			data: &operationResult{
-				success: false,
-				message: err.Error(),
-			},
-		}
+		return false, err
 	}
 	err = res.dataSource.RemoveContainer(localID)
 	if err != nil {
-		message := err.Error()
-		return &operationResultResolver{
-			dataSource: res.dataSource,
-			data: &operationResult{
-				success: false,
-				message: message,
-			},
-		}
+		return false, err
 	}
-	return &operationResultResolver{
-		dataSource: res.dataSource,
-		data: &operationResult{
-			success: true,
-			message: "",
-		},
-	}
+	return true, nil
 }

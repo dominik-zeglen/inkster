@@ -14,17 +14,16 @@
   version = "v1.1.0"
 
 [[projects]]
-  name = "github.com/go-pg/pg"
+  branch = "master"
+  name = "github.com/globalsign/mgo"
   packages = [
     ".",
-    "internal",
-    "internal/parser",
-    "internal/pool",
-    "orm",
-    "types"
+    "bson",
+    "internal/json",
+    "internal/sasl",
+    "internal/scram"
   ]
-  revision = "5b73ce88484575f3480edf393237f6bf79d5f166"
-  version = "v6.11.2"
+  revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
 
 [[projects]]
   branch = "master"
@@ -46,12 +45,6 @@
     "trace"
   ]
   revision = "9ebf33af539ab8cb832c7107bc0a978ca8dbc0de"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/jinzhu/inflection"
-  packages = ["."]
-  revision = "04140366298a54a039076d798123ffa108fff46c"
 
 [[projects]]
   name = "github.com/opentracing/opentracing-go"
@@ -78,6 +71,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fbcefee7831f48543560946e14f68c5fba151997be5b07b0a84efa18c9e65e0b"
+  inputs-digest = "bdeaffa59c3309ab92189721b8ebdaedfcc6cb201d69500b847cc140d4aa7860"
   solver-name = "gps-cdcl"
   solver-version = 1
