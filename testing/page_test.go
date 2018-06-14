@@ -18,7 +18,7 @@ func testPages(t *testing.T) {
 			page := core.Page{
 				Name:     "New Page",
 				Slug:     "new-page",
-				ParentID: containers[0].ID,
+				ParentID: Containers[0].ID,
 				Fields: []core.PageField{
 					core.PageField{
 						Type:  "unique",
@@ -70,7 +70,7 @@ func testPages(t *testing.T) {
 			defer resetDatabase()
 			page := core.Page{
 				Name: "New Page",
-				Slug: pages[0].Slug,
+				Slug: Pages[0].Slug,
 				Fields: []core.PageField{
 					core.PageField{
 						Type:  "unique",
@@ -93,7 +93,7 @@ func testPages(t *testing.T) {
 			defer resetDatabase()
 			page := core.Page{
 				Name: "New Page",
-				Slug: pages[0].Slug,
+				Slug: Pages[0].Slug,
 				Fields: []core.PageField{
 					core.PageField{
 						Type:  "unique",
@@ -118,9 +118,9 @@ func testPages(t *testing.T) {
 			result, err := dataSource.AddPageFromTemplate(
 				core.PageInput{
 					Name:     &pageName,
-					ParentID: &containers[0].ID,
+					ParentID: &Containers[0].ID,
 				},
-				templates[0].ID,
+				Templates[0].ID,
 			)
 			result.ID = ""
 			if err != nil {
@@ -139,11 +139,11 @@ func testPages(t *testing.T) {
 				Name:  "New Field",
 				Value: "New Value",
 			}
-			err := dataSource.AddPageField(pages[0].ID, field)
+			err := dataSource.AddPageField(Pages[0].ID, field)
 			if err != nil {
 				t.Error(err)
 			}
-			page, err := dataSource.GetPage(pages[0].ID)
+			page, err := dataSource.GetPage(Pages[0].ID)
 			data, err := ToJSON(page)
 			if err != nil {
 				t.Error(err)
@@ -157,7 +157,7 @@ func testPages(t *testing.T) {
 				Name:  "New Field",
 				Value: "New Value",
 			}
-			err := dataSource.AddPageField(pages[0].ID, field)
+			err := dataSource.AddPageField(Pages[0].ID, field)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -165,7 +165,7 @@ func testPages(t *testing.T) {
 		t.Run("Add field to page with name of another field", func(t *testing.T) {
 			defer resetDatabase()
 			field := core.PageField{Type: "text", Name: "Field 1"}
-			err := dataSource.AddPageField(pages[0].ID, field)
+			err := dataSource.AddPageField(Pages[0].ID, field)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -173,13 +173,13 @@ func testPages(t *testing.T) {
 		t.Run("Update page", func(t *testing.T) {
 			defer resetDatabase()
 			pageName := "Updated page name"
-			err := dataSource.UpdatePage(pages[0].ID, core.PageInput{
+			err := dataSource.UpdatePage(Pages[0].ID, core.PageInput{
 				Name: &pageName,
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			page, err := dataSource.GetPage(pages[0].ID)
+			page, err := dataSource.GetPage(Pages[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -191,8 +191,8 @@ func testPages(t *testing.T) {
 		})
 		t.Run("Update page with another's page slug", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.UpdatePage(pages[0].ID, core.PageInput{
-				Slug: &pages[1].Slug,
+			err := dataSource.UpdatePage(Pages[0].ID, core.PageInput{
+				Slug: &Pages[1].Slug,
 			})
 			if err == nil {
 				t.Error(ErrNoError)
@@ -200,11 +200,11 @@ func testPages(t *testing.T) {
 		})
 		t.Run("Update page's field", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.UpdatePageField(pages[0].ID, "Field 1", "99")
+			err := dataSource.UpdatePageField(Pages[0].ID, "Field 1", "99")
 			if err != nil {
 				t.Error(err)
 			}
-			page, err := dataSource.GetPage(pages[0].ID)
+			page, err := dataSource.GetPage(Pages[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -215,18 +215,18 @@ func testPages(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Update page's field with unknown type", func(t *testing.T) {
-			err := dataSource.UpdatePageField(pages[0].ID, "Field 3", "99")
+			err := dataSource.UpdatePageField(Pages[0].ID, "Field 3", "99")
 			if err == nil {
 				t.Error(ErrNoError)
 			}
 		})
 		t.Run("Remove page", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemovePage(pages[0].ID)
+			err := dataSource.RemovePage(Pages[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
-			pages, err := dataSource.GetPagesFromContainer(containers[0].ID)
+			pages, err := dataSource.GetPagesFromContainer(Containers[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -238,11 +238,11 @@ func testPages(t *testing.T) {
 		})
 		t.Run("Remove page's field", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemovePageField(pages[0].ID, "Field 1")
+			err := dataSource.RemovePageField(Pages[0].ID, "Field 1")
 			if err != nil {
 				t.Error(err)
 			}
-			page, err := dataSource.GetPage(pages[0].ID)
+			page, err := dataSource.GetPage(Pages[0].ID)
 			data, err := ToJSON(page)
 			if err != nil {
 				t.Error(err)
@@ -251,7 +251,7 @@ func testPages(t *testing.T) {
 		})
 		t.Run("Remove page's field that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemovePageField(pages[0].ID, "Field 3")
+			err := dataSource.RemovePageField(Pages[0].ID, "Field 3")
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -259,7 +259,7 @@ func testPages(t *testing.T) {
 	})
 	t.Run("Test getters", func(t *testing.T) {
 		t.Run("Get page", func(t *testing.T) {
-			result, err := dataSource.GetPage(pages[0].ID)
+			result, err := dataSource.GetPage(Pages[0].ID)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -270,7 +270,7 @@ func testPages(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Get page by slug", func(t *testing.T) {
-			result, err := dataSource.GetPageBySlug(pages[0].Slug)
+			result, err := dataSource.GetPageBySlug(Pages[0].Slug)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -281,7 +281,7 @@ func testPages(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Get pages from container", func(t *testing.T) {
-			result, err := dataSource.GetPagesFromContainer(containers[0].ID)
+			result, err := dataSource.GetPagesFromContainer(Containers[0].ID)
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -2,7 +2,9 @@ package graphql
 
 import (
 	"github.com/dominik-zeglen/ecoknow/core"
+
 	"github.com/globalsign/mgo/bson"
+	gql "github.com/graph-gophers/graphql-go"
 )
 
 // Type resolvers
@@ -83,15 +85,25 @@ func (res *Resolver) CreateContainer(args createContainerArgs) *containerResolve
 	}
 }
 
-func (res *Resolver) GetContainer(args struct{ Id string }) *containerResolver {
-	container, err := res.dataSource.GetContainer(bson.ObjectId(args.Id))
+type getContainerArgs struct {
+	Id gql.ID
+}
+
+func (res *Resolver) GetContainer(args getContainerArgs) (*containerResolver, error) {
+	localID, err := fromGlobalID("container", string(args.Id))
 	if err != nil {
-		panic(err)
+		return nil, err
+	}
+	container, err := res.
+		dataSource.
+		GetContainer(localID)
+	if err != nil {
+		return nil, err
 	}
 	return &containerResolver{
 		dataSource: res.dataSource,
 		data:       &container,
-	}
+	}, nil
 }
 
 func (res *Resolver) GetContainers() *[]*containerResolver {
@@ -128,6 +140,46 @@ func (res *Resolver) GetRootContainers() *[]*containerResolver {
 		)
 	}
 	return &resolverList
+}
+
+type updateContainerArgs struct {
+	ID    gql.ID
+	Input struct {
+		Name     *string
+		ParentID *gql.ID
+	}
+}
+
+func (res *Resolver) UpdateContainer(args updateContainerArgs) (
+	*containerResolver, error,
+) {
+	localID, err := fromGlobalID("container", string(args.ID))
+	var localParentID *bson.ObjectId
+	if err != nil {
+		return nil, err
+	}
+	if args.Input.ParentID != nil {
+		tempID, err := fromGlobalID("container", string(*args.Input.ParentID))
+		localParentID = &tempID
+		if err != nil {
+			return nil, err
+		}
+	}
+	err = res.dataSource.UpdateContainer(localID, core.ContainerInput{
+		Name:     args.Input.Name,
+		ParentID: localParentID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	data, err := res.dataSource.GetContainer(localID)
+	if err != nil {
+		return nil, err
+	}
+	return &containerResolver{
+		dataSource: res.dataSource,
+		data:       &data,
+	}, nil
 }
 
 type removeContainerArgs struct {

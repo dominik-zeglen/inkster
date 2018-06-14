@@ -18,7 +18,7 @@ func testContainers(t *testing.T) {
 			defer resetDatabase()
 			container := core.Container{
 				Name:     "New Container",
-				ParentID: containers[0].ID,
+				ParentID: Containers[0].ID,
 			}
 			result, err := dataSource.AddContainer(container)
 			id := result.ID
@@ -35,7 +35,7 @@ func testContainers(t *testing.T) {
 		})
 		t.Run("Add container without name", func(t *testing.T) {
 			container := core.Container{
-				ParentID: containers[0].ID,
+				ParentID: Containers[0].ID,
 			}
 			_, err := dataSource.AddContainer(container)
 			if err == nil {
@@ -45,15 +45,15 @@ func testContainers(t *testing.T) {
 		t.Run("Update container", func(t *testing.T) {
 			defer resetDatabase()
 			name := "Updated container name"
-			parentID := bson.ObjectId(containers[1].ID)
-			err := dataSource.UpdateContainer(containers[0].ID, core.ContainerInput{
+			parentID := bson.ObjectId(Containers[1].ID)
+			err := dataSource.UpdateContainer(Containers[0].ID, core.ContainerInput{
 				Name:     &name,
 				ParentID: &parentID,
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			result, err := dataSource.GetContainer(containers[0].ID)
+			result, err := dataSource.GetContainer(Containers[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -66,13 +66,13 @@ func testContainers(t *testing.T) {
 		t.Run("Update container's name", func(t *testing.T) {
 			defer resetDatabase()
 			name := "Updated container name"
-			err := dataSource.UpdateContainer(containers[3].ID, core.ContainerInput{
+			err := dataSource.UpdateContainer(Containers[3].ID, core.ContainerInput{
 				Name: &name,
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			result, err := dataSource.GetContainer(containers[3].ID)
+			result, err := dataSource.GetContainer(Containers[3].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -84,7 +84,7 @@ func testContainers(t *testing.T) {
 		})
 		t.Run("Remove container", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveContainer(containers[3].ID)
+			err := dataSource.RemoveContainer(Containers[3].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -99,7 +99,7 @@ func testContainers(t *testing.T) {
 	})
 	t.Run("Test getters", func(t *testing.T) {
 		t.Run("Get container", func(t *testing.T) {
-			result, err := dataSource.GetContainer(containers[0].ID)
+			result, err := dataSource.GetContainer(Containers[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -124,7 +124,7 @@ func testContainers(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Get container's children", func(t *testing.T) {
-			result, _ := dataSource.GetContainerChildrenList(containers[0].ID)
+			result, _ := dataSource.GetContainerChildrenList(Containers[0].ID)
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)

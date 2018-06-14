@@ -1,0 +1,38 @@
+{
+    "data": {
+        "getContainers": [
+            {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                "name": "Container 1",
+                "parent": null,
+                "children": [
+                    {
+                        "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
+                        "name": "Container 1.1"
+                    }
+                ]
+            },
+            {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMg==",
+                "name": "Container 2",
+                "parent": null,
+                "children": []
+            },
+            {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMw==",
+                "name": "Container 3",
+                "parent": null,
+                "children": []
+            },
+            {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
+                "name": "Container 1.1",
+                "parent": {
+                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                    "name": "Container 1"
+                },
+                "children": []
+            }
+        ]
+    }
+}

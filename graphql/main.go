@@ -11,14 +11,15 @@ import (
 
 var Schema = `
 	type Query {
-		getContainer(id: String!): Container
+		getContainer(id: ID!): Container
 		getContainers: [Container]
 		getRootContainers: [Container]
 	}
 	
 	type Mutation {
-		createContainer(input: ContainerInput!): Container
-		removeContainer(id: String!): Boolean!	
+		createContainer(input: ContainerCreateInput!): Container
+		updateContainer(id: ID!, input: ContainerUpdateInput!): Container
+		removeContainer(id: ID!): Boolean!	
 	}
 	
 	type Container {
@@ -27,9 +28,13 @@ var Schema = `
 		parent: Container
 		children: [Container]
 	}
-	input ContainerInput {
+	input ContainerCreateInput {
 		name: String!
-		parentId: String
+		parentId: ID
+	}
+	input ContainerUpdateInput {
+		name: String
+		parentId: ID
 	}
 	
 	schema {

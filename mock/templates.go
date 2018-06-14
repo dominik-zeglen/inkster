@@ -9,16 +9,16 @@ import (
 
 func (adapter Adapter) findTemplate(id *bson.ObjectId, name *string) (int, error) {
 	if id != nil {
-		for index := range adapter.templates {
-			if adapter.templates[index].ID == *id {
+		for index := range templates {
+			if templates[index].ID == *id {
 				return index, nil
 			}
 		}
 		return 0, fmt.Errorf("Template %s does not exist", id)
 	}
 	if name != nil {
-		for index := range adapter.templates {
-			if adapter.templates[index].Name == *name {
+		for index := range templates {
+			if templates[index].Name == *name {
 				return index, nil
 			}
 		}
@@ -34,8 +34,8 @@ func (adapter Adapter) findTemplateField(id bson.ObjectId, name string) (int, in
 	if err != nil {
 		return 0, 0, err
 	}
-	for fieldIndex := range adapter.templates[index].Fields {
-		if adapter.templates[index].Fields[fieldIndex].Name == name {
+	for fieldIndex := range templates[index].Fields {
+		if templates[index].Fields[fieldIndex].Name == name {
 			return index, fieldIndex, nil
 		}
 	}
@@ -60,7 +60,7 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 			return core.Template{}, core.ErrTemplateExists(template.ID.String())
 		}
 	}
-	adapter.templates = append(adapter.templates, template)
+	templates = append(templates, template)
 	return template, nil
 }
 
@@ -75,8 +75,8 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 	if err == nil {
 		return core.ErrFieldExists(field.Name)
 	}
-	adapter.templates[index].Fields = append(
-		adapter.templates[index].Fields,
+	templates[index].Fields = append(
+		templates[index].Fields,
 		field,
 	)
 	return nil
@@ -85,12 +85,12 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 // GetTemplate allows user to fetch template from database
 func (adapter Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, error) {
 	index, err := adapter.findTemplate(&templateID, nil)
-	return adapter.templates[index], err
+	return templates[index], err
 }
 
 // GetTemplateList allows user to fetch all templates from database
 func (adapter Adapter) GetTemplateList() ([]core.Template, error) {
-	return adapter.templates, nil
+	return templates, nil
 }
 
 // UpdateTemplate allows user to update template properties
@@ -99,7 +99,7 @@ func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Templa
 	if err == nil {
 		return core.ErrTemplateExists(data.Name)
 	}
-	adapter.templates[index].Name = data.Name
+	templates[index].Name = data.Name
 	return nil
 }
 
@@ -109,7 +109,7 @@ func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 	if err != nil {
 		return err
 	}
-	adapter.templates = append(adapter.templates[:index], adapter.templates[:index+1]...)
+	templates = append(templates[:index], templates[:index+1]...)
 	return nil
 }
 
@@ -119,9 +119,9 @@ func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFie
 	if err != nil {
 		return err
 	}
-	adapter.templates[index].Fields = append(
-		adapter.templates[index].Fields[:fieldIndex],
-		adapter.templates[index].Fields[fieldIndex+1:]...,
+	templates[index].Fields = append(
+		templates[index].Fields[:fieldIndex],
+		templates[index].Fields[fieldIndex+1:]...,
 	)
 	return nil
 }

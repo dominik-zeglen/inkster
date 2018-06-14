@@ -2,7 +2,10 @@
     "data": {
         "createContainer": {
             "name": "New Container",
-            "parent": null
+            "parent": {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                "name": "Container 1"
+            }
         }
     }
 }

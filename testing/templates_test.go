@@ -74,7 +74,7 @@ func testTemplates(t *testing.T) {
 		t.Run("Add template with name of existing template", func(t *testing.T) {
 			defer resetDatabase()
 			template := core.Template{
-				Name: templates[0].Name,
+				Name: Templates[0].Name,
 			}
 			_, err := dataSource.AddTemplate(template)
 			if err == nil {
@@ -84,11 +84,11 @@ func testTemplates(t *testing.T) {
 		t.Run("Add field to template", func(t *testing.T) {
 			defer resetDatabase()
 			field := core.TemplateField{Type: "text", Name: "New Field"}
-			err := dataSource.AddTemplateField(templates[0].ID, field)
+			err := dataSource.AddTemplateField(Templates[0].ID, field)
 			if err != nil {
 				t.Error(err)
 			}
-			template, err := dataSource.GetTemplate(templates[0].ID)
+			template, err := dataSource.GetTemplate(Templates[0].ID)
 			data, err := ToJSON(template)
 			if err != nil {
 				t.Error(err)
@@ -98,20 +98,20 @@ func testTemplates(t *testing.T) {
 		t.Run("Add field to template with name of existing field", func(t *testing.T) {
 			defer resetDatabase()
 			field := core.TemplateField{Type: "text", Name: "Field 1"}
-			err := dataSource.AddTemplateField(templates[0].ID, field)
+			err := dataSource.AddTemplateField(Templates[0].ID, field)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
 		})
 		t.Run("Update template", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.UpdateTemplate(templates[0].ID, core.TemplateInput{
+			err := dataSource.UpdateTemplate(Templates[0].ID, core.TemplateInput{
 				Name: "Updated template name",
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			template, err := dataSource.GetTemplate(templates[0].ID)
+			template, err := dataSource.GetTemplate(Templates[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -124,9 +124,9 @@ func testTemplates(t *testing.T) {
 		t.Run("Update template with name of existing template", func(t *testing.T) {
 			defer resetDatabase()
 			err := dataSource.UpdateTemplate(
-				templates[0].ID,
+				Templates[0].ID,
 				core.TemplateInput{
-					Name: templates[1].Name,
+					Name: Templates[1].Name,
 				},
 			)
 			if err == nil {
@@ -135,7 +135,7 @@ func testTemplates(t *testing.T) {
 		})
 		t.Run("Remove template", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveTemplate(templates[0].ID)
+			err := dataSource.RemoveTemplate(Templates[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -157,11 +157,11 @@ func testTemplates(t *testing.T) {
 		})
 		t.Run("Remove field from template", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveTemplateField(templates[0].ID, templates[0].Fields[0].Name)
+			err := dataSource.RemoveTemplateField(Templates[0].ID, Templates[0].Fields[0].Name)
 			if err != nil {
 				t.Error(err)
 			}
-			template, err := dataSource.GetTemplate(templates[0].ID)
+			template, err := dataSource.GetTemplate(Templates[0].ID)
 			data, err := ToJSON(template)
 			if err != nil {
 				t.Error(err)
@@ -170,7 +170,7 @@ func testTemplates(t *testing.T) {
 		})
 		t.Run("Remove template field that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveTemplateField(templates[0].ID, "Field 3")
+			err := dataSource.RemoveTemplateField(Templates[0].ID, "Field 3")
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -178,7 +178,7 @@ func testTemplates(t *testing.T) {
 	})
 	t.Run("Test getters", func(t *testing.T) {
 		t.Run("Get template", func(t *testing.T) {
-			template, err := dataSource.GetTemplate(templates[0].ID)
+			template, err := dataSource.GetTemplate(Templates[0].ID)
 			if err != nil {
 				t.Error(err)
 			}

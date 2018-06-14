@@ -8,8 +8,8 @@ import (
 )
 
 func (adapter Adapter) findContainer(id bson.ObjectId) (int, error) {
-	for index := range adapter.containers {
-		if adapter.containers[index].ID == id {
+	for index := range containers {
+		if containers[index].ID == id {
 			return index, nil
 		}
 	}
@@ -26,7 +26,7 @@ func (adapter Adapter) AddContainer(container core.Container) (core.Container, e
 			return core.Container{}, fmt.Errorf("Could not add container with ID: %s; container already exists", container.ID)
 		}
 	}
-	adapter.containers = append(adapter.containers, container)
+	containers = append(containers, container)
 	return container, nil
 }
 
@@ -36,20 +36,20 @@ func (adapter Adapter) GetContainer(id bson.ObjectId) (core.Container, error) {
 	if err != nil {
 		return core.Container{}, err
 	}
-	return adapter.containers[index], nil
+	return containers[index], nil
 }
 
 // GetContainerList gets all containers from a in-memory array
 func (adapter Adapter) GetContainerList() ([]core.Container, error) {
-	return adapter.containers, nil
+	return containers, nil
 }
 
 // GetRootContainerList gets only containers from a in-memory array that don't have parent
 func (adapter Adapter) GetRootContainerList() ([]core.Container, error) {
 	result := []core.Container{}
-	for k := range adapter.containers {
-		if adapter.containers[k].ParentID == "" {
-			result = append(result, adapter.containers[k])
+	for k := range containers {
+		if containers[k].ParentID == "" {
+			result = append(result, containers[k])
 		}
 	}
 	return result, nil
@@ -59,9 +59,9 @@ func (adapter Adapter) GetRootContainerList() ([]core.Container, error) {
 // ParentID equals to function id parameter
 func (adapter Adapter) GetContainerChildrenList(id bson.ObjectId) ([]core.Container, error) {
 	result := []core.Container{}
-	for k := range adapter.containers {
-		if adapter.containers[k].ParentID == id {
-			result = append(result, adapter.containers[k])
+	for k := range containers {
+		if containers[k].ParentID == id {
+			result = append(result, containers[k])
 		}
 	}
 	return result, nil
@@ -74,19 +74,19 @@ func (adapter Adapter) UpdateContainer(id bson.ObjectId, data core.ContainerInpu
 		return err
 	}
 	if data.Name != nil {
-		adapter.containers[index].Name = *data.Name
+		containers[index].Name = *data.Name
 	}
 	if data.ParentID != nil {
-		adapter.containers[index].ParentID = *data.ParentID
+		containers[index].ParentID = *data.ParentID
 	}
 	return nil
 }
 
 // RemoveContainer removes container from a in-memory array
 func (adapter Adapter) RemoveContainer(id bson.ObjectId) error {
-	for index := range adapter.containers {
-		if adapter.containers[index].ID == id {
-			adapter.containers = append(adapter.containers[:index], adapter.containers[index+1:]...)
+	for index := range containers {
+		if containers[index].ID == id {
+			containers = append(containers[:index], containers[index+1:]...)
 			return nil
 		}
 	}

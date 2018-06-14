@@ -1,0 +1,13 @@
+{
+    "data": {
+        "updateContainer": {
+            "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
+            "name": "Updated name",
+            "parent": {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMg==",
+                "name": "Container 2"
+            },
+            "children": []
+        }
+    }
+}

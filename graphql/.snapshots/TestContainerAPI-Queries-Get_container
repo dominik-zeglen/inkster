@@ -1,0 +1,15 @@
+{
+    "data": {
+        "getContainer": {
+            "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+            "name": "Container 1",
+            "parent": null,
+            "children": [
+                {
+                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
+                    "name": "Container 1.1"
+                }
+            ]
+        }
+    }
+}

@@ -4,25 +4,13 @@ import (
 	"github.com/dominik-zeglen/ecoknow/core"
 )
 
+var containers = make([]core.Container, 0)
+var templates = make([]core.Template, 0)
+var pages = make([]core.Page, 0)
+
 // Adapter is an abstraction over database connection mock
 type Adapter struct {
 	core.Adapter
-	containers []core.Container
-	templates  []core.Template
-	pages      []core.Page
-}
-
-// NewAdapter creates new Adapter
-func NewAdapter(
-	containers []core.Container,
-	templates []core.Template,
-	pages []core.Page,
-) Adapter {
-	return Adapter{
-		containers: containers,
-		templates:  templates,
-		pages:      pages,
-	}
 }
 
 func (adapter Adapter) String() string {
@@ -31,11 +19,14 @@ func (adapter Adapter) String() string {
 
 // ResetMockDatabase sets in-memory array to its initial state
 func (adapter Adapter) ResetMockDatabase(
-	containers []core.Container,
-	templates []core.Template,
-	pages []core.Page,
+	dataContainers []core.Container,
+	dataTemplates []core.Template,
+	dataPages []core.Page,
 ) {
-	copy(adapter.containers, containers)
-	copy(adapter.templates, templates)
-	copy(adapter.pages, pages)
+	containers = make([]core.Container, len(dataContainers))
+	templates = make([]core.Template, len(dataTemplates))
+	pages = make([]core.Page, len(dataPages))
+	copy(containers, dataContainers)
+	copy(templates, dataTemplates)
+	copy(pages, dataPages)
 }

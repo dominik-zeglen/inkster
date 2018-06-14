@@ -9,16 +9,16 @@ import (
 
 func (adapter Adapter) findPage(id *bson.ObjectId, slug *string) (int, error) {
 	if id != nil {
-		for index := range adapter.pages {
-			if adapter.pages[index].ID == *id {
+		for index := range pages {
+			if pages[index].ID == *id {
 				return index, nil
 			}
 		}
 		return 0, fmt.Errorf("Page %s does not exist", id)
 	}
 	if slug != nil {
-		for index := range adapter.pages {
-			if adapter.pages[index].Slug == *slug {
+		for index := range pages {
+			if pages[index].Slug == *slug {
 				return index, nil
 			}
 		}
@@ -34,8 +34,8 @@ func (adapter Adapter) findPageField(id bson.ObjectId, name string) (int, int, e
 	if err != nil {
 		return 0, 0, err
 	}
-	for fieldIndex := range adapter.pages[index].Fields {
-		if adapter.pages[index].Fields[fieldIndex].Name == name {
+	for fieldIndex := range pages[index].Fields {
+		if pages[index].Fields[fieldIndex].Name == name {
 			return index, fieldIndex, nil
 		}
 	}
@@ -60,7 +60,7 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 			return core.Page{}, core.ErrPageExists(page.ID.String())
 		}
 	}
-	adapter.pages = append(adapter.pages, page)
+	pages = append(pages, page)
 	return page, nil
 }
 
@@ -109,28 +109,28 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 	if err == nil {
 		return core.ErrFieldExists(field.Name)
 	}
-	adapter.pages[index].Fields = append(adapter.pages[index].Fields, field)
+	pages[index].Fields = append(pages[index].Fields, field)
 	return nil
 }
 
 // GetPage allows user to fetch page by ID from database
 func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
 	index, err := adapter.findPage(&id, nil)
-	return adapter.pages[index], err
+	return pages[index], err
 }
 
 // GetPageBySlug allows user to fetch page by slug from database
 func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 	index, err := adapter.findPage(nil, &slug)
-	return adapter.pages[index], err
+	return pages[index], err
 }
 
 // GetPagesFromContainer allows user to fetch pages by their parentId from database
 func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
 	var pages []core.Page
-	for index := range adapter.pages {
-		if adapter.pages[index].ParentID == id {
-			pages = append(pages, adapter.pages[index])
+	for index := range pages {
+		if pages[index].ParentID == id {
+			pages = append(pages, pages[index])
 		}
 	}
 	return pages, nil
@@ -143,21 +143,21 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 		return err
 	}
 	if data.Name != nil {
-		adapter.pages[index].Name = *data.Name
+		pages[index].Name = *data.Name
 	}
 	if data.Slug != nil {
 		_, err = adapter.findPage(nil, data.Slug)
 		if err == nil {
 			return core.ErrTemplateExists(*data.Slug)
 		}
-		adapter.pages[index].Slug = *data.Slug
+		pages[index].Slug = *data.Slug
 	}
 	if data.ParentID != nil {
 		_, err = adapter.findContainer(*data.ParentID)
 		if err == nil {
 			return err
 		}
-		adapter.pages[index].ParentID = *data.ParentID
+		pages[index].ParentID = *data.ParentID
 	}
 	return nil
 }
@@ -168,7 +168,7 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 	if err != nil {
 		return err
 	}
-	adapter.pages[index].Fields[fieldIndex].Value = data
+	pages[index].Fields[fieldIndex].Value = data
 	return nil
 }
 
@@ -178,7 +178,7 @@ func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
 	if err != nil {
 		return err
 	}
-	adapter.pages = append(adapter.pages[:index], adapter.pages[:index+1]...)
+	pages = append(pages[:index], pages[:index+1]...)
 	return nil
 }
 
@@ -188,9 +188,9 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 	if err != nil {
 		return err
 	}
-	adapter.pages[index].Fields = append(
-		adapter.pages[index].Fields[:fieldIndex],
-		adapter.pages[index].Fields[fieldIndex+1:]...,
+	pages[index].Fields = append(
+		pages[index].Fields[:fieldIndex],
+		pages[index].Fields[fieldIndex+1:]...,
 	)
 	return nil
 }
