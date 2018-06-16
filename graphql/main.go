@@ -14,12 +14,16 @@ var Schema = `
 		getContainer(id: ID!): Container
 		getContainers: [Container]
 		getRootContainers: [Container]
+
+		template(id: ID!): Template
 	}
 	
 	type Mutation {
 		createContainer(input: ContainerCreateInput!): Container
 		updateContainer(id: ID!, input: ContainerUpdateInput!): Container
-		removeContainer(id: ID!): Boolean!	
+		removeContainer(id: ID!): Boolean!
+
+		createTemplate(input: TemplateCreateInput!): Template
 	}
 	
 	type Container {
@@ -35,6 +39,25 @@ var Schema = `
 	input ContainerUpdateInput {
 		name: String
 		parentId: ID
+	}
+
+	type Template {
+		id: String!
+		name: String!
+		fields: [TemplateField]
+	}
+	type TemplateField {
+		name: String!
+		type: String!
+	}
+		
+	input TemplateCreateInput {
+		name: String!
+		fields: [TemplateFieldCreateInput!]
+	}
+	input TemplateFieldCreateInput {
+		name: String!
+		type: String!
 	}
 	
 	schema {

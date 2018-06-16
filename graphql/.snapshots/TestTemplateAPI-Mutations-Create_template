@@ -1,0 +1,17 @@
+{
+    "data": {
+        "createTemplate": {
+            "name": "New Template",
+            "fields": [
+                {
+                    "name": "Field 1",
+                    "type": "text"
+                },
+                {
+                    "name": "Field 2",
+                    "type": "page"
+                }
+            ]
+        }
+    }
+}

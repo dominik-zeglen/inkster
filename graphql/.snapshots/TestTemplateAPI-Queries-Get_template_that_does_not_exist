@@ -1,0 +1,13 @@
+{
+    "data": {
+        "template": null
+    },
+    "errors": [
+        {
+            "message": "Template ObjectIdHex(\"303030303030303030303939\") does not exist",
+            "path": [
+                "template"
+            ]
+        }
+    ]
+}
