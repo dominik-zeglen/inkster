@@ -2,9 +2,14 @@ package graphql
 
 import (
 	"github.com/dominik-zeglen/ecoknow/core"
-	// "github.com/globalsign/mgo/bson"
-	// gql "github.com/graph-gophers/graphql-go"
+	"github.com/globalsign/mgo/bson"
+	gql "github.com/graph-gophers/graphql-go"
 )
+
+type templateUpdateResult struct {
+	userErrors *[]userError
+	templateID bson.ObjectId
+}
 
 // Type resolvers
 type templateResolver struct {
@@ -15,6 +20,38 @@ type templateFieldResolver struct {
 	dataSource core.Adapter
 	data       *core.TemplateField
 }
+type templateUpdateResultResolver struct {
+	dataSource core.Adapter
+	data       templateUpdateResult
+}
+
+func (res *templateUpdateResultResolver) Template() *templateResolver {
+	result, err := res.dataSource.GetTemplate(res.data.templateID)
+	if err != nil {
+		return nil
+	}
+	return &templateResolver{
+		dataSource: res.dataSource,
+		data:       &result,
+	}
+}
+
+func (res *templateUpdateResultResolver) UserErrors() *[]*userErrorResolver {
+	var resolverList []*userErrorResolver
+	if res.data.userErrors == nil {
+		return nil
+	}
+	userErrors := *res.data.userErrors
+	for i := range userErrors {
+		resolverList = append(
+			resolverList,
+			&userErrorResolver{
+				data: userErrors[i],
+			},
+		)
+	}
+	return &resolverList
+}
 
 func (res *templateFieldResolver) Name() string {
 	return res.data.Name
@@ -24,9 +61,9 @@ func (res *templateFieldResolver) Type() string {
 	return res.data.Type
 }
 
-func (res *templateResolver) ID() string {
+func (res *templateResolver) ID() gql.ID {
 	globalID := toGlobalID("template", res.data.ID)
-	return globalID
+	return gql.ID(globalID)
 }
 
 func (res *templateResolver) Name() string {
@@ -49,7 +86,6 @@ func (res *templateResolver) Fields() *[]*templateFieldResolver {
 		)
 	}
 	return &resolverList
-
 }
 
 type createTemplateArgs struct {
@@ -89,8 +125,8 @@ func (res *Resolver) CreateTemplate(args createTemplateArgs) (
 	}, nil
 }
 
-func (res *Resolver) Template(args struct{ ID string }) (*templateResolver, error) {
-	localID, err := fromGlobalID("template", args.ID)
+func (res *Resolver) Template(args struct{ ID gql.ID }) (*templateResolver, error) {
+	localID, err := fromGlobalID("template", string(args.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -104,5 +140,61 @@ func (res *Resolver) Template(args struct{ ID string }) (*templateResolver, erro
 	}, nil
 }
 
-// func (res *Resolver) TemplateUpdate(args updateTemplateArgs) (*templateOperationResolver, error) {
-// }
+func (res *Resolver) Templates() *[]*templateResolver {
+	var resolverList []*templateResolver
+	templates, err := res.dataSource.GetTemplateList()
+	if err != nil {
+		panic(err)
+	}
+	for index := range templates {
+		resolverList = append(
+			resolverList,
+			&templateResolver{
+				dataSource: res.dataSource,
+				data:       &templates[index],
+			},
+		)
+	}
+	return &resolverList
+}
+
+type updateTemplateArgs struct {
+	ID    string
+	Input struct {
+		Name string
+	}
+}
+
+func (res *Resolver) TemplateUpdate(args updateTemplateArgs) (*templateUpdateResultResolver, error) {
+	localID, err := fromGlobalID("template", args.ID)
+	if err != nil {
+		return nil, err
+	}
+	if args.Input.Name == "" {
+		return &templateUpdateResultResolver{
+			dataSource: res.dataSource,
+			data: templateUpdateResult{
+				userErrors: &[]userError{
+					userError{
+						field:   "name",
+						message: errNoEmpty("name").Error(),
+					},
+				},
+				templateID: localID,
+			},
+		}, nil
+	}
+	input := core.TemplateInput{
+		Name: args.Input.Name,
+	}
+	err = res.dataSource.UpdateTemplate(bson.ObjectId(args.ID), input)
+	if err != nil {
+		return nil, err
+	}
+	return &templateUpdateResultResolver{
+		dataSource: res.dataSource,
+		data: templateUpdateResult{
+			templateID: localID,
+		},
+	}, nil
+}

@@ -1,0 +1,38 @@
+{
+    "data": {
+        "templates": [
+            {
+                "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "name": "Template 1",
+                "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "image"
+                    }
+                ]
+            },
+            {
+                "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAy",
+                "name": "Template 2",
+                "fields": [
+                    {
+                        "name": "Field 3",
+                        "type": "unique"
+                    },
+                    {
+                        "name": "Field 4",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 5",
+                        "type": "file"
+                    }
+                ]
+            }
+        ]
+    }
+}

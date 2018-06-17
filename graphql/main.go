@@ -16,6 +16,7 @@ var Schema = `
 		getRootContainers: [Container]
 
 		template(id: ID!): Template
+		templates: [Template]
 	}
 	
 	type Mutation {
@@ -24,10 +25,23 @@ var Schema = `
 		removeContainer(id: ID!): Boolean!
 
 		createTemplate(input: TemplateCreateInput!): Template
+		templateUpdate(id: ID!, input: TemplateUpdateInput!): TemplateUpdateResult
 	}
 	
-	type Container {
-		id: String!
+	interface Node {
+		id: ID!
+	}
+	interface UpdateResult {
+		userErrors: [UserError]
+	}
+
+	type UserError {
+		field: String!
+		message: String!
+	}
+
+	type Container implements Node {
+		id: ID!
 		name: String!
 		parent: Container
 		children: [Container]
@@ -41,8 +55,8 @@ var Schema = `
 		parentId: ID
 	}
 
-	type Template {
-		id: String!
+	type Template implements Node {
+		id: ID!
 		name: String!
 		fields: [TemplateField]
 	}
@@ -50,10 +64,17 @@ var Schema = `
 		name: String!
 		type: String!
 	}
+	type TemplateUpdateResult implements UpdateResult {
+		userErrors: [UserError]
+		template: Template
+	}
 		
 	input TemplateCreateInput {
 		name: String!
 		fields: [TemplateFieldCreateInput!]
+	}
+	input TemplateUpdateInput {
+		name: String!
 	}
 	input TemplateFieldCreateInput {
 		name: String!
@@ -89,4 +110,21 @@ func fromGlobalID(dataType string, ID string) (bson.ObjectId, error) {
 		return bson.ObjectId(portionedData[1]), nil
 	}
 	return "", fmt.Errorf("Object types do not match")
+}
+
+type userError struct {
+	field   string
+	message string
+}
+
+type userErrorResolver struct {
+	data userError
+}
+
+func (res *userErrorResolver) Field() string {
+	return res.data.field
+}
+
+func (res *userErrorResolver) Message() string {
+	return res.data.message
 }

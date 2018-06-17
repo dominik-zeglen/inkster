@@ -73,6 +73,43 @@ func TestTemplateAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Update template", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation TemplateUpdate(
+				$id: ID!
+				$name: String!
+			){
+				templateUpdate(
+					id: $id, 
+					input: {
+						name: $name 
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					template {
+						id
+						name
+						fields {
+							name
+							type
+						}
+					}
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "Updated name"
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 	})
 	t.Run("Queries", func(t *testing.T) {
 		resetDatabase()
@@ -113,6 +150,23 @@ func TestTemplateAPI(t *testing.T) {
 				"id": "%s"
 			}`, id)
 			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get template list", func(t *testing.T) {
+			query := `query Templates{
+				templates {
+					id
+					name
+					fields {
+						name
+						type
+					}
+				}
+			}`
+			result, err := execQuery(query, "{}")
 			if err != nil {
 				t.Fatal(err)
 			}

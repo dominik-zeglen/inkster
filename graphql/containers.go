@@ -13,8 +13,9 @@ type containerResolver struct {
 	data       *core.Container
 }
 
-func (res *containerResolver) Id() string {
-	return toGlobalID("container", res.data.ID)
+func (res *containerResolver) ID() gql.ID {
+	globalID := toGlobalID("container", res.data.ID)
+	return gql.ID(globalID)
 }
 func (res *containerResolver) Name() string {
 	return res.data.Name

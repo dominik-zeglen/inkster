@@ -1,0 +1,21 @@
+{
+    "data": {
+        "templateUpdate": {
+            "userErrors": null,
+            "template": {
+                "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "name": "Updated name",
+                "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "image"
+                    }
+                ]
+            }
+        }
+    }
+}
