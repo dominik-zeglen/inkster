@@ -1,0 +1,17 @@
+{
+    "data": {
+        "removeTemplateField": {
+            "userErrors": null,
+            "template": {
+                "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "name": "Template 1",
+                "fields": [
+                    {
+                        "name": "Field 2",
+                        "type": "image"
+                    }
+                ]
+            }
+        }
+    }
+}

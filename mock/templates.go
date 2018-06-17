@@ -119,9 +119,11 @@ func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFie
 	if err != nil {
 		return err
 	}
+	fields := make([]core.TemplateField, len(templates[index].Fields))
+	copy(fields, templates[index].Fields)
 	templates[index].Fields = append(
-		templates[index].Fields[:fieldIndex],
-		templates[index].Fields[fieldIndex+1:]...,
+		fields[:fieldIndex],
+		fields[fieldIndex+1:]...,
 	)
 	return nil
 }

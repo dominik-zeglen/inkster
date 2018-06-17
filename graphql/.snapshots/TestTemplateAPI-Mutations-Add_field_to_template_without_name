@@ -1,0 +1,26 @@
+{
+    "data": {
+        "createTemplateField": {
+            "userErrors": [
+                {
+                    "field": "name",
+                    "message": "Field `name` cannot be empty"
+                }
+            ],
+            "template": {
+                "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "name": "Template 1",
+                "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "image"
+                    }
+                ]
+            }
+        }
+    }
+}

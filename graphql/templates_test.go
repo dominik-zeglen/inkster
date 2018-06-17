@@ -110,6 +110,183 @@ func TestTemplateAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Update template without name", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation TemplateUpdate(
+				$id: ID!
+				$name: String!
+			){
+				templateUpdate(
+					id: $id, 
+					input: {
+						name: $name 
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					template {
+						id
+						name
+						fields {
+							name
+							type
+						}
+					}
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": ""
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Add field to template", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation CreateTemplateField(
+				$id: ID!
+				$name: String!
+				$type: String!
+			){
+				createTemplateField(
+					id: $id, 
+					input: {
+						name: $name,
+						type: $type
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					template {
+						id
+						name
+						fields {
+							name
+							type
+						}
+					}
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "New field",
+				"type": "text"
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Add field to template without name", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation CreateTemplateField(
+				$id: ID!
+				$name: String!
+				$type: String!
+			){
+				createTemplateField(
+					id: $id, 
+					input: {
+						name: $name,
+						type: $type
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					template {
+						id
+						name
+						fields {
+							name
+							type
+						}
+					}
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "",
+				"type": "text"
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Remove field from template", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation RemoveTemplateField(
+				$id: ID!
+				$name: String!
+			){
+				removeTemplateField(
+					id: $id, 
+					input: {
+						name: $name
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					template {
+						id
+						name
+						fields {
+							name
+							type
+						}
+					}
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "%s"
+			}`, id, test.Templates[0].Fields[0].Name)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Remove template", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation RemoveTemplate(
+				$id: ID!
+			){
+				removeTemplate(id: $id) {
+					userErrors {
+						field
+						message
+					}
+					removedObjectId
+				}
+			}`
+			id := toGlobalID("template", test.Templates[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 	})
 	t.Run("Queries", func(t *testing.T) {
 		resetDatabase()
