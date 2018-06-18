@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	gql "github.com/dominik-zeglen/ecoknow/graphql"
+	"github.com/dominik-zeglen/ecoknow/api"
 	"github.com/dominik-zeglen/ecoknow/mongodb"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
@@ -19,8 +19,8 @@ var dataSource = mongodb.Adapter{
 }
 
 func init() {
-	resolver := gql.NewResolver(&dataSource)
-	schema = graphql.MustParseSchema(gql.Schema, &resolver)
+	resolver := api.NewResolver(&dataSource)
+	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 
 func check(err error) {

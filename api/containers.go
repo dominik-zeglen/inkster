@@ -1,4 +1,4 @@
-package graphql
+package api
 
 import (
 	"github.com/dominik-zeglen/ecoknow/core"

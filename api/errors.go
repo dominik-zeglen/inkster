@@ -1,4 +1,4 @@
-package graphql
+package api
 
 import "fmt"
 
