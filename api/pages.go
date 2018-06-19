@@ -10,6 +10,14 @@ type pageCreateResult struct {
 	userErrors *[]userError
 	page       core.Page
 }
+type pageRemoveResult struct {
+	removedObjectID gql.ID
+}
+type pageFieldOperationResult struct {
+	userErrors *[]userError
+	pageID     bson.ObjectId
+	page       *core.Page
+}
 
 // Type resolvers
 type pageResolver struct {
@@ -24,7 +32,46 @@ type pageCreateResultResolver struct {
 	dataSource core.Adapter
 	data       pageCreateResult
 }
+type pageRemoveResultResolver struct {
+	dataSource core.Adapter
+	data       pageRemoveResult
+}
+type pageFieldOperationResultResolver struct {
+	dataSource core.Adapter
+	data       pageFieldOperationResult
+}
 
+func (res *pageRemoveResultResolver) RemovedObjectID() gql.ID {
+	return res.data.removedObjectID
+}
+
+func (res *pageFieldOperationResultResolver) Page() (*pageResolver, error) {
+	result, err := res.dataSource.GetPage(res.data.pageID)
+	if err != nil {
+		return nil, err
+	}
+	return &pageResolver{
+		dataSource: res.dataSource,
+		data:       &result,
+	}, nil
+}
+
+func (res *pageFieldOperationResultResolver) UserErrors() *[]*userErrorResolver {
+	var resolverList []*userErrorResolver
+	if res.data.userErrors == nil {
+		return nil
+	}
+	userErrors := *res.data.userErrors
+	for i := range userErrors {
+		resolverList = append(
+			resolverList,
+			&userErrorResolver{
+				data: userErrors[i],
+			},
+		)
+	}
+	return &resolverList
+}
 func (res *pageCreateResultResolver) Page() *pageResolver {
 	return &pageResolver{
 		dataSource: res.dataSource,
@@ -167,6 +214,175 @@ func (res *Resolver) CreatePage(args createPageArgs) (*pageCreateResultResolver,
 	}, nil
 }
 
+type createPageFieldArgs struct {
+	ID    gql.ID
+	Input struct {
+		Name  string
+		Type  string
+		Value *string
+	}
+}
+
+func (res *Resolver) CreatePageField(args createPageFieldArgs) (*pageFieldOperationResultResolver, error) {
+	localID, err := fromGlobalID("page", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	if len(args.Input.Name) == 0 {
+		return &pageFieldOperationResultResolver{
+			dataSource: res.dataSource,
+			data: pageFieldOperationResult{
+				userErrors: &[]userError{
+					userError{
+						field:   "name",
+						message: errNoEmpty("name").Error(),
+					},
+				},
+			},
+		}, nil
+	}
+	if len(args.Input.Type) == 0 {
+		return &pageFieldOperationResultResolver{
+			dataSource: res.dataSource,
+			data: pageFieldOperationResult{
+				userErrors: &[]userError{
+					userError{
+						field:   "type",
+						message: errNoEmpty("type").Error(),
+					},
+				},
+			},
+		}, nil
+	}
+	value := ""
+	if args.Input.Value != nil {
+		value = *args.Input.Value
+	}
+	field := core.PageField{
+		Name:  args.Input.Name,
+		Type:  args.Input.Type,
+		Value: value,
+	}
+	err = res.dataSource.AddPageField(localID, field)
+	if err != nil {
+		return nil, err
+	}
+	return &pageFieldOperationResultResolver{
+		dataSource: res.dataSource,
+		data: pageFieldOperationResult{
+			pageID: localID,
+		},
+	}, nil
+}
+
+type renamePageFieldArgs struct {
+	ID    gql.ID
+	Input struct {
+		Name     string
+		RenameTo string
+	}
+}
+
+func (res *Resolver) RenamePageField(args renamePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+	localID, err := fromGlobalID("page", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	if len(args.Input.RenameTo) == 0 {
+		return &pageFieldOperationResultResolver{
+			dataSource: res.dataSource,
+			data: pageFieldOperationResult{
+				userErrors: &[]userError{
+					userError{
+						field:   "renameTo",
+						message: errNoEmpty("renameTo").Error(),
+					},
+				},
+				pageID: localID,
+			},
+		}, nil
+	}
+	page, err := res.dataSource.GetPage(localID)
+	if err != nil {
+		return nil, err
+	}
+	found := false
+	var field core.PageField
+	for fieldIndex := range page.Fields {
+		if page.Fields[fieldIndex].Name == args.Input.Name {
+			found = true
+			field = page.Fields[fieldIndex]
+		}
+	}
+	if !found {
+		return nil, core.ErrNoField(args.Input.Name)
+	}
+	field.Name = args.Input.RenameTo
+	err = res.dataSource.AddPageField(localID, field)
+	if err != nil {
+		return nil, err
+	}
+	err = res.dataSource.RemovePageField(localID, args.Input.Name)
+	if err != nil {
+		return nil, err
+	}
+	return &pageFieldOperationResultResolver{
+		dataSource: res.dataSource,
+		data: pageFieldOperationResult{
+			pageID: localID,
+		},
+	}, nil
+}
+
+type updatePageFieldArgs struct {
+	ID    gql.ID
+	Input struct {
+		Name  string
+		Value string
+	}
+}
+
+func (res *Resolver) UpdatePageField(args updatePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+	localID, err := fromGlobalID("page", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	err = res.dataSource.UpdatePageField(localID, args.Input.Name, args.Input.Value)
+	if err != nil {
+		return nil, err
+	}
+	return &pageFieldOperationResultResolver{
+		dataSource: res.dataSource,
+		data: pageFieldOperationResult{
+			pageID: localID,
+		},
+	}, nil
+}
+
+type removePageFieldArgs struct {
+	ID    gql.ID
+	Input struct {
+		Name string
+	}
+}
+
+func (res *Resolver) RemovePageField(args removePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+	localID, err := fromGlobalID("page", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	err = res.dataSource.RemovePageField(localID, args.Input.Name)
+	if err != nil {
+		return nil, err
+	}
+	return &pageFieldOperationResultResolver{
+		dataSource: res.dataSource,
+		data: pageFieldOperationResult{
+			pageID: localID,
+		},
+	}, nil
+}
+
 type pageArgs struct {
 	ID gql.ID
 }
@@ -183,5 +399,26 @@ func (res *Resolver) Page(args pageArgs) (*pageResolver, error) {
 	return &pageResolver{
 		dataSource: res.dataSource,
 		data:       &result,
+	}, nil
+}
+
+type removePageArgs struct {
+	ID gql.ID
+}
+
+func (res *Resolver) RemovePage(args removePageArgs) (*pageRemoveResultResolver, error) {
+	localID, err := fromGlobalID("page", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	err = res.dataSource.RemovePage(localID)
+	if err != nil {
+		return nil, err
+	}
+	return &pageRemoveResultResolver{
+		dataSource: res.dataSource,
+		data: pageRemoveResult{
+			removedObjectID: args.ID,
+		},
 	}, nil
 }

@@ -1,13 +1,7 @@
 {
-    "errors": [
-        {
-            "message": "Cannot query field \"removePage\" on type \"Mutation\". Did you mean \"removeTemplate\"?",
-            "locations": [
-                {
-                    "line": 4,
-                    "column": 5
-                }
-            ]
+    "data": {
+        "removePage": {
+            "removedObjectId": "cGFnZTowMDAwMDAwMDAwMDE="
         }
-    ]
+    }
 }

@@ -1,6 +1,6 @@
 {
     "data": {
-        "removePageField": {
+        "renamePageField": {
             "userErrors": null,
             "page": {
                 "id": "cGFnZTowMDAwMDAwMDAwMDE=",
@@ -8,7 +8,13 @@
                 "fields": [
                     {
                         "name": "Field 2",
-                        "type": "text"
+                        "type": "text",
+                        "value": "Some text"
+                    },
+                    {
+                        "name": "Renamed field",
+                        "type": "unique",
+                        "value": "1"
                     }
                 ]
             }

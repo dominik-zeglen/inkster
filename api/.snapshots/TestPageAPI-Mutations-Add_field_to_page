@@ -1,13 +1,25 @@
 {
-    "errors": [
-        {
-            "message": "Cannot query field \"createPageField\" on type \"Mutation\". Did you mean \"createTemplateField\"?",
-            "locations": [
-                {
-                    "line": 6,
-                    "column": 5
-                }
-            ]
+    "data": {
+        "createPageField": {
+            "userErrors": null,
+            "page": {
+                "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+                "name": "Page 1",
+                "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "unique"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "text"
+                    },
+                    {
+                        "name": "New field",
+                        "type": "text"
+                    }
+                ]
+            }
         }
-    ]
+    }
 }

@@ -1,14 +1,20 @@
 {
     "data": {
-        "removePageField": {
+        "updatePageField": {
             "userErrors": null,
             "page": {
                 "id": "cGFnZTowMDAwMDAwMDAwMDE=",
                 "name": "Page 1",
                 "fields": [
                     {
+                        "name": "Field 1",
+                        "type": "unique",
+                        "value": "Updated value"
+                    },
+                    {
                         "name": "Field 2",
-                        "type": "text"
+                        "type": "text",
+                        "value": "Some text"
                     }
                 ]
             }

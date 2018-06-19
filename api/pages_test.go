@@ -255,6 +255,129 @@ func TestPageAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Rename field", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation RenamePageField(
+				$id: ID!
+				$name: String!
+				$renameTo: String!
+			){
+				renamePageField(
+					id: $id, 
+					input: {
+						name: $name,
+						renameTo: $renameTo
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					page {
+						id
+						name
+						fields {
+							name
+							type
+							value
+						}
+					}
+				}
+			}`
+			id := toGlobalID("page", test.Pages[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "%s",
+				"renameTo": "Renamed field"
+			}`, id, test.Pages[0].Fields[0].Name)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Rename field to empty string", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation RenamePageField(
+				$id: ID!
+				$name: String!
+				$renameTo: String!
+			){
+				renamePageField(
+					id: $id, 
+					input: {
+						name: $name,
+						renameTo: $renameTo
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					page {
+						id
+						name
+						fields {
+							name
+							type
+							value
+						}
+					}
+				}
+			}`
+			id := toGlobalID("page", test.Pages[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "%s",
+				"renameTo": ""
+			}`, id, test.Pages[0].Fields[0].Name)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update page field's value", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation UpdatePageField(
+				$id: ID!
+				$name: String!
+				$value: String!
+			){
+				updatePageField(
+					id: $id, 
+					input: {
+						name: $name,
+						value: $value
+					}
+				) {
+					userErrors {
+						field
+						message
+					}
+					page {
+						id
+						name
+						fields {
+							name
+							type
+							value
+						}
+					}
+				}
+			}`
+			id := toGlobalID("page", test.Pages[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"name": "%s",
+				"value": "Updated value"
+			}`, id, test.Pages[0].Fields[0].Name)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 		t.Run("Remove field from page", func(t *testing.T) {
 			defer resetDatabase()
 			query := `mutation RemovePageField(
@@ -298,10 +421,6 @@ func TestPageAPI(t *testing.T) {
 				$id: ID!
 			){
 				removePage(id: $id) {
-					userErrors {
-						field
-						message
-					}
 					removedObjectId
 				}
 			}`

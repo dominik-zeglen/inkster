@@ -33,6 +33,11 @@ var Schema = `
 		removeTemplate(id: ID!): TemplateRemoveResult
 
 		createPage(input: PageCreateInput!): PageCreateResult
+		createPageField(id: ID!, input: PageFieldCreateInput!): PageFieldOperationResult
+		renamePageField(id: ID!, input: PageFieldRenameInput!): PageFieldOperationResult
+		updatePageField(id: ID!, input: PageFieldUpdateInput!): PageFieldOperationResult
+		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
+		removePage(id: ID!): PageRemoveResult
 	}
 	
 	interface Node {
@@ -47,6 +52,9 @@ var Schema = `
 	interface RemoveResult {
 		userErrors: [UserError]
 		removedObjectId: ID
+	}
+	interface OperationResult {
+		userErrors: [UserError]
 	}
 
 	type UserError {
@@ -117,6 +125,13 @@ var Schema = `
 		userErrors: [UserError]
 		page: Page
 	}
+	type PageRemoveResult implements RemoveResult {
+		removedObjectId: ID!
+	}	
+	type PageFieldOperationResult implements OperationResult {
+		userErrors: [UserError]
+		page: Page
+	}
 
 	input PageCreateInput {
 		name: String!
@@ -128,6 +143,17 @@ var Schema = `
     type: String!
     value: String
   }
+	input PageFieldRenameInput {
+		name: String!
+		renameTo: String!
+	}
+	input PageFieldUpdateInput {
+		name: String!
+		value: String!
+	}
+	input PageFieldRemoveInput {
+		name: String!
+	}
 	
 	schema {
 		query: Query

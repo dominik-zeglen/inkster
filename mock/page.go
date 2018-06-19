@@ -168,7 +168,10 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 	if err != nil {
 		return err
 	}
-	pages[index].Fields[fieldIndex].Value = data
+	fields := make([]core.PageField, len(pages[index].Fields))
+	copy(fields, pages[index].Fields)
+	fields[fieldIndex].Value = data
+	pages[index].Fields = fields
 	return nil
 }
 
@@ -188,9 +191,11 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 	if err != nil {
 		return err
 	}
+	fields := make([]core.PageField, len(pages[index].Fields))
+	copy(fields, pages[index].Fields)
 	pages[index].Fields = append(
-		pages[index].Fields[:fieldIndex],
-		pages[index].Fields[fieldIndex+1:]...,
+		fields[:fieldIndex],
+		fields[fieldIndex+1:]...,
 	)
 	return nil
 }

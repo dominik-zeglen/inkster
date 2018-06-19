@@ -1,12 +1,21 @@
 {
+    "data": {
+        "createPageField": {
+            "userErrors": [
+                {
+                    "field": "name",
+                    "message": "Field `name` cannot be empty"
+                }
+            ],
+            "page": null
+        }
+    },
     "errors": [
         {
-            "message": "Cannot query field \"createPageField\" on type \"Mutation\". Did you mean \"createTemplateField\"?",
-            "locations": [
-                {
-                    "line": 6,
-                    "column": 5
-                }
+            "message": "Page ObjectIdHex(\"\") does not exist",
+            "path": [
+                "createPageField",
+                "page"
             ]
         }
     ]
