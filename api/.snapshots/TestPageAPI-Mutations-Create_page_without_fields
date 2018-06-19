@@ -1,0 +1,15 @@
+{
+    "data": {
+        "createPage": {
+            "userErrors": null,
+            "page": {
+                "name": "New Page",
+                "fields": null,
+                "parent": {
+                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                    "name": "Container 1"
+                }
+            }
+        }
+    }
+}

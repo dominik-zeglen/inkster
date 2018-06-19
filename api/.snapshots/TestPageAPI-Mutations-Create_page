@@ -1,0 +1,24 @@
+{
+    "data": {
+        "createPage": {
+            "userErrors": null,
+            "page": {
+                "name": "New Page",
+                "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "page"
+                    }
+                ],
+                "parent": {
+                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                    "name": "Container 1"
+                }
+            }
+        }
+    }
+}

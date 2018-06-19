@@ -1,0 +1,13 @@
+{
+    "errors": [
+        {
+            "message": "Cannot query field \"removePageField\" on type \"Mutation\". Did you mean \"removeTemplateField\"?",
+            "locations": [
+                {
+                    "line": 5,
+                    "column": 5
+                }
+            ]
+        }
+    ]
+}

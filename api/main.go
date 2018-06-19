@@ -17,6 +17,8 @@ var Schema = `
 
 		template(id: ID!): Template
 		templates: [Template]
+
+		page(id: ID!): Page
 	}
 	
 	type Mutation {
@@ -29,10 +31,15 @@ var Schema = `
 		createTemplateField(id: ID!, input: TemplateFieldCreateInput!): TemplateUpdateResult
 		removeTemplateField(id: ID!, input: TemplateFieldRemoveInput!): TemplateUpdateResult
 		removeTemplate(id: ID!): TemplateRemoveResult
+
+		createPage(input: PageCreateInput!): PageCreateResult
 	}
 	
 	interface Node {
 		id: ID!
+	}
+	interface CreateResult {
+		userErrors: [UserError]
 	}
 	interface UpdateResult {
 		userErrors: [UserError]
@@ -94,6 +101,33 @@ var Schema = `
 	input TemplateFieldRemoveInput {
 		name: String!
 	}
+
+	type Page implements Node {
+		id: ID!
+		name: String!
+		fields: [PageField]
+		parent: Container!
+	}
+	type PageField {
+		name: String!
+		type: String!
+		value: String
+	}
+	type PageCreateResult implements CreateResult {
+		userErrors: [UserError]
+		page: Page
+	}
+
+	input PageCreateInput {
+		name: String!
+		parentId: ID!
+		fields: [PageFieldCreateInput]
+	}
+  input PageFieldCreateInput {
+    name: String!
+    type: String!
+    value: String
+  }
 	
 	schema {
 		query: Query

@@ -1,0 +1,24 @@
+{
+    "data": {
+        "page": {
+            "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+            "name": "Page 1",
+            "fields": [
+                {
+                    "name": "Field 1",
+                    "type": "unique",
+                    "value": "1"
+                },
+                {
+                    "name": "Field 2",
+                    "type": "text",
+                    "value": "Some text"
+                }
+            ],
+            "parent": {
+                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
+                "name": "Container 1"
+            }
+        }
+    }
+}
