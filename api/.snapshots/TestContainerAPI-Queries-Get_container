@@ -9,6 +9,16 @@
                     "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
                     "name": "Container 1.1"
                 }
+            ],
+            "pages": [
+                {
+                    "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+                    "name": "Page 1"
+                },
+                {
+                    "id": "cGFnZTowMDAwMDAwMDAwMDI=",
+                    "name": "Page 2"
+                }
             ]
         }
     }

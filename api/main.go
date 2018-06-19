@@ -67,6 +67,7 @@ var Schema = `
 		name: String!
 		parent: Container
 		children: [Container]
+		pages: [Page]
 	}
 	input ContainerCreateInput {
 		name: String!

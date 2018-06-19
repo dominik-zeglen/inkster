@@ -50,6 +50,23 @@ func (res *containerResolver) Children() *[]*containerResolver {
 	}
 	return &resolverList
 }
+func (res *containerResolver) Pages() (*[]*pageResolver, error) {
+	var resolverList []*pageResolver
+	pages, err := res.dataSource.GetPagesFromContainer(res.data.ID)
+	if err != nil {
+		return nil, err
+	}
+	for index := range pages {
+		resolverList = append(
+			resolverList,
+			&pageResolver{
+				dataSource: res.dataSource,
+				data:       &pages[index],
+			},
+		)
+	}
+	return &resolverList, nil
+}
 
 type containerAddInput struct {
 	Name     string

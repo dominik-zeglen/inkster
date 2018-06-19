@@ -10,19 +10,36 @@
                         "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
                         "name": "Container 1.1"
                     }
+                ],
+                "pages": [
+                    {
+                        "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+                        "name": "Page 1"
+                    },
+                    {
+                        "id": "cGFnZTowMDAwMDAwMDAwMDI=",
+                        "name": "Page 2"
+                    }
                 ]
             },
             {
                 "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMg==",
                 "name": "Container 2",
                 "parent": null,
-                "children": []
+                "children": [],
+                "pages": [
+                    {
+                        "id": "cGFnZTowMDAwMDAwMDAwMDM=",
+                        "name": "Page 3"
+                    }
+                ]
             },
             {
                 "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMw==",
                 "name": "Container 3",
                 "parent": null,
-                "children": []
+                "children": [],
+                "pages": []
             },
             {
                 "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
@@ -31,7 +48,8 @@
                     "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
                     "name": "Container 1"
                 },
-                "children": []
+                "children": [],
+                "pages": []
             }
         ]
     }

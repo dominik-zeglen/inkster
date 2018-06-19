@@ -127,13 +127,13 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 
 // GetPagesFromContainer allows user to fetch pages by their parentId from database
 func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
-	var pages []core.Page
+	var returnPages []core.Page
 	for index := range pages {
 		if pages[index].ParentID == id {
-			pages = append(pages, pages[index])
+			returnPages = append(returnPages, pages[index])
 		}
 	}
-	return pages, nil
+	return returnPages, nil
 }
 
 // UpdatePage allows user to update page properties

@@ -187,6 +187,10 @@ func TestContainerAPI(t *testing.T) {
 						id
 						name
 					}
+					pages {
+						id
+						name
+					}
 				}
 			}`
 			id := toGlobalID("container", test.Containers[0].ID)
@@ -209,6 +213,10 @@ func TestContainerAPI(t *testing.T) {
 						name
 					}
 					children {
+						id
+						name
+					}
+					pages {
 						id
 						name
 					}
@@ -237,6 +245,10 @@ func TestContainerAPI(t *testing.T) {
 						id
 						name
 					}
+					pages {
+						id
+						name
+					}
 				}
 			}`
 			result, err := execQuery(query, "{}")
@@ -255,6 +267,10 @@ func TestContainerAPI(t *testing.T) {
 						name
 					}
 					children {
+						id
+						name
+					}
+					pages {
 						id
 						name
 					}
