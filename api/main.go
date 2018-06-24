@@ -50,7 +50,6 @@ var Schema = `
 		userErrors: [UserError]
 	}
 	interface RemoveResult {
-		userErrors: [UserError]
 		removedObjectId: ID
 	}
 	interface OperationResult {
