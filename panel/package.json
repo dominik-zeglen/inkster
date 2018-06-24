@@ -1,0 +1,61 @@
+{
+  "name": "panel",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@storybook/addon-info": "^3.4.8",
+    "@types/faker": "^4.1.2",
+    "@types/i18next": "^8.4.3",
+    "@types/i18next-browser-languagedetector": "^2.0.1",
+    "@types/i18next-xhr-backend": "^1.4.1",
+    "@types/jss": "^9.5.3",
+    "@types/lodash": "^4.14.110",
+    "@types/react-bootstrap": "^0.32.10",
+    "@types/storybook__addon-actions": "^3.0.3",
+    "@types/storybook__react": "^3.0.7",
+    "awesome-typescript-loader": "^5.2.0",
+    "faker": "^4.1.0",
+    "i18next": "^11.3.3",
+    "i18next-browser-languagedetector": "^2.2.0",
+    "i18next-xhr-backend": "^1.5.1",
+    "jest": "^23.1.0",
+    "jss": "^9.8.6",
+    "jss-cli": "^5.0.1",
+    "lodash": "^4.17.10",
+    "prettier": "^1.13.5",
+    "react": "^16.4.1",
+    "react-bootstrap": "^0.32.1",
+    "react-docgen-typescript-webpack-plugin": "^1.1.0",
+    "react-dom": "^16.4.1",
+    "react-feather": "^1.1.0",
+    "react-jss": "^8.5.1",
+    "react-scripts-ts": "2.16.0",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.10.0",
+    "tslint-config-prettier": "^1.13.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^3.4.8",
+    "@storybook/addon-links": "^3.4.8",
+    "@storybook/addons": "^3.4.8",
+    "@storybook/react": "^4.0.0-alpha.3",
+    "@types/jest": "^23.1.1",
+    "@types/node": "^10.3.4",
+    "@types/react": "^16.4.1",
+    "@types/react-dom": "^16.0.6",
+    "babel-core": "^6.26.3",
+    "babel-runtime": "^6.26.0",
+    "typescript": "^2.9.2"
+  },
+  "prettier": {
+    "parser": "babylon"
+  }
+}
