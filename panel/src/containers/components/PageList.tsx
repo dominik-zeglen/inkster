@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Panel } from "react-bootstrap";
 import withStyles from "react-jss";
-import { Box } from "react-feather";
+import { FileText } from "react-feather";
 
 import Paginator from "../../components/Paginator";
 import Skeleton from "../../components/Skeleton";
 import i18n from "../../i18n";
 
 interface ListProps {
-  containers?: Array<{
+  pages?: Array<{
     id?: string,
     name?: string
   }>;
@@ -42,20 +42,20 @@ const decorate = withStyles((theme: any) => ({
     }
   }
 }));
-const ContainerTile =
+const PageTile =
   decorate <
   TileProps >
   (({ classes, loading, name, onClick }) => (
     <div className={classes.root} onClick={loading ? undefined : onClick}>
-      <Box />
+      <FileText />
       <div>
         {loading || !name ? <Skeleton style={{ width: "10rem" }} /> : name}
       </div>
     </div>
   ));
 
-export const ContainerList: React.StatelessComponent<ListProps> = ({
-  containers,
+export const PageList: React.StatelessComponent<ListProps> = ({
+  pages,
   hasNextPage,
   hasPreviousPage,
   onNextPage,
@@ -64,18 +64,18 @@ export const ContainerList: React.StatelessComponent<ListProps> = ({
 }) => (
   <Panel>
     <Panel.Body>
-      {containers === undefined ? (
-        <ContainerTile loading={true} />
-      ) : containers.length > 0 ? (
-        containers.map(container => (
-          <ContainerTile
-            onClick={!!onRowClick && container.id ? onRowClick(container.id) : undefined}
-            name={container.name}
+      {pages === undefined ? (
+        <PageTile loading={true} />
+      ) : pages.length > 0 ? (
+        pages.map(page => (
+          <PageTile
+            onClick={!!onRowClick && page.id ? onRowClick(page.id) : undefined}
+            name={page.name}
           />
         ))
       ) : (
         i18n.t(
-          'No containers found. You can add one by clicking "Plus" button on the top right corner of the page.'
+          'No pages found. You can add one by clicking "Plus" button on the top right corner of the page.'
         )
       )}
     </Panel.Body>
@@ -89,4 +89,4 @@ export const ContainerList: React.StatelessComponent<ListProps> = ({
     </Panel.Footer>
   </Panel>
 );
-export default ContainerList;
+export default ContainerListPage;

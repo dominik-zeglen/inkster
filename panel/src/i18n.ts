@@ -5,13 +5,13 @@ import * as XHR from "i18next-xhr-backend";
 i18n.use(XHR);
 i18n.use(LanguageDetector);
 i18n.init({
-  defaultNS: "dashboard",
+  defaultNS: "panel",
   fallbackLng: "en",
   interpolation: {
     escapeValue: false
   },
   keySeparator: false,
-  ns: ["dashboard"],
+  ns: ["panel"],
   nsSeparator: false
 });
 

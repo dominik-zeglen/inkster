@@ -37,14 +37,17 @@ export const IconButton =
   Props >
   (({ classes, disabled, icon, onClick, ...props }) => {
     const Icon = icon;
+    const shouldBeDisabled = disabled || !onClick;
     return (
       <div
         className={classes.root}
-        onClick={disabled ? undefined : onClick}
+        onClick={shouldBeDisabled ? undefined : onClick}
         {...props}
       >
         <div className={classes.container}>
-          <Icon className={disabled ? classes.disabledIcon : classes.icon} />
+          <Icon
+            className={shouldBeDisabled ? classes.disabledIcon : classes.icon}
+          />
         </div>
       </div>
     );

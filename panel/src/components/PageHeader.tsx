@@ -29,18 +29,18 @@ const decorate = withStyles((theme: any) => ({
 export const PageHeader =
   decorate <
   Props >
-  (({ classes, title, onBack }) => (
+  (({ children, classes, title, onBack }) => (
     <div className={classes.root}>
       <div className={classes.container}>
         {!!onBack ? <IconButton icon={ArrowLeft} onClick={onBack} /> : <div />}
-        {title ? (
-          <span className={classes.title}>{title}</span>
-        ) : (
-          <Skeleton
-            className={classes.title}
-            style={{ width: "14rem", flex: "unset" }}
-          />
-        )}
+        <span className={classes.title}>
+          {title ? (
+            title
+          ) : (
+            <Skeleton style={{ width: "14rem" }} />
+          )}
+        </span>
+        {children}
       </div>
     </div>
   ));

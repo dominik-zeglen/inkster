@@ -1,7 +1,9 @@
 import * as React from "react";
+import { Plus } from "react-feather";
 
 import Container from "../../components/Container";
 import PageHeader from "../../components/PageHeader";
+import IconButton from "../../components/IconButton";
 import ContainerList from "./ContainerList";
 import i18n from "../../i18n";
 
@@ -14,10 +16,12 @@ interface Props {
     id?: string,
     name?: string
   };
+  disabled?: boolean;
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   variant: "root" | "child";
   onBack?: () => void;
+  onContainerAdd?: () => void;
   onNextPage?: () => void;
   onPreviousPage?: () => void;
 }
@@ -25,10 +29,12 @@ interface Props {
 export const ContainerListPage: React.StatelessComponent<Props> = ({
   containers,
   container,
+  disabled,
   hasNextPage,
   hasPreviousPage,
   variant,
   onBack,
+  onContainerAdd,
   onNextPage,
   onPreviousPage
 }) => (
@@ -42,7 +48,9 @@ export const ContainerListPage: React.StatelessComponent<Props> = ({
             : undefined
       }
       onBack={onBack}
-    />
+    >
+      <IconButton disabled={disabled} icon={Plus} onClick={onContainerAdd} />
+    </PageHeader>
     <ContainerList
       containers={containers}
       hasNextPage={hasNextPage}
