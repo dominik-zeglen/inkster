@@ -33,12 +33,12 @@ func main() {
 	http.Handle("/static/",
 		http.StripPrefix(
 			"/static/",
-			http.FileServer(http.Dir("static")),
+			http.FileServer(http.Dir("panel/build/static")),
 		))
 	http.Handle("/panel/",
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
-				dat, err := ioutil.ReadFile("app/graphiql.html")
+				dat, err := ioutil.ReadFile("panel/build/index.html")
 				check(err)
 				w.Write(dat)
 			},
