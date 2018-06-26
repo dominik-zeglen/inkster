@@ -11,9 +11,9 @@ import (
 
 var Schema = `
 	type Query {
-		getContainer(id: ID!): Container
-		getContainers: [Container]
-		getRootContainers: [Container]
+		getDirectory(id: ID!): Directory
+		getDirectories: [Directory]
+		getRootDirectories: [Directory]
 
 		template(id: ID!): Template
 		templates: [Template]
@@ -22,9 +22,9 @@ var Schema = `
 	}
 	
 	type Mutation {
-		createContainer(input: ContainerCreateInput!): Container
-		updateContainer(id: ID!, input: ContainerUpdateInput!): Container
-		removeContainer(id: ID!): Boolean!
+		createDirectory(input: DirectoryCreateInput!): Directory
+		updateDirectory(id: ID!, input: DirectoryUpdateInput!): Directory
+		removeDirectory(id: ID!): Boolean!
 
 		createTemplate(input: TemplateCreateInput!): Template
 		templateUpdate(id: ID!, input: TemplateUpdateInput!): TemplateUpdateResult
@@ -61,18 +61,18 @@ var Schema = `
 		message: String!
 	}
 
-	type Container implements Node {
+	type Directory implements Node {
 		id: ID!
 		name: String!
-		parent: Container
-		children: [Container]
+		parent: Directory
+		children: [Directory]
 		pages: [Page]
 	}
-	input ContainerCreateInput {
+	input DirectoryCreateInput {
 		name: String!
 		parentId: ID
 	}
-	input ContainerUpdateInput {
+	input DirectoryUpdateInput {
 		name: String
 		parentId: ID
 	}
@@ -114,7 +114,7 @@ var Schema = `
 		id: ID!
 		name: String!
 		fields: [PageField]
-		parent: Container!
+		parent: Directory!
 	}
 	type PageField {
 		name: String!

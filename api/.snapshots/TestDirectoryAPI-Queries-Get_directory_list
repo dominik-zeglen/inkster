@@ -1,14 +1,14 @@
 {
     "data": {
-        "getContainers": [
+        "getDirectories": [
             {
-                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
-                "name": "Container 1",
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                "name": "Directory 1",
                 "parent": null,
                 "children": [
                     {
-                        "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
-                        "name": "Container 1.1"
+                        "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA==",
+                        "name": "Directory 1.1"
                     }
                 ],
                 "pages": [
@@ -23,8 +23,8 @@
                 ]
             },
             {
-                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMg==",
-                "name": "Container 2",
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMg==",
+                "name": "Directory 2",
                 "parent": null,
                 "children": [],
                 "pages": [
@@ -35,18 +35,18 @@
                 ]
             },
             {
-                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMw==",
-                "name": "Container 3",
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMw==",
+                "name": "Directory 3",
                 "parent": null,
                 "children": [],
                 "pages": []
             },
             {
-                "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwNA==",
-                "name": "Container 1.1",
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA==",
+                "name": "Directory 1.1",
                 "parent": {
-                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
-                    "name": "Container 1"
+                    "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                    "name": "Directory 1"
                 },
                 "children": [],
                 "pages": []

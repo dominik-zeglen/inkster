@@ -35,13 +35,13 @@ var dataSources = []core.Adapter{
 var dataSource = dataSources[0]
 
 func resetDatabase() {
-	dataSource.ResetMockDatabase(Containers, Templates, Pages)
+	dataSource.ResetMockDatabase(Directories, Templates, Pages)
 }
 
 func TestMain(t *testing.T) {
 	for _, dataSource := range dataSources {
 		fmt.Printf("Testing adapter %s...\n", dataSource.String())
-		t.Run("Test containers", testContainers)
+		t.Run("Test directories", testDirectories)
 		t.Run("Test templates", testTemplates)
 		t.Run("Test pages", testPages)
 	}

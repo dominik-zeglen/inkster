@@ -134,12 +134,12 @@ func (res *pageResolver) Fields() *[]*pageFieldResolver {
 	return &resolverList
 }
 
-func (res *pageResolver) Parent() (*containerResolver, error) {
-	parent, err := res.dataSource.GetContainer(res.data.ParentID)
+func (res *pageResolver) Parent() (*directoryResolver, error) {
+	parent, err := res.dataSource.GetDirectory(res.data.ParentID)
 	if err != nil {
 		return nil, err
 	}
-	return &containerResolver{
+	return &directoryResolver{
 		dataSource: res.dataSource,
 		data:       &parent,
 	}, nil
@@ -184,7 +184,7 @@ func (res *Resolver) CreatePage(args createPageArgs) (*pageCreateResultResolver,
 			},
 		}, nil
 	}
-	localID, err := fromGlobalID("container", args.Input.ParentID)
+	localID, err := fromGlobalID("directory", args.Input.ParentID)
 	if err != nil {
 		return nil, err
 	}

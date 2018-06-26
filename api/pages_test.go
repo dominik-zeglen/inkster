@@ -55,7 +55,7 @@ func TestPageAPI(t *testing.T) {
 						"value": "Value 2"
 					}
 				]
-			}`, toGlobalID("container", test.Containers[0].ID))
+			}`, toGlobalID("directory", test.Directories[0].ID))
 			result, err := execQuery(query, variables)
 			if err != nil {
 				t.Fatal(err)
@@ -94,7 +94,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"name": "New Page",
 				"parentId": "%s"
-			}`, toGlobalID("container", test.Containers[0].ID))
+			}`, toGlobalID("directory", test.Directories[0].ID))
 			result, err := execQuery(query, variables)
 			if err != nil {
 				t.Fatal(err)

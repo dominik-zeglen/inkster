@@ -1,0 +1,13 @@
+{
+    "data": {
+        "getDirectory": null
+    },
+    "errors": [
+        {
+            "message": "Directory ObjectIdHex(\"303030303030303030303939\") does not exist",
+            "path": [
+                "getDirectory"
+            ]
+        }
+    ]
+}

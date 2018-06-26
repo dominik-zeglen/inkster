@@ -6,13 +6,13 @@ import (
 
 // Adapter interface provides abstraction over different data sources
 type Adapter interface {
-	AddContainer(Container) (Container, error)
-	GetContainer(bson.ObjectId) (Container, error)
-	GetContainerList() ([]Container, error)
-	GetRootContainerList() ([]Container, error)
-	GetContainerChildrenList(bson.ObjectId) ([]Container, error)
-	UpdateContainer(bson.ObjectId, ContainerInput) error
-	RemoveContainer(bson.ObjectId) error
+	AddDirectory(Directory) (Directory, error)
+	GetDirectory(bson.ObjectId) (Directory, error)
+	GetDirectoryList() ([]Directory, error)
+	GetRootDirectoryList() ([]Directory, error)
+	GetDirectoryChildrenList(bson.ObjectId) ([]Directory, error)
+	UpdateDirectory(bson.ObjectId, DirectoryInput) error
+	RemoveDirectory(bson.ObjectId) error
 
 	AddTemplate(Template) (Template, error)
 	AddTemplateField(bson.ObjectId, TemplateField) error
@@ -27,7 +27,7 @@ type Adapter interface {
 	AddPageField(bson.ObjectId, PageField) error
 	GetPage(bson.ObjectId) (Page, error)
 	GetPageBySlug(string) (Page, error)
-	GetPagesFromContainer(bson.ObjectId) ([]Page, error)
+	GetPagesFromDirectory(bson.ObjectId) ([]Page, error)
 	UpdatePage(bson.ObjectId, PageInput) error
 	UpdatePageField(bson.ObjectId, string, string) error
 	RemovePage(bson.ObjectId) error
@@ -35,7 +35,7 @@ type Adapter interface {
 
 	String() string
 	ResetMockDatabase(
-		containers []Container,
+		directories []Directory,
 		templates []Template,
 		pages []Page,
 	)
@@ -43,7 +43,7 @@ type Adapter interface {
 
 // FieldTypes holds all allowed template field type names
 var FieldTypes = []string{
-	"container",
+	"directory",
 	"file",
 	"image",
 	"longText",

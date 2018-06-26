@@ -4,12 +4,12 @@ import (
 	"github.com/dominik-zeglen/ecoknow/core"
 )
 
-// Containers are part of testing data
-var Containers = []core.Container{
-	core.Container{ID: "000000000001", Name: "Container 1"},
-	core.Container{ID: "000000000002", Name: "Container 2"},
-	core.Container{ID: "000000000003", Name: "Container 3"},
-	core.Container{ID: "000000000004", Name: "Container 1.1", ParentID: "000000000001"},
+// Directories are part of testing data
+var Directories = []core.Directory{
+	core.Directory{ID: "000000000001", Name: "Directory 1"},
+	core.Directory{ID: "000000000002", Name: "Directory 2"},
+	core.Directory{ID: "000000000003", Name: "Directory 3"},
+	core.Directory{ID: "000000000004", Name: "Directory 1.1", ParentID: "000000000001"},
 }
 
 // Templates are part of testing data
@@ -38,7 +38,7 @@ var Pages = []core.Page{
 	core.Page{
 		ID:       "000000000001",
 		Name:     "Page 1",
-		ParentID: Containers[0].ID,
+		ParentID: Directories[0].ID,
 		Fields: []core.PageField{
 			core.PageField{
 				Type:  "unique",
@@ -55,7 +55,7 @@ var Pages = []core.Page{
 	core.Page{
 		ID:       "000000000002",
 		Name:     "Page 2",
-		ParentID: Containers[0].ID,
+		ParentID: Directories[0].ID,
 		Fields: []core.PageField{
 			core.PageField{
 				Type:  "unique",
@@ -72,7 +72,7 @@ var Pages = []core.Page{
 	core.Page{
 		ID:       "000000000003",
 		Name:     "Page 3",
-		ParentID: Containers[1].ID,
+		ParentID: Directories[1].ID,
 		Fields: []core.PageField{
 			core.PageField{
 				Type:  "text",

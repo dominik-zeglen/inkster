@@ -12,15 +12,15 @@ func init() {
 	resetDatabase()
 }
 
-func testContainers(t *testing.T) {
+func testDirectories(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
-		t.Run("Add container", func(t *testing.T) {
+		t.Run("Add directory", func(t *testing.T) {
 			defer resetDatabase()
-			container := core.Container{
-				Name:     "New Container",
-				ParentID: Containers[0].ID,
+			directory := core.Directory{
+				Name:     "New Directory",
+				ParentID: Directories[0].ID,
 			}
-			result, err := dataSource.AddContainer(container)
+			result, err := dataSource.AddDirectory(directory)
 			id := result.ID
 			result.ID = ""
 			if err != nil {
@@ -31,29 +31,29 @@ func testContainers(t *testing.T) {
 				t.Error(err)
 			}
 			cupaloy.SnapshotT(t, data)
-			dataSource.RemoveContainer(id)
+			dataSource.RemoveDirectory(id)
 		})
-		t.Run("Add container without name", func(t *testing.T) {
-			container := core.Container{
-				ParentID: Containers[0].ID,
+		t.Run("Add directory without name", func(t *testing.T) {
+			directory := core.Directory{
+				ParentID: Directories[0].ID,
 			}
-			_, err := dataSource.AddContainer(container)
+			_, err := dataSource.AddDirectory(directory)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
 		})
-		t.Run("Update container", func(t *testing.T) {
+		t.Run("Update directory", func(t *testing.T) {
 			defer resetDatabase()
-			name := "Updated container name"
-			parentID := bson.ObjectId(Containers[1].ID)
-			err := dataSource.UpdateContainer(Containers[0].ID, core.ContainerInput{
+			name := "Updated directory name"
+			parentID := bson.ObjectId(Directories[1].ID)
+			err := dataSource.UpdateDirectory(Directories[0].ID, core.DirectoryInput{
 				Name:     &name,
 				ParentID: &parentID,
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			result, err := dataSource.GetContainer(Containers[0].ID)
+			result, err := dataSource.GetDirectory(Directories[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -63,16 +63,16 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Update container's name", func(t *testing.T) {
+		t.Run("Update directory's name", func(t *testing.T) {
 			defer resetDatabase()
-			name := "Updated container name"
-			err := dataSource.UpdateContainer(Containers[3].ID, core.ContainerInput{
+			name := "Updated directory name"
+			err := dataSource.UpdateDirectory(Directories[3].ID, core.DirectoryInput{
 				Name: &name,
 			})
 			if err != nil {
 				t.Error(err)
 			}
-			result, err := dataSource.GetContainer(Containers[3].ID)
+			result, err := dataSource.GetDirectory(Directories[3].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -82,24 +82,24 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Remove container", func(t *testing.T) {
+		t.Run("Remove directory", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveContainer(Containers[3].ID)
+			err := dataSource.RemoveDirectory(Directories[3].ID)
 			if err != nil {
 				t.Error(err)
 			}
 		})
-		t.Run("Remove container that does not exist", func(t *testing.T) {
+		t.Run("Remove directory that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			err := dataSource.RemoveContainer("000000000099")
+			err := dataSource.RemoveDirectory("000000000099")
 			if err == nil {
 				t.Error(ErrNoError)
 			}
 		})
 	})
 	t.Run("Test getters", func(t *testing.T) {
-		t.Run("Get container", func(t *testing.T) {
-			result, err := dataSource.GetContainer(Containers[0].ID)
+		t.Run("Get directory", func(t *testing.T) {
+			result, err := dataSource.GetDirectory(Directories[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -109,30 +109,30 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Get container that does not exist", func(t *testing.T) {
-			_, err := dataSource.GetContainer("000000000099")
+		t.Run("Get directory that does not exist", func(t *testing.T) {
+			_, err := dataSource.GetDirectory("000000000099")
 			if err == nil {
 				t.Error(ErrNoError)
 			}
 		})
-		t.Run("Get root container list", func(t *testing.T) {
-			result, _ := dataSource.GetRootContainerList()
+		t.Run("Get root directory list", func(t *testing.T) {
+			result, _ := dataSource.GetRootDirectoryList()
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Get container's children", func(t *testing.T) {
-			result, _ := dataSource.GetContainerChildrenList(Containers[0].ID)
+		t.Run("Get directory's children", func(t *testing.T) {
+			result, _ := dataSource.GetDirectoryChildrenList(Directories[0].ID)
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Get all containers", func(t *testing.T) {
-			result, _ := dataSource.GetContainerList()
+		t.Run("Get all directories", func(t *testing.T) {
+			result, _ := dataSource.GetDirectoryList()
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -141,12 +141,12 @@ func testContainers(t *testing.T) {
 		})
 	})
 	t.Run("Test complex behaviour", func(t *testing.T) {
-		t.Run("Build container tree", func(t *testing.T) {
-			parent := core.Container{
+		t.Run("Build directory tree", func(t *testing.T) {
+			parent := core.Directory{
 				ID:   "200000000000",
 				Name: "Parent",
 			}
-			result, err := dataSource.AddContainer(parent)
+			result, err := dataSource.AddDirectory(parent)
 			parentID := result.ID
 			if err != nil {
 				t.Fatal(err)
@@ -157,12 +157,12 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, data)
 
-			child := core.Container{
+			child := core.Directory{
 				ID:       "200000000001",
 				Name:     "Child",
 				ParentID: parentID,
 			}
-			result, err = dataSource.AddContainer(child)
+			result, err = dataSource.AddDirectory(child)
 			childID := result.ID
 			if err != nil {
 				t.Fatal(err)
@@ -173,7 +173,7 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotMulti("Child", data)
 
-			resultList, err := dataSource.GetContainerChildrenList(parentID)
+			resultList, err := dataSource.GetDirectoryChildrenList(parentID)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -183,8 +183,8 @@ func testContainers(t *testing.T) {
 			}
 			cupaloy.SnapshotMulti("Parent's children", data)
 
-			dataSource.RemoveContainer(childID)
-			dataSource.RemoveContainer(parentID)
+			dataSource.RemoveDirectory(childID)
+			dataSource.RemoveDirectory(parentID)
 		})
 	})
 }

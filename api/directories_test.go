@@ -8,16 +8,16 @@ import (
 	test "github.com/dominik-zeglen/ecoknow/testing"
 )
 
-func TestContainerAPI(t *testing.T) {
+func TestDirectoryAPI(t *testing.T) {
 	t.Run("Mutations", func(t *testing.T) {
 		resetDatabase()
-		t.Run("Create container", func(t *testing.T) {
+		t.Run("Create directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation CreateContainer(
+			query := `mutation CreateDirectory(
 				$name: String!,
 				$parentId: ID, 
 			){
-				createContainer(input: {
+				createDirectory(input: {
 					name: $name, 
 					parentId: $parentId
 				}) {
@@ -28,9 +28,9 @@ func TestContainerAPI(t *testing.T) {
 					}
 				}
 			}`
-			parentID := toGlobalID("container", test.Containers[0].ID)
+			parentID := toGlobalID("directory", test.Directories[0].ID)
 			variables := fmt.Sprintf(`{
-				"name": "New Container",
+				"name": "New Directory",
 				"parentId": "%s"
 			}`, parentID)
 			result, err := execQuery(query, variables)
@@ -39,19 +39,19 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Create without parent container", func(t *testing.T) {
+		t.Run("Create without parent directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation CreateContainer(
+			query := `mutation CreateDirectory(
 				$name: String!
 			){
-				createContainer(input: {
+				createDirectory(input: {
 					name: $name 
 				}) {
 					name
 				}
 			}`
 			variables := `{
-				"name": "New Container"
+				"name": "New Directory"
 			}`
 			result, err := execQuery(query, variables)
 			if err != nil {
@@ -59,14 +59,14 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Update container", func(t *testing.T) {
+		t.Run("Update directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation UpdateContainer(
+			query := `mutation UpdateDirectory(
 				$id: ID!
 				$name: String
 				$parentId: ID
 			){
-				updateContainer(
+				updateDirectory(
 					id: $id, 
 					input: {
 						name: $name 
@@ -85,8 +85,8 @@ func TestContainerAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("container", test.Containers[3].ID)
-			parentID := toGlobalID("container", test.Containers[1].ID)
+			id := toGlobalID("directory", test.Directories[3].ID)
+			parentID := toGlobalID("directory", test.Directories[1].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"name": "Updated name",
@@ -98,14 +98,14 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Update container partially", func(t *testing.T) {
+		t.Run("Update directory partially", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation UpdateContainer(
+			query := `mutation UpdateDirectory(
 				$id: ID!
 				$name: String
 				$parentId: ID
 			){
-				updateContainer(
+				updateDirectory(
 					id: $id, 
 					input: {
 						name: $name 
@@ -124,7 +124,7 @@ func TestContainerAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("container", test.Containers[3].ID)
+			id := toGlobalID("directory", test.Directories[3].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"name": "Updated name"
@@ -135,12 +135,12 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Remove container", func(t *testing.T) {
+		t.Run("Remove directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation RemoveContainer($id: ID!){
-				removeContainer(id: $id)
+			query := `mutation RemoveDirectory($id: ID!){
+				removeDirectory(id: $id)
 			}`
-			id := toGlobalID("container", test.Containers[0].ID)
+			id := toGlobalID("directory", test.Directories[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -150,17 +150,17 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 
-			_, err = dataSource.GetContainer(test.Containers[0].ID)
+			_, err = dataSource.GetDirectory(test.Directories[0].ID)
 			if err == nil {
 				t.Fatal(ErrNoError)
 			}
 		})
-		t.Run("Remove container that does not exist", func(t *testing.T) {
+		t.Run("Remove directory that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation RemoveContainer($id: ID!){
-				removeContainer(id: $id)
+			query := `mutation RemoveDirectory($id: ID!){
+				removeDirectory(id: $id)
 			}`
-			id := toGlobalID("container", test.Containers[0].ID)
+			id := toGlobalID("directory", test.Directories[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -174,9 +174,9 @@ func TestContainerAPI(t *testing.T) {
 
 	t.Run("Queries", func(t *testing.T) {
 		resetDatabase()
-		t.Run("Get container", func(t *testing.T) {
-			query := `query GetContainer($id: ID!){
-				getContainer(id: $id) {
+		t.Run("Get directory", func(t *testing.T) {
+			query := `query GetDirectory($id: ID!){
+				getDirectory(id: $id) {
 					id
 					name
 					parent {
@@ -193,7 +193,7 @@ func TestContainerAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("container", test.Containers[0].ID)
+			id := toGlobalID("directory", test.Directories[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -203,9 +203,9 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Get container that does not exist", func(t *testing.T) {
-			query := `query GetContainer($id: ID!){
-				getContainer(id: $id) {
+		t.Run("Get directory that does not exist", func(t *testing.T) {
+			query := `query GetDirectory($id: ID!){
+				getDirectory(id: $id) {
 					id
 					name
 					parent {
@@ -222,7 +222,7 @@ func TestContainerAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("container", "000000000099")
+			id := toGlobalID("directory", "000000000099")
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -232,9 +232,9 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Get container list", func(t *testing.T) {
-			query := `query GetContainers{
-				getContainers {
+		t.Run("Get directory list", func(t *testing.T) {
+			query := `query GetDirectories{
+				getDirectories {
 					id
 					name
 					parent {
@@ -257,9 +257,9 @@ func TestContainerAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Get root container list", func(t *testing.T) {
-			query := `query GetRootContainers{
-				getRootContainers {
+		t.Run("Get root directory list", func(t *testing.T) {
+			query := `query GetRootDirectories{
+				getRootDirectories {
 					id
 					name
 					parent {

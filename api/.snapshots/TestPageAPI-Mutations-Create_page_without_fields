@@ -6,8 +6,8 @@
                 "name": "New Page",
                 "fields": null,
                 "parent": {
-                    "id": "Y29udGFpbmVyOjAwMDAwMDAwMDAwMQ==",
-                    "name": "Container 1"
+                    "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                    "name": "Directory 1"
                 }
             }
         }

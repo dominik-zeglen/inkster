@@ -18,7 +18,7 @@ func (adapter Adapter) String() string {
 }
 
 func (adapter Adapter) ResetMockDatabase(
-	containers []core.Container,
+	directories []core.Directory,
 	templates []core.Template,
 	pages []core.Page,
 ) {
@@ -26,10 +26,10 @@ func (adapter Adapter) ResetMockDatabase(
 	session.SetSafe(&mgo.Safe{})
 	db := session.DB(adapter.DBName)
 
-	collection := db.C("containers")
+	collection := db.C("directories")
 	collection.DropCollection()
-	for id := range containers {
-		err = collection.Insert(containers[id])
+	for id := range directories {
+		err = collection.Insert(directories[id])
 		if err != nil {
 			panic(err)
 		}

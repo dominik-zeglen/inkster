@@ -125,8 +125,8 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 	return pages[index], err
 }
 
-// GetPagesFromContainer allows user to fetch pages by their parentId from database
-func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
+// GetPagesFromDirectory allows user to fetch pages by their parentId from database
+func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
 	var returnPages []core.Page
 	for index := range pages {
 		if pages[index].ParentID == id {
@@ -153,7 +153,7 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 		pages[index].Slug = *data.Slug
 	}
 	if data.ParentID != nil {
-		_, err = adapter.findContainer(*data.ParentID)
+		_, err = adapter.findDirectory(*data.ParentID)
 		if err == nil {
 			return err
 		}

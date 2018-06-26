@@ -1,0 +1,11 @@
+{
+    "data": {
+        "createDirectory": {
+            "name": "New Directory",
+            "parent": {
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                "name": "Directory 1"
+            }
+        }
+    }
+}

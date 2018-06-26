@@ -1,0 +1,13 @@
+{
+    "data": {
+        "updateDirectory": {
+            "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA==",
+            "name": "Updated name",
+            "parent": {
+                "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                "name": "Directory 1"
+            },
+            "children": []
+        }
+    }
+}

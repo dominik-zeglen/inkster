@@ -4,7 +4,7 @@ import (
 	"github.com/dominik-zeglen/ecoknow/core"
 )
 
-var containers = make([]core.Container, 0)
+var directories = make([]core.Directory, 0)
 var templates = make([]core.Template, 0)
 var pages = make([]core.Page, 0)
 
@@ -19,14 +19,14 @@ func (adapter Adapter) String() string {
 
 // ResetMockDatabase sets in-memory array to its initial state
 func (adapter Adapter) ResetMockDatabase(
-	dataContainers []core.Container,
+	dataDirectories []core.Directory,
 	dataTemplates []core.Template,
 	dataPages []core.Page,
 ) {
-	containers = make([]core.Container, len(dataContainers))
+	directories = make([]core.Directory, len(dataDirectories))
 	templates = make([]core.Template, len(dataTemplates))
 	pages = make([]core.Page, len(dataPages))
-	copy(containers, dataContainers)
+	copy(directories, dataDirectories)
 	copy(templates, dataTemplates)
 	copy(pages, dataPages)
 }

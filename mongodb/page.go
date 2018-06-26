@@ -140,8 +140,8 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 	return page, nil
 }
 
-// GetPagesFromContainer allows user to fetch pages by their parentId from database
-func (adapter Adapter) GetPagesFromContainer(id bson.ObjectId) ([]core.Page, error) {
+// GetPagesFromDirectory allows user to fetch pages by their parentId from database
+func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
 	db, err := mgo.Dial(adapter.ConnectionURI)
 	db.SetSafe(&mgo.Safe{})
 	defer db.Close()

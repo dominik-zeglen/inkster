@@ -18,7 +18,7 @@ func testPages(t *testing.T) {
 			page := core.Page{
 				Name:     "New Page",
 				Slug:     "new-page",
-				ParentID: Containers[0].ID,
+				ParentID: Directories[0].ID,
 				Fields: []core.PageField{
 					core.PageField{
 						Type:  "unique",
@@ -118,7 +118,7 @@ func testPages(t *testing.T) {
 			result, err := dataSource.AddPageFromTemplate(
 				core.PageInput{
 					Name:     &pageName,
-					ParentID: &Containers[0].ID,
+					ParentID: &Directories[0].ID,
 				},
 				Templates[0].ID,
 			)
@@ -226,7 +226,7 @@ func testPages(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			pages, err := dataSource.GetPagesFromContainer(Containers[0].ID)
+			pages, err := dataSource.GetPagesFromDirectory(Directories[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -280,8 +280,8 @@ func testPages(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, data)
 		})
-		t.Run("Get pages from container", func(t *testing.T) {
-			result, err := dataSource.GetPagesFromContainer(Containers[0].ID)
+		t.Run("Get pages from directory", func(t *testing.T) {
+			result, err := dataSource.GetPagesFromDirectory(Directories[0].ID)
 			if err != nil {
 				t.Fatal(err)
 			}
