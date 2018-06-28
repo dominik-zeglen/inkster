@@ -32,3 +32,28 @@ render(
   </ApolloProvider>,
   document.querySelector("#root")
 );
+
+export type TransactionState = "default" | "loading" | "success" | "error";
+export interface PaginationInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+export interface PaginatedListProps {
+  pageInfo?: PaginationInfo;
+  onNextPage: () => void;
+  onPreviousPage: () => void;
+  onRowClick: (id: string) => () => void;
+}
+export interface ViewProps {
+  disabled: boolean;
+  loading: boolean;
+}
+export interface ListViewProps extends ViewProps, PaginatedListProps {
+  onAdd: () => void;
+}
+export interface FormViewProps extends ViewProps {
+  transaction: TransactionState;
+  onBack: () => void;
+  onDelete: () => void;
+  onSubmit: () => void;
+}

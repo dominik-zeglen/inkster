@@ -17,6 +17,14 @@ export const theme = {
       main: "#aa66cc",
       dark: "#9933cc"
     },
+    success: {
+      main: "#00C851",
+      dark: "#007E33"
+    },
+    error: {
+      main: "#ff4444",
+      dark: "#CC0000"
+    },
     black: {
       main: "#2e2e2e",
       dark: "#212121"

@@ -5,10 +5,12 @@ import withStyles from "react-jss";
 import IconButton from "./IconButton";
 
 interface Props {
-  hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
-  onNextPage?: () => void;
-  onPreviousPage?: () => void;
+  pageInfo?: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+  onNextPage: () => void;
+  onPreviousPage: () => void;
 }
 
 const decorate = withStyles((theme: any) => ({
@@ -19,22 +21,21 @@ const decorate = withStyles((theme: any) => ({
   }
 }));
 
-export const Paginator =
-  decorate <
-  Props >
-  (({ classes, hasNextPage, hasPreviousPage, onNextPage, onPreviousPage }) => (
+export const Paginator = decorate<Props>(
+  ({ classes, pageInfo, onNextPage, onPreviousPage }) => (
     <div className={classes.root}>
       <div />
       <IconButton
         icon={ArrowLeft}
-        disabled={!(!!onPreviousPage && hasPreviousPage)}
+        disabled={!(!!onPreviousPage && pageInfo && pageInfo.hasPreviousPage)}
         onClick={onPreviousPage}
       />
       <IconButton
         icon={ArrowRight}
-        disabled={!(!!onNextPage && hasNextPage)}
+        disabled={!(!!onNextPage && pageInfo && pageInfo.hasNextPage)}
         onClick={onNextPage}
       />
     </div>
-  ));
+  )
+);
 export default Paginator;
