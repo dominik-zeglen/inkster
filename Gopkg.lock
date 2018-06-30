@@ -26,6 +26,12 @@
   revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
 
 [[projects]]
+  name = "github.com/gosimple/slug"
+  packages = ["."]
+  revision = "e9f42fa127660e552d0ad2b589868d403a9be7c6"
+  version = "v1.1.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/graph-gophers/graphql-go"
   packages = [
@@ -64,6 +70,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/rainycape/unidecode"
+  packages = ["."]
+  revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
   revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
@@ -71,6 +83,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bdeaffa59c3309ab92189721b8ebdaedfcc6cb201d69500b847cc140d4aa7860"
+  inputs-digest = "de666f25b7c7169e5f225a87425ad8580f36502a9ff6820a944e6aaad92d732c"
   solver-name = "gps-cdcl"
   solver-version = 1
