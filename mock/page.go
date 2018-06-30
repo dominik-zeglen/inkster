@@ -5,6 +5,7 @@ import (
 
 	"github.com/dominik-zeglen/ecoknow/core"
 	"github.com/globalsign/mgo/bson"
+	"github.com/gosimple/slug"
 )
 
 func (adapter Adapter) findPage(id *bson.ObjectId, slug *string) (int, error) {
@@ -55,10 +56,14 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	if page.ID == "" {
 		page.ID = bson.NewObjectId()
 	} else {
-		_, err = adapter.findTemplate(&page.ID, nil)
+		_, err = adapter.findPage(&page.ID, nil)
 		if err == nil {
 			return core.Page{}, core.ErrPageExists(page.ID.String())
 		}
+	}
+	if page.Slug == "" {
+		slug := slug.Make(page.Name)
+		page.Slug = slug
 	}
 	pages = append(pages, page)
 	return page, nil
@@ -94,6 +99,9 @@ func (adapter Adapter) AddPageFromTemplate(
 	}
 	if page.Slug != nil {
 		inputPage.Slug = *page.Slug
+	} else {
+		slug := slug.Make(*page.Name)
+		inputPage.Slug = slug
 	}
 	return adapter.AddPage(inputPage)
 }

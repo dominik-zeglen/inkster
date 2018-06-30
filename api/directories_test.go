@@ -190,6 +190,7 @@ func TestDirectoryAPI(t *testing.T) {
 					pages {
 						id
 						name
+						slug
 					}
 				}
 			}`
@@ -219,6 +220,7 @@ func TestDirectoryAPI(t *testing.T) {
 					pages {
 						id
 						name
+						slug
 					}
 				}
 			}`
@@ -248,6 +250,7 @@ func TestDirectoryAPI(t *testing.T) {
 					pages {
 						id
 						name
+						slug
 					}
 				}
 			}`
@@ -273,6 +276,7 @@ func TestDirectoryAPI(t *testing.T) {
 					pages {
 						id
 						name
+						slug
 					}
 				}
 			}`

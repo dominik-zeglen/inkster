@@ -4,6 +4,7 @@
             "userErrors": null,
             "page": {
                 "name": "New Page",
+                "slug": "new-page",
                 "fields": null,
                 "parent": {
                     "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",

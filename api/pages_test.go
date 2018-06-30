@@ -29,6 +29,7 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						name
+						slug
 						fields {
 							name
 							type
@@ -80,6 +81,7 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						name
+						slug
 						fields {
 							name
 							type
@@ -120,6 +122,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -157,6 +160,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -196,6 +200,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -236,6 +241,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -276,6 +282,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -317,6 +324,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -358,6 +366,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -397,6 +406,7 @@ func TestPageAPI(t *testing.T) {
 					page {
 						id
 						name
+						slug
 						fields {
 							name
 							type
@@ -442,6 +452,7 @@ func TestPageAPI(t *testing.T) {
 				page(id: $id) {
 					id
 					name
+					slug
 					fields {
 						name
 						type
@@ -468,6 +479,7 @@ func TestPageAPI(t *testing.T) {
 				page(id: $id) {
 					id
 					name
+					slug
 					fields {
 						name
 						type
@@ -494,6 +506,7 @@ func TestPageAPI(t *testing.T) {
 				pages {
 					id
 					name
+					slug
 					fields {
 						name
 						type

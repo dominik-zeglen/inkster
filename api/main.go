@@ -113,6 +113,7 @@ var Schema = `
 	type Page implements Node {
 		id: ID!
 		name: String!
+		slug: String!
 		fields: [PageField]
 		parent: Directory!
 	}

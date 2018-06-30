@@ -3,6 +3,7 @@
         "page": {
             "id": "cGFnZTowMDAwMDAwMDAwMDE=",
             "name": "Page 1",
+            "slug": "page-1",
             "fields": [
                 {
                     "name": "Field 1",

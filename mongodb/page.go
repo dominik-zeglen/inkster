@@ -4,6 +4,7 @@ import (
 	"github.com/dominik-zeglen/ecoknow/core"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/gosimple/slug"
 )
 
 // AddPage puts page in the database
@@ -32,6 +33,9 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	}
 	if page.ID == "" {
 		page.ID = bson.NewObjectId()
+	}
+	if page.Slug == "" {
+		page.Slug = slug.Make(page.Name)
 	}
 	err = collection.Insert(page)
 	return page, err
@@ -67,6 +71,9 @@ func (adapter Adapter) AddPageFromTemplate(
 	}
 	if page.Slug != nil {
 		inputPage.Slug = *page.Slug
+	} else {
+		slug := slug.Make(*page.Name)
+		inputPage.Slug = slug
 	}
 	return adapter.AddPage(inputPage)
 }

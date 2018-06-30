@@ -116,6 +116,10 @@ func (res *pageResolver) Name() string {
 	return res.data.Name
 }
 
+func (res *pageResolver) Slug() string {
+	return res.data.Slug
+}
+
 func (res *pageResolver) Fields() *[]*pageFieldResolver {
 	var resolverList []*pageFieldResolver
 	fields := res.data.Fields

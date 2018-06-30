@@ -4,6 +4,7 @@
             "userErrors": null,
             "page": {
                 "name": "New Page",
+                "slug": "new-page",
                 "fields": [
                     {
                         "name": "Field 1",

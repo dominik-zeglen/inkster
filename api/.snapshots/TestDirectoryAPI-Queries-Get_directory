@@ -13,11 +13,13 @@
             "pages": [
                 {
                     "id": "cGFnZTowMDAwMDAwMDAwMDE=",
-                    "name": "Page 1"
+                    "name": "Page 1",
+                    "slug": "page-1"
                 },
                 {
                     "id": "cGFnZTowMDAwMDAwMDAwMDI=",
-                    "name": "Page 2"
+                    "name": "Page 2",
+                    "slug": "page-2"
                 }
             ]
         }
