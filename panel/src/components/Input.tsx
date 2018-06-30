@@ -22,6 +22,7 @@ interface Props extends StandardProps {
 }
 
 export const Input: React.StatelessComponent<Props> = ({
+  children,
   error,
   helperText,
   id,
@@ -40,7 +41,16 @@ export const Input: React.StatelessComponent<Props> = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-    />
+      componentClass={
+        type === "select"
+          ? "select"
+          : type === "textarea"
+            ? "textarea"
+            : "input"
+      }
+    >
+      {children}
+    </FormControl>
     {helperText && <HelpBlock>{helperText}</HelpBlock>}
   </FormGroup>
 );

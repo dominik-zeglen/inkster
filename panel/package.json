@@ -20,6 +20,7 @@
     "apollo-client": "^2.3.5",
     "apollo-link-http": "^1.5.4",
     "awesome-typescript-loader": "^5.2.0",
+    "draft-js": "^0.10.5",
     "faker": "^4.1.0",
     "graphql-tag": "^2.9.2",
     "i18next": "^11.3.3",

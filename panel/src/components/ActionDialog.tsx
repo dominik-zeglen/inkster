@@ -9,7 +9,7 @@ interface Props {
   size: "xs" | "sm" | "md" | "lg";
   title: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (args: any) => void;
 }
 
 const decorate = withStyles(
@@ -35,7 +35,13 @@ export const ActionDialog = decorate<Props>(
       <Modal.Body>{children}</Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose}>{i18n.t("Close")}</Button>
-        <Button bsStyle="primary" onClick={onConfirm}>
+        <Button
+          bsStyle="primary"
+          onClick={(event: any) => {
+            onConfirm(event);
+            onClose();
+          }}
+        >
           {i18n.t("Confirm")}
         </Button>
       </Modal.Footer>

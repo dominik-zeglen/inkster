@@ -2492,7 +2492,8 @@ export default (theme: any) =>
         display: "inline-block",
         maxWidth: "100%",
         marginBottom: 5,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontSize: "0.75rem"
       },
       'input[type="radio"], input[type="checkbox"]': {
         margin: "4px 0 0",
@@ -2571,7 +2572,9 @@ export default (theme: any) =>
         cursor: "not-allowed"
       },
       "textarea.form-control": {
-        height: "auto"
+        height: "auto",
+        minHeight: "10rem",
+        resize: "vertical"
       },
       "@media screen and (-webkit-min-device-pixel-ratio: 0)": {
         'input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control, input[type="month"].form-control': {
