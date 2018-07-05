@@ -18,11 +18,14 @@ const decorate = withStyles(
       gridTemplateColumns: "2.5rem 1fr",
       marginBottom: theme.spacing / 2,
       marginLeft: theme.spacing / 2,
-      marginTop: theme.spacing / 2,
-      transition: theme.transition.time
+      marginTop: theme.spacing * 1.5,
+      transition: theme.transition.time,
+      "&:first-of-type": {
+        marginTop: 0
+      }
     },
     title: {
-      marginTop: 4
+      marginTop: 0
     },
     link: {
       cursor: "pointer" as "pointer",

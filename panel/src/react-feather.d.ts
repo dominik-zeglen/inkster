@@ -19,5 +19,6 @@ declare module 'react-feather' {
   export const FileText: StatelessComponent<FeatherIcon>;
   export const Trash: StatelessComponent<FeatherIcon>;
   export const Folder: StatelessComponent<FeatherIcon>;
+  export const X: StatelessComponent<FeatherIcon>;
 }
 

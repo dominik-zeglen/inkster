@@ -9,6 +9,7 @@ import {
 import { StandardProps } from "./";
 
 interface Props extends StandardProps {
+  autoComplete?: string;
   disabled?: boolean;
   error?: boolean;
   helperText?: string;
@@ -22,6 +23,7 @@ interface Props extends StandardProps {
 }
 
 export const Input: React.StatelessComponent<Props> = ({
+  autoComplete,
   children,
   error,
   helperText,
@@ -36,6 +38,7 @@ export const Input: React.StatelessComponent<Props> = ({
   <FormGroup controlId={id} validationState={error ? "error" : null}>
     {label && <ControlLabel>{label}</ControlLabel>}
     <FormControl
+      autoComplete={autoComplete || "off"}
       name={name}
       type={type || "text"}
       value={value}

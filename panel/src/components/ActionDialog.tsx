@@ -27,25 +27,25 @@ const decorate = withStyles(
   { displayName: "ActionDialog" }
 );
 export const ActionDialog = decorate<Props>(
-  ({ classes, children, show, size, title, onClose, onConfirm }) => (
-    <Modal show={show} onHide={onClose} className={classes[size]}>
-      <Modal.Header>
-        <Modal.Title>{title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{children}</Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onClose}>{i18n.t("Close")}</Button>
-        <Button
-          bsStyle="primary"
-          onClick={(event: any) => {
-            onConfirm(event);
-            onClose();
-          }}
-        >
-          {i18n.t("Confirm")}
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
+  ({ classes, children, show, size, title, onClose, onConfirm }) => {
+    const handleSubmit = (event: any) => {
+      onConfirm(event);
+      onClose();
+    };
+    return (
+      <Modal show={show} onHide={onClose} className={classes[size]}>
+        <Modal.Header>
+          <Modal.Title>{title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{children}</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={onClose}>{i18n.t("Close")}</Button>
+          <Button bsStyle="primary" onClick={handleSubmit}>
+            {i18n.t("Confirm")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 );
 export default ActionDialog;

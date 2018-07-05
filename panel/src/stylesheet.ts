@@ -1,17 +1,16 @@
 export default (theme: any) =>
   ({
+    "@import": [
+      "url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i')"
+    ],
     "@global": {
       html: {
-        fontSize: "1rem",
-        fontFamily: "sans-serif"
+        ...theme.typography.body,
+        color: theme.colors.black.main
       },
       body: {
         margin: "0",
-        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        fontSize: "1rem",
-        lineHeight: "1.42857143",
-        color: "#333",
-        backgroundColor: "#fff"
+        backgroundColor: theme.colors.white.main
       },
       "article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary": {
         display: "block"
@@ -2489,11 +2488,11 @@ export default (theme: any) =>
         }
       },
       label: {
+        ...theme.typography.caption,
+        fontWeight: 600,
         display: "inline-block",
         maxWidth: "100%",
-        marginBottom: 5,
-        fontWeight: "bold",
-        fontSize: "0.75rem"
+        marginBottom: theme.spacing / 2
       },
       'input[type="radio"], input[type="checkbox"]': {
         margin: "4px 0 0",
@@ -2522,33 +2521,23 @@ export default (theme: any) =>
         color: "#555"
       },
       ".form-control": {
+        ...theme.typography.body,
+          outline: 0,
         display: "block",
         width: "100%",
-        height: 34,
-        padding: "6px 12px",
-        fontSize: 14,
-        lineHeight: "1.42857143",
-        color: "#555",
+        height: theme.spacing * 4,
+        padding: 0,
         backgroundColor: "#fff",
         backgroundImage: "none",
-        border: "1px solid #ccc",
-        borderRadius: 4,
-        W: "border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s",
-        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, .075)",
-        fallbacks: [
-          {
-            W: "inset 0 1px 1px rgba(0, 0, 0, .075)"
-          }
-        ],
-        O: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
-        transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s"
-      },
-      ".form-control:focus": {
-        borderColor: "#66afe9",
-        outline: "0",
-        W: "inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6)",
-        boxShadow:
-          "inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6)"
+        border: "none",
+        borderRadius: 0,
+        transitionDuration: theme.transition.time,
+        position: "relative" as "relative",
+          borderBottom: `1px solid ${theme.colors.disabled}`,
+          boxShadow: `0 0 0 transparent`,
+        "&:focus": {
+          borderBottomColor: theme.colors.secondary.main,
+        }
       },
       ".form-control::-moz-placeholder": {
         color: "#999",
@@ -2832,14 +2821,11 @@ export default (theme: any) =>
         right: 15
       },
       ".btn": {
-        textTransform: "uppercase" as "uppercase",
+        ...theme.typography.button,
         transitionDuration: theme.transition.time,
         display: "inline-block",
         padding: `${theme.spacing}px ${theme.spacing * 2}px`,
         marginBottom: "0",
-        fontSize: 12,
-        fontWeight: 600,
-        lineHeight: "1.42857143",
         textAlign: "center",
         whiteSpace: "nowrap",
         verticalAlign: "middle",
@@ -4189,10 +4175,9 @@ export default (theme: any) =>
         backgroundColor: "#fff"
       },
       ".label": {
+        ...theme.typography.caption,
         display: "inline",
         padding: ".2em .6em .3em",
-        fontSize: "75%",
-        fontWeight: "bold",
         lineHeight: "1",
         color: "#fff",
         textAlign: "center",
@@ -4759,10 +4744,9 @@ export default (theme: any) =>
       ".panel": {
         marginBottom: 20,
         backgroundColor: "#fff",
-        border: "1px solid transparent",
-        borderRadius: 4,
-        W: "0 1px 1px rgba(0, 0, 0, .05)",
-        boxShadow: "0 1px 1px rgba(0, 0, 0, .05)"
+        border: "1px solid #eee",
+        borderRadius: theme.spacing / 2,
+        boxShadow: "5px 5px 15px #f2f2f2"
       },
       ".panel-body": {
         padding: 15
@@ -4779,6 +4763,16 @@ export default (theme: any) =>
         color: "inherit"
       },
       ".panel-title": {
+        "&:before": {
+          content: "''",
+          position: "absolute" as "absolute",
+          width: 4 * theme.spacing,
+          height: 2,
+          background: theme.colors.primary.dark,
+          bottom: -theme.spacing,
+          left: 0
+        },
+        position: "relative" as "relative",
         flex: 1,
         marginTop: "0",
         marginBottom: "0",
@@ -4790,8 +4784,6 @@ export default (theme: any) =>
       },
       ".panel-footer": {
         padding: "10px 15px",
-        backgroundColor: "#f5f5f5",
-        borderTop: "1px solid #ddd",
         borderBottomRightRadius: 3,
         borderBottomLeftRadius: 3
       },
@@ -4904,14 +4896,6 @@ export default (theme: any) =>
       ".panel-group .panel-footer + .panel-collapse .panel-body": {
         borderBottom: "1px solid #ddd"
       },
-      ".panel-default": {
-        borderColor: "#ddd"
-      },
-      ".panel-default > .panel-heading": {
-        color: "#333",
-        backgroundColor: "#f5f5f5",
-        borderColor: "#ddd"
-      },
       ".panel-default > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: "#ddd"
       },
@@ -4921,14 +4905,6 @@ export default (theme: any) =>
       },
       ".panel-default > .panel-footer + .panel-collapse > .panel-body": {
         borderBottomColor: "#ddd"
-      },
-      ".panel-primary": {
-        borderColor: theme.colors.primary.main
-      },
-      ".panel-primary > .panel-heading": {
-        color: "#fff",
-        backgroundColor: theme.colors.primary.main,
-        borderColor: theme.colors.primary.main
       },
       ".panel-primary > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: theme.colors.primary.main
@@ -4940,14 +4916,6 @@ export default (theme: any) =>
       ".panel-primary > .panel-footer + .panel-collapse > .panel-body": {
         borderBottomColor: theme.colors.primary.main
       },
-      ".panel-success": {
-        borderColor: "#d6e9c6"
-      },
-      ".panel-success > .panel-heading": {
-        color: "#3c763d",
-        backgroundColor: "#dff0d8",
-        borderColor: "#d6e9c6"
-      },
       ".panel-success > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: "#d6e9c6"
       },
@@ -4957,14 +4925,6 @@ export default (theme: any) =>
       },
       ".panel-success > .panel-footer + .panel-collapse > .panel-body": {
         borderBottomColor: "#d6e9c6"
-      },
-      ".panel-info": {
-        borderColor: "#bce8f1"
-      },
-      ".panel-info > .panel-heading": {
-        color: "#31708f",
-        backgroundColor: "#d9edf7",
-        borderColor: "#bce8f1"
       },
       ".panel-info > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: "#bce8f1"
@@ -4976,14 +4936,6 @@ export default (theme: any) =>
       ".panel-info > .panel-footer + .panel-collapse > .panel-body": {
         borderBottomColor: "#bce8f1"
       },
-      ".panel-warning": {
-        borderColor: "#faebcc"
-      },
-      ".panel-warning > .panel-heading": {
-        color: "#8a6d3b",
-        backgroundColor: "#fcf8e3",
-        borderColor: "#faebcc"
-      },
       ".panel-warning > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: "#faebcc"
       },
@@ -4993,14 +4945,6 @@ export default (theme: any) =>
       },
       ".panel-warning > .panel-footer + .panel-collapse > .panel-body": {
         borderBottomColor: "#faebcc"
-      },
-      ".panel-danger": {
-        borderColor: "#ebccd1"
-      },
-      ".panel-danger > .panel-heading": {
-        color: "#a94442",
-        backgroundColor: "#f2dede",
-        borderColor: "#ebccd1"
       },
       ".panel-danger > .panel-heading + .panel-collapse > .panel-body": {
         borderTopColor: "#ebccd1"

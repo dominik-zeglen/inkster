@@ -15,6 +15,7 @@ interface Props extends StandardProps {
 const decorate = withStyles(
   (theme: any) => ({
     root: {
+      marginBottom: theme.spacing * 2,
       display: "flex" as "flex"
     },
     spacer: {

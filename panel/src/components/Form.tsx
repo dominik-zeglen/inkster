@@ -32,9 +32,9 @@ const shallowCompare = (a: any, b: any) => {
 };
 
 class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
-  state: T = this.props.initial;
+  public state: T = this.props.initial;
 
-  handleChange = (event: React.ChangeEvent<any>) => {
+  private handleChange = (event: React.ChangeEvent<any>) => {
     const { target } = event;
     if (!(target.name in this.state)) {
       console.error(`Unknown form field: ${target.name}`);
@@ -43,7 +43,7 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
     this.setState(({ [target.name]: target.value } as any) as Pick<T, keyof T>);
   };
 
-  handleSubmit = (event: React.FormEvent<any>) => {
+  private handleSubmit = (event: React.FormEvent<any>) => {
     const { onSubmit } = this.props;
     event.preventDefault();
     if (onSubmit !== undefined) {
@@ -51,7 +51,7 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
     }
   };
 
-  render() {
+  public render() {
     const { children } = this.props;
 
     let contents = children;

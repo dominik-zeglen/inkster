@@ -22,7 +22,7 @@ const decorate = withStyles((theme: any) => ({
   title: {
     flex: 1,
     marginLeft: theme.spacing,
-    marginTop: theme.spacing / 2,
+    marginTop: -2,
     ...theme.typography.mainHeading
   }
 }));

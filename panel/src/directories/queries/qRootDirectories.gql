@@ -1,0 +1,6 @@
+query RootDirectories {
+  getRootContainers {
+    id
+    name
+  }
+}

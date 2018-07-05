@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Panel } from "react-bootstrap";
-import { Trash } from "react-feather";
+import { X } from "react-feather";
 
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
@@ -29,7 +29,7 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
   <Panel {...props}>
     <Panel.Heading>
       <Panel.Title>{i18n.t("Field properties")}</Panel.Title>
-      <IconButton icon={Trash} onClick={onDelete} />
+      <IconButton icon={X} onClick={onDelete} />
     </Panel.Heading>
     <Panel.Body>
       <Input

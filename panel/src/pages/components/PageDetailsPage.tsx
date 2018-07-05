@@ -15,13 +15,13 @@ import i18n from "../../i18n";
 import PageProperties from "./PageProperties";
 import PageFieldProperties from "./PageFieldProperties";
 
-type PageField = {
+interface PageField {
   id: string;
   name: string;
   slug: string;
   type: string;
   value: string;
-};
+}
 interface Props extends ViewProps, FormViewProps {
   page?: {
     id: string;
@@ -96,6 +96,7 @@ export const PageDetailsPage = decorate<Props>(
                 )
               }
             } as any);
+          const handleFormSave = () => submit({} as any);
           return (
             <Toggle>
               {(openedRemoveDialog, { toggle: toggleRemoveDialog }) => (
@@ -161,7 +162,7 @@ export const PageDetailsPage = decorate<Props>(
                             </div>
                             <FormSave
                               disabled={disabled || loading || !hasChanged}
-                              onConfirm={() => submit({} as any)}
+                              onConfirm={handleFormSave}
                               variant={transaction}
                             />
                           </Container>
@@ -185,32 +186,36 @@ export const PageDetailsPage = decorate<Props>(
                                   initial={{ type: "", name: "" }}
                                   onSubmit={handleFieldAdd}
                                 >
-                                  {({ change, data, submit }) => (
+                                  {({
+                                    change: handleAddFieldChange,
+                                    data: addFieldData,
+                                    submit: addField
+                                  }) => (
                                     <ActionDialog
                                       show={openedFieldAddDialog}
                                       size="xs"
                                       title={i18n.t("Add page field")}
                                       onClose={toggleFieldAddDialog}
-                                      onConfirm={submit as () => void}
+                                      onConfirm={addField as () => void}
                                     >
                                       <Input
                                         name="name"
                                         label={i18n.t("Name")}
-                                        value={data.name}
-                                        onChange={change}
+                                        value={addFieldData.name}
+                                        onChange={handleAddFieldChange}
                                       />
                                       <Input
                                         name="type"
                                         label={i18n.t("Type")}
-                                        value={data.type}
-                                        onChange={change}
+                                        value={addFieldData.type}
+                                        onChange={handleAddFieldChange}
                                         type="select"
                                       >
                                         <>
                                           <option value="text">
                                             {i18n.t("Short text")}
                                           </option>
-                                          <option value="longText" selected>
+                                          <option value="longText" selected={true}>
                                             {i18n.t("Long text")}
                                           </option>
                                         </>

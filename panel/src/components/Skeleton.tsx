@@ -15,7 +15,7 @@ const decorate = withStyles(
     },
     skeleton: {
       animation: "skeleton-animation .75s linear infinite forwards alternate",
-      background: theme.colors.disabled,
+      background: '#f2f2f2',
       borderRadius: 4,
       display: "block",
       height: "0.8em",
