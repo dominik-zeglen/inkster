@@ -9,7 +9,7 @@ import i18n from "../i18n";
 interface Props extends StandardProps {
   disabled: boolean;
   variant: TransactionState;
-  onConfirm: () => void;
+  onConfirm: (event: any) => void;
 }
 
 const decorate = withStyles(
@@ -41,6 +41,7 @@ export const FormSave = decorate<Props>(
                   : "primary"
           }
           disabled={variant === "loading" || disabled}
+          onClick={onConfirm}
         >
           {variant === "success"
             ? i18n.t("Saved")

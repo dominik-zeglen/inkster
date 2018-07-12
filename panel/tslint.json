@@ -2,8 +2,10 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "linterOptions": {
     "exclude": [
-      "config/**/*.js",
-      "node_modules/**/*.ts"
+      "static/**/*.(jsx?|tsx?)",
+      "build/**/*.(jsx?|tsx?)",
+      "config/**/*.(jsx?|tsx?)",
+      "node_modules/**/*.(jsx?|tsx?)"
     ]
   },
   "rules" : {

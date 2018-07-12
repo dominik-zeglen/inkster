@@ -14,7 +14,10 @@ import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
 import i18n from "../../i18n";
 
-interface Props extends FormViewProps, ListViewProps {
+interface FormData {
+  name: string;
+}
+interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
   directory?: {
     id: string;
     name?: string;
@@ -35,6 +38,7 @@ const decorate = withStyles(
   }),
   { displayName: "DirectoryDetailsPage" }
 );
+const dummy = () => {};
 export const DirectoryDetailsPage = decorate<Props>(
   ({
     classes,
@@ -84,7 +88,7 @@ export const DirectoryDetailsPage = decorate<Props>(
                       pages={directory ? directory.pages : undefined}
                       disabled={disabled || loading}
                       pageInfo={pageInfo}
-                      onAdd={onAdd}
+                      onAdd={dummy}
                       onNextPage={onNextPage}
                       onPreviousPage={onPreviousPage}
                       onRowClick={onRowClick}
@@ -94,7 +98,7 @@ export const DirectoryDetailsPage = decorate<Props>(
                 <FormSave
                   disabled={disabled || !hasChanged}
                   variant={transaction}
-                  onConfirm={onSubmit}
+                  onConfirm={submit}
                 />
               </Container>
             )}

@@ -10,6 +10,7 @@ import { ThemeProvider } from "react-jss";
 import App from "./App";
 import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
+import { urlize } from "./utils";
 
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
@@ -21,7 +22,9 @@ const apolloClient = new ApolloClient({
 
 render(
   <ApolloProvider client={apolloClient}>
-    <BrowserRouter basename="/panel/">
+    <BrowserRouter
+      basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
+    >
       <ThemeProvider theme={theme}>
         <>
           <GlobalStylesheet />
@@ -32,6 +35,11 @@ render(
   </ApolloProvider>,
   document.querySelector("#root")
 );
+
+export const urls = {
+  directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
+  pageDetails: (id: string) => `/pages/${urlize(id)}`
+};
 
 export type TransactionState = "default" | "loading" | "success" | "error";
 export interface PaginationInfo {
@@ -48,12 +56,12 @@ export interface ViewProps {
   disabled: boolean;
   loading: boolean;
 }
-export interface ListViewProps extends ViewProps, PaginatedListProps {
-  onAdd: () => void;
+export interface ListViewProps<T> extends ViewProps, PaginatedListProps {
+  onAdd: (data: T) => void;
 }
-export interface FormViewProps extends ViewProps {
+export interface FormViewProps<T> extends ViewProps {
   transaction: TransactionState;
   onBack: () => void;
   onDelete: () => void;
-  onSubmit: () => void;
+  onSubmit: (data: T) => void;
 }

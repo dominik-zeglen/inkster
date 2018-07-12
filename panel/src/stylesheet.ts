@@ -2522,7 +2522,7 @@ export default (theme: any) =>
       },
       ".form-control": {
         ...theme.typography.body,
-          outline: 0,
+        outline: 0,
         display: "block",
         width: "100%",
         height: theme.spacing * 4,
@@ -2533,10 +2533,11 @@ export default (theme: any) =>
         borderRadius: 0,
         transitionDuration: theme.transition.time,
         position: "relative" as "relative",
-          borderBottom: `1px solid ${theme.colors.disabled}`,
-          boxShadow: `0 0 0 transparent`,
+        borderBottom: `1px solid ${theme.colors.disabled}`,
+        boxShadow: `0 0 0 transparent`,
         "&:focus": {
           borderBottomColor: theme.colors.secondary.main,
+          boxShadow: `0 1px ${theme.colors.secondary.main}`
         }
       },
       ".form-control::-moz-placeholder": {
@@ -4746,7 +4747,7 @@ export default (theme: any) =>
         backgroundColor: "#fff",
         border: "1px solid #eee",
         borderRadius: theme.spacing / 2,
-        boxShadow: "5px 5px 15px #f2f2f2"
+        boxShadow: "5px 5px 10px #f2f2f2"
       },
       ".panel-body": {
         padding: 15

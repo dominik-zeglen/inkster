@@ -22,7 +22,14 @@ interface PageField {
   type: string;
   value: string;
 }
-interface Props extends ViewProps, FormViewProps {
+interface FormData {
+  name: string;
+  slug: string;
+  fields: PageField[];
+  addFields: PageField[];
+  removeFields: PageField[];
+}
+interface Props extends ViewProps, FormViewProps<FormData> {
   page?: {
     id: string;
     name?: string;
@@ -63,7 +70,11 @@ export const PageDetailsPage = decorate<Props>(
       removeFields: [] as PageField[]
     };
     return (
-      <Form initial={initialForm} onSubmit={onSubmit}>
+      <Form
+        initial={initialForm}
+        onSubmit={onSubmit}
+        key={JSON.stringify(page ? JSON.stringify(page) : "loading")}
+      >
         {({ change, data, hasChanged, submit }) => {
           const handleFieldAdd = (field: { name: string; type: string }) =>
             change({
@@ -215,7 +226,10 @@ export const PageDetailsPage = decorate<Props>(
                                           <option value="text">
                                             {i18n.t("Short text")}
                                           </option>
-                                          <option value="longText" selected={true}>
+                                          <option
+                                            value="longText"
+                                            selected={true}
+                                          >
                                             {i18n.t("Long text")}
                                           </option>
                                         </>

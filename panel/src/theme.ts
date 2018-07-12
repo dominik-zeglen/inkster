@@ -7,32 +7,31 @@ const breakpoints = {
 
 type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | string;
 
+function makeColor(main: string, dark: string) {
+  return {
+    main,
+    dark
+  }
+}
+const palette = {
+  red: makeColor('#fc5c65', '#eb3b5a'),
+  orange: makeColor('#fd9644', '#fa8231'),
+  yellow: makeColor('#fed330', '#f7b731'),
+  green: makeColor('#2bcbba', '#0fb9b1'),
+  blue: makeColor('#45aaf2', '#2d98da'),
+  purple: makeColor('#a55eea', '#8854d0'),
+  gray: makeColor('#778ca3', '#4b6584'),
+  lightGray: makeColor('#d1d8e0', '#a5b1c2'),
+  black: makeColor('#2e2e2e', '#212121'),
+  white: makeColor('#fdfdfd', '#f6f6f6')
+}
 const colors = {
-  primary: {
-    main: "#4285f4",
-    dark: "#0d47a1"
-  },
-  secondary: {
-    main: "#aa66cc",
-    dark: "#9933cc"
-  },
-  success: {
-    main: "#00C851",
-    dark: "#007E33"
-  },
-  error: {
-    main: "#ff4444",
-    dark: "#CC0000"
-  },
-  black: {
-    main: "#2e2e2e",
-    dark: "#212121"
-  },
-  white: {
-    main: "#FDFDFD",
-    dark: "#F6F6F6"
-  },
-  disabled: "#bdbdbd"
+  primary: palette.blue,
+  secondary: palette.green,
+  success: palette.green,
+  error: palette.red,
+  disabled: palette.lightGray.dark,
+  ...palette
 };
 const baseTypography = {
   color: colors.black.main,
