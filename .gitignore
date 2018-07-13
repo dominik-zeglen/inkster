@@ -6,3 +6,5 @@ node_modules
 static
 vendor
 *debug*
+panel/build
+panel/dist
