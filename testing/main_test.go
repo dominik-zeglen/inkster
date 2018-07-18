@@ -39,8 +39,9 @@ func resetDatabase() {
 }
 
 func TestMain(t *testing.T) {
-	for _, dataSource := range dataSources {
-		fmt.Printf("Testing adapter %s...\n", dataSource.String())
+	for i := range dataSources {
+		dataSource = dataSources[i]
+		t.Log(fmt.Sprintf("Testing adapter %s...\n", dataSource.String()))
 		t.Run("Test directories", testDirectories)
 		t.Run("Test templates", testTemplates)
 		t.Run("Test pages", testPages)

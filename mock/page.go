@@ -147,16 +147,16 @@ func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, err
 // UpdatePage allows user to update page properties
 func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
 	index, err := adapter.findPage(&pageID, nil)
-	if err == nil {
+	if err != nil {
 		return err
 	}
 	if data.Name != nil {
 		pages[index].Name = *data.Name
 	}
 	if data.Slug != nil {
-		_, err = adapter.findPage(nil, data.Slug)
-		if err == nil {
-			return core.ErrTemplateExists(*data.Slug)
+		i, err := adapter.findPage(nil, data.Slug)
+		if i != index && err == nil {
+			return core.ErrPageExists(*data.Slug)
 		}
 		pages[index].Slug = *data.Slug
 	}
@@ -166,6 +166,11 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 			return err
 		}
 		pages[index].ParentID = *data.ParentID
+	}
+	if data.Fields != nil {
+		fields := make([]core.PageField, len(*data.Fields))
+		copy(fields, *data.Fields)
+		pages[index].Fields = fields
 	}
 	return nil
 }
@@ -189,7 +194,7 @@ func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
 	if err != nil {
 		return err
 	}
-	pages = append(pages[:index], pages[:index+1]...)
+	pages = append(pages[:index], pages[index+1:]...)
 	return nil
 }
 

@@ -29,4 +29,14 @@ func (adapter Adapter) ResetMockDatabase(
 	copy(directories, dataDirectories)
 	copy(templates, dataTemplates)
 	copy(pages, dataPages)
+	for templateIndex := range templates {
+		fields := make([]core.TemplateField, len(dataTemplates[templateIndex].Fields))
+		copy(fields, dataTemplates[templateIndex].Fields)
+		templates[templateIndex].Fields = fields
+	}
+	for pageIndex := range pages {
+		fields := make([]core.PageField, len(dataPages[pageIndex].Fields))
+		copy(fields, dataPages[pageIndex].Fields)
+		pages[pageIndex].Fields = fields
+	}
 }

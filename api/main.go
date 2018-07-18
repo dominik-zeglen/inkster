@@ -32,9 +32,10 @@ var Schema = `
 		removeTemplateField(id: ID!, input: TemplateFieldRemoveInput!): TemplateUpdateResult
 		removeTemplate(id: ID!): TemplateRemoveResult
 
-		createPage(input: PageCreateInput!): PageCreateResult
+		createPage(input: PageCreateInput!): PageOperationResult
 		createPageField(id: ID!, input: PageFieldCreateInput!): PageFieldOperationResult
 		renamePageField(id: ID!, input: PageFieldRenameInput!): PageFieldOperationResult
+		updatePage(id: ID!, input: PageUpdateInput, addFields: [PageFieldCreateInput!], removeFields: [String!]): PageOperationResult
 		updatePageField(id: ID!, input: PageFieldUpdateInput!): PageFieldOperationResult
 		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
 		removePage(id: ID!): PageRemoveResult
@@ -122,7 +123,7 @@ var Schema = `
 		type: String!
 		value: String
 	}
-	type PageCreateResult implements CreateResult {
+	type PageOperationResult implements OperationResult {
 		userErrors: [UserError]
 		page: Page
 	}
@@ -139,10 +140,16 @@ var Schema = `
 		parentId: ID!
 		fields: [PageFieldCreateInput]
 	}
+	input PageUpdateInput {
+		name: String
+		slug: String
+		parentId: ID
+		fields: [PageFieldUpdate2Input!]
+	}
   input PageFieldCreateInput {
     name: String!
     type: String!
-    value: String
+    value: String!
   }
 	input PageFieldRenameInput {
 		name: String!
@@ -151,6 +158,14 @@ var Schema = `
 	input PageFieldUpdateInput {
 		name: String!
 		value: String!
+	}
+	input PageFieldUpdate2Input {
+		name: String!
+		update: PageFieldUpdate2InputPartial!
+	}
+	input PageFieldUpdate2InputPartial {
+		name: String
+		value: String
 	}
 	input PageFieldRemoveInput {
 		name: String!

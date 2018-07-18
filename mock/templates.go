@@ -109,7 +109,7 @@ func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 	if err != nil {
 		return err
 	}
-	templates = append(templates[:index], templates[:index+1]...)
+	templates = append(templates[:index], templates[index+1:]...)
 	return nil
 }
 

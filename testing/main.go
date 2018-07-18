@@ -58,6 +58,7 @@ var Pages = []core.Page{
 		Name:     "Page 2",
 		Slug:     "page-2",
 		ParentID: Directories[0].ID,
+		Fields: []core.PageField{
 			core.PageField{
 				Type:  "unique",
 				Name:  "Field 3",
@@ -75,6 +76,7 @@ var Pages = []core.Page{
 		Name:     "Page 3",
 		Slug:     "page-3",
 		ParentID: Directories[1].ID,
+		Fields: []core.PageField{
 			core.PageField{
 				Type:  "text",
 				Name:  "Field 5",

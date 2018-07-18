@@ -1,0 +1,24 @@
+{
+    "data": {
+        "updatePage": {
+            "userErrors": null,
+            "page": {
+                "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+                "name": "Page 1",
+                "slug": "page-1",
+                "fields": [
+                    {
+                        "name": "Updated name",
+                        "type": "unique",
+                        "value": "Updated value"
+                    },
+                    {
+                        "name": "New field",
+                        "type": "unique",
+                        "value": "New value"
+                    }
+                ]
+            }
+        }
+    }
+}

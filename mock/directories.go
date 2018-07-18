@@ -26,6 +26,9 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 			return core.Directory{}, fmt.Errorf("Could not add directory with ID: %s; directory already exists", directory.ID)
 		}
 	}
+	if directory.Name == "" {
+		return core.Directory{}, core.ErrNoEmpty("Name")
+	}
 	directories = append(directories, directory)
 	return directory, nil
 }
