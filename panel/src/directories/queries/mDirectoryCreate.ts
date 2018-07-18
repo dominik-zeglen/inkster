@@ -6,7 +6,7 @@ export interface DirectoryCreateVariables {
 }
 const mDirectoryCreate = gql`
   mutation DirectoryCreate($name: String!, $parentId: ID) {
-    createContainer(input: { name: $name, parentId: $parentId }) {
+    createDirectory(input: { name: $name, parentId: $parentId }) {
       id
       name
       parent {

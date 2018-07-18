@@ -18,18 +18,10 @@ import PageFieldProperties from "./PageFieldProperties";
 interface PageField {
   id: string;
   name: string;
-  slug: string;
   type: string;
   value: string;
 }
-interface FormData {
-  name: string;
-  slug: string;
-  fields: PageField[];
-  addFields: PageField[];
-  removeFields: PageField[];
-}
-interface Props extends ViewProps, FormViewProps<FormData> {
+interface Props extends ViewProps, FormViewProps<any> {
   page?: {
     id: string;
     name?: string;
@@ -65,14 +57,31 @@ export const PageDetailsPage = decorate<Props>(
   }) => {
     const initialForm = {
       name: page && page.name ? page.name : "",
-      fields: page && page.fields ? page.fields : [],
+      slug: page && page.slug ? page.slug : "",
+      fields:
+        page && page.fields
+          ? (page.fields.map(f => ({ id: f.name, ...f })) as PageField[])
+          : [],
       addFields: [] as PageField[],
       removeFields: [] as PageField[]
     };
     return (
       <Form
         initial={initialForm}
-        onSubmit={onSubmit}
+        onSubmit={data =>
+          onSubmit({
+            input: {
+              name: data.name,
+              slug: data.slug,
+              fields: data.fields.map(f => ({
+                name: f.id,
+                update: { name: f.name, value: f.value }
+              }))
+            },
+            add: data.addFields,
+            remove: data.removeFields
+          })
+        }
         key={JSON.stringify(page ? JSON.stringify(page) : "loading")}
       >
         {({ change, data, hasChanged, submit }) => {
@@ -86,13 +95,22 @@ export const PageDetailsPage = decorate<Props>(
                 ]
               }
             } as any);
-          const handleFieldRemove = (name: string, id: string) => () =>
+          const handleFieldRemove = (name: string, id: string) => () => {
             change({
               target: {
                 name,
                 value: data[name].filter((f: PageField) => f.id !== id)
               }
             } as any);
+            if (name === "fields") {
+              change({
+                target: {
+                  name: "removeFields",
+                  value: [id, ...data.removeFields]
+                }
+              } as any);
+            }
+          };
           const handleChange = (name: string, id: string) => (
             event: React.ChangeEvent<any>
           ) =>
@@ -107,7 +125,6 @@ export const PageDetailsPage = decorate<Props>(
                 )
               }
             } as any);
-          const handleFormSave = () => submit({} as any);
           return (
             <Toggle>
               {(openedRemoveDialog, { toggle: toggleRemoveDialog }) => (
@@ -173,7 +190,7 @@ export const PageDetailsPage = decorate<Props>(
                             </div>
                             <FormSave
                               disabled={disabled || loading || !hasChanged}
-                              onConfirm={handleFormSave}
+                              onConfirm={submit}
                               variant={transaction}
                             />
                           </Container>

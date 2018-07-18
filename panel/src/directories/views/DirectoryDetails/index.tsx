@@ -37,7 +37,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
       <Navigator>
         {navigate => {
           const handleRowClick = (id: string) => () =>
-            navigate(urls.directoryDetails(id));
+            navigate(urls.pageDetails(id));
           const handleDelete = () => navigate(urls.directoryDetails(), true)
           return (
             <Query
@@ -62,8 +62,8 @@ export class DirectoryDetails extends React.Component<Props, State> {
                       return (
                         <DirectoryDetailsPage
                           directory={
-                            data && data.getContainer
-                              ? data.getContainer
+                            data
+                              ? data.getDirectory
                               : undefined
                           }
                           disabled={loading}
@@ -75,13 +75,13 @@ export class DirectoryDetails extends React.Component<Props, State> {
                           }
                           onAdd={dummy}
                           onBack={
-                            data && data.getContainer
-                              ? data.getContainer.parent &&
-                                data.getContainer.parent.id
+                            data && data.getDirectory
+                              ? data.getDirectory.parent &&
+                                data.getDirectory.parent.id
                                 ? () =>
                                     navigate(
                                       urls.directoryDetails(
-                                        data.getContainer.parent.id
+                                        data.getDirectory.parent.id
                                       )
                                     )
                                 : () => navigate(urls.directoryDetails(""))

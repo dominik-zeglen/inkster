@@ -25,7 +25,7 @@ export const DirectoryRootList: React.StatelessComponent<Props> = ({
 }) => (
   <Panel>
     <Panel.Body>
-      {directories ? (
+      {directories !== undefined ? (
         directories.length > 0 ? (
           directories.map(directory => (
             <ListElement

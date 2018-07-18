@@ -79,8 +79,8 @@ export const MutationProvider: React.StatelessComponent<Props> = ({
                     loading: updateDirectoryLoading
                   },
                   formErrors:
-                    data && data.updateContainer && data.updateContainer.errors
-                      ? data.updateContainers.errors
+                    data && data.updateDirectory && data.updateDirectory.errors
+                      ? data.updateDirectorys.errors
                       : undefined
                 })
               : null;

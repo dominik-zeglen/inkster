@@ -1,16 +1,48 @@
 import gql from "graphql-tag";
 
-const mDirectoryUpdate = gql`
-  mutation PageUpdate($id: ID!, $name: String) {
-    updatePage(id: $id, input: { name: $name }) {
-
-      id
-      name
+const mPageUpdate = gql`
+  mutation PageUpdate(
+    $id: ID!
+    $input: PageUpdateInput
+    $add: [PageFieldCreateInput!]
+    $remove: [String!]
+  ) {
+    updatePage(id: $id, input: $input, addFields: $add, removeFields: $remove) {
+      userErrors {
+        field
+        message
+      }
+      page {
+        id
+        name
+        slug
+        fields {
+          name
+          type
+          value
+        }
+      }
     }
   }
 `;
 export interface variables {
   id: string;
-  name: string;
+  input: {
+    name: string;
+    slug: string;
+    fields: Array<{
+      name: string;
+      update: {
+        name: string;
+        value: string;
+      };
+    }>;
+  };
+  add: {
+    name: string;
+    type: string;
+    value: string;
+  };
+  remove: string[];
 }
-export default mDirectoryUpdate;
+export default mPageUpdate;

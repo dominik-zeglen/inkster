@@ -2,7 +2,7 @@ import  gql from "graphql-tag";
 
 const qDirectory = gql`
   query Directory($id: ID!) {
-    getContainer(id: $id) {
+    getDirectory(id: $id) {
       id
       name
       parent {

@@ -179,7 +179,7 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 	if data.Slug != nil {
 		count, err := collection.
 			Find(bson.M{
-				"id": bson.M{
+				"_id": bson.M{
 					"$ne": pageID,
 				},
 				"slug": *data.Slug,

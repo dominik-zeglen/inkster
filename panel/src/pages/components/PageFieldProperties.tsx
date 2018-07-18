@@ -10,7 +10,6 @@ interface Props {
   data: {
     id: string;
     name: string;
-    slug: string;
     type: string;
     value: string;
   };
@@ -36,12 +35,6 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
         label={i18n.t("Field name")}
         name="name"
         value={data.name}
-        onChange={onChange}
-      />
-      <Input
-        label={i18n.t("Field slug")}
-        name="slug"
-        value={data.slug}
         onChange={onChange}
       />
       <Input

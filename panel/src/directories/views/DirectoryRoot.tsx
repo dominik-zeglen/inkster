@@ -16,8 +16,8 @@ export const DirectoryRoot = () => (
     {navigate => {
       const handleRowClick = (id: string) => () =>
         navigate(urls.directoryDetails(id));
-      const handleCreate = (data: { createContainer: { id: string } }) =>
-        navigate(urls.directoryDetails(data.createContainer.id));
+      const handleCreate = (data: { createDirectory: { id: string } }) =>
+        navigate(urls.directoryDetails(data.createDirectory.id));
       return (
         <Query query={qRootDirectories} fetchPolicy="network-only">
           {({ data, error, loading }) => {
@@ -33,11 +33,7 @@ export const DirectoryRoot = () => (
                   ) => addDirectory({ variables });
                   return (
                     <DirectoryRootPage
-                      directories={
-                        data && data.getRootContainers
-                          ? data.getRootContainers
-                          : undefined
-                      }
+                      directories={data ? data.getRootDirectories : undefined}
                       disabled={loading}
                       loading={loading}
                       onAdd={handleAddDirectory}

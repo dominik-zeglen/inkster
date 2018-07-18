@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 const mDirectoryUpdate = gql`
   mutation DirectoryUpdate($id: ID!, $name: String!) {
-    updateContainer(id: $id, input: { name: $name }) {
+    updateDirectory(id: $id, input: { name: $name }) {
       id
       name
     }
