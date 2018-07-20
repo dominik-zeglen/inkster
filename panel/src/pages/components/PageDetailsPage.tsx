@@ -21,7 +21,14 @@ interface PageField {
   type: string;
   value: string;
 }
-interface Props extends ViewProps, FormViewProps<any> {
+export interface FormData {
+  name: string;
+  slug: string;
+  fields: PageField[];
+  addFields: PageField[];
+  removeFields: string[];
+}
+interface Props extends ViewProps, FormViewProps<FormData> {
   page?: {
     id: string;
     name?: string;
@@ -63,25 +70,12 @@ export const PageDetailsPage = decorate<Props>(
           ? (page.fields.map(f => ({ id: f.name, ...f })) as PageField[])
           : [],
       addFields: [] as PageField[],
-      removeFields: [] as PageField[]
+      removeFields: [] as string[]
     };
     return (
       <Form
         initial={initialForm}
-        onSubmit={data =>
-          onSubmit({
-            input: {
-              name: data.name,
-              slug: data.slug,
-              fields: data.fields.map(f => ({
-                name: f.id,
-                update: { name: f.name, value: f.value }
-              }))
-            },
-            add: data.addFields,
-            remove: data.removeFields
-          })
-        }
+        onSubmit={onSubmit}
         key={JSON.stringify(page ? JSON.stringify(page) : "loading")}
       >
         {({ change, data, hasChanged, submit }) => {

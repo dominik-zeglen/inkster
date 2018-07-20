@@ -38,11 +38,11 @@ export interface variables {
       };
     }>;
   };
-  add: {
+  add: Array<{
     name: string;
     type: string;
     value: string;
-  };
+  }>;
   remove: string[];
 }
 export default mPageUpdate;

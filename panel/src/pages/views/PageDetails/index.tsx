@@ -3,7 +3,7 @@ import { Query } from "react-apollo";
 import { ApolloError } from "apollo-client";
 
 import qPage from "../../queries/qPage";
-import PageDetailsPage from "../../components/PageDetailsPage";
+import PageDetailsPage, { FormData } from "../../components/PageDetailsPage";
 import Navigator from "../../../components/Navigator";
 import MutationProvider from "./MutationProvider";
 import { urls } from "../../../";
@@ -61,6 +61,21 @@ export class PageDetails extends React.Component<Props, State> {
                   {({ deletePage, updatePage }) => {
                     const formLoading = updatePage.loading;
                     const modalLoading = deletePage.loading;
+
+                    const handleSubmit = (data: FormData) =>
+                      updatePage.mutate({
+                        id,
+                        input: {
+                          name: data.name,
+                          slug: data.slug,
+                          fields: data.fields.map(f => ({
+                            name: f.id,
+                            update: { name: f.name, value: f.value }
+                          }))
+                        },
+                        add: data.addFields,
+                        remove: data.removeFields
+                      });
                     return (
                       <PageDetailsPage
                         disabled={formLoading || modalLoading}
@@ -69,7 +84,7 @@ export class PageDetails extends React.Component<Props, State> {
                         page={data ? data.page : undefined}
                         onBack={handleBack}
                         onDelete={deletePage.mutate}
-                        onSubmit={updatePage.mutate}
+                        onSubmit={handleSubmit}
                       />
                     );
                   }}
@@ -82,4 +97,4 @@ export class PageDetails extends React.Component<Props, State> {
     );
   }
 }
-export default PageDetails
+export default PageDetails;

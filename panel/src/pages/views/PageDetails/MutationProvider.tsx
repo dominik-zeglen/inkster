@@ -16,9 +16,7 @@ interface Props {
             loading: boolean;
           };
           updatePage: {
-            mutate: (
-              variables: Exclude<updatePageVariables, { id: string }>
-            ) => void;
+            mutate: (variables: updatePageVariables) => void;
             loading: boolean;
           };
           formErrors: Array<{
@@ -56,15 +54,9 @@ export const MutationProvider: React.StatelessComponent<Props> = ({
                     mutate: () => deletePage({ variables: { id } }),
                     loading: deletePageLoading
                   },
-                formErrors: [],
+                  formErrors: [],
                   updatePage: {
-                    mutate: (
-                      variables: Exclude<
-                        updatePageVariables,
-                        { id: string }
-                      >
-                    ) =>
-                      updatePage({ variables: { id, ...(variables as any) } }),
+                    mutate: (variables: updatePageVariables) => updatePage({variables}),
                     loading: updatePageLoading
                   }
                 })
