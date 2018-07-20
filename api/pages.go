@@ -306,47 +306,75 @@ func (res *Resolver) UpdatePage(args updatePageArgs) (*pageCreateResultResolver,
 			return nil, err
 		}
 		pageInput := core.PageInput{}
-		if args.Input.Name != nil {
-			pageInput.Name = args.Input.Name
-		}
-		if args.Input.Slug != nil {
-			pageInput.Slug = args.Input.Slug
-		}
-		if args.Input.ParentID != nil {
-			parentID := args.Input.ParentID
-			parentObjectID := bson.ObjectId(*parentID)
-			pageInput.ParentID = &parentObjectID
-		}
-		if args.Input.Fields != nil {
-			fields := *args.Input.Fields
-			for inputFieldIndex := range fields {
-				found := false
-				for pageFieldIndex := range page.Fields {
-					if page.Fields[pageFieldIndex].Name == fields[inputFieldIndex].Name {
-						found = true
-						if fields[inputFieldIndex].Update.Name != nil {
-							page.Fields[pageFieldIndex].Name = *fields[inputFieldIndex].Update.Name
-						}
-						if fields[inputFieldIndex].Update.Value != nil {
-							page.Fields[pageFieldIndex].Value = *fields[inputFieldIndex].Update.Value
-						}
-					}
-				}
-				if !found {
+		if args.Input != nil {
+			if args.Input.Name != nil {
+				if *args.Input.Name == "" {
 					return &pageCreateResultResolver{
 						dataSource: res.dataSource,
 						data: pageCreateResult{
 							userErrors: &[]userError{
 								userError{
-									field:   fields[inputFieldIndex].Name,
-									message: errNoEmpty(fields[inputFieldIndex].Name).Error(),
+									field:   "name",
+									message: errNoEmpty("name").Error(),
 								},
 							},
 						},
 					}, nil
 				}
+				pageInput.Name = args.Input.Name
 			}
-			pageInput.Fields = &page.Fields
+			if args.Input.Slug != nil {
+				if *args.Input.Slug == "" {
+					return &pageCreateResultResolver{
+						dataSource: res.dataSource,
+						data: pageCreateResult{
+							userErrors: &[]userError{
+								userError{
+									field:   "slug",
+									message: errNoEmpty("slug").Error(),
+								},
+							},
+						},
+					}, nil
+				}
+				pageInput.Slug = args.Input.Slug
+			}
+			if args.Input.ParentID != nil {
+				parentID := args.Input.ParentID
+				parentObjectID := bson.ObjectId(*parentID)
+				pageInput.ParentID = &parentObjectID
+			}
+			if args.Input.Fields != nil {
+				fields := *args.Input.Fields
+				for inputFieldIndex := range fields {
+					found := false
+					for pageFieldIndex := range page.Fields {
+						if page.Fields[pageFieldIndex].Name == fields[inputFieldIndex].Name {
+							found = true
+							if fields[inputFieldIndex].Update.Name != nil {
+								page.Fields[pageFieldIndex].Name = *fields[inputFieldIndex].Update.Name
+							}
+							if fields[inputFieldIndex].Update.Value != nil {
+								page.Fields[pageFieldIndex].Value = *fields[inputFieldIndex].Update.Value
+							}
+						}
+					}
+					if !found {
+						return &pageCreateResultResolver{
+							dataSource: res.dataSource,
+							data: pageCreateResult{
+								userErrors: &[]userError{
+									userError{
+										field:   fields[inputFieldIndex].Name,
+										message: errNoEmpty(fields[inputFieldIndex].Name).Error(),
+									},
+								},
+							},
+						}, nil
+					}
+				}
+				pageInput.Fields = &page.Fields
+			}
 		}
 		if args.AddFields != nil {
 			if pageInput.Fields == nil {
@@ -370,7 +398,6 @@ func (res *Resolver) UpdatePage(args updatePageArgs) (*pageCreateResultResolver,
 				for pageFieldIndex := range page.Fields {
 					if fields[pageFieldIndex].Name == removeFields[inputFieldIndex] {
 						found = true
-						fields = append(fields[:pageFieldIndex], fields[pageFieldIndex+1:]...)
 					}
 				}
 				if !found {
@@ -386,8 +413,21 @@ func (res *Resolver) UpdatePage(args updatePageArgs) (*pageCreateResultResolver,
 						},
 					}, nil
 				}
-				pageInput.Fields = &fields
 			}
+			fields = []core.PageField{}
+			pageFields := *pageInput.Fields
+			for pageFieldIndex := range pageFields {
+				found := false
+				for inputFieldIndex := range removeFields {
+					if pageFields[pageFieldIndex].Name == removeFields[inputFieldIndex] {
+						found = true
+					}
+				}
+				if !found {
+					fields = append(fields, pageFields[pageFieldIndex])
+				}
+			}
+			pageInput.Fields = &fields
 		}
 		err = res.dataSource.UpdatePage(localID, pageInput)
 		if err != nil {

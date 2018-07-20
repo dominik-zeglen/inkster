@@ -4778,6 +4778,7 @@ export default (theme: any) =>
         marginTop: "0",
         marginBottom: "0",
         fontSize: 16,
+        fontWeight: 600,
         color: "inherit"
       },
       ".panel-title > a, .panel-title > small, .panel-title > .small, .panel-title > small > a, .panel-title > .small > a": {

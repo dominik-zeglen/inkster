@@ -45,8 +45,8 @@ export class PageDetails extends React.Component<Props, State> {
               const handleBack = () =>
                 navigate(
                   urls.directoryDetails(
-                    data && data.getPage && data.getPage.parent
-                      ? data.getPage.parent.id
+                    data && data.page && data.page.parent
+                      ? data.page.parent.id
                       : undefined
                   )
                 );

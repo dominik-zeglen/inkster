@@ -1,0 +1,13 @@
+{
+    "data": {
+        "updatePage": null
+    },
+    "errors": [
+        {
+            "message": "graphql: panic occurred: runtime error: invalid memory address or nil pointer dereference",
+            "path": [
+                "updatePage"
+            ]
+        }
+    ]
+}

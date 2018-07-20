@@ -439,6 +439,37 @@ func TestPageAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Remove two fields from page", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation UpdatePageFields($id: ID!, $remove: [String!]) {
+				updatePage(id: $id, removeFields: $remove) {
+					userErrors {
+						field
+						message
+					}
+					page {
+						id
+						name
+						slug
+						fields {
+							name
+							type
+							value
+						}
+					}
+				}
+			}`
+			id := toGlobalID("page", test.Pages[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"remove": ["%s", "%s"]
+			}`, id, test.Pages[0].Fields[0].Name, test.Pages[0].Fields[1].Name)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 		t.Run("Update page properties", func(t *testing.T) {
 			defer resetDatabase()
 			query := `mutation UpdatePageProperties($id: ID!, $name: String) {
