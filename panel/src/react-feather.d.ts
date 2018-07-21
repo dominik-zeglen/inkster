@@ -15,10 +15,11 @@ declare module 'react-feather' {
   export const ArrowRight: StatelessComponent<FeatherIcon>;
   export const Box: StatelessComponent<FeatherIcon>;
   export const ChevronLeft: StatelessComponent<FeatherIcon>;
-  export const Plus: StatelessComponent<FeatherIcon>;
   export const FileText: StatelessComponent<FeatherIcon>;
-  export const Trash: StatelessComponent<FeatherIcon>;
   export const Folder: StatelessComponent<FeatherIcon>;
+  export const Home: StatelessComponent<FeatherIcon>;
+  export const Plus: StatelessComponent<FeatherIcon>;
+  export const Trash: StatelessComponent<FeatherIcon>;
   export const X: StatelessComponent<FeatherIcon>;
 }
 

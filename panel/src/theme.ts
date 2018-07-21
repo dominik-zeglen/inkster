@@ -1,16 +1,19 @@
+import * as Color from 'color'
+
 const breakpoints = {
   xs: 576,
   sm: 768,
   md: 992,
-  lg: 1200
+  lg: 1280
 };
 
 type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | string;
 
-function makeColor(main: string, dark: string) {
+function makeColor(main: string, dark?: string, light?: string) {
   return {
     main,
-    dark
+    dark: dark || Color(main).darken(.2).rgb().string(),
+    light: light || Color(main).lighten(.2).rgb().string()
   }
 }
 const palette = {

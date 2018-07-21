@@ -8,6 +8,7 @@ import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
 
 import App from "./App";
+import AppRoot from './AppRoot'
 import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
 import { urlize } from "./utils";
@@ -28,7 +29,9 @@ render(
       <ThemeProvider theme={theme}>
         <>
           <GlobalStylesheet />
-          <App />
+          <AppRoot>
+            <App />
+          </AppRoot>
         </>
       </ThemeProvider>
     </BrowserRouter>
