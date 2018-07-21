@@ -80,6 +80,7 @@ export class PageDetails extends React.Component<Props, State> {
                       <PageDetailsPage
                         disabled={formLoading || modalLoading}
                         loading={formLoading || modalLoading}
+                        title={data && data.page ? data.page.name : undefined}
                         transaction={this.state.transaction}
                         page={data ? data.page : undefined}
                         onBack={handleBack}

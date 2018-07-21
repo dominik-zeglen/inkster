@@ -2,7 +2,9 @@ import gql from "graphql-tag";
 
 const mPageDelete = gql`
   mutation PageDelete($id: ID!) {
-    removePage(id: $id)
+    removePage(id: $id) {
+      removedObjectId
+    }
   }
 `;
 export interface variables {

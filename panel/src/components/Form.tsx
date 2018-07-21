@@ -12,7 +12,7 @@ export interface FormProps<T extends {}> {
       ) => React.ReactElement<any>)
     | React.ReactNode;
   initial: T;
-  onSubmit: (data: T) => void;
+  onSubmit: (data?: T) => void;
 }
 
 const shallowCompare = (a: any, b: any) => {

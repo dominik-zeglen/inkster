@@ -57,6 +57,7 @@ export const PageDetailsPage = decorate<Props>(
     disabled,
     loading,
     page,
+    title,
     transaction,
     onBack,
     onDelete,
@@ -76,16 +77,21 @@ export const PageDetailsPage = decorate<Props>(
       <Form
         initial={initialForm}
         onSubmit={onSubmit}
-        key={JSON.stringify(page ? JSON.stringify(page) : "loading")}
+        key={JSON.stringify(page ? JSON.stringify(page) : "empty")}
       >
         {({ change, data, hasChanged, submit }) => {
-          const handleFieldAdd = (field: { name: string; type: string }) =>
+          const handleFieldAdd = (field: { type: string }) =>
             change({
               target: {
                 name: "addFields",
                 value: [
                   ...data.addFields,
-                  { ...field, id: "new-" + data.addFields.length }
+                  {
+                    ...field,
+                    id: "new-" + data.addFields.length,
+                    name: "",
+                    value: ""
+                  }
                 ]
               }
             } as any);
@@ -131,20 +137,19 @@ export const PageDetailsPage = decorate<Props>(
                       ) => (
                         <>
                           <Container width="md">
-                            <PageHeader
-                              onBack={onBack}
-                              title={page ? page.name : undefined}
-                            >
+                            <PageHeader onBack={onBack} title={title}>
                               <IconButton
                                 disabled={disabled || loading}
                                 icon={Plus}
                                 onClick={toggleFieldAddDialog}
                               />
-                              <IconButton
-                                disabled={disabled || loading}
-                                icon={Trash}
-                                onClick={toggleRemoveDialog}
-                              />
+                              {!!onDelete && (
+                                <IconButton
+                                  disabled={disabled || loading}
+                                  icon={Trash}
+                                  onClick={toggleRemoveDialog}
+                                />
+                              )}
                             </PageHeader>
                             <div className={classes.root}>
                               <div>
@@ -189,23 +194,25 @@ export const PageDetailsPage = decorate<Props>(
                             />
                           </Container>
                           {!disabled &&
-                            !loading &&
-                            page && (
+                            !loading && (
                               <>
-                                <ActionDialog
-                                  show={openedRemoveDialog}
-                                  size="xs"
-                                  title={i18n.t("Remove page")}
-                                  onClose={toggleRemoveDialog}
-                                  onConfirm={onDelete}
-                                >
-                                  {i18n.t(
-                                    "Are you sure you want to remove {{ name }}?",
-                                    { name: page.name }
+                                {!!onDelete &&
+                                  page && (
+                                    <ActionDialog
+                                      show={openedRemoveDialog}
+                                      size="xs"
+                                      title={i18n.t("Remove page")}
+                                      onClose={toggleRemoveDialog}
+                                      onConfirm={onDelete}
+                                    >
+                                      {i18n.t(
+                                        "Are you sure you want to remove {{ name }}?",
+                                        { name: page.name }
+                                      )}
+                                    </ActionDialog>
                                   )}
-                                </ActionDialog>
                                 <Form
-                                  initial={{ type: "", name: "" }}
+                                  initial={{ type: "text" }}
                                   onSubmit={handleFieldAdd}
                                 >
                                   {({
@@ -221,12 +228,6 @@ export const PageDetailsPage = decorate<Props>(
                                       onConfirm={addField as () => void}
                                     >
                                       <Input
-                                        name="name"
-                                        label={i18n.t("Name")}
-                                        value={addFieldData.name}
-                                        onChange={handleAddFieldChange}
-                                      />
-                                      <Input
                                         name="type"
                                         label={i18n.t("Type")}
                                         value={addFieldData.type}
@@ -239,7 +240,6 @@ export const PageDetailsPage = decorate<Props>(
                                           </option>
                                           <option
                                             value="longText"
-                                            selected={true}
                                           >
                                             {i18n.t("Long text")}
                                           </option>

@@ -26,6 +26,7 @@ interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
       name?: string;
     }>;
   };
+  onDelete: () => void;
 }
 
 const decorate = withStyles(
@@ -38,7 +39,6 @@ const decorate = withStyles(
   }),
   { displayName: "DirectoryDetailsPage" }
 );
-const dummy = () => {};
 export const DirectoryDetailsPage = decorate<Props>(
   ({
     classes,
@@ -88,7 +88,7 @@ export const DirectoryDetailsPage = decorate<Props>(
                       pages={directory ? directory.pages : undefined}
                       disabled={disabled || loading}
                       pageInfo={pageInfo}
-                      onAdd={dummy}
+                      onAdd={onAdd}
                       onNextPage={onNextPage}
                       onPreviousPage={onPreviousPage}
                       onRowClick={onRowClick}

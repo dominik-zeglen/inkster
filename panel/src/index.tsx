@@ -38,6 +38,7 @@ render(
 
 export const urls = {
   directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
+  pageCreate: (id: string) => `/directories/${id}/createPage`,
   pageDetails: (id: string) => `/pages/${urlize(id)}`
 };
 
@@ -55,13 +56,14 @@ export interface PaginatedListProps {
 export interface ViewProps {
   disabled: boolean;
   loading: boolean;
+  title?: string;
 }
 export interface ListViewProps<T> extends ViewProps, PaginatedListProps {
-  onAdd: (data: T) => void;
+  onAdd: (data?: T) => void;
 }
 export interface FormViewProps<T> extends ViewProps {
   transaction: TransactionState;
   onBack: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   onSubmit: (data: T) => void;
 }
