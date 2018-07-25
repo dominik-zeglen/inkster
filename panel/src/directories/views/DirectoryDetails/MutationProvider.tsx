@@ -46,19 +46,19 @@ export const MutationProvider: React.StatelessComponent<Props> = ({
   <Mutation mutation={mDirectoryDelete} onCompleted={onDirectoryDelete}>
     {(
       deleteDirectory,
-      { called, data, error, loading: deleteDirectoryLoading }
+      { error: deleteDirectoryError, loading: deleteDirectoryLoading }
     ) => {
-      if (error) {
-        onDirectoryDeleteError(error);
+      if (deleteDirectoryError) {
+        onDirectoryDeleteError(deleteDirectoryError);
       }
       return (
         <Mutation mutation={mDirectoryUpdate} onCompleted={onDirectoryUpdate}>
           {(
             updateDirectory,
-            { called, data, error, loading: updateDirectoryLoading }
+            { data, error: updateDirectoryError, loading: updateDirectoryLoading }
           ) => {
-            if (error) {
-              onDirectoryUpdateError(error);
+            if (updateDirectoryError) {
+              onDirectoryUpdateError(updateDirectoryError);
             }
             return children && typeof children === "function"
               ? children({

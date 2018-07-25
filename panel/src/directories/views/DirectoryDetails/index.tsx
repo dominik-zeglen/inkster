@@ -37,8 +37,8 @@ export class DirectoryDetails extends React.Component<Props, State> {
       <Navigator>
         {navigate => {
           const handleAddPage = () => navigate(urls.pageCreate(id))
-          const handleRowClick = (id: string) => () =>
-            navigate(urls.pageDetails(id));
+          const handleRowClick = (pageId: string) => () =>
+            navigate(urls.pageDetails(pageId));
           const handleDelete = () => navigate(urls.directoryDetails(), true)
           return (
             <Query

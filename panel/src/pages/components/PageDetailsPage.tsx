@@ -80,21 +80,21 @@ export const PageDetailsPage = decorate<Props>(
         key={JSON.stringify(page ? JSON.stringify(page) : "empty")}
       >
         {({ change, data, hasChanged, submit }) => {
-          const handleFieldAdd = (field: { type: string }) =>
+          const handleFieldAdd = (field: { type: string }) => {
             change({
               target: {
                 name: "addFields",
                 value: [
                   ...data.addFields,
                   {
-                    ...field,
+                    type: field.type,
                     id: "new-" + data.addFields.length,
                     name: "",
                     value: ""
                   }
                 ]
               }
-            } as any);
+            } as any)};
           const handleFieldRemove = (name: string, id: string) => () => {
             change({
               target: {

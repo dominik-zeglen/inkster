@@ -52,12 +52,12 @@ export class PageCreate extends React.Component<Props, State> {
           return (
             <Mutation mutation={mPageCreate} onCompleted={handleSubmitSuccess}>
               {(createPage, { data, loading }) => {
-                const handleSubmit = (data: FormData) =>
+                const handleSubmit = (formData: FormData) =>
                   createPage({
                     variables: {
-                      name: data.name,
+                      name: formData.name,
                       parentId: directory,
-                      fields: data.addFields
+                      fields: formData.addFields
                     } as PageCreateVariables
                   });
                 return (

@@ -40,14 +40,14 @@ export const MutationProvider: React.StatelessComponent<Props> = ({
   onError
 }) => (
   <Mutation mutation={mPageDelete} onCompleted={onPageDelete} onError={onError}>
-    {(deletePage, { data, error, loading: deletePageLoading }) => {
+    {(deletePage, { loading: deletePageLoading }) => {
       return (
         <Mutation
           mutation={mPageUpdate}
           onCompleted={onPageUpdate}
           onError={onError}
         >
-          {(updatePage, { data, error, loading: updatePageLoading }) => {
+          {(updatePage, { loading: updatePageLoading }) => {
             return children && typeof children === "function"
               ? children({
                   deletePage: {

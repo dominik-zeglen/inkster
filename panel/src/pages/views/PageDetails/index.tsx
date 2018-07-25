@@ -62,19 +62,19 @@ export class PageDetails extends React.Component<Props, State> {
                     const formLoading = updatePage.loading;
                     const modalLoading = deletePage.loading;
 
-                    const handleSubmit = (data: FormData) =>
+                    const handleSubmit = (formData: FormData) =>
                       updatePage.mutate({
                         id,
                         input: {
-                          name: data.name,
-                          slug: data.slug,
-                          fields: data.fields.map(f => ({
+                          name: formData.name,
+                          slug: formData.slug,
+                          fields: formData.fields.map(f => ({
                             name: f.id,
                             update: { name: f.name, value: f.value }
                           }))
                         },
-                        add: data.addFields,
-                        remove: data.removeFields
+                        add: formData.addFields,
+                        remove: formData.removeFields
                       });
                     return (
                       <PageDetailsPage

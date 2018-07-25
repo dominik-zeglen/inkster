@@ -2,10 +2,10 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "linterOptions": {
     "exclude": [
-      "static/**/*.(jsx?|tsx?)",
-      "build/**/*.(jsx?|tsx?)",
-      "config/**/*.(jsx?|tsx?)",
-      "node_modules/**/*.(jsx?|tsx?)"
+      "static/**/*",
+      "build/**/*",
+      "config/**/*",
+      "node_modules/**/*"
     ]
   },
   "rules" : {
@@ -17,6 +17,8 @@
     "member-ordering": false,
     "member-access": false,
     "no-empty": false,
-    "no-string-literal": false
+    "no-string-literal": false,
+    "max-classes-per-file": false,
+    "class-name": false
   }
 }

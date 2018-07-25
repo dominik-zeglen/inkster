@@ -58,7 +58,7 @@ export const AppLayout = decorate<Props>(
                 <div
                   className={[
                     classes.link,
-                    section == "home" ? "active" : undefined
+                    section === "home" ? "active" : undefined
                   ].join(' ')}
                   onClick={onSectionClick("home")}
                 >
@@ -68,7 +68,7 @@ export const AppLayout = decorate<Props>(
                 <div
                   className={[
                     classes.link,
-                    section == "directories" ? "active" : undefined
+                    section === "directories" ? "active" : undefined
                   ].join(' ')}
                   onClick={onSectionClick("directories")}
                 >

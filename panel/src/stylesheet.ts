@@ -4747,7 +4747,7 @@ export default (theme: any) =>
         backgroundColor: "#fff",
         border: "1px solid #eee",
         borderRadius: theme.spacing / 2,
-        boxShadow: "5px 5px 10px #f2f2f2"
+        boxShadow: "5px 5px 10px #0000000a"
       },
       ".panel-body": {
         padding: 15

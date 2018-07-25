@@ -4,6 +4,7 @@ import { X } from "react-feather";
 
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
+import RichTextEditor from "../../components/RichTextEditor";
 import i18n from "../../i18n";
 
 interface Props {
@@ -32,18 +33,26 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
     </Panel.Heading>
     <Panel.Body>
       <Input
-        label={i18n.t("Field name")}
+        label={i18n.t("Name")}
         name="name"
         value={data.name}
         onChange={onChange}
       />
-      <Input
-        label={i18n.t("Field value")}
-        name="value"
-        value={data.value}
-        type={data.type === "longText" ? "textarea" : "text"}
-        onChange={onChange}
-      />
+      {data.type === "longText" ? (
+        <RichTextEditor
+          label={i18n.t("Field value")}
+          initialValue={data.value}
+          name="value"
+          onChange={onChange}
+        />
+      ) : (
+        <Input
+          label={i18n.t("Value")}
+          name="value"
+          value={data.value}
+          onChange={onChange}
+        />
+      )}
     </Panel.Body>
   </Panel>
 );

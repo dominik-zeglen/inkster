@@ -5,8 +5,8 @@ import AppLayout from "./components/AppLayout";
 
 export const AppRoot = withRouter(({ children, history, location }) => {
   const section = location.pathname.split("/")[1];
-  const handleSectionClick = (section: string) => () => {
-    switch (section) {
+  const handleSectionClick = (sectionName: string) => () => {
+    switch (sectionName) {
       case "home":
         history.push("/");
         break;
