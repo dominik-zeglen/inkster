@@ -17,7 +17,6 @@ import {
   OrderedListButton,
   BlockquoteButton
 } from "draft-js-buttons";
-import "draft-js-inline-toolbar-plugin/lib/plugin.css";
 
 interface Props {
   id?: string;

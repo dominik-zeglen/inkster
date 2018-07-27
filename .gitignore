@@ -2,9 +2,10 @@
 !.snapshots
 !.gitignore
 !.travis.yml
+!.storybook
 node_modules
 static
 vendor
-*debug*
 panel/build
 panel/dist
+*debug*
