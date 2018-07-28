@@ -5,9 +5,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=foxxy
-      - MONGO_INITDB_ROOT_PASSWORD=foxxy
-      - MONGO_INITDB_ROOT_DATABASE=foxxy
+      - MONGO_INITDB_ROOT_USERNAME=inkster
+      - MONGO_INITDB_ROOT_PASSWORD=inkster
+      - MONGO_INITDB_ROOT_DATABASE=inkster
   web:
     links:
       - db
@@ -17,9 +17,9 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - FOXXY_DB_URI=mongodb://foxxy:foxxy@db/admin
-      - FOXXY_DB_NAME=foxxy
-      - FOXXY_PORT=8000
+      - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
+      - INKSTER_DB_NAME=inkster
+      - INKSTER_PORT=8000
     volumes:
       - ./panel/build:/go/src/app/panel/build
     command: "/app/main" 

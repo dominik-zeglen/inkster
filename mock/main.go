@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/inkster/core"
 )
 
 var directories = make([]core.Directory, 0)

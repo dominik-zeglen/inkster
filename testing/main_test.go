@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dominik-zeglen/ecoknow/core"
-	"github.com/dominik-zeglen/ecoknow/mock"
-	"github.com/dominik-zeglen/ecoknow/mongodb"
+	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/mock"
+	"github.com/dominik-zeglen/inkster/mongodb"
 )
 
 var ErrNoError = fmt.Errorf("Did not return error")
@@ -27,8 +27,8 @@ func ToJSON(object interface{}) (string, error) {
 
 var dataSources = []core.Adapter{
 	mongodb.Adapter{
-		ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-		DBName:        os.Getenv("FOXXY_DB_NAME") + "_test",
+		ConnectionURI: os.Getenv("INKSTER_DB_URI"),
+		DBName:        os.Getenv("INKSTER_DB_NAME") + "_test",
 	},
 	mock.Adapter{},
 }

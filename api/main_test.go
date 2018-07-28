@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/dominik-zeglen/ecoknow/mock"
-	test "github.com/dominik-zeglen/ecoknow/testing"
+	"github.com/dominik-zeglen/inkster/mock"
+	test "github.com/dominik-zeglen/inkster/testing"
 	gql "github.com/graph-gophers/graphql-go"
 )
 

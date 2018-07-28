@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/inkster/core"
 )
 
 func init() {

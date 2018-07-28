@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-	test "github.com/dominik-zeglen/ecoknow/testing"
+	test "github.com/dominik-zeglen/inkster/testing"
 )
 
 func TestPageAPI(t *testing.T) {

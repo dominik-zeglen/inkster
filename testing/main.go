@@ -1,7 +1,7 @@
 package testing
 
 import (
-	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/inkster/core"
 )
 
 // Directories are part of testing data

@@ -14,15 +14,15 @@ install:
   - dep ensure
   - npm i
 before_script:
-  - psql -c 'create database foxxy;' -U postgres
+  - psql -c 'create database inkster;' -U postgres
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
   # - npm test
 services: postgresql
 env:
   global:
-    - FOXXY_DB_PORT=5432
-    - FOXXY_DB_ADDR="127.0.0.1"
-    - FOXXY_DB_NAME=foxxy
-    - FOXXY_DB_USER=travis
-    - FOXXY_DB_USER_PASSWORD=
+    - INKSTER_DB_PORT=5432
+    - INKSTER_DB_ADDR="127.0.0.1"
+    - INKSTER_DB_NAME=inkster
+    - INKSTER_DB_USER=travis
+    - INKSTER_DB_USER_PASSWORD=

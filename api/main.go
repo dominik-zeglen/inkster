@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dominik-zeglen/ecoknow/core"
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/globalsign/mgo/bson"
 )
 

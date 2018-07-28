@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dominik-zeglen/ecoknow/api"
-	"github.com/dominik-zeglen/ecoknow/mongodb"
+	"github.com/dominik-zeglen/inkster/api"
+	"github.com/dominik-zeglen/inkster/mongodb"
 	"github.com/globalsign/mgo"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
@@ -16,8 +16,8 @@ import (
 
 var schema *graphql.Schema
 var dataSource = mongodb.Adapter{
-	ConnectionURI: os.Getenv("FOXXY_DB_URI"),
-	DBName:        os.Getenv("FOXXY_DB_NAME"),
+	ConnectionURI: os.Getenv("INKSTER_DB_URI"),
+	DBName:        os.Getenv("INKSTER_DB_NAME"),
 }
 
 func init() {
@@ -67,6 +67,6 @@ func main() {
 	)
 
 	http.Handle("/graphql/", &relay.Handler{Schema: schema})
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("FOXXY_PORT")), nil))
-	log.Printf("Running server on port %s\n", os.Getenv("FOXXY_PORT"))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))
+	log.Printf("Running server on port %s\n", os.Getenv("INKSTER_PORT"))
 }
