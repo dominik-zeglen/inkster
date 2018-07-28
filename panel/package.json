@@ -1,5 +1,5 @@
 {
-  "name": "panel",
+  "name": "Inkster management panel",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -145,7 +145,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "/home/anders/projects/golang/src/github.com/dominik-zeglen/ecoknow/panel/tsconfig.test.json"
+        "tsConfigFile": "tsconfig.test.json"
       }
     }
   },
