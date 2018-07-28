@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/dominik-zeglen/ecoknow/api"
 	"github.com/dominik-zeglen/ecoknow/mongodb"
+	"github.com/globalsign/mgo"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
@@ -19,13 +21,23 @@ var dataSource = mongodb.Adapter{
 }
 
 func init() {
+	if dataSource.ConnectionURI == "" || dataSource.DBName == "" {
+		log.Fatalln("ERROR: Missing environment variables.")
+	}
+	sess, err := mgo.Dial(dataSource.ConnectionURI)
+	log.Printf("Making connection to %s\n", dataSource.ConnectionURI)
+	if err != nil {
+		log.Println("WARNING: Database is offline.")
+	} else {
+		sess.Close()
+	}
 	resolver := api.NewResolver(&dataSource)
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 
 func check(err error) {
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
 
@@ -55,5 +67,6 @@ func main() {
 	)
 
 	http.Handle("/graphql/", &relay.Handler{Schema: schema})
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("FOXXY_PORT")), nil))
+	log.Printf("Running server on port %s\n", os.Getenv("FOXXY_PORT"))
 }
