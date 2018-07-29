@@ -42,14 +42,15 @@ func check(err error) {
 }
 
 func main() {
-	http.Handle("/static/",
+	http.Handle("/panel/static/",
 		http.StripPrefix(
-			"/static/",
+			"/panel/static/",
 			http.FileServer(http.Dir("panel/build/static")),
 		))
 	http.Handle("/panel/",
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
+				log.Println(r.URL)
 				dat, err := ioutil.ReadFile("panel/build/index.html")
 				check(err)
 				w.Write(dat)

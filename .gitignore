@@ -5,8 +5,5 @@
 !.travis.yml
 !.storybook
 node_modules
-static
 vendor
-panel/build
-panel/dist
 *debug*
