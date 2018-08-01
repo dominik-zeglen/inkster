@@ -20,12 +20,26 @@ var dataSource = mongodb.Adapter{
 	DBName:        os.Getenv("INKSTER_DB_NAME"),
 }
 
+func checkEnv() bool {
+	vars := []string{
+		"INKSTER_DB_URI",
+		"INKSTER_DB_NAME",
+		"INKSTER_STATIC",
+		"INKSTER_PORT",
+	}
+	for _, env := range vars {
+		if os.Getenv(env) == "" {
+			return false
+		}
+	}
+	return true
+}
+
 func init() {
-	if dataSource.ConnectionURI == "" || dataSource.DBName == "" {
+	if !checkEnv() {
 		log.Fatalln("ERROR: Missing environment variables.")
 	}
 	sess, err := mgo.Dial(dataSource.ConnectionURI)
-	log.Printf("Making connection to %s\n", dataSource.ConnectionURI)
 	if err != nil {
 		log.Println("WARNING: Database is offline.")
 	} else {
@@ -53,7 +67,8 @@ func main() {
 				log.Println(r.URL)
 				dat, err := ioutil.ReadFile("panel/build/index.html")
 				check(err)
-				w.Write(dat)
+				_, err = w.Write(dat)
+				check(err)
 			},
 		),
 	)
@@ -62,10 +77,12 @@ func main() {
 			func(w http.ResponseWriter, r *http.Request) {
 				dat, err := ioutil.ReadFile("app/graphiql.html")
 				check(err)
-				w.Write(dat)
+				_, err = w.Write(dat)
+				check(err)
 			},
 		),
 	)
+	http.Handle("/upload", http.HandlerFunc(api.UploadHandler))
 
 	http.Handle("/graphql/", &relay.Handler{Schema: schema})
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))

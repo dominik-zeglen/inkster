@@ -1,13 +1,13 @@
 {
     "data": {
-        "updatePage": null
-    },
-    "errors": [
-        {
-            "message": "graphql: panic occurred: runtime error: invalid memory address or nil pointer dereference",
-            "path": [
-                "updatePage"
-            ]
+        "updatePage": {
+            "userErrors": null,
+            "page": {
+                "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+                "name": "Page 1",
+                "slug": "page-1",
+                "fields": []
+            }
         }
-    ]
+    }
 }

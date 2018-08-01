@@ -31,7 +31,10 @@ func execQuery(query string, variables string) (string, error) {
 		return "", err
 	}
 	var out bytes.Buffer
-	json.Indent(&out, jsonResult, "", "    ")
+	err = json.Indent(&out, jsonResult, "", "    ")
+	if err != nil {
+		return "", err
+	}
 	return out.String(), nil
 }
 

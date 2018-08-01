@@ -1,5 +1,6 @@
 .*
 !.dockerignore
+!.keep
 !.snapshots
 !.gitignore
 !.travis.yml
