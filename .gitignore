@@ -7,4 +7,5 @@
 !.storybook
 node_modules
 vendor
+static/*
 *debug*

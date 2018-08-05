@@ -68,7 +68,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	f, err := os.OpenFile(
-		"./"+os.Getenv("INKSTER_STATIC")+"/"+filename+"_"+fileHeader.Filename,
+		os.Getenv("INKSTER_STATIC")+"/"+filename+"_"+fileHeader.Filename,
 		os.O_WRONLY|os.O_CREATE,
 		0666,
 	)
