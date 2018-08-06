@@ -60,18 +60,24 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
               ref={ref => {
                 this.refs[data.name] = ref;
               }}
+              accept="image/*"
               style={{ display: "none" as "none" }}
               onChange={onUpload(onChange)}
             />
             <div>
               {data.value ? (
                 <>
-                  <Image src={"/static/" + data.value} rounded={true} responsive={true} />
+                  <Image
+                    src={"/static/" + data.value}
+                    rounded={true}
+                    responsive={true}
+                    style={{ margin: "10px 0" }}
+                  />
                   <Button
                     onClick={
                       this.refs ? () => this.refs[data.name].click() : undefined
                     }
-                    style={{ marginTop: 10, width: "100%" }}
+                    style={{ width: "100%" }}
                   >
                     {i18n.t("Change image")}
                   </Button>
@@ -93,7 +99,7 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                     }
                     style={{ width: "100%" }}
                   >
-                    {i18n.t("Upload file")}
+                    {i18n.t("Upload image")}
                   </Button>
                 </>
               )}
