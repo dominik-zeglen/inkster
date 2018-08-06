@@ -11,5 +11,6 @@ declare module "draft-js-plugins-editor" {
   export const Editor: (
     props: PluginsEditorProps
   ) => Component<PluginsEditorProps, EditorState>;
+  export const composeDecorators: any;
   export default Editor;
 }

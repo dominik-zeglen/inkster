@@ -2,7 +2,7 @@ import * as React from "react";
 import { ControlLabel, FormGroup, HelpBlock } from "react-bootstrap";
 import withStyles, { WithStyles } from "react-jss";
 import { EditorState, convertFromRaw, convertToRaw, RichUtils } from "draft-js";
-import Editor from "draft-js-plugins-editor";
+import Editor, { composeDecorators } from "draft-js-plugins-editor";
 import createInlineToolbarPlugin, {
   Separator
 } from "draft-js-inline-toolbar-plugin";
@@ -17,6 +17,12 @@ import {
   OrderedListButton,
   BlockquoteButton
 } from "draft-js-buttons";
+import createImagePlugin from "draft-js-image-plugin";
+import createAlignmentPlugin from "draft-js-alignment-plugin";
+import createFocusPlugin from "draft-js-focus-plugin";
+import createResizeablePlugin from "draft-js-resizeable-plugin";
+import createBlockDndPlugin from "draft-js-drag-n-drop-plugin";
+import createDragNDropUploadPlugin from "@mikeljames/draft-js-drag-n-drop-upload-plugin";
 
 interface Props {
   id?: string;
@@ -31,6 +37,27 @@ interface State {
   editorState: any;
   focused: boolean;
 }
+
+// Plugins
+const mockUpload = (opts: any) => console.log(opts);
+const focusPlugin = createFocusPlugin();
+const resizeablePlugin = createResizeablePlugin();
+const blockDndPlugin = createBlockDndPlugin();
+const alignmentPlugin = createAlignmentPlugin();
+const { AlignmentTool } = alignmentPlugin;
+
+const decorator = composeDecorators(
+  resizeablePlugin.decorator,
+  alignmentPlugin.decorator,
+  focusPlugin.decorator,
+  blockDndPlugin.decorator
+);
+const imagePlugin = createImagePlugin({ decorator });
+
+const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
+  handleUpload: mockUpload,
+  addImage: imagePlugin.addImage
+});
 
 const decorate = withStyles((theme: any) => ({
   editor: {
@@ -50,7 +77,7 @@ const decorate = withStyles((theme: any) => ({
     fontSize: 21,
     border: 0,
     verticalAlign: "bottom",
-    position: 'relative' as 'relative',
+    position: "relative" as "relative",
     top: -1,
     height: 34,
     width: 36
@@ -169,7 +196,15 @@ export const RichTextEditor = decorate<Props>(
     render() {
       const { classes, id, error, label, helperText } = this.props;
       const { InlineToolbar } = this.inlineToolbarPlugin;
-      const plugins = [this.inlineToolbarPlugin];
+      const plugins = [
+        this.inlineToolbarPlugin,
+        dragNDropFileUploadPlugin,
+        blockDndPlugin,
+        focusPlugin,
+        alignmentPlugin,
+        resizeablePlugin,
+        imagePlugin
+      ];
       return (
         <FormGroup controlId={id} validationState={error ? "error" : null}>
           {label && <ControlLabel>{label}</ControlLabel>}
@@ -191,6 +226,7 @@ export const RichTextEditor = decorate<Props>(
               }}
             />
             <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
+            <AlignmentTool />
           </div>
           {helperText && <HelpBlock>{helperText}</HelpBlock>}
         </FormGroup>

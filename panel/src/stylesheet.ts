@@ -5749,10 +5749,10 @@ export default (theme: any) =>
       ".visible-print-inline-block": {
         display: "none !important"
       },
-      ".draftJsToolbar__buttonWrapper__1Dmqh": {
+      ".draftJsToolbar__buttonWrapper__1Dmqh, .draftJsEmojiPlugin__buttonWrapper__1Dmqh": {
         display: "inline-block" as "inline-block"
       },
-      ".draftJsToolbar__button__qi1gf": {
+      ".draftJsToolbar__button__qi1gf, .draftJsEmojiPlugin__button__qi1gf": {
         background: "transparent",
         color: "#888",
         fontSize: 18,
@@ -5762,10 +5762,10 @@ export default (theme: any) =>
         height: 34,
         width: 36
       },
-      ".draftJsToolbar__button__qi1gf svg": {
+      ".draftJsToolbar__button__qi1gf svg, .draftJsEmojiPlugin__button__qi1gf svg": {
         fill: "#888"
       },
-      ".draftJsToolbar__button__qi1gf:hover, .draftJsToolbar__button__qi1gf:focus": {
+      ".draftJsToolbar__button__qi1gf:hover, .draftJsToolbar__button__qi1gf:focus, .draftJsEmojiPlugin__button__qi1gf:hover, .draftJsEmojiPlugin__button__qi1gf:focus": {
         background: "#f3f3f3",
         outline: "0"
       },
@@ -5804,17 +5804,25 @@ export default (theme: any) =>
         position: "absolute",
         pointerEvents: "none"
       },
-      ".draftJsToolbar__toolbar__dNtBH:after": {
+      ".draftJsToolbar__toolbar__dNtBH:after, .draftJsEmojiPlugin__alignmentTool__2mkQr:after": {
         borderColor: "rgba(255, 255, 255, 0)",
         borderTopColor: "#fff",
         borderWidth: 4,
         marginLeft: -4
       },
-      ".draftJsToolbar__toolbar__dNtBH:before": {
+      ".draftJsToolbar__toolbar__dNtBH:before, .draftJsEmojiPlugin__alignmentTool__2mkQr:before": {
         borderColor: "rgba(221, 221, 221, 0)",
         borderTopColor: "#ddd",
         borderWidth: 6,
         marginLeft: -6
+      },
+      ".draftJsEmojiPlugin__alignmentTool__2mkQr": {
+        background: "#fff",
+        border: "1px solid #ddd",
+        borderRadius: 2,
+        boxShadow: "0px 1px 3px 0px rgba(220,220,220,1)",
+        display: "flex" as "flex",
+        position: "absolute" as "absolute"
       }
     }
   } as any);
