@@ -35,9 +35,6 @@ export class UploadProvider extends React.Component<Props, State> {
     this.setState({ active: true });
     const form: any = new FormData();
     form.append("file", opts.file);
-    for (var key of form.entries()) {
-      console.log(key[0] + ", " + key[1]);
-    }
 
     axios
       .post("/upload", form, {

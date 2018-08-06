@@ -251,6 +251,9 @@ export const PageDetailsPage = decorate<Props>(
                                           <option value="image">
                                             {i18n.t("Image")}
                                           </option>
+                                          <option value="file">
+                                            {i18n.t("File")}
+                                          </option>
                                         </>
                                       </Input>
                                     </ActionDialog>

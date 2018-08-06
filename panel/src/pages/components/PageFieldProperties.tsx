@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, Image, ControlLabel, Panel } from "react-bootstrap";
-import { Image as ImageIcon, X } from "react-feather";
+import { Image as ImageIcon, File as FileIcon, X } from "react-feather";
 
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
@@ -100,6 +100,58 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                     style={{ width: "100%" }}
                   >
                     {i18n.t("Upload image")}
+                  </Button>
+                </>
+              )}
+            </div>
+          </>
+        ) : data.type === "file" ? (
+          <>
+            <ControlLabel>{i18n.t("File")}</ControlLabel>
+            <input
+              name="value"
+              type="file"
+              ref={ref => {
+                this.refs[data.name] = ref;
+              }}
+              style={{ display: "none" as "none" }}
+              onChange={onUpload(onChange)}
+            />
+            <div>
+              {data.value ? (
+                <>
+                  <a href={"/static/" + data.value}>
+                    {i18n.t("Download {{ filename }}", {
+                      filename: data.value
+                    })}
+                  </a>
+                  <Button
+                    onClick={
+                      this.refs ? () => this.refs[data.name].click() : undefined
+                    }
+                    style={{ width: "100%" }}
+                  >
+                    {i18n.t("Change file")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <span
+                    style={{
+                      display: "block" as "block",
+                      margin: "20px auto",
+                      width: 64
+                    }}
+                  >
+                    <FileIcon size={64} />
+                  </span>
+                  <Button
+                    onClick={
+                      this.refs ? () => this.refs[data.name].click() : undefined
+                    }
+                    style={{ width: "100%" }}
+                  >
+                    {i18n.t("Upload file")}
                   </Button>
                 </>
               )}

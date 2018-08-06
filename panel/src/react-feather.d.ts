@@ -18,6 +18,7 @@ declare module 'react-feather' {
   export const ChevronDown: StatelessComponent<FeatherIcon>;
   export const ChevronLeft: StatelessComponent<FeatherIcon>;
   export const ChevronUp: StatelessComponent<FeatherIcon>;
+  export const File: StatelessComponent<FeatherIcon>;
   export const FileText: StatelessComponent<FeatherIcon>;
   export const Folder: StatelessComponent<FeatherIcon>;
   export const Home: StatelessComponent<FeatherIcon>;
