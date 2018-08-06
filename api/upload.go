@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"crypto/md5"
 	"fmt"
 	"io"
@@ -53,7 +54,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err := r.ParseMultipartForm((1 << 20) * 10) // 10MB max size
+	err := r.ParseMultipartForm(32 << 20)
 	if sendError(err, w, 400) {
 		return
 	}
@@ -62,6 +63,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer closeFile(file, w)
+	var buff bytes.Buffer
+	_, err = buff.ReadFrom(file)
+	if sendError(err, w, 500) {
+		return
+	}
 
 	filename, err := createFileName(file)
 	if sendError(err, w, 500) {
@@ -76,7 +82,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer closeFile(f, w)
-	_, err = io.Copy(f, file)
+
+	_, err = f.Write(buff.Bytes())
 	if sendError(err, w, 500) {
 		return
 	}

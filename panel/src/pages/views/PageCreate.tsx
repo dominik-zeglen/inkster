@@ -10,6 +10,7 @@ import mPageCreate, {
   variables as PageCreateVariables
 } from "../queries/mPageCreate";
 import i18n from "../../i18n";
+import { WithUpload } from "../../UploadProvider";
 
 interface Props {
   directory: string;
@@ -50,28 +51,53 @@ export class PageCreate extends React.Component<Props, State> {
             navigate(urls.pageDetails(data.createPage.page.id));
           };
           return (
-            <Mutation mutation={mPageCreate} onCompleted={handleSubmitSuccess}>
-              {(createPage, { data, loading }) => {
-                const handleSubmit = (formData: FormData) =>
-                  createPage({
-                    variables: {
-                      name: formData.name,
-                      parentId: directory,
-                      fields: formData.addFields
-                    } as PageCreateVariables
+            <WithUpload>
+              {uploadFile => {
+                const handleUpload = (onChange: any) => (
+                  event: React.ChangeEvent<any>
+                ) => {
+                  uploadFile.uploadFile({
+                    file: event.target.files[0],
+                    onSuccess: filename =>
+                      onChange({
+                        target: {
+                          name: "value",
+                          value: filename
+                        }
+                      } as any),
+                    onError: () => console.log("not ok")
                   });
+                };
                 return (
-                  <PageDetailsPage
-                    disabled={loading}
-                    loading={loading}
-                    title={i18n.t("Create new page")}
-                    transaction={this.state.transaction}
-                    onBack={handleBack}
-                    onSubmit={handleSubmit}
-                  />
+                  <Mutation
+                    mutation={mPageCreate}
+                    onCompleted={handleSubmitSuccess}
+                  >
+                    {(createPage, { data, loading }) => {
+                      const handleSubmit = (formData: FormData) =>
+                        createPage({
+                          variables: {
+                            name: formData.name,
+                            parentId: directory,
+                            fields: formData.addFields
+                          } as PageCreateVariables
+                        });
+                      return (
+                        <PageDetailsPage
+                          disabled={loading}
+                          loading={loading}
+                          title={i18n.t("Create new page")}
+                          transaction={this.state.transaction}
+                          onBack={handleBack}
+                          onUpload={handleUpload}
+                          onSubmit={handleSubmit}
+                        />
+                      );
+                    }}
+                  </Mutation>
                 );
               }}
-            </Mutation>
+            </WithUpload>
           );
         }}
       </Navigator>

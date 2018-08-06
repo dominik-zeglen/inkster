@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
-import { X } from "react-feather";
+import { Button, Image, ControlLabel, Panel } from "react-bootstrap";
+import { Image as ImageIcon, X } from "react-feather";
 
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
@@ -17,6 +17,9 @@ interface Props {
   name: string;
   onChange: (event: React.ChangeEvent<any>) => void;
   onDelete: () => void;
+  onUpload: (
+    cb: (event: React.ChangeEvent<any>) => void
+  ) => (event: React.ChangeEvent<any>) => void;
 }
 
 export const PageFieldProperties: React.StatelessComponent<Props> = ({
@@ -24,37 +27,89 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
   name,
   onChange,
   onDelete,
+  onUpload,
   ...props
-}) => (
-  <Panel {...props}>
-    <Panel.Heading>
-      <Panel.Title>{i18n.t("Field properties")}</Panel.Title>
-      <IconButton icon={X} onClick={onDelete} />
-    </Panel.Heading>
-    <Panel.Body>
-      <Input
-        label={i18n.t("Name")}
-        name="name"
-        value={data.name}
-        onChange={onChange}
-      />
-      {data.type === "longText" ? (
-        <RichTextEditor
-          label={i18n.t("Field value")}
-          initialValue={data.value}
-          name="value"
-          onChange={onChange}
-        />
-      ) : (
+}) => {
+  this.refs = {};
+  return (
+    <Panel {...props}>
+      <Panel.Heading>
+        <Panel.Title>{i18n.t("Field properties")}</Panel.Title>
+        <IconButton icon={X} onClick={onDelete} />
+      </Panel.Heading>
+      <Panel.Body>
         <Input
-          label={i18n.t("Value")}
-          name="value"
-          value={data.value}
+          label={i18n.t("Name")}
+          name="name"
+          value={data.name}
           onChange={onChange}
         />
-      )}
-    </Panel.Body>
-  </Panel>
-);
+        {data.type === "longText" ? (
+          <RichTextEditor
+            label={i18n.t("Field value")}
+            initialValue={data.value}
+            name="value"
+            onChange={onChange}
+          />
+        ) : data.type === "image" ? (
+          <>
+            <ControlLabel>{i18n.t("Image")}</ControlLabel>
+            <input
+              name="value"
+              type="file"
+              ref={ref => {
+                this.refs[data.name] = ref;
+              }}
+              style={{ display: "none" as "none" }}
+              onChange={onUpload(onChange)}
+            />
+            <div>
+              {data.value ? (
+                <>
+                  <Image src={"/static/" + data.value} rounded={true} responsive={true} />
+                  <Button
+                    onClick={
+                      this.refs ? () => this.refs[data.name].click() : undefined
+                    }
+                    style={{ marginTop: 10, width: "100%" }}
+                  >
+                    {i18n.t("Change image")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <span
+                    style={{
+                      display: "block" as "block",
+                      margin: "20px auto",
+                      width: 64
+                    }}
+                  >
+                    <ImageIcon size={64} />
+                  </span>
+                  <Button
+                    onClick={
+                      this.refs ? () => this.refs[data.name].click() : undefined
+                    }
+                    style={{ width: "100%" }}
+                  >
+                    {i18n.t("Upload file")}
+                  </Button>
+                </>
+              )}
+            </div>
+          </>
+        ) : (
+          <Input
+            label={i18n.t("Value")}
+            name="value"
+            value={data.value}
+            onChange={onChange}
+          />
+        )}
+      </Panel.Body>
+    </Panel>
+  );
+};
 
 export default PageFieldProperties;

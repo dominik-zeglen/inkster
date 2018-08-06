@@ -39,6 +39,9 @@ interface Props extends ViewProps, FormViewProps<FormData> {
     };
     fields: PageField[];
   };
+  onUpload: (
+    cb: (event: React.ChangeEvent<any>) => void
+  ) => (event: React.ChangeEvent<any>) => void;
 }
 
 const decorate = withStyles(
@@ -61,6 +64,7 @@ export const PageDetailsPage = decorate<Props>(
     transaction,
     onBack,
     onDelete,
+    onUpload,
     onSubmit
   }) => {
     const initialForm = {
@@ -94,7 +98,8 @@ export const PageDetailsPage = decorate<Props>(
                   }
                 ]
               }
-            } as any)};
+            } as any);
+          };
           const handleFieldRemove = (name: string, id: string) => () => {
             change({
               target: {
@@ -168,6 +173,7 @@ export const PageDetailsPage = decorate<Props>(
                                       "fields",
                                       field.id
                                     )}
+                                    onUpload={onUpload}
                                   />
                                 ))}
                                 {data.addFields.map((field, index) => (
@@ -183,6 +189,7 @@ export const PageDetailsPage = decorate<Props>(
                                       "addFields",
                                       field.id
                                     )}
+                                    onUpload={onUpload}
                                   />
                                 ))}
                               </div>
@@ -238,10 +245,11 @@ export const PageDetailsPage = decorate<Props>(
                                           <option value="text">
                                             {i18n.t("Short text")}
                                           </option>
-                                          <option
-                                            value="longText"
-                                          >
+                                          <option value="longText">
                                             {i18n.t("Long text")}
+                                          </option>
+                                          <option value="image">
+                                            {i18n.t("Image")}
                                           </option>
                                         </>
                                       </Input>

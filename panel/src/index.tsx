@@ -8,9 +8,11 @@ import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
 
 import App from "./App";
-import AppRoot from './AppRoot'
+import AppRoot from "./AppRoot";
 import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
+import UploadProvider from "./UploadProvider";
+import LoaderOverlay from "./components/LoaderOverlay";
 import { urlize } from "./utils";
 
 const apolloClient = new ApolloClient({
@@ -22,20 +24,27 @@ const apolloClient = new ApolloClient({
 });
 
 render(
-  <ApolloProvider client={apolloClient}>
-    <BrowserRouter
-      basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
-    >
-      <ThemeProvider theme={theme}>
-        <>
-          <GlobalStylesheet />
-          <AppRoot>
-            <App />
-          </AppRoot>
-        </>
-      </ThemeProvider>
-    </BrowserRouter>
-  </ApolloProvider>,
+  <UploadProvider>
+    {uploadState => (
+      <ApolloProvider client={apolloClient}>
+        <BrowserRouter
+          basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
+        >
+          <ThemeProvider theme={theme}>
+            <>
+              <GlobalStylesheet />
+              <AppRoot>
+                <App />
+              </AppRoot>
+              {uploadState.active && (
+                <LoaderOverlay progress={uploadState.progress} />
+              )}
+            </>
+          </ThemeProvider>
+        </BrowserRouter>
+      </ApolloProvider>
+    )}
+  </UploadProvider>,
   document.querySelector("#root")
 );
 

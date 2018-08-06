@@ -26,6 +26,7 @@ func checkEnv() bool {
 		"INKSTER_DB_NAME",
 		"INKSTER_STATIC",
 		"INKSTER_PORT",
+		"INKSTER_SERVE_STATIC",
 	}
 	for _, env := range vars {
 		if os.Getenv(env) == "" {
@@ -72,6 +73,13 @@ func main() {
 			},
 		),
 	)
+	if os.Getenv("INKSTER_SERVE_STATIC") == "1" {
+		http.Handle("/static/",
+			http.StripPrefix(
+				"/static/",
+				http.FileServer(http.Dir(os.Getenv("INKSTER_STATIC"))),
+			))
+	}
 	http.Handle("/graphiql/",
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {

@@ -8,6 +8,7 @@ import Navigator from "../../../components/Navigator";
 import MutationProvider from "./MutationProvider";
 import { urls } from "../../../";
 import { TransactionState } from "../../../";
+import { WithUpload } from "../../../UploadProvider";
 
 const dummy = () => {};
 
@@ -52,44 +53,68 @@ export class PageDetails extends React.Component<Props, State> {
                 );
               const handleDelete = handleBack;
               return (
-                <MutationProvider
-                  id={id}
-                  onPageUpdate={this.handleUpdate}
-                  onPageDelete={handleDelete}
-                  onError={dummy}
-                >
-                  {({ deletePage, updatePage }) => {
-                    const formLoading = updatePage.loading;
-                    const modalLoading = deletePage.loading;
-
-                    const handleSubmit = (formData: FormData) =>
-                      updatePage.mutate({
-                        id,
-                        input: {
-                          name: formData.name,
-                          slug: formData.slug,
-                          fields: formData.fields.map(f => ({
-                            name: f.id,
-                            update: { name: f.name, value: f.value }
-                          }))
-                        },
-                        add: formData.addFields,
-                        remove: formData.removeFields
+                <WithUpload>
+                  {uploadFile => {
+                    const handleUpload = (onChange: any) => (
+                      event: React.ChangeEvent<any>
+                    ) => {
+                      uploadFile.uploadFile({
+                        file: event.target.files[0],
+                        onSuccess: filename =>
+                          onChange({
+                            target: {
+                              name: "value",
+                              value: filename
+                            }
+                          } as any),
+                        onError: () => console.log("not ok")
                       });
+                    };
                     return (
-                      <PageDetailsPage
-                        disabled={formLoading || modalLoading}
-                        loading={formLoading || modalLoading}
-                        title={data && data.page ? data.page.name : undefined}
-                        transaction={this.state.transaction}
-                        page={data ? data.page : undefined}
-                        onBack={handleBack}
-                        onDelete={deletePage.mutate}
-                        onSubmit={handleSubmit}
-                      />
+                      <MutationProvider
+                        id={id}
+                        onPageUpdate={this.handleUpdate}
+                        onPageDelete={handleDelete}
+                        onError={dummy}
+                      >
+                        {({ deletePage, updatePage }) => {
+                          const formLoading = updatePage.loading;
+                          const modalLoading = deletePage.loading;
+
+                          const handleSubmit = (formData: FormData) =>
+                            updatePage.mutate({
+                              id,
+                              input: {
+                                name: formData.name,
+                                slug: formData.slug,
+                                fields: formData.fields.map(f => ({
+                                  name: f.id,
+                                  update: { name: f.name, value: f.value }
+                                }))
+                              },
+                              add: formData.addFields,
+                              remove: formData.removeFields
+                            });
+                          return (
+                            <PageDetailsPage
+                              disabled={formLoading || modalLoading}
+                              loading={formLoading || modalLoading}
+                              title={
+                                data && data.page ? data.page.name : undefined
+                              }
+                              transaction={this.state.transaction}
+                              page={data ? data.page : undefined}
+                              onBack={handleBack}
+                              onDelete={deletePage.mutate}
+                              onUpload={handleUpload}
+                              onSubmit={handleSubmit}
+                            />
+                          );
+                        }}
+                      </MutationProvider>
                     );
                   }}
-                </MutationProvider>
+                </WithUpload>
               );
             }}
           </Query>
