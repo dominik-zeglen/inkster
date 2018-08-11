@@ -8,4 +8,5 @@
 node_modules
 vendor
 static/*
+panel/build/*
 *debug*

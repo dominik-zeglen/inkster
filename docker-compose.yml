@@ -19,7 +19,9 @@ services:
     environment:
       - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
       - INKSTER_DB_NAME=inkster
-      - INKSTER_PORT=8000
+      - INKSTER_PORT=8000 
+      - INKSTER_STATIC=static
+      - INKSTER_SERVE_STATIC=1
     volumes:
       - ./panel/build:/go/src/app/panel/build
     command: "/app/main" 
