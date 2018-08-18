@@ -273,3 +273,7 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 		},
 	})
 }
+
+func (adapter Adapter) ValidatePage(page core.Page) error {
+	return page.Validate()
+}

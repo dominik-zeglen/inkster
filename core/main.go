@@ -32,6 +32,7 @@ type Adapter interface {
 	UpdatePageField(bson.ObjectId, string, string) error
 	RemovePage(bson.ObjectId) error
 	RemovePageField(bson.ObjectId, string) error
+	ValidatePage(Page) error
 
 	String() string
 	ResetMockDatabase(
@@ -39,6 +40,15 @@ type Adapter interface {
 		templates []Template,
 		pages []Page,
 	)
+}
+
+// BaseModel is an abstraction over that all models
+// should be composed of, providing most basic
+// fields to keep order and consistency within code
+type BaseModel struct {
+	ID        bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	CreatedAt *string       `json:"createdAt"`
+	UpdatedAt *string       `json:"modifiedAt"`
 }
 
 // FieldTypes holds all allowed template field type names
