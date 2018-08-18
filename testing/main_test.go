@@ -29,8 +29,11 @@ var dataSources = []core.Adapter{
 	mongodb.Adapter{
 		ConnectionURI: os.Getenv("INKSTER_DB_URI"),
 		DBName:        os.Getenv("INKSTER_DB_NAME") + "_test",
+		GetTime:       func() string { return "2017-07-07T10:00:00.000Z" },
 	},
-	mock.Adapter{},
+	mock.Adapter{
+		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+	},
 }
 var dataSource = dataSources[0]
 

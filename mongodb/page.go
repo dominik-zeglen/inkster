@@ -37,6 +37,9 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	if page.Slug == "" {
 		page.Slug = slug.Make(page.Name)
 	}
+	page.CreatedAt = adapter.GetCurrentTime()
+	page.UpdatedAt = adapter.GetCurrentTime()
+
 	err = collection.Insert(page)
 	return page, err
 }
@@ -103,6 +106,9 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 		return core.ErrFieldExists(field.Name)
 	}
 	return collection.UpdateId(pageID, bson.M{
+		"$set": bson.M{
+			"updatedAt": adapter.GetCurrentTime(),
+		},
 		"$push": bson.M{
 			"fields": field,
 		},
@@ -166,6 +172,11 @@ func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, err
 	return pages, nil
 }
 
+type pageUpdateInput struct {
+	Data      core.PageInput `bson:",inline"`
+	UpdatedAt string         `bson:"updatedAt"`
+}
+
 // UpdatePage allows user to update page properties
 func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
@@ -193,7 +204,10 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 		}
 	}
 	return collection.UpdateId(pageID, bson.M{
-		"$set": data,
+		"$set": pageUpdateInput{
+			Data:      data,
+			UpdatedAt: adapter.GetCurrentTime(),
+		},
 	})
 }
 
@@ -225,6 +239,7 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 		"fields.name": pageFieldName,
 	}, bson.M{
 		"$set": bson.M{
+			"updatedAt":      adapter.GetCurrentTime(),
 			"fields.$.value": data,
 		},
 	})
@@ -266,6 +281,9 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 		return core.ErrNoField(pageFieldName)
 	}
 	return collection.UpdateId(pageID, bson.M{
+		"$set": bson.M{
+			"updatedAt": adapter.GetCurrentTime(),
+		},
 		"$pull": bson.M{
 			"fields": bson.M{
 				"name": pageFieldName,

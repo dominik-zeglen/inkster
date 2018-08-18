@@ -7,8 +7,8 @@ import (
 
 func createPage(page core.Page, id string, createdAt string, updatedAt string) core.Page {
 	page.ID = bson.ObjectId(id)
-	page.CreatedAt = &createdAt
-	page.UpdatedAt = &updatedAt
+	page.CreatedAt = createdAt
+	page.UpdatedAt = updatedAt
 
 	return page
 }
