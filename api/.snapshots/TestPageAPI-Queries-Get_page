@@ -2,6 +2,8 @@
     "data": {
         "page": {
             "id": "cGFnZTowMDAwMDAwMDAwMDE=",
+            "createdAt": "2007-07-07T10:00:00.000Z",
+            "updatedAt": "2007-07-07T10:00:00.000Z",
             "name": "Page 1",
             "slug": "page-1",
             "fields": [

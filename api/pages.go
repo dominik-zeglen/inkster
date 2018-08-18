@@ -112,6 +112,14 @@ func (res *pageResolver) ID() gql.ID {
 	return gql.ID(globalID)
 }
 
+func (res *pageResolver) CreatedAt() string {
+	return res.data.CreatedAt
+}
+
+func (res *pageResolver) UpdatedAt() string {
+	return res.data.UpdatedAt
+}
+
 func (res *pageResolver) Name() string {
 	return res.data.Name
 }

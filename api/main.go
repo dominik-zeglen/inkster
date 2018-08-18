@@ -41,28 +41,12 @@ var Schema = `
 		removePage(id: ID!): PageRemoveResult
 	}
 	
-	interface Node {
-		id: ID!
-	}
-	interface CreateResult {
-		userErrors: [UserError]
-	}
-	interface UpdateResult {
-		userErrors: [UserError]
-	}
-	interface RemoveResult {
-		removedObjectId: ID
-	}
-	interface OperationResult {
-		userErrors: [UserError]
-	}
-
 	type UserError {
 		field: String!
 		message: String!
 	}
 
-	type Directory implements Node {
+	type Directory {
 		id: ID!
 		name: String!
 		parent: Directory
@@ -78,7 +62,7 @@ var Schema = `
 		parentId: ID
 	}
 
-	type Template implements Node {
+	type Template{
 		id: ID!
 		name: String!
 		fields: [TemplateField]
@@ -87,11 +71,11 @@ var Schema = `
 		name: String!
 		type: String!
 	}
-	type TemplateUpdateResult implements UpdateResult {
+	type TemplateUpdateResult  {
 		userErrors: [UserError]
 		template: Template
 	}
-	type TemplateRemoveResult implements RemoveResult {
+	type TemplateRemoveResult  {
 		userErrors: [UserError]
 		removedObjectId: ID
 	}
@@ -111,8 +95,10 @@ var Schema = `
 		name: String!
 	}
 
-	type Page implements Node {
+	type Page {
 		id: ID!
+		createdAt: String!
+		updatedAt: String!
 		name: String!
 		slug: String!
 		fields: [PageField]
@@ -123,14 +109,14 @@ var Schema = `
 		type: String!
 		value: String
 	}
-	type PageOperationResult implements OperationResult {
+	type PageOperationResult {
 		userErrors: [UserError]
 		page: Page
 	}
-	type PageRemoveResult implements RemoveResult {
+	type PageRemoveResult {
 		removedObjectId: ID!
 	}	
-	type PageFieldOperationResult implements OperationResult {
+	type PageFieldOperationResult {
 		userErrors: [UserError]
 		page: Page
 	}

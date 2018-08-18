@@ -11,7 +11,9 @@ import (
 	gql "github.com/graph-gophers/graphql-go"
 )
 
-var dataSource = mock.Adapter{}
+var dataSource = mock.Adapter{
+	GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+}
 var resolver = NewResolver(dataSource)
 var schema = gql.MustParseSchema(Schema, &resolver)
 

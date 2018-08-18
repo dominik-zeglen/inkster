@@ -3,6 +3,8 @@
         "createPage": {
             "userErrors": null,
             "page": {
+                "createdAt": "2017-07-07T10:00:00.000Z",
+                "updatedAt": "2017-07-07T10:00:00.000Z",
                 "name": "New Page",
                 "slug": "new-page",
                 "fields": null,
