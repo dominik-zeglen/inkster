@@ -65,6 +65,10 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 		slug := slug.Make(page.Name)
 		page.Slug = slug
 	}
+
+	page.CreatedAt = adapter.GetCurrentTime()
+	page.UpdatedAt = adapter.GetCurrentTime()
+
 	pages = append(pages, page)
 	return page, nil
 }
@@ -103,6 +107,9 @@ func (adapter Adapter) AddPageFromTemplate(
 		slug := slug.Make(*page.Name)
 		inputPage.Slug = slug
 	}
+	inputPage.CreatedAt = adapter.GetCurrentTime()
+	inputPage.UpdatedAt = adapter.GetCurrentTime()
+
 	return adapter.AddPage(inputPage)
 }
 
@@ -118,6 +125,7 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 		return core.ErrFieldExists(field.Name)
 	}
 	pages[index].Fields = append(pages[index].Fields, field)
+	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
@@ -172,6 +180,7 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 		copy(fields, *data.Fields)
 		pages[index].Fields = fields
 	}
+	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
@@ -185,6 +194,7 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 	copy(fields, pages[index].Fields)
 	fields[fieldIndex].Value = data
 	pages[index].Fields = fields
+	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
@@ -210,6 +220,7 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 		fields[:fieldIndex],
 		fields[fieldIndex+1:]...,
 	)
+	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
