@@ -20,5 +20,4 @@ env:
     - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
     - INKSTER_DB_NAME=inkster
     - INKSTER_PORT=8000 
-    - INKSTER_STATIC=static
-    - INKSTER_SERVE_STATIC=1
+    - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
