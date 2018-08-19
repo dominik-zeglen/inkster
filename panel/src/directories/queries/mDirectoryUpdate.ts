@@ -4,6 +4,7 @@ const mDirectoryUpdate = gql`
   mutation DirectoryUpdate($id: ID!, $name: String!) {
     updateDirectory(id: $id, input: { name: $name }) {
       id
+      updatedAt
       name
     }
   }

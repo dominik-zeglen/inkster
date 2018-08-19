@@ -6,23 +6,22 @@ import { Consumer } from "./DateContext";
 
 interface Props {
   date: string;
-  locale: string;
 }
 
-export const Date: React.StatelessComponent<Props> = ({ date, locale }) => (
+export const Date: React.StatelessComponent<Props> = ({ date }) => (
   <Consumer>
     {dateNow => (
       <OverlayTrigger
         placement="bottom"
         overlay={
-          <Tooltip>
+          <Tooltip id="id">
             {moment(date)
               .toDate()
               .toLocaleString()}
           </Tooltip>
         }
       >
-        {moment(date).from(dateNow)}
+        <time>{moment(date).from(dateNow)}</time>
       </OverlayTrigger>
     )}
   </Consumer>

@@ -53,7 +53,7 @@ render(
 
 export const urls = {
   directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
-  pageCreate: (id: string) => `/directories/${id}/createPage`,
+  pageCreate: (id: string) => `/directories/${urlize(id)}/createPage`,
   pageDetails: (id: string) => `/pages/${urlize(id)}`
 };
 
