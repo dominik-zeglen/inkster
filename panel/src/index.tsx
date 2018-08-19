@@ -13,6 +13,7 @@ import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
+import {DateProvider} from "./components/Date";
 import { urlize } from "./utils";
 
 const apolloClient = new ApolloClient({
@@ -24,27 +25,29 @@ const apolloClient = new ApolloClient({
 });
 
 render(
-  <UploadProvider>
-    {uploadState => (
-      <ApolloProvider client={apolloClient}>
-        <BrowserRouter
-          basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
-        >
-          <ThemeProvider theme={theme}>
-            <>
-              <GlobalStylesheet />
-              <AppRoot>
-                <App />
-              </AppRoot>
-              {uploadState.active && (
-                <LoaderOverlay progress={uploadState.progress} />
-              )}
-            </>
-          </ThemeProvider>
-        </BrowserRouter>
-      </ApolloProvider>
-    )}
-  </UploadProvider>,
+  <DateProvider>
+    <UploadProvider>
+      {uploadState => (
+        <ApolloProvider client={apolloClient}>
+          <BrowserRouter
+            basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
+          >
+            <ThemeProvider theme={theme}>
+              <>
+                <GlobalStylesheet />
+                <AppRoot>
+                  <App />
+                </AppRoot>
+                {uploadState.active && (
+                  <LoaderOverlay progress={uploadState.progress} />
+                )}
+              </>
+            </ThemeProvider>
+          </BrowserRouter>
+        </ApolloProvider>
+      )}
+    </UploadProvider>
+  </DateProvider>,
   document.querySelector("#root")
 );
 
