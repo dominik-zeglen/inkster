@@ -12,12 +12,15 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
 install:
   - dep ensure
+before_script:
+  - sleep 15
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"travis",roles:["readWrite"]});'
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
 services: mongodb
 env:
   global:
-    - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
+    - INKSTER_DB_URI=127.0.0.1://travis:travis@db/admin
     - INKSTER_DB_NAME=inkster
     - INKSTER_PORT=8000 
     - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
