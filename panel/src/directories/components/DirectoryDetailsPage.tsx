@@ -12,6 +12,7 @@ import IconButton from "../../components/IconButton";
 import { FormViewProps, ListViewProps } from "../../";
 import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
+import DirectoryStatus from "./DirectoryStatus";
 import i18n from "../../i18n";
 
 interface FormData {
@@ -25,6 +26,8 @@ interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
       id: string;
       name?: string;
     }>;
+    createdAt?: string;
+    updatedAt?: string;
   };
   onDelete: () => void;
 }
@@ -92,6 +95,12 @@ export const DirectoryDetailsPage = decorate<Props>(
                       onNextPage={onNextPage}
                       onPreviousPage={onPreviousPage}
                       onRowClick={onRowClick}
+                    />
+                  </div>
+                  <div>
+                    <DirectoryStatus
+                      createdAt={directory ? directory.createdAt : undefined}
+                      updatedAt={directory ? directory.updatedAt : undefined}
                     />
                   </div>
                 </div>

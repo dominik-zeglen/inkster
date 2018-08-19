@@ -14,6 +14,7 @@ import { ViewProps, FormViewProps } from "../../";
 import i18n from "../../i18n";
 import PageProperties from "./PageProperties";
 import PageFieldProperties from "./PageFieldProperties";
+import PageStatus from "./PageStatus";
 
 interface PageField {
   id: string;
@@ -31,6 +32,8 @@ export interface FormData {
 interface Props extends ViewProps, FormViewProps<FormData> {
   page?: {
     id: string;
+    createdAt?: string;
+    updatedAt?: string;
     name?: string;
     slug?: string;
     parent?: {
@@ -192,6 +195,12 @@ export const PageDetailsPage = decorate<Props>(
                                     onUpload={onUpload}
                                   />
                                 ))}
+                              </div>
+                              <div>
+                                <PageStatus
+                                  createdAt={page ? page.createdAt : undefined}
+                                  updatedAt={page ? page.updatedAt : undefined}
+                                />
                               </div>
                             </div>
                             <FormSave

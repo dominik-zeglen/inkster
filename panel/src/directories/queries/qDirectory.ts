@@ -4,6 +4,8 @@ const qDirectory = gql`
   query Directory($id: ID!) {
     getDirectory(id: $id) {
       id
+      createdAt
+      updatedAt
       name
       parent {
         id

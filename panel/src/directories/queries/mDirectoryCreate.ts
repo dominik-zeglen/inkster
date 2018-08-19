@@ -8,6 +8,8 @@ const mDirectoryCreate = gql`
   mutation DirectoryCreate($name: String!, $parentId: ID) {
     createDirectory(input: { name: $name, parentId: $parentId }) {
       id
+      createdAt
+      updatedAt
       name
       parent {
         id
