@@ -4,6 +4,8 @@
             "userErrors": null,
             "template": {
                 "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "createdAt": "2007-07-07T10:00:00.000Z",
+                "updatedAt": "2017-07-07T10:00:00.000Z",
                 "name": "Template 1",
                 "fields": [
                     {

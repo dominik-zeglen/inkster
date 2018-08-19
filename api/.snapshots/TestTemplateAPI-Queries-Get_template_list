@@ -3,6 +3,8 @@
         "templates": [
             {
                 "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAx",
+                "createdAt": "2007-07-07T10:00:00.000Z",
+                "updatedAt": "2007-07-07T10:00:00.000Z",
                 "name": "Template 1",
                 "fields": [
                     {
@@ -17,6 +19,8 @@
             },
             {
                 "id": "dGVtcGxhdGU6MDAwMDAwMDAwMDAy",
+                "createdAt": "2007-07-07T11:00:00.000Z",
+                "updatedAt": "2007-07-07T11:00:00.000Z",
                 "name": "Template 2",
                 "fields": [
                     {

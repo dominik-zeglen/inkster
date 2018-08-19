@@ -66,6 +66,8 @@ var Schema = `
 
 	type Template{
 		id: ID!
+		createdAt: String!
+		updatedAt: String!
 		name: String!
 		fields: [TemplateField]
 	}

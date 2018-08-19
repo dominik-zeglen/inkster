@@ -94,6 +94,12 @@ func (res *templateResolver) ID() gql.ID {
 	globalID := toGlobalID("template", res.data.ID)
 	return gql.ID(globalID)
 }
+func (res *templateResolver) CreatedAt() string {
+	return res.data.CreatedAt
+}
+func (res *templateResolver) UpdatedAt() string {
+	return res.data.UpdatedAt
+}
 
 func (res *templateResolver) Name() string {
 	return res.data.Name
