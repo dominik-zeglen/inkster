@@ -5,12 +5,7 @@ import (
 )
 
 // Directories are part of testing data
-var Directories = []core.Directory{
-	core.Directory{ID: "000000000001", Name: "Directory 1"},
-	core.Directory{ID: "000000000002", Name: "Directory 2"},
-	core.Directory{ID: "000000000003", Name: "Directory 3"},
-	core.Directory{ID: "000000000004", Name: "Directory 1.1", ParentID: "000000000001"},
-}
+var Directories = CreateDirectories()
 
 // Templates are part of testing data
 var Templates = []core.Template{

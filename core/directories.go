@@ -8,9 +8,9 @@ import (
 
 // Directory is used to create tree-like structures
 type Directory struct {
-	ID       bson.ObjectId `bson:"_id,omitempty" json:"id"`
-	Name     string        `json:"name"`
-	ParentID bson.ObjectId `bson:"parentId,omitempty" json:"parentId"`
+	BaseModel `bson:",inline"`
+	Name      string        `json:"name"`
+	ParentID  bson.ObjectId `bson:"parentId,omitempty" json:"parentId"`
 }
 
 // DirectoryInput is transactional model of an update properties

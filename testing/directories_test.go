@@ -143,9 +143,9 @@ func testDirectories(t *testing.T) {
 	t.Run("Test complex behaviour", func(t *testing.T) {
 		t.Run("Build directory tree", func(t *testing.T) {
 			parent := core.Directory{
-				ID:   "200000000000",
 				Name: "Parent",
 			}
+			parent.ID = "200000000000"
 			result, err := dataSource.AddDirectory(parent)
 			parentID := result.ID
 			if err != nil {
@@ -158,10 +158,10 @@ func testDirectories(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 
 			child := core.Directory{
-				ID:       "200000000001",
 				Name:     "Child",
 				ParentID: parentID,
 			}
+			child.ID = "200000000001"
 			result, err = dataSource.AddDirectory(child)
 			childID := result.ID
 			if err != nil {

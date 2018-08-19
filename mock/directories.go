@@ -29,6 +29,9 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 	if directory.Name == "" {
 		return core.Directory{}, core.ErrNoEmpty("Name")
 	}
+	directory.CreatedAt = adapter.GetCurrentTime()
+	directory.UpdatedAt = adapter.GetCurrentTime()
+
 	directories = append(directories, directory)
 	return directory, nil
 }
@@ -82,6 +85,7 @@ func (adapter Adapter) UpdateDirectory(id bson.ObjectId, data core.DirectoryInpu
 	if data.ParentID != nil {
 		directories[index].ParentID = *data.ParentID
 	}
+	directories[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
