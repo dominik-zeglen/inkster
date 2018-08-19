@@ -14,13 +14,13 @@ install:
   - dep ensure
 before_script:
   - sleep 15
-  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"travis",roles:["readWrite"]});'
+  - mongo inkster --eval 'db.createUser({user:"travis",pwd:"travis",roles:["readWrite"]});'
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
 services: mongodb
 env:
   global:
-    - INKSTER_DB_URI=127.0.0.1://travis:travis@db/admin
+    - INKSTER_DB_URI=mongodb://travis:travis@127.0.0.1/admin
     - INKSTER_DB_NAME=inkster
     - INKSTER_PORT=8000 
     - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
