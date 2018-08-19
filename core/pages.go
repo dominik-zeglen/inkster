@@ -8,11 +8,11 @@ import (
 
 // Page is a object representing site content
 type Page struct {
-	ID       bson.ObjectId `bson:"_id,omitempty" json:"id"`
-	Name     string        `json:"name"`
-	Slug     string        `json:"slug"`
-	ParentID bson.ObjectId `bson:"parentId" json:"parentId"`
-	Fields   []PageField   `json:"fields"`
+	BaseModel `bson:",inline"`
+	Name      string        `json:"name"`
+	Slug      string        `json:"slug"`
+	ParentID  bson.ObjectId `bson:"parentId" json:"parentId"`
+	Fields    []PageField   `json:"fields"`
 }
 
 func (page Page) String() string {
@@ -40,6 +40,11 @@ func (page Page) Validate() error {
 		}
 	}
 	return nil
+}
+
+func NewPage() Page {
+	page := Page{}
+	return page
 }
 
 // UpdatePageArguments is transactional model of an update properties

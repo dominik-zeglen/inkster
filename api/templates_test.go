@@ -21,6 +21,8 @@ func TestTemplateAPI(t *testing.T) {
 					name: $name,
 					fields: $fields
 				}) {
+					createdAt
+					updatedAt
 					name
 					fields {
 						name
@@ -57,6 +59,8 @@ func TestTemplateAPI(t *testing.T) {
 					name: $name,
 					fields: $fields
 				}) {
+					createdAt
+					updatedAt
 					name
 					fields {
 						name
@@ -91,6 +95,8 @@ func TestTemplateAPI(t *testing.T) {
 					}
 					template {
 						id
+						createdAt
+						updatedAt
 						name
 						fields {
 							name
@@ -128,6 +134,8 @@ func TestTemplateAPI(t *testing.T) {
 					}
 					template {
 						id
+						createdAt
+						updatedAt
 						name
 						fields {
 							name
@@ -167,6 +175,8 @@ func TestTemplateAPI(t *testing.T) {
 					}
 					template {
 						id
+						createdAt
+						updatedAt
 						name
 						fields {
 							name
@@ -207,6 +217,8 @@ func TestTemplateAPI(t *testing.T) {
 					}
 					template {
 						id
+						createdAt
+						updatedAt
 						name
 						fields {
 							name
@@ -245,6 +257,8 @@ func TestTemplateAPI(t *testing.T) {
 					}
 					template {
 						id
+						createdAt
+						updatedAt
 						name
 						fields {
 							name
@@ -294,6 +308,8 @@ func TestTemplateAPI(t *testing.T) {
 			query := `query getTemplate($id: ID!){
 				template(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					fields {
 						name
@@ -315,6 +331,8 @@ func TestTemplateAPI(t *testing.T) {
 			query := `query getTemplate($id: ID!){
 				template(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					fields {
 						name
@@ -336,6 +354,8 @@ func TestTemplateAPI(t *testing.T) {
 			query := `query Templates{
 				templates {
 					id
+					createdAt
+					updatedAt
 					name
 					fields {
 						name

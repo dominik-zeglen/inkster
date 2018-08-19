@@ -2,6 +2,8 @@
     "data": {
         "updateDirectory": {
             "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA==",
+            "createdAt": "2007-07-07T13:00:00.000Z",
+            "updatedAt": "2017-07-07T10:00:00.000Z",
             "name": "Updated name",
             "parent": {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMg==",

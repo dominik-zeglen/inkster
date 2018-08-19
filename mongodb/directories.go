@@ -21,6 +21,9 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 	if directory.ID == "" {
 		directory.ID = bson.NewObjectId()
 	}
+	directory.CreatedAt = adapter.GetCurrentTime()
+	directory.UpdatedAt = adapter.GetCurrentTime()
+
 	err = collection.Insert(directory)
 	return directory, err
 }
@@ -89,6 +92,11 @@ func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Direct
 	return directories, err
 }
 
+type directoryUpdateInput struct {
+	Data      core.DirectoryInput `bson:",inline"`
+	UpdatedAt string              `bson:"updatedAt"`
+}
+
 // UpdateDirectory allows directory properties updaing
 func (adapter Adapter) UpdateDirectory(
 	directoryID bson.ObjectId,
@@ -103,7 +111,10 @@ func (adapter Adapter) UpdateDirectory(
 		DB(adapter.DBName).
 		C("directories")
 	return collection.UpdateId(directoryID, bson.M{
-		"$set": data,
+		"$set": directoryUpdateInput{
+			Data:      data,
+			UpdatedAt: adapter.GetCurrentTime(),
+		},
 	})
 }
 

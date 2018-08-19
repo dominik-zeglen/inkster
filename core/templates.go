@@ -2,16 +2,14 @@ package core
 
 import (
 	"fmt"
-
-	"github.com/globalsign/mgo/bson"
 )
 
 // Template allows user to quickly create new pages without repeatedly
 // adding the same fields each time
 type Template struct {
-	ID     bson.ObjectId   `bson:"_id,omitempty" json:"id"`
-	Name   string          `json:"name"`
-	Fields []TemplateField `json:"fields"`
+	BaseModel `bson:",inline"`
+	Name      string          `json:"name"`
+	Fields    []TemplateField `json:"fields"`
 }
 
 // TemplateInput is transactional model of an update properties

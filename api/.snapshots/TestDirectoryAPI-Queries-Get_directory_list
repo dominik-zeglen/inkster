@@ -3,6 +3,8 @@
         "getDirectories": [
             {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
+                "createdAt": "2007-07-07T10:00:00.000Z",
+                "updatedAt": "2007-07-07T10:00:00.000Z",
                 "name": "Directory 1",
                 "parent": null,
                 "children": [
@@ -26,6 +28,8 @@
             },
             {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMg==",
+                "createdAt": "2007-07-07T11:00:00.000Z",
+                "updatedAt": "2007-07-07T11:00:00.000Z",
                 "name": "Directory 2",
                 "parent": null,
                 "children": [],
@@ -39,6 +43,8 @@
             },
             {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMw==",
+                "createdAt": "2007-07-07T12:00:00.000Z",
+                "updatedAt": "2007-07-07T12:00:00.000Z",
                 "name": "Directory 3",
                 "parent": null,
                 "children": [],
@@ -46,6 +52,8 @@
             },
             {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA==",
+                "createdAt": "2007-07-07T13:00:00.000Z",
+                "updatedAt": "2007-07-07T13:00:00.000Z",
                 "name": "Directory 1.1",
                 "parent": {
                     "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",

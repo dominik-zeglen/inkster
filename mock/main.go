@@ -1,6 +1,8 @@
 package mock
 
 import (
+	"time"
+
 	"github.com/dominik-zeglen/inkster/core"
 )
 
@@ -11,6 +13,15 @@ var pages = make([]core.Page, 0)
 // Adapter is an abstraction over database connection mock
 type Adapter struct {
 	core.Adapter
+
+	GetTime func() string
+}
+
+func (adapter Adapter) GetCurrentTime() string {
+	if adapter.GetTime == nil {
+		return time.Now().UTC().Format(time.RFC3339)
+	}
+	return adapter.GetTime()
 }
 
 func (adapter Adapter) String() string {

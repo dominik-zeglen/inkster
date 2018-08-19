@@ -28,6 +28,8 @@ func TestPageAPI(t *testing.T) {
 						message
 					}
 					page {
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -80,6 +82,8 @@ func TestPageAPI(t *testing.T) {
 						message
 					}
 					page {
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -125,6 +129,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -169,6 +175,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -211,6 +219,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -253,6 +263,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -295,6 +307,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -327,6 +341,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -364,6 +380,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -406,6 +424,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -449,6 +469,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -480,6 +502,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -519,6 +543,8 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						createdAt
+						updatedAt
 						name
 						slug
 						fields {
@@ -565,6 +591,8 @@ func TestPageAPI(t *testing.T) {
 			query := `query getPage($id: ID!){
 				page(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					slug
 					fields {
@@ -592,6 +620,8 @@ func TestPageAPI(t *testing.T) {
 			query := `query getPage($id: ID!){
 				page(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					slug
 					fields {
@@ -619,6 +649,8 @@ func TestPageAPI(t *testing.T) {
 			query := `query Pages{
 				pages {
 					id
+					createdAt
+					updatedAt
 					name
 					slug
 					fields {

@@ -1,6 +1,8 @@
 package mongodb
 
 import (
+	"time"
+
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/globalsign/mgo"
 )
@@ -11,6 +13,14 @@ type Adapter struct {
 
 	ConnectionURI string
 	DBName        string
+	GetTime       func() string
+}
+
+func (adapter Adapter) GetCurrentTime() string {
+	if adapter.GetTime == nil {
+		return time.Now().UTC().Format(time.RFC3339)
+	}
+	return adapter.GetTime()
 }
 
 func (adapter Adapter) String() string {
