@@ -13,7 +13,7 @@ install:
 before_script:
   - sleep 15
 script:
-  - go test ./... -coverprofile=/tmp/go-code-cover
+  - GOCACHE=off go test ./... -coverprofile=/tmp/go-code-cover
 env:
   global:
     - INKSTER_DB_URI=mongodb://127.0.0.1:27017/inkster
