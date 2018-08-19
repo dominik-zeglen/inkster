@@ -12,17 +12,13 @@ before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
 install:
   - dep ensure
-  - npm i
-before_script:
-  - psql -c 'create database inkster;' -U postgres
 script:
   - go test ./... -coverprofile=/tmp/go-code-cover
-  # - npm test
-services: postgresql
+services: mongodb
 env:
   global:
-    - INKSTER_DB_PORT=5432
-    - INKSTER_DB_ADDR="127.0.0.1"
+    - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
     - INKSTER_DB_NAME=inkster
-    - INKSTER_DB_USER=travis
-    - INKSTER_DB_USER_PASSWORD=
+    - INKSTER_PORT=8000 
+    - INKSTER_STATIC=static
+    - INKSTER_SERVE_STATIC=1
