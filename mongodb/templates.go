@@ -28,6 +28,9 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 	if template.ID == "" {
 		template.ID = bson.NewObjectId()
 	}
+	template.CreatedAt = adapter.GetCurrentTime()
+	template.UpdatedAt = adapter.GetCurrentTime()
+
 	err = collection.Insert(template)
 	return template, err
 }
@@ -57,6 +60,9 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 		return core.ErrFieldExists(field.Name)
 	}
 	return collection.UpdateId(templateID, bson.M{
+		"$set": bson.M{
+			"updatedAt": adapter.GetCurrentTime(),
+		},
 		"$push": bson.M{
 			"fields": field,
 		},
@@ -95,6 +101,11 @@ func (adapter Adapter) GetTemplateList() ([]core.Template, error) {
 	return templates, err
 }
 
+type templateUpdateInput struct {
+	Data      core.TemplateInput `bson:",inline"`
+	UpdatedAt string             `bson:"updatedAt"`
+}
+
 // UpdateTemplate allows user to update template properties
 func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.TemplateInput) error {
 	db, err := mgo.Dial(adapter.ConnectionURI)
@@ -111,7 +122,10 @@ func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Templa
 		return core.ErrTemplateExists(data.Name)
 	}
 	return collection.UpdateId(templateID, bson.M{
-		"$set": data,
+		"$set": templateUpdateInput{
+			Data:      data,
+			UpdatedAt: adapter.GetCurrentTime(),
+		},
 	})
 }
 
@@ -151,6 +165,9 @@ func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFie
 		return core.ErrNoField(templateFieldName)
 	}
 	return collection.UpdateId(templateID, bson.M{
+		"$set": bson.M{
+			"updatedAt": adapter.GetCurrentTime(),
+		},
 		"$pull": bson.M{
 			"fields": bson.M{
 				"name": templateFieldName,

@@ -27,7 +27,8 @@ func (adapter Adapter) findTemplate(id *bson.ObjectId, name *string) (int, error
 	if id == nil && name == nil {
 		return 0, fmt.Errorf("findTemplate() requires at least one argument")
 	}
-	return 0, fmt.Errorf("")
+
+	return 0, nil
 }
 func (adapter Adapter) findTemplateField(id bson.ObjectId, name string) (int, int, error) {
 	index, err := adapter.findTemplate(&id, nil)
@@ -60,6 +61,9 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 			return core.Template{}, core.ErrTemplateExists(template.ID.String())
 		}
 	}
+	template.CreatedAt = adapter.GetCurrentTime()
+	template.UpdatedAt = adapter.GetCurrentTime()
+
 	templates = append(templates, template)
 	return template, nil
 }
@@ -79,6 +83,7 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 		templates[index].Fields,
 		field,
 	)
+	templates[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }
 
@@ -100,6 +105,8 @@ func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Templa
 		return core.ErrTemplateExists(data.Name)
 	}
 	templates[index].Name = data.Name
+	templates[index].UpdatedAt = adapter.GetCurrentTime()
+
 	return nil
 }
 
@@ -125,5 +132,7 @@ func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFie
 		fields[:fieldIndex],
 		fields[fieldIndex+1:]...,
 	)
+	templates[index].UpdatedAt = adapter.GetCurrentTime()
+
 	return nil
 }
