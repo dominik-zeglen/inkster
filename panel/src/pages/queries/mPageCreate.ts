@@ -13,6 +13,8 @@ const mPageCreate = gql`
       }
       page {
         id
+        createdAt
+        updatedAt
         name
         slug
         fields {

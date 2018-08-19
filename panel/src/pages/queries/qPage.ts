@@ -4,6 +4,8 @@ const qPage = gql`
   query Page($id: ID!) {
     page(id: $id) {
       id
+      createdAt
+      updatedAt
       name
       slug
       fields {

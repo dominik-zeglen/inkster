@@ -14,6 +14,7 @@ const mPageUpdate = gql`
       }
       page {
         id
+        updatedAt
         name
         slug
         fields {
