@@ -48,6 +48,8 @@ var Schema = `
 
 	type Directory {
 		id: ID!
+		createdAt: String!
+		updatedAt: String!
 		name: String!
 		parent: Directory
 		children: [Directory]

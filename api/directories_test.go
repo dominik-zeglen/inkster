@@ -21,6 +21,8 @@ func TestDirectoryAPI(t *testing.T) {
 					name: $name, 
 					parentId: $parentId
 				}) {
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -47,6 +49,8 @@ func TestDirectoryAPI(t *testing.T) {
 				createDirectory(input: {
 					name: $name 
 				}) {
+					createdAt
+					updatedAt
 					name
 				}
 			}`
@@ -74,6 +78,8 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				) {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -113,6 +119,8 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				) {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -178,6 +186,8 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `query GetDirectory($id: ID!){
 				getDirectory(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -208,6 +218,8 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `query GetDirectory($id: ID!){
 				getDirectory(id: $id) {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -238,6 +250,8 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `query GetDirectories{
 				getDirectories {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id
@@ -264,6 +278,8 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `query GetRootDirectories{
 				getRootDirectories {
 					id
+					createdAt
+					updatedAt
 					name
 					parent {
 						id

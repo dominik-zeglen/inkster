@@ -17,6 +17,12 @@ func (res *directoryResolver) ID() gql.ID {
 	globalID := toGlobalID("directory", res.data.ID)
 	return gql.ID(globalID)
 }
+func (res *directoryResolver) CreatedAt() string {
+	return res.data.CreatedAt
+}
+func (res *directoryResolver) UpdatedAt() string {
+	return res.data.UpdatedAt
+}
 func (res *directoryResolver) Name() string {
 	return res.data.Name
 }
