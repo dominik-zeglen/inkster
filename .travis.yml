@@ -5,24 +5,18 @@ go:
 node_js:
   - "8.11.1"
   - master
-cache:
-  directories:
-    - node_modules
+services: mongodb
 before_install:                                                                 
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
 install:
   - dep ensure
-  - npm i
 before_script:
-  - psql -c 'create database inkster;' -U postgres
+  - sleep 15
 script:
-  - go test ./... -coverprofile=/tmp/go-code-cover
-  # - npm test
-services: postgresql
+  - GOCACHE=off go test ./... -coverprofile=/tmp/go-code-cover
 env:
   global:
-    - INKSTER_DB_PORT=5432
-    - INKSTER_DB_ADDR="127.0.0.1"
+    - INKSTER_DB_URI=mongodb://127.0.0.1:27017/inkster
     - INKSTER_DB_NAME=inkster
-    - INKSTER_DB_USER=travis
-    - INKSTER_DB_USER_PASSWORD=
+    - INKSTER_PORT=8000 
+    - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
