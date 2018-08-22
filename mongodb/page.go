@@ -13,13 +13,11 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	if err != nil {
 		return core.Page{}, err
 	}
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return core.Page{}, err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	if page.Slug != "" {
 		found, err := collection.
 			Find(bson.M{"slug": page.Slug}).
@@ -87,13 +85,11 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 	if err != nil {
 		return err
 	}
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	found, err := collection.Find(bson.M{
 		"_id": pageID,
 		"fields": bson.M{
@@ -117,15 +113,13 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 
 // GetPage allows user to fetch page by ID from database
 func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return core.Page{}, err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	var page core.Page
-	err = collection.
+	err := collection.
 		FindId(id).
 		One(&page)
 	if err != nil {
@@ -136,15 +130,13 @@ func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
 
 // GetPageBySlug allows user to fetch page by slug from database
 func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return core.Page{}, err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	var page core.Page
-	err = collection.
+	err := collection.
 		Find(bson.M{"slug": slug}).
 		One(&page)
 	if err != nil {
@@ -155,15 +147,13 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 
 // GetPagesFromDirectory allows user to fetch pages by their parentId from database
 func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	var pages []core.Page
-	err = collection.
+	err := collection.
 		Find(bson.M{"parentId": id}).
 		All(&pages)
 	if err != nil {
@@ -179,13 +169,11 @@ type pageUpdateInput struct {
 
 // UpdatePage allows user to update page properties
 func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 
 	if data.Slug != nil {
 		count, err := collection.
@@ -213,13 +201,11 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 
 // UpdatePageField removes field from page
 func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	found, err := collection.Find(bson.M{
 		"_id": pageID,
 		"fields": bson.M{
@@ -247,25 +233,21 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 
 // RemovePage removes page from database
 func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	return collection.RemoveId(pageID)
 }
 
 // RemovePageField removes field from page
 func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.DB(adapter.DBName).C("pages")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("pages")
 	found, err := collection.Find(bson.M{
 		"_id": pageID,
 		"fields": bson.M{

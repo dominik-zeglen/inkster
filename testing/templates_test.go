@@ -7,10 +7,6 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 )
 
-func init() {
-	resetDatabase()
-}
-
 func testTemplates(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add template", func(t *testing.T) {

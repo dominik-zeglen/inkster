@@ -11,32 +11,28 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 	if directory.Name == "" {
 		return core.Directory{}, core.ErrNoEmpty("Name")
 	}
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	db.SetSafe(&mgo.Safe{})
-	defer db.Close()
-	if err != nil {
-		return core.Directory{}, err
-	}
-	collection := db.DB(adapter.DBName).C("directories")
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("directories")
 	if directory.ID == "" {
 		directory.ID = bson.NewObjectId()
 	}
 	directory.CreatedAt = adapter.GetCurrentTime()
 	directory.UpdatedAt = adapter.GetCurrentTime()
 
-	err = collection.Insert(directory)
+	err := collection.Insert(directory)
 	return directory, err
 }
 
 // GetDirectory gets directory from the database
 func (adapter Adapter) GetDirectory(id bson.ObjectId) (core.Directory, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return core.Directory{}, err
-	}
+	session := adapter.Session.Copy()
+	defer session.Close()
+
 	var directory core.Directory
-	err = db.
+	err := session.
 		DB(adapter.DBName).
 		C("directories").
 		FindId(id).
@@ -46,13 +42,11 @@ func (adapter Adapter) GetDirectory(id bson.ObjectId) (core.Directory, error) {
 
 // GetDirectoryList gets all directories from the database
 func (adapter Adapter) GetDirectoryList() ([]core.Directory, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
+	session := adapter.Session.Copy()
+	defer session.Close()
+
 	var directories []core.Directory
-	err = db.
+	err := session.
 		DB(adapter.DBName).
 		C("directories").
 		Find(bson.M{}).
@@ -62,13 +56,11 @@ func (adapter Adapter) GetDirectoryList() ([]core.Directory, error) {
 
 // GetRootDirectoryList gets only directories from a pg database that don't have parent
 func (adapter Adapter) GetRootDirectoryList() ([]core.Directory, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
+	session := adapter.Session.Copy()
+	defer session.Close()
+
 	var directories []core.Directory
-	err = db.
+	err := session.
 		DB(adapter.DBName).
 		C("directories").
 		Find(bson.M{"parentId": bson.M{"$not": bson.M{"$type": 7}}}).
@@ -78,13 +70,11 @@ func (adapter Adapter) GetRootDirectoryList() ([]core.Directory, error) {
 
 // GetDirectoryChildrenList gets directories from a pg database which have same parent
 func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Directory, error) {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return nil, err
-	}
+	session := adapter.Session.Copy()
+	defer session.Close()
+
 	var directories []core.Directory
-	err = db.
+	err := session.
 		DB(adapter.DBName).
 		C("directories").
 		Find(bson.M{"parentId": id}).
@@ -102,12 +92,10 @@ func (adapter Adapter) UpdateDirectory(
 	directoryID bson.ObjectId,
 	data core.DirectoryInput,
 ) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	collection := db.
+	session := adapter.Session.Copy()
+	defer session.Close()
+
+	collection := session.
 		DB(adapter.DBName).
 		C("directories")
 	return collection.UpdateId(directoryID, bson.M{
@@ -120,12 +108,10 @@ func (adapter Adapter) UpdateDirectory(
 
 // RemoveDirectory removes directory from a pg database
 func (adapter Adapter) RemoveDirectory(id bson.ObjectId) error {
-	db, err := mgo.Dial(adapter.ConnectionURI)
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-	err = db.
+	session := adapter.Session.Copy()
+	defer session.Close()
+
+	err := session.
 		DB(adapter.DBName).
 		C("directories").
 		RemoveId(id)

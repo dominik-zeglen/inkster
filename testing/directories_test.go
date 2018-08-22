@@ -8,10 +8,6 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-func init() {
-	resetDatabase()
-}
-
 func testDirectories(t *testing.T) {
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add directory", func(t *testing.T) {
