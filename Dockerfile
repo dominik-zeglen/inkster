@@ -1,19 +1,34 @@
-FROM golang:1.10.3-stretch
-MAINTAINER Anders (github.com/dominik-zeglen)
+FROM golang:1.10.3-stretch AS app-builder
 
-# Set go bin which doesn't appear to be set already.
 ENV GOBIN /go/bin
 
-# build directories
 RUN mkdir /app
-RUN mkdir /go/src/app
-ADD . /go/src/app
-WORKDIR /go/src/app
+RUN mkdir /go/src/github.com
+RUN mkdir /go/src/github.com/dominik-zeglen
+RUN mkdir /go/src/github.com/dominik-zeglen/inkster
+ADD . /go/src/github.com/dominik-zeglen/inkster
+WORKDIR /go/src/github.com/dominik-zeglen/inkster
 
-# Go dep!
-RUN go get -u github.com/golang/dep/...
-RUN dep ensure
+RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && chmod +x /usr/local/bin/dep
+RUN dep ensure -vendor-only
 
-# Build my app
-RUN go build -o /app/main app/main.go
+RUN CGO_ENABLED=0 go build -o /app/main app/main.go
+
+
+FROM node:8.11.4-alpine AS ui-builder
+
+RUN mkdir /app
+run mkdir /src
+RUN mkdir /src/app
+ADD ./panel /src/app
+WORKDIR /src/app
+
+RUN npm install
+RUN npm run build
+
+FROM alpine
+WORKDIR /app
+COPY --from=app-builder /app/main /app
+COPY --from=ui-builder /src/app/build /app/panel/build
+
 CMD ["/app/main"]
