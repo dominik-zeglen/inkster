@@ -7,7 +7,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=inkster
       - MONGO_INITDB_ROOT_PASSWORD=inkster
-      - MONGO_INITDB_ROOT_DATABASE=inkster
+      - MONGO_INITDB_DATABASE=inkster
   web:
     links:
       - db

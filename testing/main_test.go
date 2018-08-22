@@ -10,6 +10,7 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mock"
 	"github.com/dominik-zeglen/inkster/mongodb"
+	"github.com/globalsign/mgo"
 )
 
 var ErrNoError = fmt.Errorf("Did not return error")
@@ -26,11 +27,7 @@ func ToJSON(object interface{}) (string, error) {
 }
 
 var dataSources = []core.Adapter{
-	mongodb.Adapter{
-		ConnectionURI: os.Getenv("INKSTER_DB_URI"),
-		DBName:        os.Getenv("INKSTER_DB_NAME") + "_test",
-		GetTime:       func() string { return "2017-07-07T10:00:00.000Z" },
-	},
+	mongodb.Adapter{},
 	mock.Adapter{
 		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
 	},
@@ -38,12 +35,24 @@ var dataSources = []core.Adapter{
 var dataSource = dataSources[0]
 
 func resetDatabase() {
-	dataSource.ResetMockDatabase(Directories, Templates, CreatePages())
+	dataSource.ResetMockDatabase(CreateDirectories(), CreateTemplates(), CreatePages())
 }
 
 func TestMain(t *testing.T) {
+	mongoAdapter := mongodb.Adapter{
+		DBName:  os.Getenv("INKSTER_DB_NAME") + "_test",
+		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+	}
+	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer session.Close()
+	mongoAdapter.Session = session
+	dataSources[0] = mongoAdapter
 	for i := range dataSources {
 		dataSource = dataSources[i]
+		resetDatabase()
 		t.Log(fmt.Sprintf("Testing adapter %s...\n", dataSource.String()))
 		t.Run("Test directories", testDirectories)
 		t.Run("Test templates", testTemplates)

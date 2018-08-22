@@ -14,6 +14,7 @@ type Adapter struct {
 	ConnectionURI string
 	DBName        string
 	GetTime       func() string
+	Session       *mgo.Session
 }
 
 func (adapter Adapter) GetCurrentTime() string {
@@ -32,14 +33,14 @@ func (adapter Adapter) ResetMockDatabase(
 	templates []core.Template,
 	pages []core.Page,
 ) {
-	session, err := mgo.Dial(adapter.ConnectionURI)
+	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	db := session.DB(adapter.DBName)
 
 	collection := db.C("directories")
 	collection.DropCollection()
 	for id := range directories {
-		err = collection.Insert(directories[id])
+		err := collection.Insert(directories[id])
 		if err != nil {
 			panic(err)
 		}
@@ -48,7 +49,7 @@ func (adapter Adapter) ResetMockDatabase(
 	collection = db.C("templates")
 	collection.DropCollection()
 	for id := range templates {
-		err = collection.Insert(templates[id])
+		err := collection.Insert(templates[id])
 		if err != nil {
 			panic(err)
 		}
@@ -57,7 +58,7 @@ func (adapter Adapter) ResetMockDatabase(
 	collection = db.C("pages")
 	collection.DropCollection()
 	for id := range pages {
-		err = collection.Insert(pages[id])
+		err := collection.Insert(pages[id])
 		if err != nil {
 			panic(err)
 		}
