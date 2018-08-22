@@ -16,8 +16,7 @@ import (
 
 var schema *graphql.Schema
 var dataSource = mongodb.Adapter{
-	ConnectionURI: os.Getenv("INKSTER_DB_URI"),
-	DBName:        os.Getenv("INKSTER_DB_NAME"),
+	DBName: os.Getenv("INKSTER_DB_NAME"),
 }
 
 func checkEnv() bool {
@@ -40,12 +39,11 @@ func init() {
 	if !checkEnv() {
 		log.Fatalln("ERROR: Missing environment variables.")
 	}
-	sess, err := mgo.Dial(dataSource.ConnectionURI)
+	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
 	if err != nil {
 		log.Println("WARNING: Database is offline.")
-	} else {
-		sess.Close()
 	}
+	dataSource.Session = session
 	resolver := api.NewResolver(&dataSource)
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
