@@ -34,6 +34,12 @@ type Adapter interface {
 	RemovePageField(bson.ObjectId, string) error
 	ValidatePage(Page) error
 
+	// AddUser(User) (User, error)
+	// GetUser(bson.ObjectId) (User, error)
+	// GetUsers() ([]User, error)
+	// UpdateUser(UserInput, bson.ObjectId) (User, error)
+	// RemoveUser(bson.ObjectId) error
+
 	GetCurrentTime() string
 	ResetMockDatabase(
 		directories []Directory,
