@@ -14,14 +14,15 @@ const (
 	PW_SALT_BYTES = 32
 	PW_HASH_BYTES = 64
 	PW_HASH_ITER  = 4096
+	PW_MIN_LEN    = 5
 )
 
 type User struct {
-	BaseModel
-	Active   bool
-	Email    string
-	password string
-	salt     string
+	BaseModel `bson:",inline"`
+	Active    bool
+	Email     string
+	Password  string
+	Salt      string
 }
 
 func (user User) AuthPassword(pass string) bool {
@@ -30,24 +31,27 @@ func (user User) AuthPassword(pass string) bool {
 	}
 	hashedPassword := string(pbkdf2.Key(
 		[]byte(pass),
-		[]byte(user.salt),
+		[]byte(user.Salt),
 		PW_HASH_ITER,
 		PW_HASH_BYTES,
 		sha512.New,
 	))
 
-	return hashedPassword == user.password
+	return hashedPassword == user.Password
 }
 
-func (user *User) CreatePassword(pass string) *User {
+func (user *User) CreatePassword(pass string) error {
+	if len(pass) < PW_MIN_LEN {
+		return fmt.Errorf("Password must have minimum length of %d", PW_MIN_LEN)
+	}
 	salt := make([]byte, PW_SALT_BYTES)
 	_, err := io.ReadFull(rand.Reader, salt)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	user.salt = string(salt)
-	user.password = string(pbkdf2.Key(
+	user.Salt = string(salt)
+	user.Password = string(pbkdf2.Key(
 		[]byte(pass),
 		salt,
 		PW_HASH_ITER,
@@ -55,11 +59,20 @@ func (user *User) CreatePassword(pass string) *User {
 		sha512.New,
 	))
 
-	return user
+	return nil
 }
 
 // FIXME: #16
 func (user User) Validate() error {
+	if user.Email == "" {
+		return ErrNoEmpty("Email")
+	}
+	if user.Password == "" {
+		return ErrNoEmpty("Password")
+	}
+	if user.Salt == "" {
+		return ErrNoEmpty("Salt")
+	}
 	return nil
 }
 
@@ -68,6 +81,6 @@ func (user User) String() string {
 }
 
 type UserInput struct {
-	Email    string
-	Password string
+	Email    *string
+	Password *string
 }

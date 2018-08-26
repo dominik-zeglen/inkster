@@ -32,6 +32,7 @@ func (adapter Adapter) ResetMockDatabase(
 	directories []core.Directory,
 	templates []core.Template,
 	pages []core.Page,
+	users []core.User,
 ) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
@@ -59,6 +60,15 @@ func (adapter Adapter) ResetMockDatabase(
 	collection.DropCollection()
 	for id := range pages {
 		err := collection.Insert(pages[id])
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	collection = db.C("users")
+	collection.DropCollection()
+	for id := range users {
+		err := collection.Insert(users[id])
 		if err != nil {
 			panic(err)
 		}
