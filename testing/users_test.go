@@ -38,46 +38,59 @@ func testUsers(t *testing.T) {
 				t.Error(ErrNoError)
 			}
 		})
-		// t.Run("Update user", func(t *testing.T) {
-		// 	defer resetDatabase()
-		// 	name := "Updated user name"
-		// 	parentID := bson.ObjectId(Users[1].ID)
-		// 	err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
-		// 		Email:     &name,
-		// 		ParentID: &parentID,
-		// 	})
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	result, err := dataSource.GetUser(Users[0].ID)
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	data, err := ToJSON(result)
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	cupaloy.SnapshotT(t, data)
-		// })
-		// t.Run("Update user's name", func(t *testing.T) {
-		// 	defer resetDatabase()
-		// 	name := "Updated user name"
-		// 	err := dataSource.UpdateUser(Users[3].ID, core.UserInput{
-		// 		Email: &name,
-		// 	})
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	result, err := dataSource.GetUser(Users[3].ID)
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	data, err := ToJSON(result)
-		// 	if err != nil {
-		// 		t.Error(err)
-		// 	}
-		// 	cupaloy.SnapshotT(t, data)
-		// })
+		t.Run("Update user's password", func(t *testing.T) {
+			defer resetDatabase()
+
+			passwd := "thisisnewpassword"
+			err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
+				Password: &passwd,
+			})
+			if err != nil {
+				t.Error(err)
+			}
+
+			result, err := dataSource.GetUser(Users[0].ID)
+			if err != nil {
+				t.Error(err)
+			}
+
+			if !result.AuthPassword(passwd) {
+				t.Fatal()
+			}
+
+			result.Password = ""
+			result.Salt = ""
+			data, err := ToJSON(result)
+			if err != nil {
+				t.Error(err)
+			}
+
+			cupaloy.SnapshotT(t, data)
+		})
+		t.Run("Update user's name", func(t *testing.T) {
+			defer resetDatabase()
+
+			email := "Updated user email"
+			err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
+				Email: &email,
+			})
+			if err != nil {
+				t.Error(err)
+			}
+
+			result, err := dataSource.GetUser(Users[0].ID)
+			if err != nil {
+				t.Error(err)
+			}
+			result.Password = ""
+			result.Salt = ""
+			data, err := ToJSON(result)
+			if err != nil {
+				t.Error(err)
+			}
+
+			cupaloy.SnapshotT(t, data)
+		})
 		t.Run("Remove user", func(t *testing.T) {
 			defer resetDatabase()
 			err := dataSource.RemoveUser(Users[3].ID)

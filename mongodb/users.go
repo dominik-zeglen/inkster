@@ -61,6 +61,40 @@ func (adapter Adapter) GetUserList() ([]core.User, error) {
 	return users, err
 }
 
+type UserUpdateData struct {
+	Email     *string `bson:",omitempty"`
+	Password  *string `bson:",omitempty"`
+	Salt      *string `bson:",omitempty"`
+	UpdatedAt string  `bson:"updatedAt"`
+}
+
+// UpdateUser allows user to update his properties
+func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) error {
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	userUpdateData := UserUpdateData{
+		UpdatedAt: adapter.GetCurrentTime(),
+	}
+
+	if data.Password != nil {
+		dummy := core.User{}
+		dummy.CreatePassword(*data.Password)
+		userUpdateData.Password = &dummy.Password
+		userUpdateData.Salt = &dummy.Salt
+	}
+
+	if data.Email != nil {
+		userUpdateData.Email = data.Email
+	}
+
+	collection := session.DB(adapter.DBName).C("users")
+	return collection.UpdateId(userID, bson.M{
+		"$set": userUpdateData,
+	})
+}
+
 // RemoveUser removes user from database
 func (adapter Adapter) RemoveUser(userID bson.ObjectId) error {
 	session := adapter.Session.Copy()

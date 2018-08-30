@@ -67,6 +67,26 @@ func (adapter Adapter) GetUserList() ([]core.User, error) {
 	return users, nil
 }
 
+// UpdateUser allows user to update his properties
+func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) error {
+	index, err := adapter.findUser(&userID, nil)
+	if err != nil {
+		return err
+	}
+	users[index].UpdatedAt = adapter.GetCurrentTime()
+
+	if data.Password != nil {
+		dummy := core.User{}
+		dummy.CreatePassword(*data.Password)
+		users[index].Password = dummy.Password
+		users[index].Salt = dummy.Salt
+	}
+	if data.Email != nil {
+		users[index].Email = *data.Email
+	}
+	return nil
+}
+
 // RemoveUser removes user from database
 func (adapter Adapter) RemoveUser(userID bson.ObjectId) error {
 	index, err := adapter.findUser(&userID, nil)
