@@ -40,7 +40,7 @@ export const ActionDialog = decorate<Props>(
         <Modal.Body>{children}</Modal.Body>
         <Modal.Footer>
           <Button onClick={onClose}>{i18n.t("Close")}</Button>
-          <Button bsStyle="primary" onClick={handleSubmit}>
+          <Button bsStyle="primary" onClick={handleSubmit} type="submit">
             {i18n.t("Confirm")}
           </Button>
         </Modal.Footer>
