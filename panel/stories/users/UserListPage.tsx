@@ -12,6 +12,6 @@ const stories = storiesOf("Views / Users / User list", module).addDecorator(
 const props = makeProps(listViewProps, {
   default: { users },
   noData: { users: [] },
-  loadingData: {}
+  loading: {}
 });
 makeStories(stories, props, UserListPage);
