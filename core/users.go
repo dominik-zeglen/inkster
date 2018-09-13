@@ -5,7 +5,6 @@ import (
 	"crypto/sha512"
 	"fmt"
 	"io"
-	"log"
 
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -40,6 +39,15 @@ func (user User) AuthPassword(pass string) bool {
 	return hashedPassword == user.Password
 }
 
+func (user *User) CreateRandomPassword() error {
+	pwd := make([]byte, PW_MIN_LEN+1)
+	_, err := io.ReadFull(rand.Reader, pwd)
+	if err != nil {
+		return err
+	}
+	return user.CreatePassword(string(pwd))
+}
+
 func (user *User) CreatePassword(pass string) error {
 	if len(pass) < PW_MIN_LEN {
 		return fmt.Errorf("Password must have minimum length of %d", PW_MIN_LEN)
@@ -47,7 +55,7 @@ func (user *User) CreatePassword(pass string) error {
 	salt := make([]byte, PW_SALT_BYTES)
 	_, err := io.ReadFull(rand.Reader, salt)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	user.Salt = string(salt)

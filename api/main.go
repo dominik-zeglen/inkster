@@ -19,6 +19,9 @@ var Schema = `
 		templates: [Template]
 
 		page(id: ID!): Page
+
+		user(id: ID!): User
+		users: [User]
 	}
 	
 	type Mutation {
@@ -36,9 +39,13 @@ var Schema = `
 		createPageField(id: ID!, input: PageFieldCreateInput!): PageFieldOperationResult
 		renamePageField(id: ID!, input: PageFieldRenameInput!): PageFieldOperationResult
 		updatePage(id: ID!, input: PageUpdateInput, addFields: [PageFieldCreateInput!], removeFields: [String!]): PageOperationResult
+
 		updatePageField(id: ID!, input: PageFieldUpdateInput!): PageFieldOperationResult
 		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
 		removePage(id: ID!): PageRemoveResult
+
+		createUser(input: UserCreateInput!): UserCreateResult!
+		removeUser(id: ID!): UserRemoveResult!
 	}
 	
 	type UserError {
@@ -159,6 +166,26 @@ var Schema = `
 	}
 	input PageFieldRemoveInput {
 		name: String!
+	}
+
+	type User {
+		id: ID!
+		createdAt: String!
+		updatedAt: String!
+		email: String!
+		isActive: Boolean!
+	}
+	type UserCreateResult {
+		errors: [UserError!]!
+		user: User
+	}
+	type UserRemoveResult {
+		removedObjectId: ID
+	}
+
+	input UserCreateInput {
+		email: String!
+		password: String
 	}
 	
 	schema {
