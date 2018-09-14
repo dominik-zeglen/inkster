@@ -6,15 +6,6 @@ import (
 	gql "github.com/graph-gophers/graphql-go"
 )
 
-// type userUpdateResult struct {
-// 	userErrors *[]userError
-// 	userID     bson.ObjectId
-// }
-// type userRemoveResult struct {
-// 	userErrors *[]userError
-// 	userID     bson.ObjectId
-// }
-
 // Type resolver
 type userResolver struct {
 	dataSource core.Adapter
@@ -34,44 +25,6 @@ type userRemoveResult struct {
 type userRemoveResultResolver struct {
 	data userRemoveResult
 }
-
-// type userUpdateResultResolver struct {
-// 	dataSource core.ADapter
-// 	data       userUpdateResult
-// }
-
-// func (res *userUpdateResultResolver) User() (*userResolver, error) {
-// 	result, err := res.dataSource.GetUser(res.data.userID)
-// 	if err != nil {
-// 		dyppy
-// 		return err
-// 	}
-// 	return &userResolver{
-// 		dataSource: res.dataSource,
-// 		data:       &result,
-// 	}
-// }
-//
-// func (res *userUpdateResultResolver) UserErrors() *[]*userErrorResolver {
-// 	var resolverList []*userErrorResolver
-// 	if res.data.userErrors == nil {
-// 		return nil
-// 	}
-// 	userErrors := *res.data.userErrors
-// 	for i := range userErrors {
-// 		resolverList = append(
-// 			resolverList,
-// 			&userErrorResolver{
-// 				data: userErrors[i],
-// 			},
-// 		)
-// 	}
-// 	return &resolverList
-// }
-// func (res *userRemoveResultResolver) RemovedObjectID() *gql.ID {
-// 	id := gql.ID(toGlobalID("user", res.data.userID))
-// 	return &id
-// }
 
 func (res *userOperationResultResolver) Errors() []*userErrorResolver {
 	var resolverList []*userErrorResolver
