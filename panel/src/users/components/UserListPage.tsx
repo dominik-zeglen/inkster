@@ -13,7 +13,7 @@ import PageHeader from "../../components/PageHeader";
 import Toggle from "../../components/Toggle";
 import UserList from "./UserList";
 
-interface Props extends ListViewProps<{name: string}> {
+interface Props extends ListViewProps<{ email: string }> {
   users?: Array<{
     id: string;
     email: string;
@@ -68,7 +68,7 @@ export const UserListPage = decorate<Props>(
               <div />
             </div>
           </Container>
-          <Form initial={{ name: '' }} onSubmit={onAdd}>
+          <Form initial={{ email: "" }} onSubmit={onAdd}>
             {({ change, data, submit }) => (
               <ActionDialog
                 show={openedAddUserDialog}
@@ -78,10 +78,11 @@ export const UserListPage = decorate<Props>(
                 title={i18n.t("Add new user")}
               >
                 <Input
-                  name="name"
+                  name="email"
                   onChange={change}
-                  value={data.name}
+                  value={data.email}
                   label={i18n.t("User email")}
+                  type="email"
                 />
               </ActionDialog>
             )}

@@ -13,6 +13,9 @@ export const AppRoot = withRouter(({ children, history, location }) => {
       case "directories":
         history.push("/directories");
         break;
+      case "users":
+        history.push("/users");
+        break;
     }
   };
   return (

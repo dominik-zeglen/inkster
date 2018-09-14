@@ -1,7 +1,7 @@
 import * as React from "react";
 import withStyles from "react-jss";
 import { Grid, Panel } from "react-bootstrap";
-import { Box, Home } from "react-feather";
+import { Box, Home, Users } from "react-feather";
 
 import i18n from "../i18n";
 
@@ -74,6 +74,16 @@ export const AppLayout = decorate<Props>(
                 >
                   <Box />
                   {i18n.t("Directories")}
+                </div>
+                <div
+                  className={[
+                    classes.link,
+                    section === "users" ? "active" : undefined
+                  ].join(' ')}
+                  onClick={onSectionClick("users")}
+                >
+                  <Users />
+                  {i18n.t("Users")}
                 </div>
               </Panel.Body>
             </Panel>
