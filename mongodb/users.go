@@ -91,7 +91,7 @@ func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (co
 
 	user := core.User{}
 	collection := session.DB(adapter.DBName).C("users")
-	_, err := collection.Find(bson.M{"_id": userID}).Apply(
+	_, err := collection.FindId(userID).Apply(
 		mgo.Change{
 			Update: bson.M{
 				"$set": userUpdateData,
