@@ -1,31 +1,12 @@
 {
-    "errors": [
-        {
-            "message": "Unknown type \"UserUpdateInput\".",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 13
-                }
-            ]
-        },
-        {
-            "message": "Variable \"$input\" cannot be non-input type %!q(\u003cnil\u003e).",
-            "locations": [
-                {
-                    "line": 3,
-                    "column": 13
-                }
-            ]
-        },
-        {
-            "message": "Cannot query field \"updateUser\" on type \"Mutation\". Did you mean \"createUser\", or \"updatePage\"?",
-            "locations": [
-                {
-                    "line": 5,
-                    "column": 5
-                }
-            ]
+    "data": {
+        "updateUser": {
+            "errors": [],
+            "user": {
+                "id": "dXNlcjowMDAwMDAwMDAwMDE=",
+                "email": "new_email@example.com",
+                "isActive": false
+            }
         }
-    ]
+    }
 }
