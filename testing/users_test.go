@@ -42,14 +42,9 @@ func testUsers(t *testing.T) {
 			defer resetDatabase()
 
 			passwd := "thisisnewpassword"
-			err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
+			result, err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
 				Password: &passwd,
 			})
-			if err != nil {
-				t.Error(err)
-			}
-
-			result, err := dataSource.GetUser(Users[0].ID)
 			if err != nil {
 				t.Error(err)
 			}
@@ -71,17 +66,13 @@ func testUsers(t *testing.T) {
 			defer resetDatabase()
 
 			email := "Updated user email"
-			err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
+			result, err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
 				Email: &email,
 			})
 			if err != nil {
 				t.Error(err)
 			}
 
-			result, err := dataSource.GetUser(Users[0].ID)
-			if err != nil {
-				t.Error(err)
-			}
 			result.Password = ""
 			result.Salt = ""
 			data, err := ToJSON(result)

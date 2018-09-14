@@ -20,13 +20,13 @@ type userResolver struct {
 	dataSource core.Adapter
 	data       *core.User
 }
-type userCreateResult struct {
+type userOperationResult struct {
 	errors []userError
 	user   *core.User
 }
-type userCreateResultResolver struct {
+type userOperationResultResolver struct {
 	dataSource core.Adapter
-	data       userCreateResult
+	data       userOperationResult
 }
 type userRemoveResult struct {
 	id *gql.ID
@@ -73,7 +73,7 @@ type userRemoveResultResolver struct {
 // 	return &id
 // }
 
-func (res *userCreateResultResolver) Errors() []*userErrorResolver {
+func (res *userOperationResultResolver) Errors() []*userErrorResolver {
 	var resolverList []*userErrorResolver
 	for i := range res.data.errors {
 		resolverList = append(
@@ -85,9 +85,10 @@ func (res *userCreateResultResolver) Errors() []*userErrorResolver {
 	}
 	return resolverList
 }
-func (res *userCreateResultResolver) User() *userResolver {
+func (res *userOperationResultResolver) User() *userResolver {
 	return &userResolver{
-		data: res.data.user,
+		dataSource: res.dataSource,
+		data:       res.data.user,
 	}
 }
 
@@ -161,7 +162,7 @@ type UserCreateMutationArgs struct {
 	Input UserCreateInput
 }
 
-func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userCreateResultResolver, error) {
+func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResultResolver, error) {
 	user := core.User{
 		Email: args.Input.Email,
 	}
@@ -176,9 +177,9 @@ func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userCreateResultR
 	if err != nil {
 		return nil, err
 	}
-	return &userCreateResultResolver{
+	return &userOperationResultResolver{
 		dataSource: res.dataSource,
-		data: userCreateResult{
+		data: userOperationResult{
 			errors: []userError{},
 			user:   &result,
 		},
@@ -201,6 +202,37 @@ func (res *Resolver) RemoveUser(args UserRemoveMutationArgs) (*userRemoveResultR
 	return &userRemoveResultResolver{
 		data: userRemoveResult{
 			id: &args.ID,
+		},
+	}, nil
+}
+
+type UserUpdateInput struct {
+	IsActive *bool
+	Email    *string
+}
+type UserUpdateMutationArgs struct {
+	ID    gql.ID
+	Input UserUpdateInput
+}
+
+func (res *Resolver) UpdateUser(args UserUpdateMutationArgs) (*userOperationResultResolver, error) {
+	localID, err := fromGlobalID("user", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+	input := core.UserInput{
+		Active: args.Input.IsActive,
+		Email:  args.Input.Email,
+	}
+	result, err := res.dataSource.UpdateUser(localID, input)
+	if err != nil {
+		return nil, err
+	}
+	return &userOperationResultResolver{
+		dataSource: res.dataSource,
+		data: userOperationResult{
+			errors: []userError{},
+			user:   &result,
 		},
 	}, nil
 }

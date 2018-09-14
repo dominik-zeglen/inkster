@@ -44,8 +44,9 @@ var Schema = `
 		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
 		removePage(id: ID!): PageRemoveResult
 
-		createUser(input: UserCreateInput!): UserCreateResult!
+		createUser(input: UserCreateInput!): UserOperationResult!
 		removeUser(id: ID!): UserRemoveResult!
+		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
 	}
 	
 	type UserError {
@@ -175,7 +176,7 @@ var Schema = `
 		email: String!
 		isActive: Boolean!
 	}
-	type UserCreateResult {
+	type UserOperationResult {
 		errors: [UserError!]!
 		user: User
 	}
@@ -186,6 +187,10 @@ var Schema = `
 	input UserCreateInput {
 		email: String!
 		password: String
+	}
+	input UserUpdateInput {
+		isActive: Boolean
+		email: String
 	}
 	
 	schema {

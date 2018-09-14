@@ -89,6 +89,7 @@ func (user User) String() string {
 }
 
 type UserInput struct {
+	Active   *bool
 	Email    *string
 	Password *string
 }

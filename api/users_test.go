@@ -83,6 +83,38 @@ func TestUserAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Update user", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation UpdateUser(
+				$id: ID!
+				$input: UserUpdateInput!
+			) {
+				updateUser(id: $id, input: $input) {
+					errors {
+						field
+						message
+					}
+					user {
+						id
+						email
+						isActive
+					}
+				}
+			}`
+			id := toGlobalID("user", test.Users[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"email": "new_email@example.com",
+					"isActive": false
+				}
+			}`, id)
+			result, err := execQuery(query, variables)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 	})
 	t.Run("Queries", func(t *testing.T) {
 		resetDatabase()

@@ -37,7 +37,7 @@ type Adapter interface {
 	AddUser(User) (User, error)
 	GetUser(bson.ObjectId) (User, error)
 	GetUserList() ([]User, error)
-	UpdateUser(bson.ObjectId, UserInput) error
+	UpdateUser(bson.ObjectId, UserInput) (User, error)
 	RemoveUser(bson.ObjectId) error
 
 	GetCurrentTime() string

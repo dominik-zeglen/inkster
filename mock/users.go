@@ -68,10 +68,10 @@ func (adapter Adapter) GetUserList() ([]core.User, error) {
 }
 
 // UpdateUser allows user to update his properties
-func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) error {
+func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (core.User, error) {
 	index, err := adapter.findUser(&userID, nil)
 	if err != nil {
-		return err
+		return core.User{}, err
 	}
 	users[index].UpdatedAt = adapter.GetCurrentTime()
 
@@ -81,10 +81,13 @@ func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) err
 		users[index].Password = dummy.Password
 		users[index].Salt = dummy.Salt
 	}
+	if data.Active != nil {
+		users[index].Active = *data.Active
+	}
 	if data.Email != nil {
 		users[index].Email = *data.Email
 	}
-	return nil
+	return users[index], nil
 }
 
 // RemoveUser removes user from database
