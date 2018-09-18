@@ -35,7 +35,12 @@ var dataSources = []core.Adapter{
 var dataSource = dataSources[0]
 
 func resetDatabase() {
-	dataSource.ResetMockDatabase(CreateDirectories(), CreateTemplates(), CreatePages())
+	dataSource.ResetMockDatabase(
+		CreateDirectories(),
+		CreateTemplates(),
+		CreatePages(),
+		CreateUsers(),
+	)
 }
 
 func TestMain(t *testing.T) {
@@ -57,5 +62,6 @@ func TestMain(t *testing.T) {
 		t.Run("Test directories", testDirectories)
 		t.Run("Test templates", testTemplates)
 		t.Run("Test pages", testPages)
+		t.Run("Test users", testUsers)
 	}
 }

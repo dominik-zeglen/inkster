@@ -31,3 +31,8 @@ func ErrTemplateExists(template string) error {
 func ErrPageExists(page string) error {
 	return fmt.Errorf("Page %s already exists", page)
 }
+
+// ErrUserExists informs about existing user
+func ErrUserExists(user string) error {
+	return fmt.Errorf("User %s already exists", user)
+}

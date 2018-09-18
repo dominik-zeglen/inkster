@@ -1,0 +1,13 @@
+{
+    "data": {
+        "createUser": {
+            "errors": [],
+            "user": {
+                "createdAt": "2017-07-07T10:00:00.000Z",
+                "updatedAt": "2017-07-07T10:00:00.000Z",
+                "email": "new_user@example.com",
+                "isActive": true
+            }
+        }
+    }
+}

@@ -13,7 +13,7 @@ import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
-import {DateProvider} from "./components/Date";
+import { DateProvider } from "./components/Date";
 import { urlize } from "./utils";
 
 const apolloClient = new ApolloClient({
@@ -54,7 +54,8 @@ render(
 export const urls = {
   directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
   pageCreate: (id: string) => `/directories/${urlize(id)}/createPage`,
-  pageDetails: (id: string) => `/pages/${urlize(id)}`
+  pageDetails: (id: string) => `/pages/${urlize(id)}`,
+  userDetails: (id: string) => `/users/${urlize(id)}`
 };
 
 export type TransactionState = "default" | "loading" | "success" | "error";

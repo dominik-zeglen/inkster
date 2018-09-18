@@ -1,4 +1,6 @@
-export default (theme: any) =>
+import { Theme } from "react-jss";
+
+export default (theme: Theme) =>
   ({
     "@import": [
       "url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i')"
@@ -9,8 +11,9 @@ export default (theme: any) =>
         color: theme.colors.black.main
       },
       body: {
+        backgroundColor: theme.colors.white.main,
         margin: "0",
-        backgroundColor: theme.colors.white.main
+        transitionTimingFunction: 'ease-in' as 'ease-in'
       },
       "article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary": {
         display: "block"
@@ -2496,7 +2499,6 @@ export default (theme: any) =>
       },
       'input[type="radio"], input[type="checkbox"]': {
         margin: "4px 0 0",
-        marginTop: "1px 9",
         lineHeight: "normal"
       },
       'input[type="file"]': {
@@ -2593,10 +2595,30 @@ export default (theme: any) =>
         fontWeight: "normal",
         cursor: "pointer"
       },
-      '.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"]': {
-        position: "absolute",
-        marginTop: "4px 9",
-        marginLeft: -20
+      ".checkbox": {
+        "& label": {
+          padding: '10px 30px'
+        },
+        '& input[type="checkbox"]': {
+          "&:checked": {
+            backgroundColor: theme.colors.secondary.main
+          },
+          "&:focus, &:active": {
+            boxShadow: `0 0 2px 1px ${theme.colors.secondary.dark}`
+          },
+          border: `2px ${theme.colors.secondary.main} solid`,
+          borderRadius: 5,
+          cursor: "pointer" as "pointer",
+          height: 20,
+          lineHeight: 20,
+          margin: "0 10px 0 -30px",
+          outline: "none",
+          position: "absolute" as "absolute",
+          top: 10,
+          transition: theme.transition.time,
+          "-webkit-appearance": "none",
+          width: 20
+        }
       },
       ".radio + .radio, .checkbox + .checkbox": {
         marginTop: -5
@@ -2872,9 +2894,9 @@ export default (theme: any) =>
         pointerEvents: "none"
       },
       ".btn-default": {
-        color: "#333",
         backgroundColor: "#fff",
-        borderColor: "#ccc"
+        borderColor: "#ccc",
+        color: "#333",
       },
       ".btn-default:focus, .btn-default.focus": {
         color: "#333",
@@ -2906,19 +2928,20 @@ export default (theme: any) =>
         backgroundColor: "#333"
       },
       ".btn-primary": {
-        color: "#fff",
         backgroundColor: theme.colors.primary.main,
-        borderColor: "#2e6da4"
+        borderColor: "#2e6da4",
+        color: "#fff",
       },
       ".btn-primary:focus, .btn-primary.focus": {
         color: "#fff",
         backgroundColor: theme.colors.primary.dark,
         borderColor: "#122b40"
       },
-      ".btn-primary:hover": {
-        color: "#fff",
+      ".btn-primary:hover:not([disabled])": {
         backgroundColor: theme.colors.primary.dark,
-        borderColor: "#204d74"
+        borderColor: "#204d74",
+        boxShadow: '0 4px 6px 1px rgba(0, 0, 0, .2)',
+        color: "#fff",
       },
       ".btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary": {
         color: "#fff",
@@ -2929,11 +2952,13 @@ export default (theme: any) =>
       ".btn-primary:active:hover, .btn-primary.active:hover, .open > .dropdown-toggle.btn-primary:hover, .btn-primary:active:focus, .btn-primary.active:focus, .open > .dropdown-toggle.btn-primary:focus, .btn-primary:active.focus, .btn-primary.active.focus, .open > .dropdown-toggle.btn-primary.focus": {
         color: "#fff",
         backgroundColor: "#204d74",
+        boxShadow: '0 8px 6px 1px rgba(0, 0, 0, .2)',
         borderColor: "#122b40"
       },
       ".btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus": {
         backgroundColor: theme.colors.primary.main,
-        borderColor: "#2e6da4"
+        borderColor: "#2e6da4",
+        color: "#fff",
       },
       ".btn-primary .badge": {
         color: theme.colors.primary.main,
@@ -5031,7 +5056,11 @@ export default (theme: any) =>
         border: "0"
       },
       ".modal-open": {
-        overflow: "hidden"
+        "& #root": {
+          filter: "blur(2px)"
+        },
+        overflow: "hidden",
+          transition: theme.transition.time
       },
       ".modal": {
         position: "fixed",

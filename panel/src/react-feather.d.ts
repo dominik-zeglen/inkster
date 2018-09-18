@@ -25,6 +25,8 @@ declare module 'react-feather' {
   export const Image: StatelessComponent<FeatherIcon>;
   export const Plus: StatelessComponent<FeatherIcon>;
   export const Trash: StatelessComponent<FeatherIcon>;
+  export const User: StatelessComponent<FeatherIcon>;
+  export const Users: StatelessComponent<FeatherIcon>;
   export const X: StatelessComponent<FeatherIcon>;
 }
 

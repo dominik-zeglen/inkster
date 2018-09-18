@@ -41,5 +41,10 @@ func execQuery(query string, variables string) (string, error) {
 }
 
 func resetDatabase() {
-	dataSource.ResetMockDatabase(test.Directories, test.Templates, test.Pages)
+	dataSource.ResetMockDatabase(
+		test.Directories,
+		test.Templates,
+		test.Pages,
+		test.Users,
+	)
 }

@@ -33,7 +33,8 @@ export const Input: React.StatelessComponent<Props> = ({
   onChange,
   placeholder,
   type,
-  value
+  value,
+  ...props
 }) => (
   <FormGroup controlId={id} validationState={error ? "error" : null}>
     {label && <ControlLabel>{label}</ControlLabel>}
@@ -51,6 +52,7 @@ export const Input: React.StatelessComponent<Props> = ({
             ? "textarea"
             : "input"
       }
+      {...props}
     >
       {children}
     </FormControl>

@@ -22,7 +22,6 @@ var dataSource = mongodb.Adapter{
 func checkEnv() bool {
 	vars := []string{
 		"INKSTER_DB_URI",
-		"INKSTER_DB_NAME",
 		"INKSTER_STATIC",
 		"INKSTER_PORT",
 		"INKSTER_SERVE_STATIC",
