@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import gql from "graphql-tag";
 
 const mCreateUser = gql`
   mutation CreateUser($input: UserCreateInput!) {
@@ -16,23 +16,25 @@ const mCreateUser = gql`
       }
     }
   }
-`
-export interface variables {
+`;
+export interface Variables {
   input: {
     email: string;
-  }
+  };
 }
-export interface result {
-  errors: Array<{
-    field: string;
-    message: string;
-  }>
-  user: {
-    id: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
-    isActive: boolean;
-  }
+export interface Result {
+  createUser: {
+    errors: Array<{
+      field: string;
+      message: string;
+    }>;
+    user: {
+      id: string;
+      email: string;
+      createdAt: string;
+      updatedAt: string;
+      isActive: boolean;
+    };
+  };
 }
 export default mCreateUser;

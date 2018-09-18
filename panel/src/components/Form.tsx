@@ -1,16 +1,18 @@
 import * as React from "react";
 
+export type FormChildren<T extends {}> =
+  | ((
+      props: {
+        data: T;
+        hasChanged: boolean;
+        change: (event: React.ChangeEvent<any>) => void;
+        submit: (event: React.FormEvent<any>) => void;
+      }
+    ) => React.ReactElement<any>)
+  | React.ReactNode;
+
 export interface FormProps<T extends {}> {
-  children:
-    | ((
-        props: {
-          data: T;
-          hasChanged: boolean;
-          change: (event: React.ChangeEvent<any>) => void;
-          submit: (event: React.FormEvent<any>) => void;
-        }
-      ) => React.ReactElement<any>)
-    | React.ReactNode;
+  children: FormChildren<T>;
   initial: T;
   onSubmit: (data?: T) => void;
 }
@@ -33,6 +35,7 @@ const shallowCompare = (a: any, b: any) => {
 
 class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
   public state: T = this.props.initial;
+  private form = React.createRef<HTMLFormElement>();
 
   private handleChange = (event: React.ChangeEvent<any>) => {
     const { target } = event;
@@ -46,8 +49,14 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
   private handleSubmit = (event: React.FormEvent<any>) => {
     const { onSubmit } = this.props;
     event.preventDefault();
-    if (onSubmit !== undefined) {
-      onSubmit(this.state);
+    if (!!this.form.current) {
+      if (this.form.current.checkValidity()) {
+        onSubmit(this.state);
+      } else {
+        (this.form.current.querySelectorAll("input") as any).forEach(input =>
+          input.reportValidity()
+        );
+      }
     }
   };
 
@@ -65,7 +74,11 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
       });
     }
 
-    return <form onSubmit={this.handleSubmit}>{contents}</form>;
+    return (
+      <form ref={this.form} onSubmit={this.handleSubmit}>
+        {contents}
+      </form>
+    );
   }
 }
 

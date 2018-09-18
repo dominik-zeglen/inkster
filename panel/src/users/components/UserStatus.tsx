@@ -15,11 +15,6 @@ interface Props {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const handleCheckboxChange = (event: React.ChangeEvent<any>) => {
-  event.target.value = !event.target.value;
-  return event;
-};
-
 const decorate = withStyles(
   (theme: any) => ({
     label: {
@@ -29,33 +24,41 @@ const decorate = withStyles(
   { displayName: "UserStatus" }
 );
 export const UserStatus = decorate<Props>(
-  ({ classes, createdAt, data, updatedAt, onChange }) => (
-    <Panel>
-      <Panel.Heading>
-        <Panel.Title>{i18n.t("Status")}</Panel.Title>
-      </Panel.Heading>
-      <Panel.Body>
-        <p>
-          {createdAt ? (
-            <>
-              <span className={classes.label}>{i18n.t("Created")}</span>
-              <Date date={createdAt} />
-            </>
-          ) : (
-            <Skeleton />
-          )}
-          <br />
-          {updatedAt ? (
-            <>
-              <span className={classes.label}>{i18n.t("Last modified")}</span>
-              <Date date={updatedAt} />
-            </>
-          ) : (
-            <Skeleton />
-          )}
-          <br />
-        </p>
-        <p>
+  ({ classes, createdAt, data, updatedAt, onChange }) => {
+    const handleCheckboxChange = (event: React.ChangeEvent<any>) => {
+      onChange({
+        target: {
+          name: event.target.name,
+          value: event.target.checked
+        }
+      } as any);
+    };
+    return (
+      <Panel>
+        <Panel.Heading>
+          <Panel.Title>{i18n.t("Status")}</Panel.Title>
+        </Panel.Heading>
+        <Panel.Body>
+          <p>
+            {createdAt ? (
+              <>
+                <span className={classes.label}>{i18n.t("Created")}</span>
+                <Date date={createdAt} />
+              </>
+            ) : (
+              <Skeleton />
+            )}
+            <br />
+            {updatedAt ? (
+              <>
+                <span className={classes.label}>{i18n.t("Last modified")}</span>
+                <Date date={updatedAt} />
+              </>
+            ) : (
+              <Skeleton />
+            )}
+            <br />
+          </p>
           <Checkbox
             checked={data.isActive}
             name="isActive"
@@ -63,9 +66,9 @@ export const UserStatus = decorate<Props>(
           >
             {i18n.t("Active")}
           </Checkbox>
-        </p>
-      </Panel.Body>
-    </Panel>
-  )
+        </Panel.Body>
+      </Panel>
+    );
+  }
 );
 export default UserStatus;

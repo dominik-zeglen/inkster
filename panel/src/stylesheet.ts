@@ -2894,9 +2894,9 @@ export default (theme: Theme) =>
         pointerEvents: "none"
       },
       ".btn-default": {
-        color: "#333",
         backgroundColor: "#fff",
-        borderColor: "#ccc"
+        borderColor: "#ccc",
+        color: "#333",
       },
       ".btn-default:focus, .btn-default.focus": {
         color: "#333",
@@ -2928,19 +2928,20 @@ export default (theme: Theme) =>
         backgroundColor: "#333"
       },
       ".btn-primary": {
-        color: "#fff",
         backgroundColor: theme.colors.primary.main,
-        borderColor: "#2e6da4"
+        borderColor: "#2e6da4",
+        color: "#fff",
       },
       ".btn-primary:focus, .btn-primary.focus": {
         color: "#fff",
         backgroundColor: theme.colors.primary.dark,
         borderColor: "#122b40"
       },
-      ".btn-primary:hover": {
-        color: "#fff",
+      ".btn-primary:hover:not([disabled])": {
         backgroundColor: theme.colors.primary.dark,
-        borderColor: "#204d74"
+        borderColor: "#204d74",
+        boxShadow: '0 4px 6px 1px rgba(0, 0, 0, .2)',
+        color: "#fff",
       },
       ".btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary": {
         color: "#fff",
@@ -2951,11 +2952,13 @@ export default (theme: Theme) =>
       ".btn-primary:active:hover, .btn-primary.active:hover, .open > .dropdown-toggle.btn-primary:hover, .btn-primary:active:focus, .btn-primary.active:focus, .open > .dropdown-toggle.btn-primary:focus, .btn-primary:active.focus, .btn-primary.active.focus, .open > .dropdown-toggle.btn-primary.focus": {
         color: "#fff",
         backgroundColor: "#204d74",
+        boxShadow: '0 8px 6px 1px rgba(0, 0, 0, .2)',
         borderColor: "#122b40"
       },
       ".btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus": {
         backgroundColor: theme.colors.primary.main,
-        borderColor: "#2e6da4"
+        borderColor: "#2e6da4",
+        color: "#fff",
       },
       ".btn-primary .badge": {
         color: theme.colors.primary.main,

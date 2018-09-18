@@ -2,9 +2,8 @@ import * as React from "react";
 import { Plus } from "react-feather";
 import withStyles from "react-jss";
 
-import ActionDialog from "../../components/ActionDialog";
+import FormDialog from "../../components/FormDialog";
 import Container from "../../components/Container";
-import Form from "../../components/Form";
 import i18n from "../../i18n";
 import IconButton from "../../components/IconButton";
 import Input from "../../components/Input";
@@ -68,15 +67,15 @@ export const UserListPage = decorate<Props>(
               <div />
             </div>
           </Container>
-          <Form initial={{ email: "" }} onSubmit={onAdd}>
-            {({ change, data, submit }) => (
-              <ActionDialog
-                show={openedAddUserDialog}
-                size="xs"
-                onClose={toggleAddUserDialog}
-                onConfirm={submit}
-                title={i18n.t("Add new user")}
-              >
+          <FormDialog
+            show={openedAddUserDialog}
+            width="xs"
+            onClose={toggleAddUserDialog}
+            onConfirm={onAdd}
+            title={i18n.t("Add new user")}
+            initial={{ email: "" }}
+          >
+              {({ change, data }) => (
                 <Input
                   name="email"
                   onChange={change}
@@ -84,9 +83,8 @@ export const UserListPage = decorate<Props>(
                   label={i18n.t("User email")}
                   type="email"
                 />
-              </ActionDialog>
-            )}
-          </Form>
+              )}
+          </FormDialog>
         </>
       )}
     </Toggle>
