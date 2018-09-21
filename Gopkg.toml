@@ -26,13 +26,13 @@
 
 
 [[constraint]]
-  name = "github.com/go-pg/pg"
-  version = "6.11.2"
-
-[[constraint]]
   branch = "master"
   name = "github.com/graph-gophers/graphql-go"
 
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/dchest/uniuri"

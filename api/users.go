@@ -120,8 +120,9 @@ func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResu
 	user := core.User{
 		Email: args.Input.Email,
 	}
+	var pwd string
 	if args.Input.Password == nil {
-		user.CreateRandomPassword()
+		pwd, _ = user.CreateRandomPassword()
 		user.Active = false
 	} else {
 		user.CreatePassword(*args.Input.Password)
@@ -134,7 +135,7 @@ func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResu
 	if args.SendInvitation != nil {
 		sendInvitation := *args.SendInvitation
 		if sendInvitation {
-			err = res.mailer.Send(user.Email, "Inkster password", user.Password)
+			err = res.mailer.Send(user.Email, "Inkster password", pwd)
 			if err != nil {
 				return nil, err
 			}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/dchest/uniuri"
 	"golang.org/x/crypto/pbkdf2"
 )
 
@@ -39,13 +40,9 @@ func (user User) AuthPassword(pass string) bool {
 	return hashedPassword == user.Password
 }
 
-func (user *User) CreateRandomPassword() error {
-	pwd := make([]byte, PW_MIN_LEN+1)
-	_, err := io.ReadFull(rand.Reader, pwd)
-	if err != nil {
-		return err
-	}
-	return user.CreatePassword(string(pwd))
+func (user *User) CreateRandomPassword() (string, error) {
+	pwd := uniuri.NewLen(8)
+	return string(pwd), user.CreatePassword(string(pwd))
 }
 
 func (user *User) CreatePassword(pass string) error {
