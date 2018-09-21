@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/mock"
 	test "github.com/dominik-zeglen/inkster/testing"
 	gql "github.com/graph-gophers/graphql-go"
@@ -14,7 +15,7 @@ import (
 var dataSource = mock.Adapter{
 	GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
 }
-var resolver = NewResolver(dataSource)
+var resolver = NewResolver(dataSource, mailer.MockMailClient{})
 var schema = gql.MustParseSchema(Schema, &resolver)
 
 var ErrNoError = fmt.Errorf("Did not return error")

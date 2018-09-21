@@ -112,15 +112,17 @@ type UserCreateInput struct {
 	Password *string
 }
 type UserCreateMutationArgs struct {
-	Input UserCreateInput
+	Input          UserCreateInput
+	SendInvitation *bool
 }
 
 func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResultResolver, error) {
 	user := core.User{
 		Email: args.Input.Email,
 	}
+	var pwd string
 	if args.Input.Password == nil {
-		user.CreateRandomPassword()
+		pwd, _ = user.CreateRandomPassword()
 		user.Active = false
 	} else {
 		user.CreatePassword(*args.Input.Password)
@@ -129,6 +131,15 @@ func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResu
 	result, err := res.dataSource.AddUser(user)
 	if err != nil {
 		return nil, err
+	}
+	if args.SendInvitation != nil {
+		sendInvitation := *args.SendInvitation
+		if sendInvitation {
+			err = res.mailer.Send(user.Email, "Inkster password", pwd)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,

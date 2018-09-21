@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 const mCreateUser = gql`
   mutation CreateUser($input: UserCreateInput!) {
-    createUser(input: $input) {
+    createUser(input: $input, sendInvitation: true) {
       errors {
         field
         message
