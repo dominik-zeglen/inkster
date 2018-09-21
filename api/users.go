@@ -112,7 +112,8 @@ type UserCreateInput struct {
 	Password *string
 }
 type UserCreateMutationArgs struct {
-	Input UserCreateInput
+	Input          UserCreateInput
+	SendInvitation *bool
 }
 
 func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResultResolver, error) {
@@ -129,6 +130,15 @@ func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResu
 	result, err := res.dataSource.AddUser(user)
 	if err != nil {
 		return nil, err
+	}
+	if args.SendInvitation != nil {
+		sendInvitation := *args.SendInvitation
+		if sendInvitation {
+			err = res.mailer.Send(user.Email, "Inkster password", user.Password)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,

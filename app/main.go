@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/dominik-zeglen/inkster/api"
+	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/mongodb"
 	"github.com/globalsign/mgo"
 	"github.com/graph-gophers/graphql-go"
@@ -15,35 +16,49 @@ import (
 )
 
 var schema *graphql.Schema
-var dataSource = mongodb.Adapter{
-	DBName: os.Getenv("INKSTER_DB_NAME"),
-}
 
-func checkEnv() bool {
+func checkEnv() {
 	vars := []string{
 		"INKSTER_DB_URI",
 		"INKSTER_STATIC",
 		"INKSTER_PORT",
 		"INKSTER_SERVE_STATIC",
+		"INKSTER_SMTP_HOST",
+		"INKSTER_SMTP_LOGIN",
+		"INKSTER_SMTP_ADDR",
+		"INKSTER_SMTP_PASS",
+		"INKSTER_SMTP_PORT",
 	}
 	for _, env := range vars {
 		if os.Getenv(env) == "" {
-			return false
+			log.Fatalf("ERROR: Missing environment variable: %s", env)
 		}
 	}
-	return true
 }
 
 func init() {
-	if !checkEnv() {
-		log.Fatalln("ERROR: Missing environment variables.")
+	checkEnv()
+	dataSource := mongodb.Adapter{
+		DBName: os.Getenv("INKSTER_DB_NAME"),
 	}
 	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
 	if err != nil {
 		log.Println("WARNING: Database is offline.")
 	}
+	var mailClient mailer.Mailer
 	dataSource.Session = session
-	resolver := api.NewResolver(&dataSource)
+	if os.Getenv("DEBUG") == "1" {
+		mailClient = mailer.MockMailClient{}
+	} else {
+		mailClient = mailer.NewSmtpMailClient(
+			os.Getenv("INKSTER_SMTP_LOGIN"),
+			os.Getenv("INKSTER_SMTP_ADDR"),
+			os.Getenv("INKSTER_SMTP_PASS"),
+			os.Getenv("INKSTER_SMTP_HOST"),
+			os.Getenv("INKSTER_SMTP_PORT"),
+		)
+	}
+	resolver := api.NewResolver(&dataSource, mailClient)
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -44,7 +45,7 @@ var Schema = `
 		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
 		removePage(id: ID!): PageRemoveResult
 
-		createUser(input: UserCreateInput!): UserOperationResult!
+		createUser(input: UserCreateInput!, sendInvitation: Boolean): UserOperationResult!
 		removeUser(id: ID!): UserRemoveResult!
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
 	}
@@ -201,10 +202,14 @@ var Schema = `
 
 type Resolver struct {
 	dataSource core.Adapter
+	mailer     mailer.Mailer
 }
 
-func NewResolver(dataSource core.Adapter) Resolver {
-	return Resolver{dataSource: dataSource}
+func NewResolver(dataSource core.Adapter, mailer mailer.Mailer) Resolver {
+	return Resolver{
+		dataSource: dataSource,
+		mailer:     mailer,
+	}
 }
 
 func toGlobalID(dataType string, ID bson.ObjectId) string {
