@@ -3,6 +3,7 @@ import withStyles from "react-jss";
 import { Button, Panel } from "react-bootstrap";
 import { AlertTriangle } from "react-feather";
 
+import Checkbox from "../../components/Checkbox";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
@@ -11,6 +12,7 @@ import i18n from "../../i18n";
 export interface FormData {
   email: string;
   password: string;
+  remember: boolean;
 }
 
 export interface Props {
@@ -22,7 +24,8 @@ export interface Props {
 
 const initialForm: FormData = {
   email: "",
-  password: ""
+  password: "",
+  remember: false
 };
 const decorate = withStyles(theme => ({
   buttonContainer: {
@@ -94,6 +97,12 @@ export const LoginPage = decorate<Props>(
                   name="password"
                   type="password"
                   value={data.password}
+                  onChange={change}
+                />
+                <Checkbox 
+                  label={i18n.t("Remember me")}
+                  name="remember"
+                  value={data.remember}
                   onChange={change}
                 />
                 <div className={classes.buttonContainer}>

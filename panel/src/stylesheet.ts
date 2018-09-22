@@ -13,7 +13,7 @@ export default (theme: Theme) =>
       body: {
         backgroundColor: theme.colors.white.main,
         margin: "0",
-        transitionTimingFunction: 'ease-in' as 'ease-in'
+        transitionTimingFunction: "ease-in" as "ease-in"
       },
       "article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary": {
         display: "block"
@@ -2597,7 +2597,7 @@ export default (theme: Theme) =>
       },
       ".checkbox": {
         "& label": {
-          padding: '10px 30px'
+          padding: "11px 30px 10px"
         },
         '& input[type="checkbox"]': {
           "&:checked": {
@@ -2896,7 +2896,7 @@ export default (theme: Theme) =>
       ".btn-default": {
         backgroundColor: "#fff",
         borderColor: "#ccc",
-        color: "#333",
+        color: "#333"
       },
       ".btn-default:focus, .btn-default.focus": {
         color: "#333",
@@ -2930,7 +2930,7 @@ export default (theme: Theme) =>
       ".btn-primary": {
         backgroundColor: theme.colors.primary.main,
         borderColor: "#2e6da4",
-        color: "#fff",
+        color: "#fff"
       },
       ".btn-primary:focus, .btn-primary.focus": {
         color: "#fff",
@@ -2940,8 +2940,8 @@ export default (theme: Theme) =>
       ".btn-primary:hover:not([disabled])": {
         backgroundColor: theme.colors.primary.dark,
         borderColor: "#204d74",
-        boxShadow: '0 4px 6px 1px rgba(0, 0, 0, .2)',
-        color: "#fff",
+        boxShadow: "0 4px 6px 1px rgba(0, 0, 0, .2)",
+        color: "#fff"
       },
       ".btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary": {
         color: "#fff",
@@ -2952,13 +2952,13 @@ export default (theme: Theme) =>
       ".btn-primary:active:hover, .btn-primary.active:hover, .open > .dropdown-toggle.btn-primary:hover, .btn-primary:active:focus, .btn-primary.active:focus, .open > .dropdown-toggle.btn-primary:focus, .btn-primary:active.focus, .btn-primary.active.focus, .open > .dropdown-toggle.btn-primary.focus": {
         color: "#fff",
         backgroundColor: "#204d74",
-        boxShadow: '0 8px 6px 1px rgba(0, 0, 0, .2)',
+        boxShadow: "0 8px 6px 1px rgba(0, 0, 0, .2)",
         borderColor: "#122b40"
       },
       ".btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary.focus": {
         backgroundColor: theme.colors.primary.main,
         borderColor: "#2e6da4",
-        color: "#fff",
+        color: "#fff"
       },
       ".btn-primary .badge": {
         color: theme.colors.primary.main,
@@ -5060,7 +5060,7 @@ export default (theme: Theme) =>
           filter: "blur(2px)"
         },
         overflow: "hidden",
-          transition: theme.transition.time
+        transition: theme.transition.time
       },
       ".modal": {
         position: "fixed",
