@@ -1,8 +1,12 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/dominik-zeglen/inkster/core"
 	// "github.com/globalsign/mgo/bson"
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dominik-zeglen/inkster/middleware"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -199,4 +203,25 @@ func (res *Resolver) UpdateUser(args UserUpdateMutationArgs) (*userOperationResu
 			user:   &result,
 		},
 	}, nil
+}
+
+type VerifyTokenArgs struct {
+	Token string
+}
+
+func (res *Resolver) VerifyToken(args VerifyTokenArgs) bool {
+	_, err := jwt.ParseWithClaims(
+		args.Token,
+		&middleware.UserClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			if _, valid := token.Method.(*jwt.SigningMethodHMAC); !valid {
+				return nil, errors.New("Invalid signing method")
+			}
+			return []byte(res.key), nil
+		},
+	)
+	if err != nil {
+		return false
+	}
+	return true
 }

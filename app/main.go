@@ -59,7 +59,7 @@ func init() {
 			os.Getenv("INKSTER_SMTP_PORT"),
 		)
 	}
-	resolver := api.NewResolver(&dataSource, mailClient)
+	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 

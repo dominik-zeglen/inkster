@@ -23,6 +23,8 @@ var Schema = `
 
 		user(id: ID!): User
 		users: [User]
+
+		verifyToken(token: String!): Boolean!
 	}
 	
 	type Mutation {
@@ -202,12 +204,14 @@ var Schema = `
 
 type Resolver struct {
 	dataSource core.Adapter
+	key        string
 	mailer     mailer.Mailer
 }
 
-func NewResolver(dataSource core.Adapter, mailer mailer.Mailer) Resolver {
+func NewResolver(dataSource core.Adapter, mailer mailer.Mailer, key string) Resolver {
 	return Resolver{
 		dataSource: dataSource,
+		key:        key,
 		mailer:     mailer,
 	}
 }
