@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/dchest/uniuri"
+
+[[constraint]]
+  name = "github.com/dgrijalva/jwt-go"
+  version = "3.2.0"
