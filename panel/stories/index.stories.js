@@ -1,5 +1,6 @@
-require('./directories/DirectoryRootPage.tsx')
+require('./auth/LoginPage.tsx')
 require('./directories/DirectoryDetailsPage.tsx')
+require('./directories/DirectoryRootPage.tsx')
 require('./pages/PageDetailsPage.tsx')
-require('./users/UserListPage.tsx')
 require('./users/UserDetailsPage.tsx')
+require('./users/UserListPage.tsx')
