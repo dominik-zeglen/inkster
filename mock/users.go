@@ -56,6 +56,19 @@ func (adapter Adapter) AddUser(user core.User) (core.User, error) {
 	return user, nil
 }
 
+// AuthenticateUser checks if given credentials are valid, then returns User object
+func (adapter Adapter) AuthenticateUser(email string, password string) (core.User, error) {
+	userIndex, err := adapter.findUser(nil, &email)
+	if err != nil {
+		return core.User{}, err
+	}
+	user := users[userIndex]
+	if user.AuthPassword(password) {
+		return user, nil
+	}
+	return core.User{}, core.ErrBadCredentials
+}
+
 // GetUser allows user to fetch user from database
 func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
 	index, err := adapter.findUser(&userID, nil)

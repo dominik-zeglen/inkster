@@ -33,6 +33,27 @@ func (adapter Adapter) AddUser(user core.User) (core.User, error) {
 	return user, err
 }
 
+// AuthenticateUser checks if given credentials are valid, then returns User object
+func (adapter Adapter) AuthenticateUser(email string, password string) (core.User, error) {
+	session := adapter.Session.Copy()
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("users")
+
+	var user core.User
+	err := collection.
+		Find(bson.M{"email": email}).
+		One(&user)
+	if err != nil {
+		return core.User{}, err
+	}
+
+	if user.AuthPassword(password) {
+		return user, nil
+	}
+	return core.User{}, core.ErrBadCredentials
+}
+
 // GetUser allows user to fetch user from database
 func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
 	session := adapter.Session.Copy()

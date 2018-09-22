@@ -35,6 +35,7 @@ type Adapter interface {
 	ValidatePage(Page) error
 
 	AddUser(User) (User, error)
+	AuthenticateUser(string, string) (User, error)
 	GetUser(bson.ObjectId) (User, error)
 	GetUserList() ([]User, error)
 	UpdateUser(bson.ObjectId, UserInput) (User, error)

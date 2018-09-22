@@ -24,6 +24,7 @@ var Schema = `
 		user(id: ID!): User
 		users: [User]
 
+		createToken(email: String!, password: String!): String
 		verifyToken(token: String!): Boolean!
 	}
 	

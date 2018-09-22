@@ -225,3 +225,25 @@ func (res *Resolver) VerifyToken(args VerifyTokenArgs) bool {
 	}
 	return true
 }
+
+type CreateTokenArgs struct {
+	Email    string
+	Password string
+}
+
+func (res *Resolver) CreateToken(args CreateTokenArgs) (*string, error) {
+	user, err := res.dataSource.AuthenticateUser(args.Email, args.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	claims := middleware.UserClaims{
+		Email: user.Email,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(res.key))
+	if err != nil {
+		return nil, err
+	}
+	return &tokenString, nil
+}
