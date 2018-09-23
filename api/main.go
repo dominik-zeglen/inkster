@@ -23,8 +23,6 @@ var Schema = `
 
 		user(id: ID!): User
 		users: [User]
-
-		verifyToken(token: String!): Boolean!
 	}
 	
 	type Mutation {
@@ -52,6 +50,7 @@ var Schema = `
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
 
 		login(email: String!, password: String!): String
+		verifyToken(token: String!): Boolean!
 	}
 	
 	type UserError {
