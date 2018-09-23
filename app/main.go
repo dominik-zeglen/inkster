@@ -48,7 +48,7 @@ func init() {
 	}
 	var mailClient mailer.Mailer
 	dataSource.Session = session
-	if os.Getenv("DEBUG") == "1" {
+	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = mailer.MockMailClient{}
 	} else {
 		mailClient = mailer.NewSmtpMailClient(
