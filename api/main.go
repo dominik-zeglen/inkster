@@ -24,7 +24,6 @@ var Schema = `
 		user(id: ID!): User
 		users: [User]
 
-		createToken(email: String!, password: String!): String
 		verifyToken(token: String!): Boolean!
 	}
 	
@@ -51,6 +50,8 @@ var Schema = `
 		createUser(input: UserCreateInput!, sendInvitation: Boolean): UserOperationResult!
 		removeUser(id: ID!): UserRemoveResult!
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
+
+		login(email: String!, password: String!): String
 	}
 	
 	type UserError {

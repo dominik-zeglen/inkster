@@ -226,12 +226,12 @@ func (res *Resolver) VerifyToken(args VerifyTokenArgs) bool {
 	return true
 }
 
-type CreateTokenArgs struct {
+type LoginArgs struct {
 	Email    string
 	Password string
 }
 
-func (res *Resolver) CreateToken(args CreateTokenArgs) (*string, error) {
+func (res *Resolver) Login(args LoginArgs) (*string, error) {
 	user, err := res.dataSource.AuthenticateUser(args.Email, args.Password)
 	if err != nil {
 		return nil, err
