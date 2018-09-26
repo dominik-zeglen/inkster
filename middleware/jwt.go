@@ -7,10 +7,12 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo/bson"
 )
 
 type UserClaims struct {
-	Email string `json:"email"`
+	Email string        `json:"email"`
+	ID    bson.ObjectId `json:"id"`
 	jwt.StandardClaims
 }
 

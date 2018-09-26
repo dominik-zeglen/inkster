@@ -49,8 +49,8 @@ var Schema = `
 		removeUser(id: ID!): UserRemoveResult!
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
 
-		login(email: String!, password: String!): String
-		verifyToken(token: String!): Boolean!
+		login(email: String!, password: String!): LoginResult!
+		verifyToken(token: String!): VerifyTokenResult
 	}
 	
 	type UserError {
@@ -195,6 +195,15 @@ var Schema = `
 	input UserUpdateInput {
 		isActive: Boolean
 		email: String
+	}
+
+	type LoginResult {
+		token: String
+		user: User
+	}
+	type VerifyTokenResult {
+		result: Boolean!
+		user: User
 	}
 	
 	schema {
