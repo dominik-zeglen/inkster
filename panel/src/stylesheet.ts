@@ -3761,7 +3761,7 @@ export default (theme: Theme) =>
           maxHeight: 200
         }
       },
-      ".container > .navbar-header, .container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse": {
+      ".container-fluid > .navbar-header, .container > .navbar-collapse, .container-fluid > .navbar-collapse": {
         marginRight: -15,
         marginLeft: -15
       },
@@ -3789,7 +3789,8 @@ export default (theme: Theme) =>
         height: 50,
         padding: "15px 15px",
         fontSize: 18,
-        lineHeight: 20
+        lineHeight: 20 + "px",
+        marginTop: 2.5
       },
       ".navbar-brand:hover, .navbar-brand:focus": {
         textDecoration: "none"
@@ -3827,7 +3828,7 @@ export default (theme: Theme) =>
       ".navbar-nav > li > a": {
         paddingTop: 10,
         paddingBottom: 10,
-        lineHeight: 20
+        lineHeight: 20 + "px"
       },
       "@media (max-width: 767px)": {
         ".navbar-nav .open .dropdown-menu": {
@@ -3999,8 +4000,7 @@ export default (theme: Theme) =>
         borderColor: "#e7e7e7"
       },
       ".navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus": {
-        color: "#555",
-        backgroundColor: "#e7e7e7"
+        color: "#555"
       },
       ".navbar-default .navbar-link": {
         color: "#777"

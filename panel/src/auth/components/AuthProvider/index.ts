@@ -8,15 +8,15 @@ export interface User {
   email: string;
 }
 
-interface UserContext {
+interface Context {
   login: (username: string, password: string, persist: boolean) => void;
   logout: () => void;
   user?: User;
 }
 
-export const UserContext = React.createContext<UserContext>({
+export const UserContext = React.createContext<Context>({
   login: () => undefined,
-  logout: () => undefined
+  logout: () => undefined,
 });
 
 export const getAuthToken = () =>
