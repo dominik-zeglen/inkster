@@ -36,3 +36,6 @@ func ErrPageExists(page string) error {
 func ErrUserExists(user string) error {
 	return fmt.Errorf("User %s already exists", user)
 }
+
+// ErrBadCredentials informs about existing user
+var ErrBadCredentials = fmt.Errorf("Bad credentials")

@@ -48,6 +48,9 @@ var Schema = `
 		createUser(input: UserCreateInput!, sendInvitation: Boolean): UserOperationResult!
 		removeUser(id: ID!): UserRemoveResult!
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
+
+		login(email: String!, password: String!): LoginResult!
+		verifyToken(token: String!): VerifyTokenResult
 	}
 	
 	type UserError {
@@ -193,6 +196,15 @@ var Schema = `
 		isActive: Boolean
 		email: String
 	}
+
+	type LoginResult {
+		token: String
+		user: User
+	}
+	type VerifyTokenResult {
+		result: Boolean!
+		user: User
+	}
 	
 	schema {
 		query: Query
@@ -202,12 +214,14 @@ var Schema = `
 
 type Resolver struct {
 	dataSource core.Adapter
+	key        string
 	mailer     mailer.Mailer
 }
 
-func NewResolver(dataSource core.Adapter, mailer mailer.Mailer) Resolver {
+func NewResolver(dataSource core.Adapter, mailer mailer.Mailer, key string) Resolver {
 	return Resolver{
 		dataSource: dataSource,
+		key:        key,
 		mailer:     mailer,
 	}
 }

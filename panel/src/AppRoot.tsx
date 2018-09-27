@@ -1,6 +1,7 @@
 import * as React from "react";
 import { withRouter } from "react-router";
 
+import { User, UserContext } from "./auth/components/AuthProvider";
 import AppLayout from "./components/AppLayout";
 
 export const AppRoot = withRouter(({ children, history, location }) => {
@@ -19,9 +20,18 @@ export const AppRoot = withRouter(({ children, history, location }) => {
     }
   };
   return (
-    <AppLayout section={section} onSectionClick={handleSectionClick}>
-      {children}
-    </AppLayout>
+    <UserContext.Consumer>
+      {({ user, logout }) => (
+        <AppLayout
+          section={section}
+          user={user as User}
+          onLogout={logout}
+          onSectionClick={handleSectionClick}
+        >
+          {children}
+        </AppLayout>
+      )}
+    </UserContext.Consumer>
   );
 });
 export default AppRoot;

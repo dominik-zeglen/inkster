@@ -20,6 +20,12 @@
   revision = "8902c56451e9b58ff940bbe5fec35d5f9c04584a"
 
 [[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/globalsign/mgo"
   packages = [
@@ -95,6 +101,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0764c5138d37aef908534c1159e0e76f0391e13bbe06dfcced11b2c0e51d0fc3"
+  inputs-digest = "dcebf2a76dfa92fb52378cad19f6e8e556e3e9b091a6d490b6461452b8fa096e"
   solver-name = "gps-cdcl"
   solver-version = 1

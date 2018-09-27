@@ -1,18 +1,30 @@
 import * as React from "react";
 import withStyles from "react-jss";
-import { Grid, Panel } from "react-bootstrap";
+import {
+  Grid,
+  Nav,
+  MenuItem,
+  NavDropdown,
+  Navbar,
+  Panel
+} from "react-bootstrap";
 import { Box, Home, Users } from "react-feather";
 
 import i18n from "../i18n";
 
 interface Props {
   section: string;
+  user: {
+    id: string;
+    email: string;
+  };
+  onLogout: () => void;
   onSectionClick: (section: string) => () => void;
 }
 
 const decorate = withStyles((theme: any) => ({
   link: {
-    '&.active': {
+    "&.active": {
       color: theme.colors.secondary.dark
     },
     "&:hover": {
@@ -45,8 +57,21 @@ const decorate = withStyles((theme: any) => ({
   }
 }));
 export const AppLayout = decorate<Props>(
-  ({ classes, children, section, onSectionClick }) => (
+  ({ classes, children, section, user, onLogout, onSectionClick }) => (
     <>
+      <Navbar>
+        <Navbar.Header>
+          <Navbar.Brand onClick={onSectionClick("home")}>Inkster</Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav pullRight={true}>
+            <NavDropdown eventKey={1} title={user.email} id="user-menu">
+              <MenuItem eventKey={1.1} onClick={onLogout}>{i18n.t("Logout")}</MenuItem>
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
       <Grid>
         <div className={classes.root}>
           <div>
@@ -59,7 +84,7 @@ export const AppLayout = decorate<Props>(
                   className={[
                     classes.link,
                     section === "home" ? "active" : undefined
-                  ].join(' ')}
+                  ].join(" ")}
                   onClick={onSectionClick("home")}
                 >
                   <Home />
@@ -69,7 +94,7 @@ export const AppLayout = decorate<Props>(
                   className={[
                     classes.link,
                     section === "directories" ? "active" : undefined
-                  ].join(' ')}
+                  ].join(" ")}
                   onClick={onSectionClick("directories")}
                 >
                   <Box />
@@ -79,7 +104,7 @@ export const AppLayout = decorate<Props>(
                   className={[
                     classes.link,
                     section === "users" ? "active" : undefined
-                  ].join(' ')}
+                  ].join(" ")}
                   onClick={onSectionClick("users")}
                 >
                   <Users />

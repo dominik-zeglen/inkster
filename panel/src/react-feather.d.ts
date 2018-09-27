@@ -13,6 +13,7 @@ declare module 'react-feather' {
 
   export const ArrowLeft: StatelessComponent<FeatherIcon>;
   export const ArrowRight: StatelessComponent<FeatherIcon>;
+  export const AlertTriangle: StatelessComponent<FeatherIcon>;
   export const Bold: StatelessComponent<FeatherIcon>;
   export const Box: StatelessComponent<FeatherIcon>;
   export const ChevronDown: StatelessComponent<FeatherIcon>;

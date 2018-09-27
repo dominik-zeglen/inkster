@@ -9,6 +9,7 @@ import (
 
 	"github.com/dominik-zeglen/inkster/api"
 	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/mongodb"
 	"github.com/globalsign/mgo"
 	"github.com/graph-gophers/graphql-go"
@@ -47,7 +48,7 @@ func init() {
 	}
 	var mailClient mailer.Mailer
 	dataSource.Session = session
-	if os.Getenv("DEBUG") == "1" {
+	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = mailer.MockMailClient{}
 	} else {
 		mailClient = mailer.NewSmtpMailClient(
@@ -58,7 +59,7 @@ func init() {
 			os.Getenv("INKSTER_SMTP_PORT"),
 		)
 	}
-	resolver := api.NewResolver(&dataSource, mailClient)
+	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 
@@ -104,7 +105,13 @@ func main() {
 	)
 	http.Handle("/upload", http.HandlerFunc(api.UploadHandler))
 
-	http.Handle("/graphql/", &relay.Handler{Schema: schema})
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))
+	http.Handle("/graphql/",
+		middleware.WithJwt(
+			&relay.Handler{Schema: schema},
+			os.Getenv("INKSTER_SECRET_KEY"),
+		),
+	)
+
 	log.Printf("Running server on port %s\n", os.Getenv("INKSTER_PORT"))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))
 }
