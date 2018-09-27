@@ -74,7 +74,7 @@ render(
                   {({
                     hasToken,
                     isAuthenticated,
-                    tokenAuthLoading,
+                    loginLoading,
                     tokenVerifyLoading
                   }) =>
                     isAuthenticated ? (
@@ -89,7 +89,7 @@ render(
                     ) : hasToken && tokenVerifyLoading ? (
                       <span />
                     ) : (
-                      <Login loading={tokenAuthLoading} />
+                      <Login loading={loginLoading} />
                     )
                   }
                 </AuthProvider>

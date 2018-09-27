@@ -17,7 +17,7 @@ interface AuthProviderOperationsProps {
         props: {
           hasToken: boolean;
           isAuthenticated: boolean;
-          tokenAuthLoading: boolean;
+          loginLoading: boolean;
           tokenVerifyLoading: boolean;
         }
       ) => React.ReactElement<any>)
@@ -33,7 +33,7 @@ const AuthProviderOperations: React.StatelessComponent<
         <Mutation mutation={mTokenVerify} onError={onError}>
           {(tokenVerify, tokenVerifyData) => (
             <AuthProvider
-              tokenAuth={{ ...loginData, mutate: login }}
+              login={{ ...loginData, mutate: login }}
               tokenVerify={{ ...tokenVerifyData, mutate: tokenVerify }}
             >
               {children}
@@ -51,12 +51,12 @@ interface AuthProviderProps {
         props: {
           hasToken: boolean;
           isAuthenticated: boolean;
-          tokenAuthLoading: boolean;
+          loginLoading: boolean;
           tokenVerifyLoading: boolean;
         }
       ) => React.ReactElement<any>)
     | React.ReactNode;
-  tokenAuth: any;
+  login: any;
   tokenVerify: any;
 }
 
@@ -75,22 +75,23 @@ class AuthProvider extends React.Component<
   }
 
   componentWillReceiveProps(props: AuthProviderProps) {
-    const { tokenAuth, tokenVerify } = props;
-    if (tokenAuth.error || tokenVerify.error) {
+    const { login, tokenVerify } = props;
+    if (login.error || tokenVerify.error) {
       this.logout();
     }
-    if (tokenAuth.data) {
-      const user = tokenAuth.data.login.user;
+    if (login.data) {
+      const user = login.data.login.user;
       // FIXME: Now we set state also when auth fails and returned user is
       // `null`, because the LoginView uses this `null` to display error.
       this.setState({ user });
       if (user) {
-        setAuthToken(tokenAuth.data.login.token, this.state.persistToken);
+        setAuthToken(login.data.login.token, this.state.persistToken);
       }
-    }
-    if (tokenVerify.data && tokenVerify.data.verifyToken.user) {
-      const user = tokenVerify.data.verifyToken.user;
-      this.setState({ user });
+    } else {
+      if (tokenVerify.data && tokenVerify.data.verifyToken.user) {
+        const user = tokenVerify.data.verifyToken.user;
+        this.setState({ user });
+      }
     }
   }
 
@@ -104,9 +105,9 @@ class AuthProvider extends React.Component<
   }
 
   login = (email: string, password: string, persistToken: boolean) => {
-    const { tokenAuth } = this.props;
+    const { login } = this.props;
     this.setState({ persistToken });
-    tokenAuth.mutate({ variables: { email, password } });
+    login.mutate({ variables: { email, password } });
   };
 
   logout = () => {
@@ -115,7 +116,7 @@ class AuthProvider extends React.Component<
   };
 
   render() {
-    const { children, tokenAuth, tokenVerify } = this.props;
+    const { children, login, tokenVerify } = this.props;
     const { user } = this.state;
     const isAuthenticated = !!user;
     return (
@@ -126,7 +127,7 @@ class AuthProvider extends React.Component<
           ? children({
               hasToken: !!getAuthToken(),
               isAuthenticated,
-              tokenAuthLoading: tokenAuth.loading,
+              loginLoading: login.loading,
               tokenVerifyLoading: tokenVerify.loading
             })
           : children}
