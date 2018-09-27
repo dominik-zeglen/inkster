@@ -20,7 +20,7 @@ func WithJwt(next http.Handler, key string) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			headerContent := r.Header.Get("Authorization")
-			if headerContent != "" {
+			if headerContent != "" && headerContent != "null" {
 				tokenString := strings.Split(headerContent, " ")[1]
 				token, err := jwt.ParseWithClaims(
 					tokenString,

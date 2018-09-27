@@ -73,10 +73,13 @@ func (res *loginResultResolver) Token() *string {
 	return res.data.token
 }
 func (res *loginResultResolver) User() *userResolver {
-	return &userResolver{
-		data:       res.data.user,
-		dataSource: res.dataSource,
+	if res.data.user != nil {
+		return &userResolver{
+			data:       res.data.user,
+			dataSource: res.dataSource,
+		}
 	}
+	return nil
 }
 
 func (res *verifyTokenResultResolver) Result() bool {
@@ -294,7 +297,13 @@ type LoginArgs struct {
 func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 	user, err := res.dataSource.AuthenticateUser(args.Email, args.Password)
 	if err != nil {
-		return nil, err
+		return &loginResultResolver{
+			data: loginResult{
+				token: nil,
+				user:  nil,
+			},
+			dataSource: res.dataSource,
+		}, nil
 	}
 
 	claims := middleware.UserClaims{
@@ -304,7 +313,13 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(res.key))
 	if err != nil {
-		return nil, err
+		return &loginResultResolver{
+			data: loginResult{
+				token: nil,
+				user:  nil,
+			},
+			dataSource: res.dataSource,
+		}, nil
 	}
 	return &loginResultResolver{
 		data: loginResult{

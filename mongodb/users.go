@@ -45,6 +45,9 @@ func (adapter Adapter) AuthenticateUser(email string, password string) (core.Use
 		Find(bson.M{"email": email}).
 		One(&user)
 	if err != nil {
+		if err == mgo.ErrNotFound {
+			return core.User{}, core.ErrBadCredentials
+		}
 		return core.User{}, err
 	}
 

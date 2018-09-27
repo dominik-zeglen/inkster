@@ -1,4 +1,6 @@
 import { ApolloClient } from "apollo-client";
+import { setContext } from "apollo-link-context";
+import { ErrorResponse, onError } from "apollo-link-error";
 import { ApolloProvider } from "react-apollo";
 import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -15,13 +17,46 @@ import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
 import { DateProvider } from "./components/Date";
 import { urlize } from "./utils";
+import AuthProvider, {
+  getAuthToken,
+  removeAuthToken
+} from "./auth/components/AuthProvider";
+import Login from "./auth/views/Login";
+
+interface ResponseError extends ErrorResponse {
+  networkError?: Error & {
+    statusCode?: number;
+    bodyText?: string;
+  };
+}
+
+const invalidTokenLink = onError((error: ResponseError) => {
+  if (error.networkError && error.networkError.statusCode === 401) {
+    removeAuthToken();
+  }
+});
+
+const authLink = setContext((_, context) => {
+  const authToken = getAuthToken();
+  return {
+    ...context,
+    headers: {
+      ...context.headers,
+      Authorization: authToken ? `Bearer ${authToken}` : null
+    }
+  };
+});
 
 const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: new HttpLink({
-    credentials: "same-origin",
-    uri: "/graphql/"
-  })
+  link: invalidTokenLink.concat(
+    authLink.concat(
+      new HttpLink({
+        credentials: "same-origin",
+        uri: "/graphql/"
+      })
+    )
+  )
 });
 
 render(
@@ -35,12 +70,29 @@ render(
             <ThemeProvider theme={theme}>
               <>
                 <GlobalStylesheet />
-                <AppRoot>
-                  <App />
-                </AppRoot>
-                {uploadState.active && (
-                  <LoaderOverlay progress={uploadState.progress} />
-                )}
+                <AuthProvider>
+                  {({
+                    hasToken,
+                    isAuthenticated,
+                    tokenAuthLoading,
+                    tokenVerifyLoading
+                  }) =>
+                    isAuthenticated ? (
+                      <>
+                        <AppRoot>
+                          <App />
+                        </AppRoot>
+                        {uploadState.active && (
+                          <LoaderOverlay progress={uploadState.progress} />
+                        )}
+                      </>
+                    ) : hasToken && tokenVerifyLoading ? (
+                      <span />
+                    ) : (
+                      <Login loading={tokenAuthLoading} />
+                    )
+                  }
+                </AuthProvider>
               </>
             </ThemeProvider>
           </BrowserRouter>
