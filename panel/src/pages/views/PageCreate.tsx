@@ -4,7 +4,7 @@ import { ApolloError } from "apollo-client";
 
 import { urls, TransactionState } from "../../";
 import Navigator from "../../components/Navigator";
-import PageDetailsPage, { FormData } from "../components/PageDetailsPage";
+import PageCreatePage, { FormData } from "../components/PageCreatePage";
 import mPageCreate, {
   result as PageCreateResult,
   variables as PageCreateVariables
@@ -83,7 +83,7 @@ export class PageCreate extends React.Component<Props, State> {
                           } as PageCreateVariables
                         });
                       return (
-                        <PageDetailsPage
+                        <PageCreatePage
                           disabled={loading}
                           loading={loading}
                           title={i18n.t("Create new page")}
