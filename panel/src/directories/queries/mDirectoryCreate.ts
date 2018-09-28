@@ -11,6 +11,7 @@ const mDirectoryCreate = gql`
       createdAt
       updatedAt
       name
+      isPublished
       parent {
         id
       }

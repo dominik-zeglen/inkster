@@ -169,8 +169,10 @@ func testPages(t *testing.T) {
 		t.Run("Update page", func(t *testing.T) {
 			defer resetDatabase()
 			pageName := "Updated page name"
+			isPublished := true
 			err := dataSource.UpdatePage(Pages[0].ID, core.PageInput{
-				Name: &pageName,
+				Name:        &pageName,
+				IsPublished: &isPublished,
 			})
 			if err != nil {
 				t.Error(err)

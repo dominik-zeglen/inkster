@@ -26,6 +26,9 @@ func (res *directoryResolver) UpdatedAt() string {
 func (res *directoryResolver) Name() string {
 	return res.data.Name
 }
+func (res *directoryResolver) IsPublished() bool {
+	return res.data.IsPublished
+}
 func (res *directoryResolver) Parent() *directoryResolver {
 	if res.data.ParentID == "" {
 		return nil
@@ -75,8 +78,9 @@ func (res *directoryResolver) Pages() (*[]*pageResolver, error) {
 }
 
 type directoryAddInput struct {
-	Name     string
-	ParentID *string
+	Name        string
+	ParentID    *string
+	IsPublished *bool
 }
 type createDirectoryArgs struct {
 	Input directoryAddInput
@@ -98,6 +102,9 @@ func (res *Resolver) CreateDirectory(args createDirectoryArgs) *directoryResolve
 		directory = core.Directory{
 			Name: input.Name,
 		}
+	}
+	if input.IsPublished != nil {
+		directory.IsPublished = *input.IsPublished
 	}
 	directory, err := res.dataSource.AddDirectory(directory)
 	if err != nil {
@@ -169,8 +176,9 @@ func (res *Resolver) GetRootDirectories() *[]*directoryResolver {
 type updateDirectoryArgs struct {
 	ID    gql.ID
 	Input struct {
-		Name     *string
-		ParentID *gql.ID
+		Name        *string
+		ParentID    *gql.ID
+		IsPublished *bool
 	}
 }
 
@@ -190,8 +198,9 @@ func (res *Resolver) UpdateDirectory(args updateDirectoryArgs) (
 		}
 	}
 	err = res.dataSource.UpdateDirectory(localID, core.DirectoryInput{
-		Name:     args.Input.Name,
-		ParentID: localParentID,
+		Name:        args.Input.Name,
+		ParentID:    localParentID,
+		IsPublished: args.Input.IsPublished,
 	})
 	if err != nil {
 		return nil, err

@@ -42,9 +42,11 @@ func testDirectories(t *testing.T) {
 			defer resetDatabase()
 			name := "Updated directory name"
 			parentID := bson.ObjectId(Directories[1].ID)
+			isPublished := true
 			err := dataSource.UpdateDirectory(Directories[0].ID, core.DirectoryInput{
-				Name:     &name,
-				ParentID: &parentID,
+				Name:        &name,
+				ParentID:    &parentID,
+				IsPublished: &isPublished,
 			})
 			if err != nil {
 				t.Error(err)

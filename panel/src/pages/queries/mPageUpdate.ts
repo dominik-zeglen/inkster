@@ -17,6 +17,7 @@ const mPageUpdate = gql`
         updatedAt
         name
         slug
+        isPublished
         fields {
           name
           type
@@ -31,6 +32,7 @@ export interface variables {
   input: {
     name: string;
     slug: string;
+    isPublished?: boolean;
     fields: Array<{
       name: string;
       update: {

@@ -85,6 +85,9 @@ func (adapter Adapter) UpdateDirectory(id bson.ObjectId, data core.DirectoryInpu
 	if data.ParentID != nil {
 		directories[index].ParentID = *data.ParentID
 	}
+	if data.IsPublished != nil {
+		directories[index].IsPublished = *data.IsPublished
+	}
 	directories[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }

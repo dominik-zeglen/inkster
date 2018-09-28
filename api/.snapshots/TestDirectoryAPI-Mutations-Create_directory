@@ -4,6 +4,7 @@
             "createdAt": "2017-07-07T10:00:00.000Z",
             "updatedAt": "2017-07-07T10:00:00.000Z",
             "name": "New Directory",
+            "isPublished": false,
             "parent": {
                 "id": "ZGlyZWN0b3J5OjAwMDAwMDAwMDAwMQ==",
                 "name": "Directory 1"

@@ -3,7 +3,8 @@
         "createDirectory": {
             "createdAt": "2017-07-07T10:00:00.000Z",
             "updatedAt": "2017-07-07T10:00:00.000Z",
-            "name": "New Directory"
+            "name": "New Directory",
+            "isPublished": false
         }
     }
 }

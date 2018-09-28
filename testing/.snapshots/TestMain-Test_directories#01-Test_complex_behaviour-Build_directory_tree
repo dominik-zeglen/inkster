@@ -3,5 +3,6 @@
     "createdAt": "2017-07-07T10:00:00.000Z",
     "updatedAt": "2017-07-07T10:00:00.000Z",
     "name": "Parent",
-    "parentId": ""
+    "parentId": "",
+    "isPublished": false
 }

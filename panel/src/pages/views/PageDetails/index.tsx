@@ -85,6 +85,7 @@ export class PageDetails extends React.Component<Props, State> {
                             updatePage.mutate({
                               id,
                               input: {
+                                isPublished: formData.isPublished,
                                 name: formData.name,
                                 slug: formData.slug,
                                 fields: formData.fields.map(f => ({

@@ -64,16 +64,19 @@ var Schema = `
 		updatedAt: String!
 		name: String!
 		parent: Directory
+		isPublished: Boolean!
 		children: [Directory]
 		pages: [Page]
 	}
 	input DirectoryCreateInput {
 		name: String!
 		parentId: ID
+		isPublished: Boolean
 	}
 	input DirectoryUpdateInput {
 		name: String
 		parentId: ID
+		isPublished: Boolean
 	}
 
 	type Template{
@@ -117,6 +120,7 @@ var Schema = `
 		updatedAt: String!
 		name: String!
 		slug: String!
+		isPublished: Boolean!
 		fields: [PageField]
 		parent: Directory!
 	}
@@ -140,12 +144,14 @@ var Schema = `
 	input PageCreateInput {
 		name: String!
 		parentId: ID!
+		isPublished: Boolean
 		fields: [PageFieldCreateInput]
 	}
 	input PageUpdateInput {
 		name: String
 		slug: String
 		parentId: ID
+		isPublished: Boolean
 		fields: [PageFieldUpdate2Input!]
 	}
   input PageFieldCreateInput {

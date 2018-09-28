@@ -6,6 +6,7 @@
                 "createdAt": "2007-07-07T10:00:00.000Z",
                 "updatedAt": "2007-07-07T10:00:00.000Z",
                 "name": "Directory 1",
+                "isPublished": false,
                 "parent": null,
                 "children": [
                     {
@@ -31,6 +32,7 @@
                 "createdAt": "2007-07-07T11:00:00.000Z",
                 "updatedAt": "2007-07-07T11:00:00.000Z",
                 "name": "Directory 2",
+                "isPublished": false,
                 "parent": null,
                 "children": [],
                 "pages": [
@@ -46,6 +48,7 @@
                 "createdAt": "2007-07-07T12:00:00.000Z",
                 "updatedAt": "2007-07-07T12:00:00.000Z",
                 "name": "Directory 3",
+                "isPublished": false,
                 "parent": null,
                 "children": [],
                 "pages": []

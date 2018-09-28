@@ -24,6 +24,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -52,6 +53,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 				}
 			}`
 			variables := `{
@@ -75,12 +77,14 @@ func TestDirectoryAPI(t *testing.T) {
 					input: {
 						name: $name 
 						parentId: $parentId
+						isPublished: true
 					}
 				) {
 					id
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -122,6 +126,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -189,6 +194,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -221,6 +227,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -253,6 +260,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name
@@ -281,6 +289,7 @@ func TestDirectoryAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					name
+					isPublished
 					parent {
 						id
 						name

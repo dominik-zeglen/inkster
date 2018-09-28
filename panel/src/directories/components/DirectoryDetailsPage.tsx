@@ -17,6 +17,7 @@ import i18n from "../../i18n";
 
 interface FormData {
   name: string;
+  isPublished: boolean;
 }
 interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
   directory?: {
@@ -28,6 +29,7 @@ interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
     }>;
     createdAt?: string;
     updatedAt?: string;
+    isPublished: boolean;
   };
   onDelete: () => void;
 }
@@ -63,6 +65,7 @@ export const DirectoryDetailsPage = decorate<Props>(
         <>
           <Form
             initial={{
+              isPublished: directory && directory.isPublished ? directory.isPublished : false,
               name: directory && directory.name ? directory.name : ""
             }}
             onSubmit={onSubmit}
@@ -100,7 +103,9 @@ export const DirectoryDetailsPage = decorate<Props>(
                   <div>
                     <DirectoryStatus
                       createdAt={directory ? directory.createdAt : undefined}
+                      data={data}
                       updatedAt={directory ? directory.updatedAt : undefined}
+                      onChange={change}
                     />
                   </div>
                 </div>

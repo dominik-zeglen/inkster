@@ -25,6 +25,7 @@ interface PageField {
 export interface FormData {
   name: string;
   slug: string;
+  isPublished: boolean;
   fields: PageField[];
   addFields: PageField[];
   removeFields: string[];
@@ -36,6 +37,7 @@ interface Props extends ViewProps, FormViewProps<FormData> {
     updatedAt?: string;
     name?: string;
     slug?: string;
+    isPublished: boolean;
     parent?: {
       id: string;
       name?: string;
@@ -73,6 +75,7 @@ export const PageDetailsPage = decorate<Props>(
     const initialForm = {
       name: page && page.name ? page.name : "",
       slug: page && page.slug ? page.slug : "",
+      isPublished: page ? page.isPublished : false,
       fields:
         page && page.fields
           ? (page.fields.map(f => ({ id: f.name, ...f })) as PageField[])
@@ -200,6 +203,8 @@ export const PageDetailsPage = decorate<Props>(
                                 <PageStatus
                                   createdAt={page ? page.createdAt : undefined}
                                   updatedAt={page ? page.updatedAt : undefined}
+                                  data={data}
+                                  onChange={change}
                                 />
                               </div>
                             </div>
