@@ -5,6 +5,7 @@
     "name": "Page 1",
     "slug": "page-1",
     "parentId": "303030303030303030303031",
+    "isPublished": false,
     "fields": [
         {
             "type": "unique",

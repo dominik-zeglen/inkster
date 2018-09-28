@@ -5,6 +5,7 @@
     "name": "New page",
     "slug": "new-page",
     "parentId": "303030303030303030303031",
+    "isPublished": false,
     "fields": [
         {
             "type": "text",

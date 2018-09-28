@@ -180,6 +180,9 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 		copy(fields, *data.Fields)
 		pages[index].Fields = fields
 	}
+	if data.IsPublished != nil {
+		pages[index].IsPublished = *data.IsPublished
+	}
 	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
 }

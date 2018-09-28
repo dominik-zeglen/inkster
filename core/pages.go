@@ -8,11 +8,12 @@ import (
 
 // Page is a object representing site content
 type Page struct {
-	BaseModel `bson:",inline"`
-	Name      string        `json:"name"`
-	Slug      string        `json:"slug"`
-	ParentID  bson.ObjectId `bson:"parentId" json:"parentId"`
-	Fields    []PageField   `json:"fields"`
+	BaseModel   `bson:",inline"`
+	Name        string        `json:"name"`
+	Slug        string        `json:"slug"`
+	ParentID    bson.ObjectId `bson:"parentId" json:"parentId"`
+	IsPublished bool          `bson:"isPublished" json:"isPublished"`
+	Fields      []PageField   `json:"fields"`
 }
 
 func (page Page) String() string {
@@ -49,8 +50,9 @@ func NewPage() Page {
 
 // UpdatePageArguments is transactional model of an update properties
 type UpdatePageArguments struct {
-	Name string `bson:",omitempty"`
-	Slug string `bson:",omitempty"`
+	Name        *string `bson:"name",omitempty`
+	Slug        *string `bson:"slug",omitempty`
+	IsPublished *bool   `bson:"isPublished",omitempty`
 }
 
 // PageField represents a single field in template
@@ -90,10 +92,11 @@ func (field PageField) String() string {
 
 // PageInput is transactional model of an creation properties
 type PageInput struct {
-	Name     *string        `bson:",omitempty"`
-	Slug     *string        `bson:",omitempty"`
-	ParentID *bson.ObjectId `bson:",omitempty"`
-	Fields   *[]PageField   `bson:",omitempty"`
+	Name        *string        `bson:"name,omitempty"`
+	Slug        *string        `bson:"slug,omitempty"`
+	ParentID    *bson.ObjectId `bson:"parentId,omitempty"`
+	IsPublished *bool          `bson:"isPublished,omitempty`
+	Fields      *[]PageField   `bson:"fields,omitempty"`
 }
 
 // UpdatePageFieldArguments is transactional model of an update properties
