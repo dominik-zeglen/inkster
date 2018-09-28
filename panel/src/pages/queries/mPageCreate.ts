@@ -17,6 +17,7 @@ const mPageCreate = gql`
         updatedAt
         name
         slug
+        isPublished
         fields {
           name
           type
@@ -44,6 +45,7 @@ export interface result {
     id: string;
     name: string;
     slug: string;
+    isPublished: boolean;
     fields: Array<{
       name: string;
       type: string;

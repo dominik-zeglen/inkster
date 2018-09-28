@@ -95,7 +95,7 @@ type PageInput struct {
 	Name        *string        `bson:"name,omitempty"`
 	Slug        *string        `bson:"slug,omitempty"`
 	ParentID    *bson.ObjectId `bson:"parentId,omitempty"`
-	IsPublished *bool          `bson:"isPublished,omitempty`
+	IsPublished *bool          `bson:"isPublished",omitempty`
 	Fields      *[]PageField   `bson:"fields,omitempty"`
 }
 

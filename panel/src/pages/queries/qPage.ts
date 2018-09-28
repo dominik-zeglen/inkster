@@ -8,6 +8,7 @@ const qPage = gql`
       updatedAt
       name
       slug
+      isPublished
       fields {
         name
         type
