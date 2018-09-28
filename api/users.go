@@ -217,9 +217,10 @@ func (res *Resolver) RemoveUser(
 		return nil, err
 	}
 
-	user := ctx.Value("user").(*middleware.UserClaims)
-	if user.ID == localID {
-		return nil, errors.New("User cannot remove himself")
+	if user, ok := ctx.Value("user").(*middleware.UserClaims); ok {
+		if user.ID == localID {
+			return nil, errors.New("User cannot remove himself")
+		}
 	}
 
 	err = res.dataSource.RemoveUser(localID)
