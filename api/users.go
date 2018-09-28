@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -207,11 +208,21 @@ type UserRemoveMutationArgs struct {
 	ID gql.ID
 }
 
-func (res *Resolver) RemoveUser(args UserRemoveMutationArgs) (*userRemoveResultResolver, error) {
+func (res *Resolver) RemoveUser(
+	ctx context.Context,
+	args UserRemoveMutationArgs,
+) (*userRemoveResultResolver, error) {
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
 		return nil, err
 	}
+
+	if user, ok := ctx.Value("user").(*middleware.UserClaims); ok {
+		if user.ID == localID {
+			return nil, errors.New("User cannot remove himself")
+		}
+	}
+
 	err = res.dataSource.RemoveUser(localID)
 	if err != nil {
 		return nil, err
