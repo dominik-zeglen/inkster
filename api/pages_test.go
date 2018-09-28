@@ -32,6 +32,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -86,6 +87,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -133,6 +135,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -179,6 +182,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -223,6 +227,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -267,6 +272,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -311,6 +317,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -345,6 +352,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -384,6 +392,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -428,6 +437,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -473,6 +483,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -495,7 +506,7 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Update page properties", func(t *testing.T) {
 			defer resetDatabase()
 			query := `mutation UpdatePageProperties($id: ID!, $name: String) {
-				updatePage(id: $id, input: { name: $name }) {
+				updatePage(id: $id, input: { name: $name, isPublished: true }) {
 					userErrors {
 						field
 						message
@@ -506,6 +517,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -547,6 +559,7 @@ func TestPageAPI(t *testing.T) {
 						updatedAt
 						name
 						slug
+						isPublished
 						fields {
 							name
 							type
@@ -595,6 +608,7 @@ func TestPageAPI(t *testing.T) {
 					updatedAt
 					name
 					slug
+					isPublished
 					fields {
 						name
 						type
@@ -624,6 +638,7 @@ func TestPageAPI(t *testing.T) {
 					updatedAt
 					name
 					slug
+					isPublished
 					fields {
 						name
 						type
@@ -653,6 +668,7 @@ func TestPageAPI(t *testing.T) {
 					updatedAt
 					name
 					slug
+					isPublished
 					fields {
 						name
 						type

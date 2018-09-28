@@ -8,6 +8,7 @@
                 "updatedAt": "2017-07-07T10:00:00.000Z",
                 "name": "Updated name",
                 "slug": "page-1",
+                "isPublished": true,
                 "fields": [
                     {
                         "name": "Field 1",

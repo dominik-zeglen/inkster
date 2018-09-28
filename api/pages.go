@@ -128,6 +128,10 @@ func (res *pageResolver) Slug() string {
 	return res.data.Slug
 }
 
+func (res *pageResolver) IsPublished() bool {
+	return res.data.IsPublished
+}
+
 func (res *pageResolver) Fields() *[]*pageFieldResolver {
 	var resolverList []*pageFieldResolver
 	fields := res.data.Fields
@@ -159,9 +163,10 @@ func (res *pageResolver) Parent() (*directoryResolver, error) {
 
 type createPageArgs struct {
 	Input struct {
-		Name     string
-		ParentID string
-		Fields   *[]*struct {
+		Name        string
+		ParentID    string
+		IsPublished *bool
+		Fields      *[]*struct {
 			Name  string
 			Type  string
 			Value string
@@ -203,6 +208,9 @@ func (res *Resolver) CreatePage(args createPageArgs) (*pageCreateResultResolver,
 	page := core.Page{
 		Name:     args.Input.Name,
 		ParentID: bson.ObjectId(localID),
+	}
+	if args.Input.IsPublished != nil {
+		page.IsPublished = *args.Input.IsPublished
 	}
 	if args.Input.Fields != nil {
 		fields := *args.Input.Fields
@@ -294,10 +302,11 @@ type PageField2Input struct {
 type updatePageArgs struct {
 	ID    gql.ID
 	Input *struct {
-		Name     *string
-		Slug     *string
-		ParentID *string
-		Fields   *[]PageField2Input
+		Name        *string
+		Slug        *string
+		ParentID    *string
+		IsPublished *bool
+		Fields      *[]PageField2Input
 	}
 	AddFields    *[]core.PageField
 	RemoveFields *[]string
@@ -351,6 +360,9 @@ func (res *Resolver) UpdatePage(args updatePageArgs) (*pageCreateResultResolver,
 				parentID := args.Input.ParentID
 				parentObjectID := bson.ObjectId(*parentID)
 				pageInput.ParentID = &parentObjectID
+			}
+			if args.Input.IsPublished != nil {
+				pageInput.IsPublished = args.Input.IsPublished
 			}
 			if args.Input.Fields != nil {
 				fields := *args.Input.Fields
