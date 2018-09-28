@@ -4,11 +4,16 @@ import withStyles from "react-jss";
 
 import i18n from "../../i18n";
 import Date from "../../components/Date";
+import Checkbox from "../../components/Checkbox";
 import Skeleton from "../../components/Skeleton";
 
 interface Props {
   createdAt?: string;
   updatedAt?: string;
+  data: {
+    isPublished: boolean;
+  };
+  onChange: (event: React.ChangeEvent) => void;
 }
 
 const decorate = withStyles(
@@ -20,7 +25,7 @@ const decorate = withStyles(
   { displayName: "DirectoryStatus" }
 );
 export const DirectoryStatus = decorate<Props>(
-  ({ classes, createdAt, updatedAt }) => (
+  ({ classes, createdAt, data, updatedAt, onChange }) => (
     <Panel>
       <Panel.Heading>
         <Panel.Title>{i18n.t("Status")}</Panel.Title>
@@ -46,6 +51,12 @@ export const DirectoryStatus = decorate<Props>(
           )}
           <br />
         </p>
+        <Checkbox
+          label={i18n.t("Published")}
+          name="isPublished"
+          value={data.isPublished}
+          onChange={onChange}
+        />
       </Panel.Body>
     </Panel>
   )

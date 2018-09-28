@@ -5,6 +5,7 @@ const qRootDirectories = gql`
     getRootDirectories {
       id
       name
+      isPublished
     }
   }
 `;

@@ -7,6 +7,7 @@ const qDirectory = gql`
       createdAt
       updatedAt
       name
+      isPublished
       parent {
         id
       }

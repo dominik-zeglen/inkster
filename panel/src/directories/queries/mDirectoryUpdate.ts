@@ -1,11 +1,15 @@
 import gql from "graphql-tag";
 
 const mDirectoryUpdate = gql`
-  mutation DirectoryUpdate($id: ID!, $name: String!) {
-    updateDirectory(id: $id, input: { name: $name }) {
+  mutation DirectoryUpdate($id: ID!, $name: String!, $isPublished: Boolean) {
+    updateDirectory(
+      id: $id
+      input: { name: $name, isPublished: $isPublished }
+    ) {
       id
       updatedAt
       name
+      isPublished
     }
   }
 `;
