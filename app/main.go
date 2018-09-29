@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"fmt"
@@ -17,6 +17,7 @@ import (
 )
 
 var schema *graphql.Schema
+var DataSource mongodb.Adapter
 
 func checkEnv() {
 	vars := []string{
@@ -39,7 +40,7 @@ func checkEnv() {
 
 func init() {
 	checkEnv()
-	dataSource := mongodb.Adapter{
+	DataSource = mongodb.Adapter{
 		DBName: os.Getenv("INKSTER_DB_NAME"),
 	}
 	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
@@ -47,7 +48,7 @@ func init() {
 		log.Println("WARNING: Database is offline.")
 	}
 	var mailClient mailer.Mailer
-	dataSource.Session = session
+	DataSource.Session = session
 	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = mailer.MockMailClient{}
 	} else {
@@ -59,7 +60,7 @@ func init() {
 			os.Getenv("INKSTER_SMTP_PORT"),
 		)
 	}
-	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
+	resolver := api.NewResolver(&DataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
 	schema = graphql.MustParseSchema(api.Schema, &resolver)
 }
 
@@ -69,7 +70,7 @@ func check(err error) {
 	}
 }
 
-func main() {
+func Run() {
 	http.Handle("/panel/static/",
 		http.StripPrefix(
 			"/panel/static/",
