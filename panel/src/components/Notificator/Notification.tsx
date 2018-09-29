@@ -17,7 +17,7 @@ interface NotificationState {
   timer: any | null;
 }
 
-const CLOSE_AFTER = 50000;
+const CLOSE_AFTER = 5000;
 
 export class Notification extends React.Component<
   NotificationProps,
