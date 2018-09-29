@@ -6,7 +6,7 @@ import {
   Notification,
   NotificationProps,
   NotificationType
-} from "../../src/components/Notificator";
+} from "../../src/components/Notificator/Notification";
 
 const props: NotificationProps = {
   onClose: () => console.log("notification should close"),

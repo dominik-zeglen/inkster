@@ -18,10 +18,12 @@ interface NotificationProviderState {
 
 const decorate = withStyles(theme => ({
   notificationContainer: {
-    bottom: 0,
-    padding: theme.spacing * 2,
+    bottom: theme.spacing * 2,
+    marginLeft: theme.spacing * 2,
+    maxWidth: 340,
     position: "fixed" as "fixed",
-    right: 0,
+    right: theme.spacing * 2,
+    width: '100%'
   }
 }));
 const NotificationContainer = decorate(({ classes, ...props }) => (
