@@ -6,6 +6,7 @@ declare module "react-jss" {
   export interface Color {
     dark: string;
     light: string;
+    lightest: string;
     main: string;
   }
   export interface Typography {

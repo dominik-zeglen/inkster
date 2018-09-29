@@ -22,6 +22,7 @@ import AuthProvider, {
   removeAuthToken
 } from "./auth/components/AuthProvider";
 import Login from "./auth/views/Login";
+import { NotificationProvider } from "./components/Notificator";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -70,29 +71,31 @@ render(
             <ThemeProvider theme={theme}>
               <>
                 <GlobalStylesheet />
-                <AuthProvider>
-                  {({
-                    hasToken,
-                    isAuthenticated,
-                    loginLoading,
-                    tokenVerifyLoading
-                  }) =>
-                    isAuthenticated ? (
-                      <>
-                        <AppRoot>
-                          <App />
-                        </AppRoot>
-                        {uploadState.active && (
-                          <LoaderOverlay progress={uploadState.progress} />
-                        )}
-                      </>
-                    ) : hasToken && tokenVerifyLoading ? (
-                      <span />
-                    ) : (
-                      <Login loading={loginLoading} />
-                    )
-                  }
-                </AuthProvider>
+                <NotificationProvider>
+                  <AuthProvider>
+                    {({
+                      hasToken,
+                      isAuthenticated,
+                      loginLoading,
+                      tokenVerifyLoading
+                    }) =>
+                      isAuthenticated ? (
+                        <>
+                          <AppRoot>
+                            <App />
+                          </AppRoot>
+                          {uploadState.active && (
+                            <LoaderOverlay progress={uploadState.progress} />
+                          )}
+                        </>
+                      ) : hasToken && tokenVerifyLoading ? (
+                        <span />
+                      ) : (
+                        <Login loading={loginLoading} />
+                      )
+                    }
+                  </AuthProvider>
+                </NotificationProvider>
               </>
             </ThemeProvider>
           </BrowserRouter>
