@@ -4386,9 +4386,10 @@ export default (theme: Theme) =>
       },
       ".alert": {
         padding: 15,
-        marginBottom: 20,
+        marginTop: 20,
         border: "1px solid transparent",
-        borderRadius: 4
+        borderRadius: 2,
+          boxShadow: `2px 4px 6px 1px ${theme.colors.lightGray.main}`
       },
       ".alert h4": {
         marginTop: "0",
@@ -4424,9 +4425,8 @@ export default (theme: Theme) =>
         color: "#2b542c"
       },
       ".alert-info": {
-        color: "#31708f",
-        backgroundColor: "#d9edf7",
-        borderColor: "#bce8f1"
+        color: theme.colors.primary.dark,
+        backgroundColor: theme.colors.primary.lightest
       },
       ".alert-info hr": {
         borderTopColor: "#a6e1ec"
@@ -4435,9 +4435,8 @@ export default (theme: Theme) =>
         color: "#245269"
       },
       ".alert-warning": {
-        color: "#8a6d3b",
-        backgroundColor: "#fcf8e3",
-        borderColor: "#faebcc"
+        color: theme.colors.orange.dark,
+        backgroundColor: theme.colors.orange.lightest
       },
       ".alert-warning hr": {
         borderTopColor: "#f7e1b5"
@@ -4446,9 +4445,8 @@ export default (theme: Theme) =>
         color: "#66512c"
       },
       ".alert-danger": {
-        color: "#a94442",
-        backgroundColor: "#f2dede",
-        borderColor: "#ebccd1"
+        color: theme.colors.error.dark,
+        backgroundColor: theme.colors.error.lightest
       },
       ".alert-danger hr": {
         borderTopColor: "#e4b9c0"
@@ -5056,9 +5054,6 @@ export default (theme: Theme) =>
         border: "0"
       },
       ".modal-open": {
-        "& #root": {
-          filter: "blur(2px)"
-        },
         overflow: "hidden",
         transition: theme.transition.time
       },

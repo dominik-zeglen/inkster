@@ -8,7 +8,12 @@ const breakpoints = {
   lg: 1280
 };
 
-function makeColor(main: string, dark?: string, light?: string): Color {
+function makeColor(
+  main: string,
+  dark?: string,
+  light?: string,
+  lightest?: string
+): Color {
   return {
     main,
     dark:
@@ -22,11 +27,18 @@ function makeColor(main: string, dark?: string, light?: string): Color {
       ColorFunc(main)
         .lighten(0.2)
         .rgb()
+        .string(),
+    lightest:
+      lightest ||
+      ColorFunc(main)
+        .lighten(0.2)
+        .whiten(0.85)
+        .rgb()
         .string()
   };
 }
 const palette = {
-  red: makeColor("#fc5c65", "#eb3b5a"),
+  red: makeColor("#fc5c65", "#eb3b5a", undefined, "#fff1f1"),
   orange: makeColor("#fd9644", "#fa8231"),
   yellow: makeColor("#fed330", "#f7b731"),
   green: makeColor("#2bcbba", "#0fb9b1"),

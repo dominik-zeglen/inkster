@@ -1,4 +1,5 @@
 require('./auth/LoginPage.tsx')
+require('./components/Notification.tsx')
 require('./directories/DirectoryDetailsPage.tsx')
 require('./directories/DirectoryRootPage.tsx')
 require('./pages/PageDetailsPage.tsx')
