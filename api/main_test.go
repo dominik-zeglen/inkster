@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/mock"
 	test "github.com/dominik-zeglen/inkster/testing"
 	gql "github.com/graph-gophers/graphql-go"
@@ -20,7 +21,18 @@ var schema = gql.MustParseSchema(Schema, &resolver)
 
 var ErrNoError = fmt.Errorf("Did not return error")
 
-func execQuery(query string, variables string) (string, error) {
+func execQuery(query string, variables string, ctx *context.Context) (string, error) {
+	defaultClaims := middleware.UserClaims{
+		Email: test.Users[0].Email,
+		ID:    test.Users[0].ID,
+	}
+	defaultContext := context.WithValue(context.TODO(), "user", &defaultClaims)
+
+	userContext := ctx
+	if ctx == nil {
+		userContext = &defaultContext
+	}
+
 	var vs map[string]interface{}
 
 	err := json.Unmarshal([]byte(variables), &vs)
@@ -28,7 +40,7 @@ func execQuery(query string, variables string) (string, error) {
 		return "", err
 	}
 
-	result := schema.Exec(context.TODO(), query, "", vs)
+	result := schema.Exec(*userContext, query, "", vs)
 	jsonResult, err := json.Marshal(result)
 	if err != nil {
 		return "", err

@@ -1,0 +1,13 @@
+{
+    "data": {
+        "removeUser": null
+    },
+    "errors": [
+        {
+            "message": "User cannot remove himself",
+            "path": [
+                "removeUser"
+            ]
+        }
+    ]
+}

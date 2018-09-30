@@ -60,7 +60,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				]
 			}`, toGlobalID("directory", test.Directories[0].ID))
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -103,7 +103,7 @@ func TestPageAPI(t *testing.T) {
 				"name": "New Page",
 				"parentId": "%s"
 			}`, toGlobalID("directory", test.Directories[0].ID))
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -150,7 +150,7 @@ func TestPageAPI(t *testing.T) {
 				"type": "text",
 				"value": "value"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -197,7 +197,7 @@ func TestPageAPI(t *testing.T) {
 				"type": "text",
 				"value": "value"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -242,7 +242,7 @@ func TestPageAPI(t *testing.T) {
 				"name": "%s",
 				"renameTo": "Renamed field"
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -287,7 +287,7 @@ func TestPageAPI(t *testing.T) {
 				"name": "%s",
 				"renameTo": ""
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -332,7 +332,7 @@ func TestPageAPI(t *testing.T) {
 				"name": "%s",
 				"value": "Updated value"
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -372,7 +372,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				}]
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -417,7 +417,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				}]
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -463,7 +463,7 @@ func TestPageAPI(t *testing.T) {
 				}],
 				"remove": ["%s"]
 			}`, id, test.Pages[0].Fields[0].Name, test.Pages[0].Fields[1].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -497,7 +497,7 @@ func TestPageAPI(t *testing.T) {
 				"id": "%s",
 				"remove": ["%s", "%s"]
 			}`, id, test.Pages[0].Fields[0].Name, test.Pages[0].Fields[1].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -531,7 +531,7 @@ func TestPageAPI(t *testing.T) {
 				"id": "%s",
 				"name": "Updated name"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -572,7 +572,7 @@ func TestPageAPI(t *testing.T) {
 				"id": "%s",
 				"name": "%s"
 			}`, id, test.Pages[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -591,7 +591,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -624,7 +624,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -654,7 +654,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -675,7 +675,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
-			result, err := execQuery(query, "{}")
+			result, err := execQuery(query, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}

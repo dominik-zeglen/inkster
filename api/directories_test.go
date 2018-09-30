@@ -36,7 +36,7 @@ func TestDirectoryAPI(t *testing.T) {
 				"name": "New Directory",
 				"parentId": "%s"
 			}`, parentID)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -59,7 +59,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := `{
 				"name": "New Directory"
 			}`
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -102,7 +102,7 @@ func TestDirectoryAPI(t *testing.T) {
 				"name": "Updated name",
 				"parentId": "%s"
 			}`, id, parentID)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -142,7 +142,7 @@ func TestDirectoryAPI(t *testing.T) {
 				"id": "%s",
 				"name": "Updated name"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -157,7 +157,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -177,7 +177,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -214,7 +214,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -247,7 +247,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -276,7 +276,7 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			result, err := execQuery(query, "{}")
+			result, err := execQuery(query, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -305,7 +305,7 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			result, err := execQuery(query, "{}")
+			result, err := execQuery(query, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}

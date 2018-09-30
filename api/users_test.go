@@ -33,7 +33,7 @@ func TestUserAPI(t *testing.T) {
 					"password": "examplepassword"
 				}
 			}`
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -60,7 +60,7 @@ func TestUserAPI(t *testing.T) {
 					"email": "new_user@example.com"
 				}
 			}`
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -73,11 +73,28 @@ func TestUserAPI(t *testing.T) {
 					removedObjectId
 				}
 			}`
+			id := toGlobalID("user", test.Users[1].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, id)
+			result, err := execQuery(query, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Remove user using his own token", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation RemoveUser($id: ID!){
+				removeUser(id: $id) {
+					removedObjectId
+				}
+			}`
 			id := toGlobalID("user", test.Users[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -109,7 +126,7 @@ func TestUserAPI(t *testing.T) {
 					"isActive": false
 				}
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -131,7 +148,7 @@ func TestUserAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -146,7 +163,7 @@ func TestUserAPI(t *testing.T) {
 					isActive
 				}
 			}`
-			result, err := execQuery(query, "{}")
+			result, err := execQuery(query, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}

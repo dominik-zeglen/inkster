@@ -43,7 +43,7 @@ func TestTemplateAPI(t *testing.T) {
 					}
 				]
 			}`
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -71,7 +71,7 @@ func TestTemplateAPI(t *testing.T) {
 			variables := `{
 				"name": "New Template"
 			}`
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -110,7 +110,7 @@ func TestTemplateAPI(t *testing.T) {
 				"id": "%s",
 				"name": "Updated name"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -149,7 +149,7 @@ func TestTemplateAPI(t *testing.T) {
 				"id": "%s",
 				"name": ""
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -191,7 +191,7 @@ func TestTemplateAPI(t *testing.T) {
 				"name": "New field",
 				"type": "text"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -233,7 +233,7 @@ func TestTemplateAPI(t *testing.T) {
 				"name": "",
 				"type": "text"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -272,7 +272,7 @@ func TestTemplateAPI(t *testing.T) {
 				"id": "%s",
 				"name": "%s"
 			}`, id, test.Templates[0].Fields[0].Name)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -295,7 +295,7 @@ func TestTemplateAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -321,7 +321,7 @@ func TestTemplateAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -344,7 +344,7 @@ func TestTemplateAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables)
+			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -363,7 +363,7 @@ func TestTemplateAPI(t *testing.T) {
 					}
 				}
 			}`
-			result, err := execQuery(query, "{}")
+			result, err := execQuery(query, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
