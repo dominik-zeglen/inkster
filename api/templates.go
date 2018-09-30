@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
@@ -133,9 +135,15 @@ type createTemplateArgs struct {
 	}
 }
 
-func (res *Resolver) CreateTemplate(args createTemplateArgs) (
+func (res *Resolver) CreateTemplate(
+	ctx context.Context,
+	args createTemplateArgs,
+) (
 	*templateResolver, error,
 ) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	input := &args.Input
 	template := core.Template{
 		Name: input.Name,
@@ -160,7 +168,13 @@ func (res *Resolver) CreateTemplate(args createTemplateArgs) (
 	}, nil
 }
 
-func (res *Resolver) Template(args struct{ ID gql.ID }) (*templateResolver, error) {
+func (res *Resolver) Template(
+	ctx context.Context,
+	args struct{ ID gql.ID },
+) (*templateResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("template", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -175,11 +189,14 @@ func (res *Resolver) Template(args struct{ ID gql.ID }) (*templateResolver, erro
 	}, nil
 }
 
-func (res *Resolver) Templates() *[]*templateResolver {
+func (res *Resolver) Templates(ctx context.Context) (*[]*templateResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	var resolverList []*templateResolver
 	templates, err := res.dataSource.GetTemplateList()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	for index := range templates {
 		resolverList = append(
@@ -190,7 +207,7 @@ func (res *Resolver) Templates() *[]*templateResolver {
 			},
 		)
 	}
-	return &resolverList
+	return &resolverList, nil
 }
 
 type updateTemplateArgs struct {
@@ -200,7 +217,13 @@ type updateTemplateArgs struct {
 	}
 }
 
-func (res *Resolver) TemplateUpdate(args updateTemplateArgs) (*templateUpdateResultResolver, error) {
+func (res *Resolver) TemplateUpdate(
+	ctx context.Context,
+	args updateTemplateArgs,
+) (*templateUpdateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("template", args.ID)
 	if err != nil {
 		return nil, err
@@ -239,7 +262,13 @@ type createTemplateFieldArgs struct {
 	Input core.TemplateField
 }
 
-func (res *Resolver) CreateTemplateField(args createTemplateFieldArgs) (*templateUpdateResultResolver, error) {
+func (res *Resolver) CreateTemplateField(
+	ctx context.Context,
+	args createTemplateFieldArgs,
+) (*templateUpdateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("template", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -292,7 +321,13 @@ type removeTemplateFieldArgs struct {
 	}
 }
 
-func (res *Resolver) RemoveTemplateField(args removeTemplateFieldArgs) (*templateUpdateResultResolver, error) {
+func (res *Resolver) RemoveTemplateField(
+	ctx context.Context,
+	args removeTemplateFieldArgs,
+) (*templateUpdateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("template", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -313,7 +348,13 @@ type removeTemplateArgs struct {
 	ID gql.ID
 }
 
-func (res *Resolver) RemoveTemplate(args removeTemplateArgs) (*templateRemoveResultResolver, error) {
+func (res *Resolver) RemoveTemplate(
+	ctx context.Context,
+	args removeTemplateArgs,
+) (*templateRemoveResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("template", string(args.ID))
 	if err != nil {
 		return nil, err
