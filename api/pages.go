@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
@@ -45,11 +47,12 @@ func (res *pageRemoveResultResolver) RemovedObjectID() gql.ID {
 	return res.data.removedObjectID
 }
 
-func (res *pageFieldOperationResultResolver) Page() (*pageResolver, error) {
+func (res *pageFieldOperationResultResolver) Page(ctx context.Context) (*pageResolver, error) {
 	result, err := res.dataSource.GetPage(res.data.pageID)
 	if err != nil {
 		return nil, err
 	}
+
 	return &pageResolver{
 		dataSource: res.dataSource,
 		data:       &result,
@@ -150,11 +153,16 @@ func (res *pageResolver) Fields() *[]*pageFieldResolver {
 	return &resolverList
 }
 
-func (res *pageResolver) Parent() (*directoryResolver, error) {
+func (res *pageResolver) Parent(ctx context.Context) (*directoryResolver, error) {
 	parent, err := res.dataSource.GetDirectory(res.data.ParentID)
 	if err != nil {
 		return nil, err
 	}
+
+	if !parent.IsPublished && !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	return &directoryResolver{
 		dataSource: res.dataSource,
 		data:       &parent,
@@ -174,7 +182,14 @@ type createPageArgs struct {
 	}
 }
 
-func (res *Resolver) CreatePage(args createPageArgs) (*pageCreateResultResolver, error) {
+func (res *Resolver) CreatePage(
+	ctx context.Context,
+	args createPageArgs,
+) (*pageCreateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	if args.Input.Name == "" {
 		return &pageCreateResultResolver{
 			dataSource: res.dataSource,
@@ -244,7 +259,14 @@ type createPageFieldArgs struct {
 	}
 }
 
-func (res *Resolver) CreatePageField(args createPageFieldArgs) (*pageFieldOperationResultResolver, error) {
+func (res *Resolver) CreatePageField(
+	ctx context.Context,
+	args createPageFieldArgs,
+) (*pageFieldOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -312,7 +334,14 @@ type updatePageArgs struct {
 	RemoveFields *[]string
 }
 
-func (res *Resolver) UpdatePage(args updatePageArgs) (*pageCreateResultResolver, error) {
+func (res *Resolver) UpdatePage(
+	ctx context.Context,
+	args updatePageArgs,
+) (*pageCreateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -474,7 +503,14 @@ type renamePageFieldArgs struct {
 	}
 }
 
-func (res *Resolver) RenamePageField(args renamePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+func (res *Resolver) RenamePageField(
+	ctx context.Context,
+	args renamePageFieldArgs,
+) (*pageFieldOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -533,7 +569,14 @@ type updatePageFieldArgs struct {
 	}
 }
 
-func (res *Resolver) UpdatePageField(args updatePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+func (res *Resolver) UpdatePageField(
+	ctx context.Context,
+	args updatePageFieldArgs,
+) (*pageFieldOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -557,7 +600,14 @@ type removePageFieldArgs struct {
 	}
 }
 
-func (res *Resolver) RemovePageField(args removePageFieldArgs) (*pageFieldOperationResultResolver, error) {
+func (res *Resolver) RemovePageField(
+	ctx context.Context,
+	args removePageFieldArgs,
+) (*pageFieldOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -578,7 +628,10 @@ type pageArgs struct {
 	ID gql.ID
 }
 
-func (res *Resolver) Page(args pageArgs) (*pageResolver, error) {
+func (res *Resolver) Page(
+	ctx context.Context,
+	args pageArgs,
+) (*pageResolver, error) {
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -587,6 +640,11 @@ func (res *Resolver) Page(args pageArgs) (*pageResolver, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if !result.IsPublished && !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	return &pageResolver{
 		dataSource: res.dataSource,
 		data:       &result,
@@ -597,7 +655,14 @@ type removePageArgs struct {
 	ID gql.ID
 }
 
-func (res *Resolver) RemovePage(args removePageArgs) (*pageRemoveResultResolver, error) {
+func (res *Resolver) RemovePage(
+	ctx context.Context,
+	args removePageArgs,
+) (*pageRemoveResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
 		return nil, err

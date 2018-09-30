@@ -125,7 +125,13 @@ type UserQueryArgs struct {
 	ID gql.ID
 }
 
-func (res *Resolver) User(args UserQueryArgs) (*userResolver, error) {
+func (res *Resolver) User(
+	ctx context.Context,
+	args UserQueryArgs,
+) (*userResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -140,7 +146,10 @@ func (res *Resolver) User(args UserQueryArgs) (*userResolver, error) {
 	}, nil
 }
 
-func (res *Resolver) Users() (*[]*userResolver, error) {
+func (res *Resolver) Users(ctx context.Context) (*[]*userResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	var resolverList []*userResolver
 	result, err := res.dataSource.GetUserList()
 	if err != nil {
@@ -167,7 +176,13 @@ type UserCreateMutationArgs struct {
 	SendInvitation *bool
 }
 
-func (res *Resolver) CreateUser(args UserCreateMutationArgs) (*userOperationResultResolver, error) {
+func (res *Resolver) CreateUser(
+	ctx context.Context,
+	args UserCreateMutationArgs,
+) (*userOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	user := core.User{
 		Email: args.Input.Email,
 	}
@@ -212,6 +227,9 @@ func (res *Resolver) RemoveUser(
 	ctx context.Context,
 	args UserRemoveMutationArgs,
 ) (*userRemoveResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
 		return nil, err
@@ -243,7 +261,13 @@ type UserUpdateMutationArgs struct {
 	Input UserUpdateInput
 }
 
-func (res *Resolver) UpdateUser(args UserUpdateMutationArgs) (*userOperationResultResolver, error) {
+func (res *Resolver) UpdateUser(
+	ctx context.Context,
+	args UserUpdateMutationArgs,
+) (*userOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
 		return nil, err

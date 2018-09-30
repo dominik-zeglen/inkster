@@ -1,12 +1,14 @@
 package api
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"strings"
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -264,4 +266,12 @@ func (res *userErrorResolver) Field() string {
 
 func (res *userErrorResolver) Message() string {
 	return res.data.message
+}
+
+func checkPermission(ctx context.Context) bool {
+	user, ok := ctx.Value("user").(*middleware.UserClaims)
+	if ok && user != nil {
+		return true
+	}
+	return false
 }
