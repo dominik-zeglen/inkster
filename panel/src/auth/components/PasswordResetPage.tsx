@@ -8,7 +8,8 @@ import Input from "../../components/Input";
 import i18n from "../../i18n";
 
 export interface FormData {
-  email: string;
+  password: string;
+  passwordConfirm: string;
 }
 
 export interface Props {
@@ -17,7 +18,8 @@ export interface Props {
 }
 
 const initialForm: FormData = {
-  email: ""
+  password: "",
+  passwordConfirm: ""
 };
 const decorate = withStyles(theme => ({
   buttonContainer: {
@@ -25,28 +27,55 @@ const decorate = withStyles(theme => ({
     justifyContent: "flex-end" as "flex-end"
   }
 }));
-export const PasswordResetSendEmailPage = decorate<Props>(({ classes, disabled, onSubmit }) => (
-  <Form initial={initialForm} onSubmit={onSubmit}>
-    {({ change, data, hasChanged }) => (
-      <PageLayout>
-        <Input
-          label={i18n.t("E-mail")}
-          name="email"
-          type="email"
-          value={data.email}
-          onChange={change}
-        />
-        <div className={classes.buttonContainer}>
-          <Button
-            bsStyle="primary"
-            disabled={disabled || !hasChanged}
-            type="submit"
-          >
-            {i18n.t("Login", { context: "button" })}
-          </Button>
-        </div>
-      </PageLayout>
-    )}
-  </Form>
-));
-export default PasswordResetSendEmailPage;
+export const PasswordResetPage = decorate<Props>(
+  ({ classes, disabled, onSubmit }) => (
+    <Form initial={initialForm} onSubmit={onSubmit}>
+      {({ change, data, hasChanged }) => (
+        <PageLayout
+          header={i18n.t("Reset password", {
+            context: "header"
+          })}
+        >
+          <Input
+            label={i18n.t("New password", {
+              context: "label"
+            })}
+            name="password"
+            type="password"
+            value={data.password}
+            onChange={change}
+          />
+          <Input
+            error={data.password != data.passwordConfirm}
+            label={i18n.t("Confirm password", {
+              context: "label"
+            })}
+            helperText={
+              data.password != data.passwordConfirm
+                ? i18n.t("Passwords do not match", {
+                    context: "caption"
+                  })
+                : undefined
+            }
+            name="passwordConfirm"
+            type="password"
+            value={data.passwordConfirm}
+            onChange={change}
+          />
+          <div className={classes.buttonContainer}>
+            <Button
+              bsStyle="primary"
+              disabled={
+                disabled || !hasChanged || data.password != data.passwordConfirm
+              }
+              type="submit"
+            >
+              {i18n.t("Submit", { context: "button" })}
+            </Button>
+          </div>
+        </PageLayout>
+      )}
+    </Form>
+  )
+);
+export default PasswordResetPage;

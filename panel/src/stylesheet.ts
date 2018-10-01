@@ -48,7 +48,7 @@ export default (theme: Theme) =>
       },
       h1: {
         ...theme.typography.mainHeading,
-        margin: `${theme.spacing * 2}px 0`,
+        margin: `${theme.spacing * 2}px 0`
       },
       mark: {
         color: "#000",
@@ -2799,14 +2799,12 @@ export default (theme: Theme) =>
         color: "#a94442"
       },
       ".has-error .form-control": {
-        borderColor: "#a94442",
-        W: "inset 0 1px 1px rgba(0, 0, 0, .075)",
-        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, .075)"
+        borderColor: theme.colors.error.dark,
+        transition: theme.transition.time
       },
       ".has-error .form-control:focus": {
-        borderColor: "#843534",
-        W: "inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483",
-        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483"
+        boxShadow: `0 1px ${theme.colors.error.main}`,
+        borderColor: theme.colors.error.main
       },
       ".has-error .input-group-addon": {
         color: "#a94442",
@@ -4390,7 +4388,7 @@ export default (theme: Theme) =>
         marginTop: 20,
         border: "1px solid transparent",
         borderRadius: 2,
-          boxShadow: `2px 4px 6px 1px ${theme.colors.lightGray.main}`
+        boxShadow: `2px 4px 6px 1px ${theme.colors.lightGray.main}`
       },
       ".alert h4": {
         marginTop: "0",

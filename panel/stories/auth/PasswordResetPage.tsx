@@ -2,16 +2,13 @@ import { storiesOf } from "@storybook/react";
 import * as React from "react";
 
 import Decorator from "../Decorator";
-import LoginPage, { Props } from "../../src/auth/components/LoginPage";
+import PasswordResetPage, { Props } from "../../src/auth/components/PasswordResetPage";
 
 const props: Props = {
   disabled: false,
-  error: false,
-  onPasswordRecovery: () => undefined,
   onSubmit: () => undefined
 };
 
-storiesOf("Views / Authentication / Login page", module)
+storiesOf("Views / Authentication / Password reset", module)
   .addDecorator(Decorator)
-  .add("default", () => <LoginPage {...props} />)
-  .add("error", () => <LoginPage {...props} error={true} />)
+  .add("default", () => <PasswordResetPage {...props} />)
