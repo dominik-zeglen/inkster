@@ -9,14 +9,16 @@ declare module "react-jss" {
     lightest: string;
     main: string;
   }
-  export interface Typography {
-    color?: string;
-    fontFamily?: string;
-    fontSize?: number | string;
-    fontWeight?: number;
-    lineHeight?: string;
-    textTransform?: string;
-  }
+  type TypographyKeys =
+    | "color"
+    | "fontFamily"
+    | "fontSize"
+    | "fontWeight"
+    | "lineHeight"
+    | "textTransform";
+  export type Typography = {
+    [T in keyof Pick<CSSProperties, TypographyKeys>]?: CSSProperties[T]
+  };
 
   export interface Theme {
     colors: {

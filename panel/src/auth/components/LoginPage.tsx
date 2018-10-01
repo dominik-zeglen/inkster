@@ -7,6 +7,7 @@ import PageLayout from "./PageLayout";
 import Checkbox from "../../components/Checkbox";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
+import Typography from "../../components/Typography";
 import i18n from "../../i18n";
 
 export interface FormData {
@@ -47,9 +48,19 @@ const decorate = withStyles(theme => ({
     gridColumnGap: theme.spacing + "px",
     gridTemplateColumns: "36px 1fr"
   },
-  forgotPasswordLink: {
+  errorPanelForgotPasswordLink: {
     cursor: "pointer" as "pointer",
     fontWeight: 600 as 600
+  },
+  forgotPasswordLink: {
+    '&:hover': {
+      color: theme.colors.primary.dark
+    },
+    color: theme.colors.primary.main,
+    cursor: 'pointer' as 'pointer',
+    marginTop: theme.spacing * 2,
+    textAlign: 'center' as 'center',
+    transition: theme.transition.time
   }
 }));
 export const LoginPage = decorate<Props>(
@@ -68,7 +79,7 @@ export const LoginPage = decorate<Props>(
                   <AlertTriangle />
                   <div>
                     <div>{i18n.t("Username or password is invalid.")}</div>
-                    <div className={classes.forgotPasswordLink}>
+                    <div className={classes.errorPanelForgotPasswordLink}>
                       {i18n.t("Forgot your password?")}
                     </div>
                   </div>
@@ -102,6 +113,11 @@ export const LoginPage = decorate<Props>(
                 {i18n.t("Log in", { context: "button" })}
               </Button>
             </div>
+            <Typography className={classes.forgotPasswordLink} variant="caption" onClick={onPasswordRecovery}>
+              {i18n.t("Reset password", {
+                context: "link"
+              })}
+            </Typography>
           </div>
         </PageLayout>
       )}

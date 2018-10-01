@@ -91,8 +91,8 @@ export const theme: Theme = {
     button: {
       ...baseTypography,
       fontSize: "0.8rem",
-      fontWeight: 600,
-      textTransform: "uppercase"
+      fontWeight: 600 as 600,
+      textTransform: "uppercase" as "uppercase"
     },
     caption: {
       ...baseTypography,

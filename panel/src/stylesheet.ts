@@ -4769,7 +4769,7 @@ export default (theme: Theme) =>
         backgroundColor: "#fff",
         border: "1px solid #eee",
         borderRadius: theme.spacing / 2,
-        boxShadow: "5px 5px 10px #0000000a"
+        boxShadow: "5px 5px 10px #00000010"
       },
       ".panel-body": {
         padding: 15
