@@ -47,8 +47,8 @@ export default (theme: Theme) =>
         fontStyle: "italic"
       },
       h1: {
-        margin: ".67em 0",
-        fontSize: "2em"
+        ...theme.typography.mainHeading,
+        margin: `${theme.spacing * 2}px 0`,
       },
       mark: {
         color: "#000",
@@ -1191,8 +1191,8 @@ export default (theme: Theme) =>
         color: "#777"
       },
       "h1, .h1, h2, .h2, h3, .h3": {
-        marginTop: 20,
-        marginBottom: 10
+        marginTop: 0,
+        marginBottom: theme.spacing * 2
       },
       "h1 small, .h1 small, h2 small, .h2 small, h3 small, .h3 small, h1 .small, .h1 .small, h2 .small, .h2 .small, h3 .small, .h3 .small": {
         fontSize: "65%"
@@ -1208,7 +1208,7 @@ export default (theme: Theme) =>
         fontSize: 36
       },
       "h2, .h2": {
-        fontSize: 30
+        ...theme.typography.subHeading
       },
       "h3, .h3": {
         fontSize: 24
@@ -2823,6 +2823,7 @@ export default (theme: Theme) =>
         top: "0"
       },
       ".help-block": {
+        ...theme.typography.caption,
         display: "block",
         marginTop: 5,
         marginBottom: 10,
