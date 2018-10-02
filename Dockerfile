@@ -13,7 +13,7 @@ COPY ./app/graphiql.html /app
 RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 RUN dep ensure -vendor-only
 
-RUN CGO_ENABLED=0 go build -o /app/main app/main.go
+RUN CGO_ENABLED=0 go build -o /app/main manage.go
 
 
 FROM node:8.11.4-alpine AS ui-builder
@@ -34,4 +34,4 @@ COPY --from=app-builder /app/main /app
 copy --from=app-builder /app/graphiql.html /app/app
 COPY --from=ui-builder /src/app/build /app/panel/build
 
-CMD ["/app/main"]
+CMD ["/app/main", "runserver"]
