@@ -17,7 +17,7 @@ export const UserList: React.StatelessComponent<{}> = () => (
       <Notificator>
         {notify => (
           <Query query={qUsers} fetchPolicy="cache-and-network">
-            {({ data, loading, error }) => {
+            {query => {
               const handleAddUser = (data: CreateUserResult) => {
                 if (data.createUser.errors.length === 0) {
                   notify({
@@ -39,9 +39,9 @@ export const UserList: React.StatelessComponent<{}> = () => (
                 <Mutation mutation={mCreateUser} onCompleted={handleAddUser}>
                   {(createUser, createUserData) => (
                     <UserListPage
-                      disabled={loading || createUserData.loading}
-                      loading={loading || createUserData.loading}
-                      users={data ? data.users : undefined}
+                      disabled={query.loading || createUserData.loading}
+                      loading={query.loading || createUserData.loading}
+                      users={query.data ? query.data.users : undefined}
                       onAdd={data => createUser({ variables: { input: data } })}
                       onNextPage={() => undefined}
                       onPreviousPage={() => undefined}

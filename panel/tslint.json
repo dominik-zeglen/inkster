@@ -19,6 +19,7 @@
     "no-empty": false,
     "no-string-literal": false,
     "max-classes-per-file": false,
-    "class-name": false
+    "class-name": false,
+    "jsx-no-lambda": false
   }
 }
