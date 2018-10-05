@@ -132,6 +132,37 @@ func TestUserAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Reset password", func(t *testing.T) {
+			defer resetDatabase()
+			query := `mutation SendResetPasswordEmail(
+				$email: String!
+			) {
+				sendUserPasswordResetToken(email: $email) 
+			}`
+			variables := fmt.Sprintf(`{
+				"email": "%s"
+			}`, test.Users[0].Email)
+			_, err := execQuery(query, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			query = `mutation ResetPassword(
+				$token: String!,
+				$password: String!
+			) {
+				resetUserPassword(token: $token, password: $password)
+			}`
+			variables = fmt.Sprintf(`{
+				"password": "examplePassword",
+				"token": "%s"
+			}`, mailClient.Last())
+			result, err := execQuery(query, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 	})
 	t.Run("Queries", func(t *testing.T) {
 		resetDatabase()

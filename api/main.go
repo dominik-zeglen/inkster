@@ -46,10 +46,13 @@ var Schema = `
 		updatePageField(id: ID!, input: PageFieldUpdateInput!): PageFieldOperationResult
 		removePageField(id: ID!, input: PageFieldRemoveInput!): PageFieldOperationResult
 		removePage(id: ID!): PageRemoveResult
-
+		
+		changeUserPassword(id: ID!, password: String!): Boolean!
 		createUser(input: UserCreateInput!, sendInvitation: Boolean): UserOperationResult!
 		removeUser(id: ID!): UserRemoveResult!
 		updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
+		resetUserPassword(token: String!, password: String!): Boolean!
+		sendUserPasswordResetToken(email: String!): Boolean!
 
 		login(email: String!, password: String!): LoginResult!
 		verifyToken(token: String!): VerifyTokenResult
