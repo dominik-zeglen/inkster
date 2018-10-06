@@ -1,17 +1,21 @@
 import * as React from "react";
 
-export interface LinkProps extends React.HTMLProps<HTMLAnchorElement> {
-  onClick: (event?: React.MouseEvent<any>) => void;
-}
+import Navigator from "./Navigator";
 
-export const Link: React.StatelessComponent<LinkProps> = ({
-  onClick,
-  ...linkProps
-}) => {
-  const handleClick = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onClick(event);
-  };
-  return <a {...linkProps} onClick={handleClick} />;
-};
+export const Link: React.StatelessComponent<
+  React.HTMLProps<HTMLAnchorElement>
+> = props => (
+  <Navigator>
+    {navigate => {
+      const handleClick = (event: React.MouseEvent<any>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (props.href) {
+          navigate(props.href);
+        }
+      };
+      return <a {...props} onClick={handleClick} />;
+    }}
+  </Navigator>
+);
+export default Link;

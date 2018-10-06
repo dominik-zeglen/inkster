@@ -31,11 +31,11 @@ export default (theme: Theme) =>
       },
       a: {
         backgroundColor: "transparent",
-        color: theme.colors.primary.main,
-        textDecoration: "none"
+        color: "inherit",
+        textDecoration: "inherit"
       },
       "a:active, a:hover": {
-        outline: "0"
+        outline: "0",
       },
       "abbr[title]": {
         borderBottom: "1px dotted"
@@ -1127,8 +1127,7 @@ export default (theme: Theme) =>
         lineHeight: "inherit"
       },
       "a:hover, a:focus": {
-        color: "#23527c",
-        textDecoration: "underline"
+        textDecoration: "inherit"
       },
       "a:focus": {
         outline: "5px auto -webkit-focus-ring-color",

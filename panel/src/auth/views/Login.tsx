@@ -2,6 +2,7 @@ import * as React from "react";
 
 import LoginPage, { FormData } from "../components/LoginPage";
 import { UserContext } from "../components/AuthProvider";
+import urls from '../../urls'
 
 interface Props {
   loading: boolean;
@@ -16,7 +17,7 @@ const LoginView: React.StatelessComponent<Props> = ({ loading }) => (
         <LoginPage
           disabled={loading}
           error={loading ? false : user === null}
-          onPasswordRecovery={() => undefined}
+          passwordRecoveryHref={urls.passwordRecovery}
           onSubmit={handleSubmit}
         />
       );

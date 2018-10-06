@@ -6,10 +6,19 @@ import { StandardProps } from "./";
 
 export interface TypographyProps extends StandardProps {
   component?: string;
-  variant?: "body" | "caption" | "button" | "mainHeading" | "subHeading";
+  variant?:
+    | "anchor"
+    | "body"
+    | "caption"
+    | "button"
+    | "mainHeading"
+    | "subHeading";
 }
 
 const decorate = withStyles(theme => ({
+  anchor: {
+    ...theme.typography.anchor
+  },
   body: {
     ...theme.typography.body
   },

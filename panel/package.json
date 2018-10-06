@@ -113,7 +113,8 @@
     "typescript": "^3.0.3"
   },
   "prettier": {
-    "parser": "typescript"
+    "parser": "typescript",
+    "trailingComma": "all"
   },
   "jest": {
     "collectCoverageFrom": [

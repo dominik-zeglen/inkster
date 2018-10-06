@@ -6,6 +6,7 @@ import { AlertTriangle } from "react-feather";
 import PageLayout from "./PageLayout";
 import Checkbox from "../../components/Checkbox";
 import Form from "../../components/Form";
+import Link from "../../components/Link";
 import Input from "../../components/Input";
 import Typography from "../../components/Typography";
 import i18n from "../../i18n";
@@ -19,7 +20,7 @@ export interface FormData {
 export interface Props {
   disabled: boolean;
   error: boolean;
-  onPasswordRecovery: () => void;
+  passwordRecoveryHref: string;
   onSubmit: (data: FormData) => void;
 }
 
@@ -53,18 +54,13 @@ const decorate = withStyles(theme => ({
     fontWeight: 600 as 600
   },
   forgotPasswordLink: {
-    '&:hover': {
-      color: theme.colors.primary.dark
-    },
-    color: theme.colors.primary.main,
-    cursor: 'pointer' as 'pointer',
+    display: 'block' as 'block',
     marginTop: theme.spacing * 2,
-    textAlign: 'center' as 'center',
-    transition: theme.transition.time
+    textAlign: "center" as "center"
   }
 }));
 export const LoginPage = decorate<Props>(
-  ({ classes, disabled, error, onPasswordRecovery, onSubmit }) => (
+  ({ classes, disabled, error, passwordRecoveryHref, onSubmit }) => (
     <Form initial={initialForm} onSubmit={onSubmit}>
       {({ change, data, hasChanged }) => (
         <PageLayout
@@ -113,11 +109,16 @@ export const LoginPage = decorate<Props>(
                 {i18n.t("Log in", { context: "button" })}
               </Button>
             </div>
-            <Typography className={classes.forgotPasswordLink} variant="caption" onClick={onPasswordRecovery}>
-              {i18n.t("Reset password", {
-                context: "link"
-              })}
-            </Typography>
+            <Link
+              className={classes.forgotPasswordLink}
+              href={passwordRecoveryHref}
+            >
+              <Typography component="span" variant="anchor">
+                {i18n.t("Reset password", {
+                  context: "link"
+                })}
+              </Typography>
+            </Link>
           </div>
         </PageLayout>
       )}
