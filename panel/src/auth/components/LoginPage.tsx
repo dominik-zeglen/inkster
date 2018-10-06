@@ -27,37 +27,37 @@ export interface Props {
 const initialForm: FormData = {
   email: "",
   password: "",
-  remember: false
+  remember: false,
 };
 const decorate = withStyles(theme => ({
   buttonContainer: {
     display: "flex" as "flex",
-    justifyContent: "flex-end" as "flex-end"
+    justifyContent: "flex-end" as "flex-end",
   },
   errorPanel: {
     backgroundColor: theme.colors.error.main,
     color: theme.colors.white.main,
     fontSize: theme.typography.caption.fontSize,
-    marginBottom: theme.spacing * 4
+    marginBottom: theme.spacing * 4,
   },
   errorPanelContent: {
     "& svg": {
       height: 36,
-      width: 36
+      width: 36,
     },
     display: "grid" as "grid",
     gridColumnGap: theme.spacing + "px",
-    gridTemplateColumns: "36px 1fr"
+    gridTemplateColumns: "36px 1fr",
   },
   errorPanelForgotPasswordLink: {
     cursor: "pointer" as "pointer",
-    fontWeight: 600 as 600
+    fontWeight: 600 as 600,
   },
   forgotPasswordLink: {
-    display: 'block' as 'block',
+    display: "block" as "block",
     marginTop: theme.spacing * 2,
-    textAlign: "center" as "center"
-  }
+    textAlign: "center" as "center",
+  },
 }));
 export const LoginPage = decorate<Props>(
   ({ classes, disabled, error, passwordRecoveryHref, onSubmit }) => (
@@ -65,7 +65,7 @@ export const LoginPage = decorate<Props>(
       {({ change, data, hasChanged }) => (
         <PageLayout
           header={i18n.t("Log in", {
-            context: "header"
+            context: "header",
           })}
         >
           {error && (
@@ -75,9 +75,11 @@ export const LoginPage = decorate<Props>(
                   <AlertTriangle />
                   <div>
                     <div>{i18n.t("Username or password is invalid.")}</div>
-                    <div className={classes.errorPanelForgotPasswordLink}>
-                      {i18n.t("Forgot your password?")}
-                    </div>
+                    <Link href={passwordRecoveryHref}>
+                      <div className={classes.errorPanelForgotPasswordLink}>
+                        {i18n.t("Forgot your password?")}
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </Panel.Body>
@@ -115,7 +117,7 @@ export const LoginPage = decorate<Props>(
             >
               <Typography component="span" variant="anchor">
                 {i18n.t("Reset password", {
-                  context: "link"
+                  context: "link",
                 })}
               </Typography>
             </Link>
@@ -123,6 +125,6 @@ export const LoginPage = decorate<Props>(
         </PageLayout>
       )}
     </Form>
-  )
+  ),
 );
 export default LoginPage;
