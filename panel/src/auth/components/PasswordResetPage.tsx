@@ -46,12 +46,12 @@ export const PasswordResetPage = decorate<Props>(
             onChange={change}
           />
           <Input
-            error={data.password != data.passwordConfirm}
+            error={data.password !== data.passwordConfirm}
             label={i18n.t("Confirm password", {
               context: "label"
             })}
             helperText={
-              data.password != data.passwordConfirm
+              data.password !== data.passwordConfirm
                 ? i18n.t("Passwords do not match", {
                     context: "caption"
                   })
@@ -66,7 +66,7 @@ export const PasswordResetPage = decorate<Props>(
             <Button
               bsStyle="primary"
               disabled={
-                disabled || !hasChanged || data.password != data.passwordConfirm
+                disabled || !hasChanged || data.password !== data.passwordConfirm
               }
               type="submit"
             >
