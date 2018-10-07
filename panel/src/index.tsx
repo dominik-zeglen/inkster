@@ -3,7 +3,7 @@ import { setContext } from "apollo-link-context";
 import { ErrorResponse, onError } from "apollo-link-error";
 import { ApolloProvider } from "react-apollo";
 import * as React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { HttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { render } from "react-dom";
@@ -19,10 +19,12 @@ import { DateProvider } from "./components/Date";
 import { urlize } from "./utils";
 import AuthProvider, {
   getAuthToken,
-  removeAuthToken
+  removeAuthToken,
 } from "./auth/components/AuthProvider";
 import Login from "./auth/views/Login";
+import PasswordRecovery from "./auth/views/PasswordRecovery";
 import { NotificationProvider } from "./components/Notificator";
+import urlPaths from "./urls";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -43,8 +45,8 @@ const authLink = setContext((_, context) => {
     ...context,
     headers: {
       ...context.headers,
-      Authorization: authToken ? `Bearer ${authToken}` : null
-    }
+      Authorization: authToken ? `Bearer ${authToken}` : null,
+    },
   };
 });
 
@@ -54,10 +56,10 @@ const apolloClient = new ApolloClient({
     authLink.concat(
       new HttpLink({
         credentials: "same-origin",
-        uri: "/graphql/"
-      })
-    )
-  )
+        uri: "/graphql/",
+      }),
+    ),
+  ),
 });
 
 render(
@@ -77,7 +79,7 @@ render(
                       hasToken,
                       isAuthenticated,
                       loginLoading,
-                      tokenVerifyLoading
+                      tokenVerifyLoading,
                     }) =>
                       isAuthenticated ? (
                         <>
@@ -91,7 +93,15 @@ render(
                       ) : hasToken && tokenVerifyLoading ? (
                         <span />
                       ) : (
-                        <Login loading={loginLoading} />
+                        <Switch>
+                          <Route
+                            path={urlPaths.passwordRecovery}
+                            component={PasswordRecovery}
+                          />
+                          <Route
+                            component={() => <Login loading={loginLoading} />}
+                          />
+                        </Switch>
                       )
                     }
                   </AuthProvider>
@@ -103,14 +113,14 @@ render(
       )}
     </UploadProvider>
   </DateProvider>,
-  document.querySelector("#root")
+  document.querySelector("#root"),
 );
 
 export const urls = {
   directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
   pageCreate: (id: string) => `/directories/${urlize(id)}/createPage`,
   pageDetails: (id: string) => `/pages/${urlize(id)}`,
-  userDetails: (id: string) => `/users/${urlize(id)}`
+  userDetails: (id: string) => `/users/${urlize(id)}`,
 };
 
 export type TransactionState = "default" | "loading" | "success" | "error";

@@ -16,7 +16,8 @@ import (
 var dataSource = mock.Adapter{
 	GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
 }
-var resolver = NewResolver(dataSource, mailer.MockMailClient{}, "secretKey")
+var mailClient = mailer.MockMailClient{}
+var resolver = NewResolver(dataSource, &mailClient, "secretKey")
 var schema = gql.MustParseSchema(Schema, &resolver)
 
 var ErrNoError = fmt.Errorf("Did not return error")
@@ -60,4 +61,5 @@ func resetDatabase() {
 		test.Pages,
 		test.Users,
 	)
+	mailClient.Reset()
 }

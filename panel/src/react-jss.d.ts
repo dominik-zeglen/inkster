@@ -9,14 +9,10 @@ declare module "react-jss" {
     lightest: string;
     main: string;
   }
-  export interface Typography {
-    color?: string;
-    fontFamily?: string;
-    fontSize?: number | string;
-    fontWeight?: number;
-    lineHeight?: string;
-    textTransform?: string;
-  }
+
+  export type Typography = {
+    [T in keyof CSSProperties]?: CSSProperties[T]
+  };
 
   export interface Theme {
     colors: {
@@ -42,6 +38,7 @@ declare module "react-jss" {
       width: (bp: Breakpoint) => number;
     };
     typography: {
+      anchor: Typography;
       body: Typography;
       mainHeading: Typography;
       subHeading: Typography;

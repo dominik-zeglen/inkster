@@ -2,15 +2,20 @@ package mailer
 
 import "log"
 
-type MockMailClient struct{}
+type MockMailClient struct {
+	log []string
+}
 
-func (_ MockMailClient) Send(recipent string, subject string, message string) error {
+func (client *MockMailClient) Send(recipent string, subject string, message string) error {
 	log.Printf("Sending mail to %s:\n", recipent)
 	log.Printf("Subject: %s", subject)
 	log.Println(message)
+
+	client.log = append(client.log, message)
+
 	return nil
 }
-func (_ MockMailClient) SendMany(recipents []string, subject string, message string) error {
+func (client *MockMailClient) SendMany(recipents []string, subject string, message string) error {
 	recipentList := recipents[0]
 	for _, recipent := range recipents[1:] {
 		recipentList += ", " + recipent
@@ -18,5 +23,14 @@ func (_ MockMailClient) SendMany(recipents []string, subject string, message str
 	log.Printf("Sending mail to %s:\n", recipentList)
 	log.Printf("Subject: %s", subject)
 	log.Println(message)
+
+	client.log = append(client.log, message)
+
 	return nil
+}
+func (client *MockMailClient) Reset() {
+	client.log = []string{}
+}
+func (client MockMailClient) Last() string {
+	return client.log[len(client.log)-1]
 }

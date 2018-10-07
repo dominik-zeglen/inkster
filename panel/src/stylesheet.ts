@@ -31,11 +31,11 @@ export default (theme: Theme) =>
       },
       a: {
         backgroundColor: "transparent",
-        color: theme.colors.primary.main,
-        textDecoration: "none"
+        color: "inherit",
+        textDecoration: "inherit"
       },
       "a:active, a:hover": {
-        outline: "0"
+        outline: "0",
       },
       "abbr[title]": {
         borderBottom: "1px dotted"
@@ -47,8 +47,8 @@ export default (theme: Theme) =>
         fontStyle: "italic"
       },
       h1: {
-        margin: ".67em 0",
-        fontSize: "2em"
+        ...theme.typography.mainHeading,
+        margin: `${theme.spacing * 2}px 0`
       },
       mark: {
         color: "#000",
@@ -1127,8 +1127,7 @@ export default (theme: Theme) =>
         lineHeight: "inherit"
       },
       "a:hover, a:focus": {
-        color: "#23527c",
-        textDecoration: "underline"
+        textDecoration: "inherit"
       },
       "a:focus": {
         outline: "5px auto -webkit-focus-ring-color",
@@ -1191,8 +1190,8 @@ export default (theme: Theme) =>
         color: "#777"
       },
       "h1, .h1, h2, .h2, h3, .h3": {
-        marginTop: 20,
-        marginBottom: 10
+        marginTop: 0,
+        marginBottom: theme.spacing * 2
       },
       "h1 small, .h1 small, h2 small, .h2 small, h3 small, .h3 small, h1 .small, .h1 .small, h2 .small, .h2 .small, h3 .small, .h3 .small": {
         fontSize: "65%"
@@ -1208,7 +1207,7 @@ export default (theme: Theme) =>
         fontSize: 36
       },
       "h2, .h2": {
-        fontSize: 30
+        ...theme.typography.subHeading
       },
       "h3, .h3": {
         fontSize: 24
@@ -2799,14 +2798,12 @@ export default (theme: Theme) =>
         color: "#a94442"
       },
       ".has-error .form-control": {
-        borderColor: "#a94442",
-        W: "inset 0 1px 1px rgba(0, 0, 0, .075)",
-        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, .075)"
+        borderColor: theme.colors.error.dark,
+        transition: theme.transition.time
       },
       ".has-error .form-control:focus": {
-        borderColor: "#843534",
-        W: "inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483",
-        boxShadow: "inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483"
+        boxShadow: `0 1px ${theme.colors.error.main}`,
+        borderColor: theme.colors.error.main
       },
       ".has-error .input-group-addon": {
         color: "#a94442",
@@ -2823,6 +2820,7 @@ export default (theme: Theme) =>
         top: "0"
       },
       ".help-block": {
+        ...theme.typography.caption,
         display: "block",
         marginTop: 5,
         marginBottom: 10,
@@ -4389,7 +4387,7 @@ export default (theme: Theme) =>
         marginTop: 20,
         border: "1px solid transparent",
         borderRadius: 2,
-          boxShadow: `2px 4px 6px 1px ${theme.colors.lightGray.main}`
+        boxShadow: `2px 4px 6px 1px ${theme.colors.lightGray.main}`
       },
       ".alert h4": {
         marginTop: "0",
@@ -4770,7 +4768,7 @@ export default (theme: Theme) =>
         backgroundColor: "#fff",
         border: "1px solid #eee",
         borderRadius: theme.spacing / 2,
-        boxShadow: "5px 5px 10px #0000000a"
+        boxShadow: "5px 5px 10px #00000010"
       },
       ".panel-body": {
         padding: 15

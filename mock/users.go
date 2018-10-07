@@ -75,6 +75,12 @@ func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
 	return users[index], err
 }
 
+// GetUserByEmail allows user to fetch user from database using his email address
+func (adapter Adapter) GetUserByEmail(email string) (core.User, error) {
+	index, err := adapter.findUser(nil, &email)
+	return users[index], err
+}
+
 // GetUserList allows user to fetch all users from database
 func (adapter Adapter) GetUserList() ([]core.User, error) {
 	return users, nil

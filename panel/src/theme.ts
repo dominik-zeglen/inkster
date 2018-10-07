@@ -5,14 +5,14 @@ const breakpoints = {
   xs: 576,
   sm: 768,
   md: 992,
-  lg: 1280
+  lg: 1280,
 };
 
 function makeColor(
   main: string,
   dark?: string,
   light?: string,
-  lightest?: string
+  lightest?: string,
 ): Color {
   return {
     main,
@@ -34,7 +34,7 @@ function makeColor(
         .lighten(0.2)
         .whiten(0.85)
         .rgb()
-        .string()
+        .string(),
   };
 }
 const palette = {
@@ -47,7 +47,7 @@ const palette = {
   gray: makeColor("#778ca3", "#4b6584"),
   lightGray: makeColor("#d1d8e0", "#a5b1c2"),
   black: makeColor("#2e2e2e", "#212121"),
-  white: makeColor("#fdfdfd", "#f6f6f6")
+  white: makeColor("#fdfdfd", "#f6f6f6"),
 };
 const colors = {
   primary: palette.blue,
@@ -55,14 +55,14 @@ const colors = {
   success: palette.green,
   error: palette.red,
   disabled: palette.lightGray.dark,
-  ...palette
+  ...palette,
 };
 const baseTypography: Typography = {
   color: colors.black.main,
   lineHeight: "1.42857143",
   fontSize: "1rem",
   fontFamily: '"Open Sans", sans-serif',
-  fontWeight: 400
+  fontWeight: 400,
 };
 export const theme: Theme = {
   colors,
@@ -74,33 +74,56 @@ export const theme: Theme = {
     up: (bp: Breakpoint) => {
       return `@media (min-width: ${breakpoints[bp]}px)`;
     },
-    width: (bp: Breakpoint) => breakpoints[bp]
+    width: (bp: Breakpoint) => breakpoints[bp],
   },
   typography: {
+    anchor: {
+      ...baseTypography,
+      color: colors.primary.main,
+      display: "inline-block" as "inline-block",
+      fontSize: "0.8rem",
+      transitionDuration: "500ms",
+      "&:hover, &:focus": {
+        color: colors.secondary.dark,
+      },
+      "&:after": {
+        background: colors.primary.main,
+        content: "''",
+        display: "block" as "block",
+        height: 1,
+        maxWidth: 20,
+        width: "100%",
+        transitionDuration: "500ms",
+      },
+      "&:hover:after, &:focus:after": {
+        background: colors.secondary.dark,
+        maxWidth: 40,
+      },
+    },
     body: {
-      ...baseTypography
+      ...baseTypography,
     },
     mainHeading: {
       ...baseTypography,
-      fontSize: "1.953rem"
+      fontSize: "1.953rem",
     },
     subHeading: {
       ...baseTypography,
-      fontSize: "1.563rem"
+      fontSize: "1.563rem",
     },
     button: {
       ...baseTypography,
       fontSize: "0.8rem",
-      fontWeight: 600,
-      textTransform: "uppercase"
+      fontWeight: 600 as 600,
+      textTransform: "uppercase" as "uppercase",
     },
     caption: {
       ...baseTypography,
-      fontSize: "0.8rem"
-    }
+      fontSize: "0.8rem",
+    },
   },
   transition: {
-    time: "500ms"
-  }
+    time: "500ms",
+  },
 };
 export default theme;

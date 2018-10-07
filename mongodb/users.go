@@ -71,6 +71,22 @@ func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
 	return user, err
 }
 
+// GetUserByEmail allows user to fetch user from database using his email address
+func (adapter Adapter) GetUserByEmail(email string) (core.User, error) {
+	session := adapter.Session.Copy()
+	session.SetSafe(&mgo.Safe{})
+	defer session.Close()
+
+	collection := session.DB(adapter.DBName).C("users")
+	var user core.User
+	err := collection.
+		Find(bson.M{
+			"email": email,
+		}).
+		One(&user)
+	return user, err
+}
+
 // GetUserList allows user to fetch all users from database
 func (adapter Adapter) GetUserList() ([]core.User, error) {
 	session := adapter.Session.Copy()

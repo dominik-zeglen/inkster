@@ -7,7 +7,7 @@ import LoginPage, { Props } from "../../src/auth/components/LoginPage";
 const props: Props = {
   disabled: false,
   error: false,
-  onPasswordRecovery: () => undefined,
+  passwordRecoveryHref: '#',
   onSubmit: () => undefined
 };
 

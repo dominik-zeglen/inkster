@@ -37,6 +37,7 @@ type Adapter interface {
 	AddUser(User) (User, error)
 	AuthenticateUser(string, string) (User, error)
 	GetUser(bson.ObjectId) (User, error)
+	GetUserByEmail(string) (User, error)
 	GetUserList() ([]User, error)
 	UpdateUser(bson.ObjectId, UserInput) (User, error)
 	RemoveUser(bson.ObjectId) error
