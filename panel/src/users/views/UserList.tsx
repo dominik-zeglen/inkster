@@ -2,13 +2,13 @@ import * as React from "react";
 import { Mutation, Query } from "react-apollo";
 
 import mCreateUser, {
-  Result as CreateUserResult
+  Result as CreateUserResult,
 } from "../queries/mCreateUser";
 import qUsers from "../queries/qUsers";
 import UserListPage from "../components/UserListPage";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
-import { urls } from "../../";
+import urls from "../../urls";
 import i18n from "../../i18n";
 
 export const UserList: React.StatelessComponent<{}> = () => (
@@ -22,16 +22,16 @@ export const UserList: React.StatelessComponent<{}> = () => (
                 if (data.createUser.errors.length === 0) {
                   notify({
                     text: i18n.t("Sent invitation e-mail", {
-                      context: "notification"
-                    })
+                      context: "notification",
+                    }),
                   });
                   navigate(urls.userDetails(data.createUser.user.id));
                 } else {
                   notify({
                     text: i18n.t("Something went wrong", {
-                      context: "notification"
+                      context: "notification",
                     }),
-                    type: NotificationType.ERROR
+                    type: NotificationType.ERROR,
                   });
                 }
               };

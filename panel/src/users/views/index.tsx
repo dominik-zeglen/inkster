@@ -2,19 +2,20 @@ import * as React from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
 
 import UserList from "./UserList";
-import UserDetailsComponent from './UserDetails'
-import { unurlize } from "../../utils";
+import UserDetailsComponent from "./UserDetails";
 
 interface UserDetailsRouteParams {
-  id: string
+  id: string;
 }
-const UserDetails: React.StatelessComponent<RouteComponentProps<UserDetailsRouteParams>> = ({ match }) => {
-  const decodedId = unurlize(match.params.id)
-  return <UserDetailsComponent id={decodedId} />
-}
+const UserDetails: React.StatelessComponent<
+  RouteComponentProps<UserDetailsRouteParams>
+> = ({ match }) => {
+  const decodedId = decodeURIComponent(match.params.id);
+  return <UserDetailsComponent id={decodedId} />;
+};
 
 export const UserSection: React.StatelessComponent<RouteComponentProps<{}>> = ({
-  match
+  match,
 }) => (
   <Switch>
     <Route path={`${match.url}/:id/`} component={UserDetails} />

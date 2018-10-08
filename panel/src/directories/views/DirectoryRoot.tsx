@@ -3,12 +3,12 @@ import { Mutation, Query } from "react-apollo";
 
 import qRootDirectories from "../queries/qRootDirectories";
 import mDirectoryCreate, {
-  DirectoryCreateVariables
+  DirectoryCreateVariables,
 } from "../queries/mDirectoryCreate";
 import DirectoryRootPage from "../components/DirectoryRootPage";
 import Navigator from "../../components/Navigator";
 import Notificator from "../../components/Notificator";
-import { urls } from "../../";
+import urls from "../../urls";
 import i18n from "../../i18n";
 
 const dummy = () => {};
@@ -23,8 +23,8 @@ export const DirectoryRoot = () => (
           const handleCreate = (data: { createDirectory: { id: string } }) => {
             notify({
               text: i18n.t("Created directory", {
-                context: "notification"
-              })
+                context: "notification",
+              }),
             });
             navigate(urls.directoryDetails(data.createDirectory.id));
           };
@@ -42,7 +42,7 @@ export const DirectoryRoot = () => (
                   >
                     {addDirectory => {
                       const handleAddDirectory = (
-                        variables: DirectoryCreateVariables
+                        variables: DirectoryCreateVariables,
                       ) => addDirectory({ variables });
                       return (
                         <DirectoryRootPage

@@ -5,11 +5,13 @@ import { User as UserIcon } from "react-feather";
 import i18n from '../../i18n'
 import ListElement from "../../components/ListElement";
 import Paginator from "../../components/Paginator";
-import { User } from '../'
 import { ViewProps, PaginatedListProps } from "../..";
 
 interface Props extends ViewProps, PaginatedListProps {
-  users?: User[]
+  users?: Array<{
+    id: string;
+    email: string;
+  }>
 }
 
 export const UserListPage: React.StatelessComponent<Props> = ({

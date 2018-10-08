@@ -2,13 +2,14 @@ import * as React from "react";
 import { Mutation } from "react-apollo";
 import { ApolloError } from "apollo-client";
 
-import { urls, TransactionState } from "../../";
+import { TransactionState } from "../../";
+import urls from "../../urls";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import PageCreatePage, { FormData } from "../components/PageCreatePage";
 import mPageCreate, {
   result as PageCreateResult,
-  variables as PageCreateVariables
+  variables as PageCreateVariables,
 } from "../queries/mPageCreate";
 import i18n from "../../i18n";
 import { WithUpload } from "../../UploadProvider";
@@ -21,7 +22,7 @@ interface State {
 }
 export class PageCreate extends React.Component<Props, State> {
   state = {
-    transaction: "default" as "default"
+    transaction: "default" as "default",
   };
 
   handleSubmitSuccess = (cb: () => void) => {
@@ -45,9 +46,9 @@ export class PageCreate extends React.Component<Props, State> {
               const handleError = () =>
                 notify({
                   text: i18n.t("Something has gone wrong", {
-                    context: "notification"
+                    context: "notification",
                   }),
-                  type: NotificationType.ERROR
+                  type: NotificationType.ERROR,
                 });
               const handleSubmitSuccess = (data: {
                 createPage: PageCreateResult;
@@ -61,8 +62,8 @@ export class PageCreate extends React.Component<Props, State> {
                 }
                 notify({
                   text: i18n.t("Page created", {
-                    context: "notification"
-                  })
+                    context: "notification",
+                  }),
                 });
                 navigate(urls.pageDetails(data.createPage.page.id));
               };
@@ -70,7 +71,7 @@ export class PageCreate extends React.Component<Props, State> {
                 <WithUpload>
                   {uploadFile => {
                     const handleUpload = (onChange: any) => (
-                      event: React.ChangeEvent<any>
+                      event: React.ChangeEvent<any>,
                     ) => {
                       uploadFile.uploadFile({
                         file: event.target.files[0],
@@ -78,10 +79,10 @@ export class PageCreate extends React.Component<Props, State> {
                           onChange({
                             target: {
                               name: "value",
-                              value: filename
-                            }
+                              value: filename,
+                            },
                           } as any),
-                        onError: () => console.log("not ok")
+                        onError: () => console.log("not ok"),
                       });
                     };
                     return (
@@ -95,8 +96,8 @@ export class PageCreate extends React.Component<Props, State> {
                               variables: {
                                 name: formData.name,
                                 parentId: directory,
-                                fields: formData.addFields
-                              } as PageCreateVariables
+                                fields: formData.addFields,
+                              } as PageCreateVariables,
                             });
                           return (
                             <PageCreatePage

@@ -7,7 +7,7 @@ import PageDetailsPage, { FormData } from "../../components/PageDetailsPage";
 import Navigator from "../../../components/Navigator";
 import Notificator, {NotificationType} from "../../../components/Notificator";
 import MutationProvider from "./MutationProvider";
-import { urls } from "../../../";
+import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
 import { WithUpload } from "../../../UploadProvider";

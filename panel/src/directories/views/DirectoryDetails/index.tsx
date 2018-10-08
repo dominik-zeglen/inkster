@@ -7,7 +7,7 @@ import qDirectory from "../../queries/qDirectory";
 import DirectoryDetailsPage from "../../components/DirectoryDetailsPage";
 import Navigator from "../../../components/Navigator";
 import Notificator from "../../../components/Notificator";
-import { urls } from "../../../";
+import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
 
@@ -21,7 +21,7 @@ interface State {
 }
 export class DirectoryDetails extends React.Component<Props, State> {
   state = {
-    transaction: "default" as "default"
+    transaction: "default" as "default",
   };
 
   handleUpdate = () => {
@@ -46,8 +46,8 @@ export class DirectoryDetails extends React.Component<Props, State> {
               const handleDelete = () => {
                 notify({
                   text: i18n.t("Deleted directory", {
-                    context: "notification"
-                  })
+                    context: "notification",
+                  }),
                 });
                 navigate(urls.directoryDetails(), true);
               };
@@ -89,8 +89,8 @@ export class DirectoryDetails extends React.Component<Props, State> {
                                     ? () =>
                                         navigate(
                                           urls.directoryDetails(
-                                            data.getDirectory.parent.id
-                                          )
+                                            data.getDirectory.parent.id,
+                                          ),
                                         )
                                     : () => navigate(urls.directoryDetails(""))
                                   : () => window.history.back()

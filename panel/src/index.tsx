@@ -16,7 +16,6 @@ import theme from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
 import { DateProvider } from "./components/Date";
-import { urlize } from "./utils";
 import AuthProvider, {
   getAuthToken,
   removeAuthToken,
@@ -24,7 +23,7 @@ import AuthProvider, {
 import Login from "./auth/views/Login";
 import PasswordRecovery from "./auth/views/PasswordRecovery";
 import { NotificationProvider } from "./components/Notificator";
-import urlPaths from "./urls";
+import urls from "./urls";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -95,7 +94,7 @@ render(
                       ) : (
                         <Switch>
                           <Route
-                            path={urlPaths.passwordRecovery}
+                            path={urls.passwordRecovery}
                             component={PasswordRecovery}
                           />
                           <Route
@@ -115,13 +114,6 @@ render(
   </DateProvider>,
   document.querySelector("#root"),
 );
-
-export const urls = {
-  directoryDetails: (id?: string) => `/directories/${id ? urlize(id) : ""}`,
-  pageCreate: (id: string) => `/directories/${urlize(id)}/createPage`,
-  pageDetails: (id: string) => `/pages/${urlize(id)}`,
-  userDetails: (id: string) => `/users/${urlize(id)}`,
-};
 
 export type TransactionState = "default" | "loading" | "success" | "error";
 export interface PaginationInfo {
