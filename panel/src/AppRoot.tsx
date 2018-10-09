@@ -5,7 +5,7 @@ import { User, UserContext } from "./auth/components/AuthProvider";
 import AppLayout from "./components/AppLayout";
 
 export const AppRoot = withRouter(({ children, history, location }) => {
-  const section = location.pathname.split("/")[1];
+  const section = location.pathname.split("/")[1] || "home";
   const handleSectionClick = (sectionName: string) => () => {
     switch (sectionName) {
       case "home":

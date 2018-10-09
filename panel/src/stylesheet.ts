@@ -3732,7 +3732,6 @@ export default (theme: Theme) =>
       ".navbar": {
         position: "relative",
         minHeight: 50,
-        marginBottom: 20,
         border: "1px solid transparent"
       },
       ".navbar-collapse": {
