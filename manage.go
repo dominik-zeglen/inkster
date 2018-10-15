@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/dominik-zeglen/inkster/api/schema"
 	serverApp "github.com/dominik-zeglen/inkster/app"
 	"github.com/dominik-zeglen/inkster/core"
 )
@@ -39,10 +40,14 @@ func main() {
 				fmt.Println("Added user " + email)
 				return nil
 			}
+
+			if operation == "print-schema" {
+				fmt.Println(schema.String())
+				return nil
+			}
 		}
 		fmt.Println("No operation given")
 		return nil
-
 	}
 
 	err := app.Run(os.Args)

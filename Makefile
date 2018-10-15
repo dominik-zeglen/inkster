@@ -1,6 +1,6 @@
 M = $(shell printf "\033[34;1m▶\033[0m")
 
-build: dep ; $(info $(M) Building project...)
+build: schema ; $(info $(M) Building project...)
 	go build -o manage
 
 clean: ; $(info $(M) [TODO] Removing generated files... )
@@ -17,6 +17,7 @@ schema: dep clean ; $(info $(M) Embedding schema files into binary...)
 		-pkg=schema \
 		-o=api/schema/bindata.go \
 		./api/...
+	go run manage.go print-schema > api/schema.graphql
 
 setup: ; $(info $(M) Fetching github.com/golang/dep...)
 	go get github.com/golang/dep/cmd/dep

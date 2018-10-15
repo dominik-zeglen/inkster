@@ -12,3 +12,4 @@ panel/build/*
 *debug*
 manage
 !manage.go
+bindata.go

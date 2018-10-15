@@ -1,0 +1,448 @@
+input PageFieldRemoveInput {
+  name: String!
+}
+input TemplateFieldCreateInput {
+  name: String!
+  type: String!
+}
+type LoginResult {
+  token: String
+  user: User
+}
+type PageField {
+  name: String!
+  type: String!
+  value: String
+}
+type PageOperationResult {
+  userErrors: [UserError]
+  page: Page
+}
+type TemplateUpdateResult {
+  userErrors: [UserError]
+  template: Template
+}
+input PageFieldCreateInput {
+  name: String!
+  type: String!
+  value: String!
+}
+input PageFieldUpdate2Input {
+  name: String!
+  update: PageFieldUpdate2InputPartial!
+}
+input PageFieldRenameInput {
+  name: String!
+  renameTo: String!
+}
+input PageUpdateInput {
+  name: String
+  slug: String
+  parentId: ID
+  isPublished: Boolean
+  fields: [PageFieldUpdate2Input!]
+}
+type Query {
+  getDirectory(id: ID!): Directory
+  getDirectories: [Directory]
+  getRootDirectories: [Directory]
+
+  template(id: ID!): Template
+  templates: [Template]
+
+  page(id: ID!): Page
+
+  user(id: ID!): User
+  users: [User]
+}
+schema {
+  query: Query
+  mutation: Mutation
+}
+type TemplateRemoveResult {
+  userErrors: [UserError]
+  removedObjectId: ID
+}
+type User {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  email: String!
+  isActive: Boolean!
+}
+input PageCreateInput {
+  name: String!
+  parentId: ID!
+  isPublished: Boolean
+  fields: [PageFieldCreateInput]
+}
+input PageFieldUpdate2InputPartial {
+  name: String
+  value: String
+}
+input PageFieldUpdateInput {
+  name: String!
+  value: String!
+}
+input TemplateUpdateInput {
+  name: String!
+}
+type Page {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  slug: String!
+  isPublished: Boolean!
+  fields: [PageField]
+  parent: Directory!
+}
+type TemplateField {
+  name: String!
+  type: String!
+}
+type VerifyTokenResult {
+  result: Boolean!
+  user: User
+}
+input TemplateCreateInput {
+  name: String!
+  fields: [TemplateFieldCreateInput!]
+}
+type UserRemoveResult {
+  removedObjectId: ID
+}
+type Mutation {
+  createDirectory(input: DirectoryCreateInput!): Directory
+  updateDirectory(id: ID!, input: DirectoryUpdateInput!): Directory
+  removeDirectory(id: ID!): Boolean!
+
+  createTemplate(input: TemplateCreateInput!): Template
+  templateUpdate(id: ID!, input: TemplateUpdateInput!): TemplateUpdateResult
+  createTemplateField(
+    id: ID!
+    input: TemplateFieldCreateInput!
+  ): TemplateUpdateResult
+  removeTemplateField(
+    id: ID!
+    input: TemplateFieldRemoveInput!
+  ): TemplateUpdateResult
+  removeTemplate(id: ID!): TemplateRemoveResult
+
+  createPage(input: PageCreateInput!): PageOperationResult
+  createPageField(
+    id: ID!
+    input: PageFieldCreateInput!
+  ): PageFieldOperationResult
+  renamePageField(
+    id: ID!
+    input: PageFieldRenameInput!
+  ): PageFieldOperationResult
+  updatePage(
+    id: ID!
+    input: PageUpdateInput
+    addFields: [PageFieldCreateInput!]
+    removeFields: [String!]
+  ): PageOperationResult
+
+  updatePageField(
+    id: ID!
+    input: PageFieldUpdateInput!
+  ): PageFieldOperationResult
+  removePageField(
+    id: ID!
+    input: PageFieldRemoveInput!
+  ): PageFieldOperationResult
+  removePage(id: ID!): PageRemoveResult
+
+  changeUserPassword(id: ID!, password: String!): Boolean!
+  createUser(
+    input: UserCreateInput!
+    sendInvitation: Boolean
+  ): UserOperationResult!
+  removeUser(id: ID!): UserRemoveResult!
+  updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
+  resetUserPassword(token: String!, password: String!): Boolean!
+  sendUserPasswordResetToken(email: String!): Boolean!
+
+  login(email: String!, password: String!): LoginResult!
+  verifyToken(token: String!): VerifyTokenResult
+}
+type PageFieldOperationResult {
+  userErrors: [UserError]
+  page: Page
+}
+type PageRemoveResult {
+  removedObjectId: ID!
+}
+input DirectoryUpdateInput {
+  name: String
+  parentId: ID
+  isPublished: Boolean
+}
+type User {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  email: String!
+  isActive: Boolean!
+}
+type UserError {
+  field: String!
+  message: String!
+}
+type UserRemoveResult {
+  removedObjectId: ID
+}
+input DirectoryCreateInput {
+  name: String!
+  parentId: ID
+  isPublished: Boolean
+}
+input PageFieldUpdate2InputPartial {
+  name: String
+  value: String
+}
+type PageField {
+  name: String!
+  type: String!
+  value: String
+}
+type PageFieldOperationResult {
+  userErrors: [UserError]
+  page: Page
+}
+type PageRemoveResult {
+  removedObjectId: ID!
+}
+type TemplateUpdateResult {
+  userErrors: [UserError]
+  template: Template
+}
+input PageFieldRemoveInput {
+  name: String!
+}
+input TemplateFieldRemoveInput {
+  name: String!
+}
+input UserUpdateInput {
+  isActive: Boolean
+  email: String
+}
+type Mutation {
+  createDirectory(input: DirectoryCreateInput!): Directory
+  updateDirectory(id: ID!, input: DirectoryUpdateInput!): Directory
+  removeDirectory(id: ID!): Boolean!
+
+  createTemplate(input: TemplateCreateInput!): Template
+  templateUpdate(id: ID!, input: TemplateUpdateInput!): TemplateUpdateResult
+  createTemplateField(
+    id: ID!
+    input: TemplateFieldCreateInput!
+  ): TemplateUpdateResult
+  removeTemplateField(
+    id: ID!
+    input: TemplateFieldRemoveInput!
+  ): TemplateUpdateResult
+  removeTemplate(id: ID!): TemplateRemoveResult
+
+  createPage(input: PageCreateInput!): PageOperationResult
+  createPageField(
+    id: ID!
+    input: PageFieldCreateInput!
+  ): PageFieldOperationResult
+  renamePageField(
+    id: ID!
+    input: PageFieldRenameInput!
+  ): PageFieldOperationResult
+  updatePage(
+    id: ID!
+    input: PageUpdateInput
+    addFields: [PageFieldCreateInput!]
+    removeFields: [String!]
+  ): PageOperationResult
+
+  updatePageField(
+    id: ID!
+    input: PageFieldUpdateInput!
+  ): PageFieldOperationResult
+  removePageField(
+    id: ID!
+    input: PageFieldRemoveInput!
+  ): PageFieldOperationResult
+  removePage(id: ID!): PageRemoveResult
+
+  changeUserPassword(id: ID!, password: String!): Boolean!
+  createUser(
+    input: UserCreateInput!
+    sendInvitation: Boolean
+  ): UserOperationResult!
+  removeUser(id: ID!): UserRemoveResult!
+  updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
+  resetUserPassword(token: String!, password: String!): Boolean!
+  sendUserPasswordResetToken(email: String!): Boolean!
+
+  login(email: String!, password: String!): LoginResult!
+  verifyToken(token: String!): VerifyTokenResult
+}
+type Directory {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  parent: Directory
+  isPublished: Boolean!
+  children: [Directory]
+  pages: [Page]
+}
+input PageFieldUpdateInput {
+  name: String!
+  value: String!
+}
+type VerifyTokenResult {
+  result: Boolean!
+  user: User
+}
+input PageUpdateInput {
+  name: String
+  slug: String
+  parentId: ID
+  isPublished: Boolean
+  fields: [PageFieldUpdate2Input!]
+}
+input UserCreateInput {
+  email: String!
+  password: String
+}
+type Page {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  slug: String!
+  isPublished: Boolean!
+  fields: [PageField]
+  parent: Directory!
+}
+input PageFieldUpdate2Input {
+  name: String!
+  update: PageFieldUpdate2InputPartial!
+}
+input PageFieldCreateInput {
+  name: String!
+  type: String!
+  value: String!
+}
+input TemplateCreateInput {
+  name: String!
+  fields: [TemplateFieldCreateInput!]
+}
+type TemplateRemoveResult {
+  userErrors: [UserError]
+  removedObjectId: ID
+}
+input PageCreateInput {
+  name: String!
+  parentId: ID!
+  isPublished: Boolean
+  fields: [PageFieldCreateInput]
+}
+schema {
+  query: Query
+  mutation: Mutation
+}
+type LoginResult {
+  token: String
+  user: User
+}
+type PageOperationResult {
+  userErrors: [UserError]
+  page: Page
+}
+type Template {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  fields: [TemplateField]
+}
+type TemplateField {
+  name: String!
+  type: String!
+}
+type UserOperationResult {
+  errors: [UserError!]!
+  user: User
+}
+input PageFieldRenameInput {
+  name: String!
+  renameTo: String!
+}
+input TemplateUpdateInput {
+  name: String!
+}
+type Query {
+  getDirectory(id: ID!): Directory
+  getDirectories: [Directory]
+  getRootDirectories: [Directory]
+
+  template(id: ID!): Template
+  templates: [Template]
+
+  page(id: ID!): Page
+
+  user(id: ID!): User
+  users: [User]
+}
+input TemplateFieldCreateInput {
+  name: String!
+  type: String!
+}
+
+input DirectoryCreateInput {
+  name: String!
+  parentId: ID
+  isPublished: Boolean
+}
+input DirectoryUpdateInput {
+  name: String
+  parentId: ID
+  isPublished: Boolean
+}
+input UserUpdateInput {
+  isActive: Boolean
+  email: String
+}
+type UserError {
+  field: String!
+  message: String!
+}
+type UserOperationResult {
+  errors: [UserError!]!
+  user: User
+}
+input TemplateFieldRemoveInput {
+  name: String!
+}
+input UserCreateInput {
+  email: String!
+  password: String
+}
+type Directory {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  parent: Directory
+  isPublished: Boolean!
+  children: [Directory]
+  pages: [Page]
+}
+type Template {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  fields: [TemplateField]
+}
+
