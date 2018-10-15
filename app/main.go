@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/dominik-zeglen/inkster/api"
+	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/mongodb"
@@ -61,7 +62,7 @@ func init() {
 		)
 	}
 	resolver := api.NewResolver(&DataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
-	schema = graphql.MustParseSchema(api.Schema, &resolver)
+	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
 }
 
 func check(err error) {

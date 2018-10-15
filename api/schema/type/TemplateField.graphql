@@ -1,0 +1,4 @@
+type TemplateField {
+  name: String!
+  type: String!
+}

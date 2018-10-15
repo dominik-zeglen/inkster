@@ -1,0 +1,4 @@
+type UserError {
+  field: String!
+  message: String!
+}

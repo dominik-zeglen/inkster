@@ -2,49 +2,62 @@
 
 
 [[projects]]
+  digest = "1:888fb983622d8c48e17dbc0121e8265a9c7e69f4e0932fd42baf6236fc59c31d"
   name = "github.com/bradleyjkemp/cupaloy"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0d797813a76b4573317a916b0c5816dc55fff62d"
   version = "v2.0.0"
 
 [[projects]]
+  digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
+  pruneopts = "UT"
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:fdae1c338ec6667687fb3fdbde842b3c421c930163981b5d441502b240b7f50b"
   name = "github.com/dchest/uniuri"
   packages = ["."]
+  pruneopts = "UT"
   revision = "8902c56451e9b58ff940bbe5fec35d5f9c04584a"
 
 [[projects]]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
+  pruneopts = "UT"
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:75979463a31c650b93225d9794a7e7c9174b1a4dd98b7e0d5d8eb14a10b1b6ac"
   name = "github.com/globalsign/mgo"
   packages = [
     ".",
     "bson",
     "internal/json",
     "internal/sasl",
-    "internal/scram"
+    "internal/scram",
   ]
+  pruneopts = "UT"
   revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
 
 [[projects]]
+  digest = "1:0ae2e1b2d4cdff4834aa28ce2e33a7b6de91e10150e3647fe1b9fd63a51b39ce"
   name = "github.com/gosimple/slug"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e9f42fa127660e552d0ad2b589868d403a9be7c6"
   version = "v1.1.1"
 
 [[projects]]
   branch = "master"
+  digest = "1:627dcf0ccc59da42cd550b7e8a591920d20bbe5cfdb1932b5872b7a79dce09bd"
   name = "github.com/graph-gophers/graphql-go"
   packages = [
     ".",
@@ -60,53 +73,86 @@
     "introspection",
     "log",
     "relay",
-    "trace"
+    "trace",
   ]
+  pruneopts = "UT"
   revision = "9ebf33af539ab8cb832c7107bc0a978ca8dbc0de"
 
 [[projects]]
+  digest = "1:0015060922f1b2e04469224e2ed82f0a67abbfee9a0a91852cf4980b91bf11d6"
+  name = "github.com/jteeuwen/go-bindata"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bbd0c6e271208dce66d8fda4bc536453cd27fc4a"
+  version = "v3.0.7"
+
+[[projects]]
+  digest = "1:450b7623b185031f3a456801155c8320209f75d0d4c4e633c6b1e59d44d6e392"
   name = "github.com/opentracing/opentracing-go"
   packages = [
     ".",
     "ext",
-    "log"
+    "log",
   ]
+  pruneopts = "UT"
   revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
   version = "v1.0.2"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:e6a29574542c00bb18adb1bfbe629ff88c468c2af2e2e953d3e58eda07165086"
   name = "github.com/rainycape/unidecode"
   packages = ["."]
+  pruneopts = "UT"
   revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
   branch = "master"
+  digest = "1:f92f6956e4059f6a3efc14924d2dd58ba90da25cc57fe07ae3779ef2f5e0c5f2"
   name = "golang.org/x/crypto"
   packages = ["pbkdf2"]
+  pruneopts = "UT"
   revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
 
 [[projects]]
   branch = "master"
+  digest = "1:76ee51c3f468493aff39dbacc401e8831fbb765104cbf613b89bef01cf4bad70"
   name = "golang.org/x/net"
   packages = ["context"]
+  pruneopts = "UT"
   revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
 
 [[projects]]
+  digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "gopkg.in/urfave/cli.v1"
   packages = ["."]
+  pruneopts = "UT"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a0d92745d4e1169402ec9ecd2b2cde6da9dcb6c6292aa7e62d9fdfeaad52df1d"
+  input-imports = [
+    "github.com/bradleyjkemp/cupaloy",
+    "github.com/dchest/uniuri",
+    "github.com/dgrijalva/jwt-go",
+    "github.com/globalsign/mgo",
+    "github.com/globalsign/mgo/bson",
+    "github.com/gosimple/slug",
+    "github.com/graph-gophers/graphql-go",
+    "github.com/graph-gophers/graphql-go/relay",
+    "github.com/jteeuwen/go-bindata",
+    "golang.org/x/crypto/pbkdf2",
+    "gopkg.in/urfave/cli.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

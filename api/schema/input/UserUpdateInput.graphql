@@ -1,0 +1,4 @@
+input UserUpdateInput {
+  isActive: Boolean
+  email: String
+}

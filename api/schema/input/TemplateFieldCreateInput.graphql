@@ -1,0 +1,4 @@
+input TemplateFieldCreateInput {
+  name: String!
+  type: String!
+}

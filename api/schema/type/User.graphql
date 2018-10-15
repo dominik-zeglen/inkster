@@ -1,0 +1,7 @@
+type User {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  email: String!
+  isActive: Boolean!
+}

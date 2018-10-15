@@ -1,0 +1,5 @@
+input DirectoryCreateInput {
+  name: String!
+  parentId: ID
+  isPublished: Boolean
+}

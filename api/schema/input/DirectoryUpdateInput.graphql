@@ -1,0 +1,5 @@
+input DirectoryUpdateInput {
+  name: String
+  parentId: ID
+  isPublished: Boolean
+}
