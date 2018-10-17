@@ -6,10 +6,8 @@ node_js:
   - "8.11.1"
   - master
 services: mongodb
-before_install:                                                                 
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh  
-install:
-  - dep ensure
+install:                                                                 
+  - make schema
 before_script:
   - sleep 15
 script:

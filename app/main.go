@@ -39,17 +39,28 @@ func checkEnv() {
 	}
 }
 
-func init() {
-	checkEnv()
-	DataSource = mongodb.Adapter{
+func check(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func InitDb() mongodb.Adapter {
+	dataSource := mongodb.Adapter{
 		DBName: os.Getenv("INKSTER_DB_NAME"),
 	}
 	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
 	if err != nil {
-		log.Println("WARNING: Database is offline.")
+		log.Fatal("ERROR: Database is offline.")
 	}
+	dataSource.Session = session
+	return dataSource
+}
+
+func initApp() {
+	checkEnv()
 	var mailClient mailer.Mailer
-	DataSource.Session = session
+	DataSource = InitDb()
 	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = &mailer.MockMailClient{}
 	} else {
@@ -65,13 +76,8 @@ func init() {
 	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
 }
 
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func Run() {
+	initApp()
 	http.Handle("/panel/static/",
 		http.StripPrefix(
 			"/panel/static/",

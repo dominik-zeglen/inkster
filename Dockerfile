@@ -10,7 +10,7 @@ ADD . /go/src/github.com/dominik-zeglen/inkster
 WORKDIR /go/src/github.com/dominik-zeglen/inkster
 COPY ./app/graphiql.html /app
 
-RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && chmod +x /usr/local/bin/dep
+RUN make schema
 RUN dep ensure -vendor-only
 
 RUN CGO_ENABLED=0 go build -o /app/main manage.go

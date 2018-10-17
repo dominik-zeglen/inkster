@@ -22,6 +22,7 @@ func main() {
 			}
 
 			if operation == "add-user" {
+				dataSource := serverApp.InitDb()
 				email := c.Args().Get(1)
 				password := c.Args().Get(2)
 				newUser := core.User{
@@ -33,7 +34,7 @@ func main() {
 					return err
 				}
 
-				_, err = serverApp.DataSource.AddUser(newUser)
+				_, err = dataSource.AddUser(newUser)
 				if err != nil {
 					return err
 				}
