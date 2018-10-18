@@ -11,13 +11,18 @@ import (
 	"testing"
 )
 
+func closeQuietly(v interface{}) {
+	if d, ok := v.(io.Closer); ok {
+		_ = d.Close()
+	}
+}
 func TestUpload(t *testing.T) {
 	t.Run("Test valid request", func(t *testing.T) {
 		file, err := os.Open("testdata/testfile.test")
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer file.Close()
+		closeQuietly(file)
 
 		body := &bytes.Buffer{}
 		writer := multipart.NewWriter(body)
