@@ -10,3 +10,6 @@ vendor
 static/*
 panel/build/*
 *debug*
+manage
+!manage.go
+bindata.go

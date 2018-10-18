@@ -1,0 +1,4 @@
+type LoginResult {
+  token: String
+  user: User
+}

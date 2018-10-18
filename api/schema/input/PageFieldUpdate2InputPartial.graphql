@@ -1,0 +1,4 @@
+input PageFieldUpdate2InputPartial {
+  name: String
+  value: String
+}

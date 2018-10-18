@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/mock"
@@ -18,7 +19,7 @@ var dataSource = mock.Adapter{
 }
 var mailClient = mailer.MockMailClient{}
 var resolver = NewResolver(dataSource, &mailClient, "secretKey")
-var schema = gql.MustParseSchema(Schema, &resolver)
+var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
 
 var ErrNoError = fmt.Errorf("Did not return error")
 

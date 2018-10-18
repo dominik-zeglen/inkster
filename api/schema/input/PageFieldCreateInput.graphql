@@ -1,0 +1,5 @@
+input PageFieldCreateInput {
+  name: String!
+  type: String!
+  value: String!
+}

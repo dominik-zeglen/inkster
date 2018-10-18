@@ -1,0 +1,10 @@
+type Page {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  slug: String!
+  isPublished: Boolean!
+  fields: [PageField]
+  parent: Directory!
+}

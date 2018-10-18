@@ -1,0 +1,13 @@
+type Query {
+  getDirectory(id: ID!): Directory
+  getDirectories: [Directory]
+  getRootDirectories: [Directory]
+
+  template(id: ID!): Template
+  templates: [Template]
+
+  page(id: ID!): Page
+
+  user(id: ID!): User
+  users: [User]
+}

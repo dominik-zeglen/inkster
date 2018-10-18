@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/dominik-zeglen/inkster/api"
+	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/mongodb"
@@ -38,17 +39,28 @@ func checkEnv() {
 	}
 }
 
-func init() {
-	checkEnv()
-	DataSource = mongodb.Adapter{
+func check(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func InitDb() mongodb.Adapter {
+	dataSource := mongodb.Adapter{
 		DBName: os.Getenv("INKSTER_DB_NAME"),
 	}
 	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
 	if err != nil {
-		log.Println("WARNING: Database is offline.")
+		log.Fatal("ERROR: Database is offline.")
 	}
+	dataSource.Session = session
+	return dataSource
+}
+
+func initApp() {
+	checkEnv()
 	var mailClient mailer.Mailer
-	DataSource.Session = session
+	DataSource = InitDb()
 	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = &mailer.MockMailClient{}
 	} else {
@@ -61,16 +73,11 @@ func init() {
 		)
 	}
 	resolver := api.NewResolver(&DataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
-	schema = graphql.MustParseSchema(api.Schema, &resolver)
-}
-
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
+	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
 }
 
 func Run() {
+	initApp()
 	http.Handle("/panel/static/",
 		http.StripPrefix(
 			"/panel/static/",

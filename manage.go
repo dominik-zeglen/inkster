@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/dominik-zeglen/inkster/api/schema"
 	serverApp "github.com/dominik-zeglen/inkster/app"
 	"github.com/dominik-zeglen/inkster/core"
 )
@@ -21,6 +22,7 @@ func main() {
 			}
 
 			if operation == "add-user" {
+				dataSource := serverApp.InitDb()
 				email := c.Args().Get(1)
 				password := c.Args().Get(2)
 				newUser := core.User{
@@ -32,17 +34,21 @@ func main() {
 					return err
 				}
 
-				_, err = serverApp.DataSource.AddUser(newUser)
+				_, err = dataSource.AddUser(newUser)
 				if err != nil {
 					return err
 				}
 				fmt.Println("Added user " + email)
 				return nil
 			}
+
+			if operation == "print-schema" {
+				fmt.Println(schema.String())
+				return nil
+			}
 		}
 		fmt.Println("No operation given")
 		return nil
-
 	}
 
 	err := app.Run(os.Args)

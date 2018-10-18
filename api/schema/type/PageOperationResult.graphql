@@ -1,0 +1,4 @@
+type PageOperationResult {
+  userErrors: [UserError]
+  page: Page
+}
