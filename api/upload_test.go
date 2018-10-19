@@ -22,7 +22,7 @@ func TestUpload(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		closeQuietly(file)
+		defer closeQuietly(file)
 
 		body := &bytes.Buffer{}
 		writer := multipart.NewWriter(body)
