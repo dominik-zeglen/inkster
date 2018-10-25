@@ -12,7 +12,7 @@ func testUsers(t *testing.T) {
 		t.Run("Add user", func(t *testing.T) {
 			defer resetDatabase()
 			user := core.User{
-				Email:  "New User",
+				Email:  "newuser@example.com",
 				Active: false,
 			}
 			user.CreatePassword("passwd")

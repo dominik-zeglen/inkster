@@ -1,0 +1,12 @@
+{
+    "data": {
+        "updateUser": {
+            "errors": [],
+            "user": {
+                "id": "dXNlcjowMDAwMDAwMDAwMDE=",
+                "email": "user1@xample.com",
+                "isActive": true
+            }
+        }
+    }
+}

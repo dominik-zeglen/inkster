@@ -9,31 +9,58 @@ import (
 )
 
 func TestUserAPI(t *testing.T) {
+	createUser := `
+		mutation CreateUser($input: UserCreateInput!) {
+			createUser(input: $input) {
+				errors {
+					code
+					field
+					message
+				}
+				user {
+					createdAt
+					updatedAt
+					email
+					isActive
+				}
+			}
+		}`
+
+	updateUser := `
+		mutation UpdateUser(
+			$id: ID!
+			$input: UserUpdateInput!
+		) {
+			updateUser(id: $id, input: $input) {
+				errors {
+					code
+					field
+					message
+				}
+				user {
+					id
+					email
+					isActive
+				}
+			}
+		}`
+	removeUser := `
+		mutation RemoveUser($id: ID!){
+			removeUser(id: $id) {
+				removedObjectId
+			}
+		}`
 	t.Run("Mutations", func(t *testing.T) {
 		resetDatabase()
 		t.Run("Create user", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation CreateUser($input: UserCreateInput!){
-				createUser(input: $input) {
-					errors {
-						field
-						message
-					}
-					user {
-						createdAt
-						updatedAt
-						email
-						isActive
-					}
-				}
-			}`
 			variables := `{
 				"input": {
 					"email": "new_user@example.com",
 					"password": "examplepassword"
 				}
 			}`
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(createUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -41,26 +68,25 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Create user without password", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation CreateUser($input: UserCreateInput!){
-				createUser(input: $input) {
-					errors {
-						field
-						message
-					}
-					user {
-						createdAt
-						updatedAt
-						email
-						isActive
-					}
-				}
-			}`
 			variables := `{
 				"input": {
 					"email": "new_user@example.com"
 				}
 			}`
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(createUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Create user with invalid e-mail", func(t *testing.T) {
+			defer resetDatabase()
+			variables := `{
+				"input": {
+					"email": "invalidemail"
+				}
+			}`
+			result, err := execQuery(createUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -68,16 +94,11 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation RemoveUser($id: ID!){
-				removeUser(id: $id) {
-					removedObjectId
-				}
-			}`
 			id := toGlobalID("user", test.Users[1].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(removeUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -85,16 +106,11 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user using his own token", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation RemoveUser($id: ID!){
-				removeUser(id: $id) {
-					removedObjectId
-				}
-			}`
 			id := toGlobalID("user", test.Users[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(removeUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -102,22 +118,6 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation UpdateUser(
-				$id: ID!
-				$input: UserUpdateInput!
-			) {
-				updateUser(id: $id, input: $input) {
-					errors {
-						field
-						message
-					}
-					user {
-						id
-						email
-						isActive
-					}
-				}
-			}`
 			id := toGlobalID("user", test.Users[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
@@ -126,7 +126,52 @@ func TestUserAPI(t *testing.T) {
 					"isActive": false
 				}
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(updateUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update user with invalid e-mail", func(t *testing.T) {
+			defer resetDatabase()
+			id := toGlobalID("user", test.Users[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"email": "invalidemail"
+				}
+			}`, id)
+			result, err := execQuery(updateUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update user with existing e-mail", func(t *testing.T) {
+			defer resetDatabase()
+			id := toGlobalID("user", test.Users[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"email": "%s"
+				}
+			}`, id, test.Users[1].Email)
+			result, err := execQuery(updateUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update user with the same e-mail", func(t *testing.T) {
+			defer resetDatabase()
+			id := toGlobalID("user", test.Users[0].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"email": "%s"
+				}
+			}`, id, test.Users[0].Email)
+			result, err := execQuery(updateUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

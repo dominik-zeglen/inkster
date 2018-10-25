@@ -6,11 +6,12 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
 type userOperationResult struct {
-	errors []userError
+	errors []core.ValidationError
 	user   *core.User
 }
 
@@ -19,13 +20,13 @@ type userOperationResultResolver struct {
 	data       userOperationResult
 }
 
-func (res *userOperationResultResolver) Errors() []*userErrorResolver {
-	var resolverList []*userErrorResolver
+func (res *userOperationResultResolver) Errors() []*inputErrorResolver {
+	var resolverList []*inputErrorResolver
 	for i := range res.data.errors {
 		resolverList = append(
 			resolverList,
-			&userErrorResolver{
-				data: res.data.errors[i],
+			&inputErrorResolver{
+				err: res.data.errors[i],
 			},
 		)
 	}
@@ -33,6 +34,9 @@ func (res *userOperationResultResolver) Errors() []*userErrorResolver {
 }
 
 func (res *userOperationResultResolver) User() *userResolver {
+	if res.data.user == nil {
+		return nil
+	}
 	return &userResolver{
 		dataSource: res.dataSource,
 		data:       res.data.user,
@@ -81,6 +85,18 @@ func (res *Resolver) CreateUser(
 		}
 		user.Active = true
 	}
+
+	validationErrs := user.Validate()
+	if len(validationErrs) > 0 {
+		return &userOperationResultResolver{
+			dataSource: res.dataSource,
+			data: userOperationResult{
+				errors: validationErrs,
+				user:   nil,
+			},
+		}, nil
+	}
+
 	result, err := res.dataSource.AddUser(user)
 	if err != nil {
 		return nil, err
@@ -97,7 +113,7 @@ func (res *Resolver) CreateUser(
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,
 		data: userOperationResult{
-			errors: []userError{},
+			errors: []core.ValidationError{},
 			user:   &result,
 		},
 	}, nil
@@ -138,11 +154,41 @@ func (res *Resolver) RemoveUser(
 
 type UserUpdateInput struct {
 	IsActive *bool
-	Email    *string
+	Email    *string `validate:"email"`
 }
 type UserUpdateMutationArgs struct {
 	ID    gql.ID
-	Input UserUpdateInput
+	Input UserUpdateInput `validate:"dive"`
+}
+
+func (args UserUpdateMutationArgs) validate(
+	dataSource core.Adapter,
+	userID bson.ObjectId,
+) (
+	[]core.ValidationError,
+	*core.User,
+	error,
+) {
+	errors := []core.ValidationError{}
+	errors = append(errors, core.ValidateModel(args)...)
+
+	user, err := dataSource.GetUser(userID)
+	if err != nil {
+		return errors, nil, err
+	}
+
+	if args.Input.Email != nil && *args.Input.Email != user.Email {
+		_, err := dataSource.GetUserByEmail(*args.Input.Email)
+		if err == nil {
+			errors = append(errors, core.ValidationError{
+				Code:  core.ErrNotUnique,
+				Field: "email",
+				Param: args.Input.Email,
+			})
+		}
+	}
+
+	return errors, &user, nil
 }
 
 func (res *Resolver) UpdateUser(
@@ -152,10 +198,26 @@ func (res *Resolver) UpdateUser(
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
+
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
 		return nil, err
 	}
+
+	validationErrors, user, err := args.validate(res.dataSource, localID)
+	if err != nil {
+		return nil, err
+	}
+	if len(validationErrors) > 0 {
+		return &userOperationResultResolver{
+			dataSource: res.dataSource,
+			data: userOperationResult{
+				errors: validationErrors,
+				user:   user,
+			},
+		}, nil
+	}
+
 	input := core.UserInput{
 		Active: args.Input.IsActive,
 		Email:  args.Input.Email,
@@ -167,7 +229,7 @@ func (res *Resolver) UpdateUser(
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,
 		data: userOperationResult{
-			errors: []userError{},
+			errors: []core.ValidationError{},
 			user:   &result,
 		},
 	}, nil

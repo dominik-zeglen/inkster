@@ -19,10 +19,10 @@ const (
 
 type User struct {
 	BaseModel `bson:",inline"`
-	Active    bool
-	Email     string
-	Password  string
-	Salt      string
+	Active    bool   `json:"active"`
+	Email     string `json:"email" validate:"required,email"`
+	Password  string `json:"password" validate:"required"`
+	Salt      string `json:"salt" validate:"required"`
 }
 
 func (user User) AuthPassword(pass string) bool {
@@ -68,17 +68,8 @@ func (user *User) CreatePassword(pass string) error {
 }
 
 // FIXME: #16
-func (user User) Validate() error {
-	if user.Email == "" {
-		return ErrNoEmpty("Email")
-	}
-	if user.Password == "" {
-		return ErrNoEmpty("Password")
-	}
-	if user.Salt == "" {
-		return ErrNoEmpty("Salt")
-	}
-	return nil
+func (user User) Validate() []ValidationError {
+	return ValidateModel(user)
 }
 
 func (user User) String() string {

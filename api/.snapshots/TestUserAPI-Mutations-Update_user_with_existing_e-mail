@@ -1,0 +1,18 @@
+{
+    "data": {
+        "updateUser": {
+            "errors": [
+                {
+                    "code": 205,
+                    "field": "email",
+                    "message": "Object with email user2@example.com already exists"
+                }
+            ],
+            "user": {
+                "id": "dXNlcjowMDAwMDAwMDAwMDE=",
+                "email": "user1@xample.com",
+                "isActive": true
+            }
+        }
+    }
+}
