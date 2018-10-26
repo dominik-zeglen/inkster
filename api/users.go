@@ -154,7 +154,7 @@ func (res *Resolver) RemoveUser(
 
 type UserUpdateInput struct {
 	IsActive *bool
-	Email    *string `validate:"email"`
+	Email    *string `validate:"omitempty,email"`
 }
 type UserUpdateMutationArgs struct {
 	ID    gql.ID
