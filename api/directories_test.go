@@ -9,18 +9,15 @@ import (
 )
 
 func TestDirectoryAPI(t *testing.T) {
-	t.Run("Mutations", func(t *testing.T) {
-		resetDatabase()
-		t.Run("Create directory", func(t *testing.T) {
-			defer resetDatabase()
-			query := `mutation CreateDirectory(
-				$name: String!,
-				$parentId: ID, 
-			){
-				createDirectory(input: {
-					name: $name, 
-					parentId: $parentId
-				}) {
+	createDirectory := `
+		mutation CreateDirectory($input: DirectoryCreateInput!) {
+			createDirectory(input: $input) {
+				errors {
+					code
+					field
+					message
+				}
+				directory {
 					createdAt
 					updatedAt
 					name
@@ -30,13 +27,51 @@ func TestDirectoryAPI(t *testing.T) {
 						name
 					}
 				}
-			}`
+			}
+		}`
+	updateDirectory := `
+		mutation UpdateDirectory(
+			$id: ID!
+			$input: DirectoryUpdateInput!
+		) {
+			updateDirectory(
+				id: $id, 
+				input: $input
+			) {
+				errors {
+					code
+					field
+					message
+				}
+				directory {
+					id
+					createdAt
+					updatedAt
+					name
+					isPublished
+					parent {
+						id
+						name
+					}
+					children {
+						id
+						name
+					}
+			}
+			}
+		}`
+	t.Run("Mutations", func(t *testing.T) {
+		resetDatabase()
+		t.Run("Create directory", func(t *testing.T) {
+			defer resetDatabase()
 			parentID := toGlobalID("directory", test.Directories[0].ID)
 			variables := fmt.Sprintf(`{
-				"name": "New Directory",
-				"parentId": "%s"
+				"input": {
+					"name": "New Directory",
+					"parentId": "%s"
+				}
 			}`, parentID)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(createDirectory, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -44,22 +79,40 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Create without parent directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation CreateDirectory(
-				$name: String!
-			){
-				createDirectory(input: {
-					name: $name 
-				}) {
-					createdAt
-					updatedAt
-					name
-					isPublished
+			variables := `{
+				"input": {
+					"name": "New Directory"
 				}
 			}`
+			result, err := execQuery(createDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Create with too short name", func(t *testing.T) {
+			defer resetDatabase()
 			variables := `{
-				"name": "New Directory"
+				"input": {
+					"name": "a"
+				}
 			}`
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(createDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Create directory in parent that does not exist", func(t *testing.T) {
+			defer resetDatabase()
+			parentID := toGlobalID("directory", "000000000005")
+			variables := fmt.Sprintf(`{
+				"input": {
+					"name": "New Directory",
+					"parentId": "%s"
+				}
+			}`, parentID)
+			result, err := execQuery(createDirectory, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -67,42 +120,17 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation UpdateDirectory(
-				$id: ID!
-				$name: String
-				$parentId: ID
-			){
-				updateDirectory(
-					id: $id, 
-					input: {
-						name: $name 
-						parentId: $parentId
-						isPublished: true
-					}
-				) {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-				}
-			}`
 			id := toGlobalID("directory", test.Directories[3].ID)
 			parentID := toGlobalID("directory", test.Directories[1].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
-				"name": "Updated name",
-				"parentId": "%s"
+				"input": {
+					"name": "Updated name",
+					"parentId": "%s",
+					"isPublished": true
+				}
 			}`, id, parentID)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(updateDirectory, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -110,39 +138,44 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory partially", func(t *testing.T) {
 			defer resetDatabase()
-			query := `mutation UpdateDirectory(
-				$id: ID!
-				$name: String
-				$parentId: ID
-			){
-				updateDirectory(
-					id: $id, 
-					input: {
-						name: $name 
-						parentId: $parentId
-					}
-				) {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-				}
-			}`
 			id := toGlobalID("directory", test.Directories[3].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
-				"name": "Updated name"
+				"input": {
+					"name": "Updated name"
+				}
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(updateDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update directory with too short name", func(t *testing.T) {
+			defer resetDatabase()
+			id := toGlobalID("directory", test.Directories[3].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"name": "a"
+				}
+			}`, id)
+			result, err := execQuery(updateDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update directory with its own ID as parentID", func(t *testing.T) {
+			defer resetDatabase()
+			id := toGlobalID("directory", test.Directories[3].ID)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"parentId": "%s"
+				}
+			}`, id, id)
+			result, err := execQuery(updateDirectory, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

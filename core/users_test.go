@@ -35,7 +35,7 @@ func TestAuth(t *testing.T) {
 	}
 }
 
-func TestValidation(t *testing.T) {
+func TestUserValidation(t *testing.T) {
 	testSuites := []struct {
 		user     User
 		expected []ValidationError
@@ -67,31 +67,6 @@ func TestValidation(t *testing.T) {
 
 	for index, testData := range testSuites {
 		result := testData.user.Validate()
-		if len(testData.expected) != len(result) {
-			t.Fatalf(
-				"Test %d failed: expected %d errors, got %d",
-				index,
-				len(testData.expected),
-				len(result),
-			)
-		}
-		for errIndex, err := range result {
-			if testData.expected[errIndex].Code != err.Code {
-				t.Fatalf(
-					"Test %d failed: expected error %d, got %d",
-					index,
-					testData.expected[errIndex].Code,
-					err.Code,
-				)
-			}
-			if testData.expected[errIndex].Field != err.Field {
-				t.Fatalf(
-					"Test %d failed: expected error in field %s, got %s",
-					index,
-					testData.expected[errIndex].Field,
-					err.Field,
-				)
-			}
-		}
+		testValidation(testData.expected, result, index, t)
 	}
 }

@@ -1,10 +1,14 @@
 {
     "data": {
         "createDirectory": {
-            "createdAt": "2017-07-07T10:00:00.000Z",
-            "updatedAt": "2017-07-07T10:00:00.000Z",
-            "name": "New Directory",
-            "isPublished": false
+            "errors": [],
+            "directory": {
+                "createdAt": "2017-07-07T10:00:00.000Z",
+                "updatedAt": "2017-07-07T10:00:00.000Z",
+                "name": "New Directory",
+                "isPublished": false,
+                "parent": null
+            }
         }
     }
 }

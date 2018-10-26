@@ -61,14 +61,16 @@ type ValidationErrorCode int
 
 const (
 	// Data format errors
-	ErrRequired = 100 + iota
-	ErrMinLength
-	ErrMaxLength
-	ErrLength
-	ErrTypeMismatch
+	ErrRequired     = 100
+	ErrMinLength    = 101
+	ErrMaxLength    = 102
+	ErrLength       = 103
+	ErrTypeMismatch = 104
+	ErrNotEqual     = 105
 
 	// Model errors
-	ErrNotUnique = 200 + iota
+	ErrNotUnique    = 200
+	ErrDoesNotExist = 201
 )
 
 // ValidationError is thrown if object or input weren't valid
@@ -118,6 +120,20 @@ func (err ValidationError) Error() string {
 	case ErrNotUnique:
 		return fmt.Sprintf(
 			"Object with %s %s already exists",
+			err.Field,
+			*err.Param,
+		)
+
+	case ErrDoesNotExist:
+		return fmt.Sprintf(
+			"Object with %s %s does not exist",
+			err.Field,
+			*err.Param,
+		)
+
+	case ErrNotEqual:
+		return fmt.Sprintf(
+			"Property %s cannot be equal %s",
 			err.Field,
 			*err.Param,
 		)

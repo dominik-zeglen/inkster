@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 )
 
@@ -13,11 +14,16 @@ func (adapter Adapter) findDirectory(id bson.ObjectId) (int, error) {
 			return index, nil
 		}
 	}
-	return 0, fmt.Errorf("Directory %s does not exist", id)
+	return 0, mgo.ErrNotFound
 }
 
 // AddDirectory puts directory in a in-memory array
 func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, error) {
+	errors := directory.Validate()
+	if len(errors) > 0 {
+		return core.Directory{}, core.ErrNotValidated
+	}
+
 	if directory.ID == "" {
 		directory.ID = bson.NewObjectId()
 	} else {
@@ -25,9 +31,6 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 		if err == nil {
 			return core.Directory{}, fmt.Errorf("Could not add directory with ID: %s; directory already exists", directory.ID)
 		}
-	}
-	if directory.Name == "" {
-		return core.Directory{}, core.ErrNoEmpty("Name")
 	}
 	directory.CreatedAt = adapter.GetCurrentTime()
 	directory.UpdatedAt = adapter.GetCurrentTime()
@@ -75,6 +78,11 @@ func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Direct
 
 // UpdateDirectory updates directory with given properties
 func (adapter Adapter) UpdateDirectory(id bson.ObjectId, data core.DirectoryInput) error {
+	errors := core.ValidateModel(data)
+	if len(errors) > 0 {
+		return core.ErrNotValidated
+	}
+
 	index, err := adapter.findDirectory(id)
 	if err != nil {
 		return err

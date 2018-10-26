@@ -4,7 +4,7 @@
     },
     "errors": [
         {
-            "message": "Directory ObjectIdHex(\"303030303030303030303939\") does not exist",
+            "message": "not found",
             "path": [
                 "getDirectory"
             ]

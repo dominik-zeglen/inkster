@@ -3,7 +3,7 @@
         "updateUser": {
             "errors": [
                 {
-                    "code": 205,
+                    "code": 200,
                     "field": "email",
                     "message": "Object with email user2@example.com already exists"
                 }

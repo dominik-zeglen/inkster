@@ -1,6 +1,6 @@
 type Mutation {
-  createDirectory(input: DirectoryCreateInput!): Directory
-  updateDirectory(id: ID!, input: DirectoryUpdateInput!): Directory
+  createDirectory(input: DirectoryCreateInput!): DirectoryOperationResult
+  updateDirectory(id: ID!, input: DirectoryUpdateInput!): DirectoryOperationResult
   removeDirectory(id: ID!): Boolean!
 
   createTemplate(input: TemplateCreateInput!): Template

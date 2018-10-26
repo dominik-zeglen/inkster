@@ -1,0 +1,14 @@
+{
+    "data": {
+        "createDirectory": {
+            "errors": [
+                {
+                    "code": 201,
+                    "field": "ParentID",
+                    "message": "Object with ParentID ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNQ== does not exist"
+                }
+            ],
+            "directory": null
+        }
+    }
+}
