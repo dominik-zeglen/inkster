@@ -187,7 +187,7 @@ func (res *Resolver) UpdateDirectory(
 		return nil, errNoPermissions
 	}
 
-	validationErrors, err := args.validate(dataSource)
+	validationErrors, err := args.validate(res.dataSource)
 	if err != nil {
 		return nil, err
 	}
