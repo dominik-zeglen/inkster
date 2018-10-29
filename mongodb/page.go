@@ -9,9 +9,9 @@ import (
 
 // AddPage puts page in the database
 func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
-	err := page.Validate()
-	if err != nil {
-		return core.Page{}, err
+	errs := page.Validate()
+	if len(errs) > 0 {
+		return core.Page{}, core.ErrNotValidated
 	}
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
@@ -38,8 +38,7 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	page.CreatedAt = adapter.GetCurrentTime()
 	page.UpdatedAt = adapter.GetCurrentTime()
 
-	err = collection.Insert(page)
-	return page, err
+	return page, collection.Insert(page)
 }
 
 // AddPageFromTemplate creates new page based on a chosen template
@@ -81,10 +80,11 @@ func (adapter Adapter) AddPageFromTemplate(
 
 // AddPageField adds to page a new field at the end of it's field list
 func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
-	err := field.Validate()
-	if err != nil {
-		return err
+	errs := field.Validate()
+	if len(errs) > 0 {
+		return core.ErrNotValidated
 	}
+
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -98,6 +98,9 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 			},
 		},
 	}).Count()
+	if err != nil {
+		return err
+	}
 	if found != 0 {
 		return core.ErrFieldExists(field.Name)
 	}
@@ -272,8 +275,4 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 			},
 		},
 	})
-}
-
-func (adapter Adapter) ValidatePage(page core.Page) error {
-	return page.Validate()
 }

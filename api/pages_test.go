@@ -55,7 +55,7 @@ func TestPageAPI(t *testing.T) {
 					},
 					{
 						"name": "Field 2",
-						"type": "page",
+						"type": "text",
 						"value": "Value 2"
 					}
 				]

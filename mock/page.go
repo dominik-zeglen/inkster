@@ -45,11 +45,11 @@ func (adapter Adapter) findPageField(id bson.ObjectId, name string) (int, int, e
 
 // AddPage puts page in the database
 func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
-	err := page.Validate()
-	if err != nil {
-		return core.Page{}, err
+	errs := page.Validate()
+	if len(errs) > 0 {
+		return core.Page{}, core.ErrNotValidated
 	}
-	_, err = adapter.findTemplate(nil, &page.Name)
+	_, err := adapter.findTemplate(nil, &page.Name)
 	if err == nil {
 		return core.Page{}, core.ErrPageExists(page.Name)
 	}
@@ -115,9 +115,9 @@ func (adapter Adapter) AddPageFromTemplate(
 
 // AddPageField adds to page a new field at the end of it's field list
 func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
-	err := field.Validate()
-	if err != nil {
-		return err
+	errs := field.Validate()
+	if len(errs) > 0 {
+		return core.ErrNotValidated
 	}
 
 	index, _, err := adapter.findPageField(pageID, field.Name)
@@ -225,8 +225,4 @@ func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName strin
 	)
 	pages[index].UpdatedAt = adapter.GetCurrentTime()
 	return nil
-}
-
-func (adapter Adapter) ValidatePage(page core.Page) error {
-	return page.Validate()
 }

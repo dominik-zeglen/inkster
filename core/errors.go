@@ -3,13 +3,19 @@ package core
 import (
 	"errors"
 	"fmt"
+	"github.com/gosimple/slug"
 	"gopkg.in/go-playground/validator.v9"
 )
 
 var validate *validator.Validate
 
+func validateSlug(fl validator.FieldLevel) bool {
+	return fl.Field().String() == slug.Make(fl.Field().String())
+}
+
 func init() {
 	validate = validator.New()
+	validate.RegisterValidation("slug", validateSlug)
 }
 
 // ErrNoEmpty informs about missing property
@@ -67,6 +73,7 @@ const (
 	ErrLength       = 103
 	ErrTypeMismatch = 104
 	ErrNotEqual     = 105
+	ErrNotSlug      = 106
 
 	// Model errors
 	ErrNotUnique    = 200
@@ -137,6 +144,12 @@ func (err ValidationError) Error() string {
 			err.Field,
 			*err.Param,
 		)
+
+	case ErrNotSlug:
+		return fmt.Sprintf(
+			"Property %s should contain only small characters, numbers and _, - characters",
+			err.Field,
+		)
 	}
 
 	return "Unknown error"
@@ -166,6 +179,8 @@ func ToValidationError(err validator.FieldError) ValidationError {
 		validationError.Param = &param
 	case "required":
 		validationError.Code = ErrRequired
+	case "slug":
+		validationError.Code = ErrNotSlug
 	}
 
 	return validationError
