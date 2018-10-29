@@ -47,7 +47,7 @@ func TestPageValidation(t *testing.T) {
 		{
 			Page{
 				Name:        defaultPage.Name,
-				Slug:        "dupa xd",
+				Slug:        "not valid",
 				ParentID:    defaultPage.ParentID,
 				IsPublished: defaultPage.IsPublished,
 				Fields:      defaultPage.Fields,
@@ -56,6 +56,31 @@ func TestPageValidation(t *testing.T) {
 				ValidationError{
 					Code:  ErrNotSlug,
 					Field: "Slug",
+				},
+			},
+		},
+		{
+			Page{
+				Name:        defaultPage.Name,
+				Slug:        defaultPage.Slug,
+				ParentID:    defaultPage.ParentID,
+				IsPublished: defaultPage.IsPublished,
+				Fields: []PageField{
+					{
+						Type:  "invalid",
+						Name:  "",
+						Value: "",
+					},
+				},
+			},
+			[]ValidationError{
+				ValidationError{
+					Code:  ErrNotEqual,
+					Field: "Type",
+				},
+				ValidationError{
+					Code:  ErrRequired,
+					Field: "Name",
 				},
 			},
 		},

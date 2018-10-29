@@ -60,9 +60,6 @@ var ErrNotValidated = errors.New("Invalid model")
 // ErrBadCredentials informs about existing user
 var ErrBadCredentials = fmt.Errorf("Bad credentials")
 
-//     Please be nice and
-// --='. do not sort this .'=--
-//   Front end depends on it
 type ValidationErrorCode int
 
 const (
@@ -181,6 +178,8 @@ func ToValidationError(err validator.FieldError) ValidationError {
 		validationError.Code = ErrRequired
 	case "slug":
 		validationError.Code = ErrNotSlug
+	case "oneof":
+		validationError.Code = ErrNotEqual
 	}
 
 	return validationError
