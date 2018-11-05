@@ -21,7 +21,7 @@ func CreatePages() []core.Page {
 			ParentID: Directories[0].ID,
 			Fields: []core.PageField{
 				core.PageField{
-					Type:  "unique",
+					Type:  "text",
 					Name:  "Field 1",
 					Value: "1",
 				},
@@ -38,7 +38,7 @@ func CreatePages() []core.Page {
 			ParentID: Directories[0].ID,
 			Fields: []core.PageField{
 				core.PageField{
-					Type:  "unique",
+					Type:  "text",
 					Name:  "Field 3",
 					Value: "2",
 				},

@@ -71,6 +71,7 @@ const (
 	ErrTypeMismatch = 104
 	ErrNotEqual     = 105
 	ErrNotSlug      = 106
+	ErrEqual        = 107
 
 	// Model errors
 	ErrNotUnique    = 200
@@ -147,6 +148,13 @@ func (err ValidationError) Error() string {
 			"Property %s should contain only small characters, numbers and _, - characters",
 			err.Field,
 		)
+
+	case ErrEqual:
+		return fmt.Sprintf(
+			"Property %s must be equal to %s",
+			err.Field,
+			*err.Param,
+		)
 	}
 
 	return "Unknown error"
@@ -179,7 +187,7 @@ func ToValidationError(err validator.FieldError) ValidationError {
 	case "slug":
 		validationError.Code = ErrNotSlug
 	case "oneof":
-		validationError.Code = ErrNotEqual
+		validationError.Code = ErrEqual
 	}
 
 	return validationError

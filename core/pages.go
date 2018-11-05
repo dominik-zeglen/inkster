@@ -10,10 +10,10 @@ import (
 type Page struct {
 	BaseModel   `bson:",inline"`
 	Name        string        `json:"name" validate:"required,min=3"`
-	Slug        string        `json:"slug" validate:"required,slug,min=3"`
-	ParentID    bson.ObjectId `bson:"parentId" json:"parentId"`
+	Slug        string        `json:"slug" validate:"omitempty,slug,min=3"`
+	ParentID    bson.ObjectId `bson:"parentId" json:"parentId" validate:"required"`
 	IsPublished bool          `bson:"isPublished" json:"isPublished"`
-	Fields      []PageField   `json:"fields" validate:"dive,unique"`
+	Fields      []PageField   `json:"fields" validate:"dive"`
 }
 
 func (page Page) String() string {
@@ -64,6 +64,10 @@ type PageInput struct {
 	ParentID    *bson.ObjectId `bson:"parentId,omitempty"`
 	IsPublished *bool          `bson:"isPublished",omitempty`
 	Fields      *[]PageField   `bson:"fields,omitempty" validate:"dive"`
+}
+
+func (pageInput PageInput) Validate() []ValidationError {
+	return ValidateModel(pageInput)
 }
 
 // UpdatePageFieldArguments is transactional model of an update properties

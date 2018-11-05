@@ -7,8 +7,18 @@ import (
 	"github.com/gosimple/slug"
 )
 
+func cleanAddPageInput(page *core.Page) {
+	if page.Slug == "" {
+		page.Slug = slug.Make(page.Name)
+	}
+	if page.ID == "" {
+		page.ID = bson.NewObjectId()
+	}
+}
+
 // AddPage puts page in the database
 func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
+	cleanAddPageInput(&page)
 	errs := page.Validate()
 	if len(errs) > 0 {
 		return core.Page{}, core.ErrNotValidated
@@ -28,12 +38,6 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 		if found > 0 {
 			return core.Page{}, core.ErrPageExists(page.Name)
 		}
-	}
-	if page.ID == "" {
-		page.ID = bson.NewObjectId()
-	}
-	if page.Slug == "" {
-		page.Slug = slug.Make(page.Name)
 	}
 	page.CreatedAt = adapter.GetCurrentTime()
 	page.UpdatedAt = adapter.GetCurrentTime()

@@ -1,6 +1,10 @@
 package core
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/globalsign/mgo/bson"
+)
 
 func TestPageValidation(t *testing.T) {
 	defaultPage := Page{
@@ -19,6 +23,7 @@ func TestPageValidation(t *testing.T) {
 		IsPublished: true,
 		Name:        "Example page",
 		Slug:        "example-page",
+		ParentID:    bson.ObjectId("000000000001"),
 	}
 
 	testSuites := []struct {
@@ -75,7 +80,7 @@ func TestPageValidation(t *testing.T) {
 			},
 			[]ValidationError{
 				ValidationError{
-					Code:  ErrNotEqual,
+					Code:  ErrEqual,
 					Field: "Type",
 				},
 				ValidationError{

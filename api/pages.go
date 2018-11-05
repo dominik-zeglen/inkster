@@ -9,8 +9,8 @@ import (
 )
 
 type pageCreateResult struct {
-	userErrors *[]userError
-	page       core.Page
+	validationErrors []core.ValidationError
+	page             *core.Page
 }
 
 type pageCreateResultResolver struct {
@@ -21,24 +21,23 @@ type pageCreateResultResolver struct {
 func (res *pageCreateResultResolver) Page() *pageResolver {
 	return &pageResolver{
 		dataSource: res.dataSource,
-		data:       &res.data.page,
+		data:       res.data.page,
 	}
 }
-func (res *pageCreateResultResolver) UserErrors() *[]*userErrorResolver {
-	var resolverList []*userErrorResolver
-	if res.data.userErrors == nil {
+func (res *pageCreateResultResolver) Errors() []inputErrorResolver {
+	resolverList := []inputErrorResolver{}
+	if res.data.validationErrors == nil {
 		return nil
 	}
-	userErrors := *res.data.userErrors
-	for i := range userErrors {
+	for i := range res.data.validationErrors {
 		resolverList = append(
 			resolverList,
-			&userErrorResolver{
-				data: userErrors[i],
+			inputErrorResolver{
+				err: res.data.validationErrors[i],
 			},
 		)
 	}
-	return &resolverList
+	return resolverList
 }
 
 type pageRemoveResult struct {
@@ -54,17 +53,40 @@ func (res *pageRemoveResultResolver) RemovedObjectID() gql.ID {
 	return res.data.removedObjectID
 }
 
+type createPageArgsInput struct {
+	Name        string
+	ParentID    string
+	Slug        *string
+	IsPublished *bool
+	Fields      *[]core.PageField
+}
 type createPageArgs struct {
-	Input struct {
-		Name        string
-		ParentID    string
-		IsPublished *bool
-		Fields      *[]*struct {
-			Name  string
-			Type  string
-			Value string
-		}
+	Input createPageArgsInput
+}
+
+func cleanCreatePageInput(input createPageArgsInput) (
+	*core.Page,
+	error,
+) {
+	localID, err := fromGlobalID("directory", input.ParentID)
+	if err != nil {
+		return nil, err
 	}
+
+	page := core.Page{
+		Name:     input.Name,
+		ParentID: bson.ObjectId(localID),
+	}
+
+	if input.IsPublished != nil {
+		page.IsPublished = *input.IsPublished
+	}
+
+	if input.Fields != nil {
+		page.Fields = *input.Fields
+	}
+
+	return &page, nil
 }
 
 func (res *Resolver) CreatePage(
@@ -75,89 +97,137 @@ func (res *Resolver) CreatePage(
 		return nil, errNoPermissions
 	}
 
-	if args.Input.Name == "" {
-		return &pageCreateResultResolver{
-			dataSource: res.dataSource,
-			data: pageCreateResult{
-				userErrors: &[]userError{
-					userError{
-						field:   "name",
-						message: errNoEmpty("name").Error(),
-					},
-				},
-			},
-		}, nil
-	}
-	if args.Input.ParentID == "" {
-		return &pageCreateResultResolver{
-			dataSource: res.dataSource,
-			data: pageCreateResult{
-				userErrors: &[]userError{
-					userError{
-						field:   "parentId",
-						message: errNoEmpty("parentId").Error(),
-					},
-				},
-			},
-		}, nil
-	}
-	localID, err := fromGlobalID("directory", args.Input.ParentID)
+	page, err := cleanCreatePageInput(args.Input)
 	if err != nil {
 		return nil, err
 	}
-	page := core.Page{
-		Name:     args.Input.Name,
-		ParentID: bson.ObjectId(localID),
+
+	errs := page.Validate()
+	if len(errs) > 0 {
+		return &pageCreateResultResolver{
+			dataSource: res.dataSource,
+			data: pageCreateResult{
+				validationErrors: errs,
+				page:             nil,
+			},
+		}, nil
 	}
-	if args.Input.IsPublished != nil {
-		page.IsPublished = *args.Input.IsPublished
-	}
-	if args.Input.Fields != nil {
-		fields := *args.Input.Fields
-		page.Fields = make([]core.PageField, len(fields))
-		for i := range fields {
-			page.Fields[i] = core.PageField{
-				Name:  fields[i].Name,
-				Type:  fields[i].Type,
-				Value: fields[i].Value,
-			}
-		}
-	}
-	result, err := res.dataSource.AddPage(page)
+
+	result, err := res.dataSource.AddPage(*page)
 	if err != nil {
 		return nil, err
 	}
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
 		data: pageCreateResult{
-			page: result,
+			validationErrors: errs,
+			page:             &result,
 		},
 	}, nil
 }
 
-type PageField2Input struct {
-	Name   string
-	Update struct {
-		Name  *string
-		Value *string
-	}
+type UpdatePageInput struct {
+	Name        *string
+	Slug        *string
+	ParentID    *string
+	IsPublished *bool
 }
-type updatePageArgs struct {
-	ID    gql.ID
-	Input *struct {
-		Name        *string
-		Slug        *string
-		ParentID    *string
-		IsPublished *bool
-		Fields      *[]PageField2Input
-	}
+type UpdatePageArgs struct {
+	ID           gql.ID
+	Input        *UpdatePageInput
 	AddFields    *[]core.PageField
 	RemoveFields *[]string
 }
 
+func cleanUpdatePageInput(
+	input *UpdatePageInput,
+	dataSource core.Adapter,
+) (core.PageInput, []core.ValidationError, error) {
+	validationErrors := []core.ValidationError{}
+	pageInput := core.PageInput{}
+
+	if input == nil {
+		return pageInput, validationErrors, nil
+	}
+
+	if input.Slug != nil {
+		_, err := dataSource.GetPageBySlug(*input.Slug)
+		if err == nil {
+			validationErrors = append(
+				validationErrors,
+				core.ValidationError{
+					Code:  core.ErrNotUnique,
+					Field: "Slug",
+					Param: input.Slug,
+				},
+			)
+		}
+		pageInput.Slug = input.Slug
+	}
+
+	if input.ParentID != nil {
+		localID, err := fromGlobalID("page", *input.ParentID)
+		if err != nil {
+			return pageInput, validationErrors, err
+		}
+		pageInput.ParentID = &localID
+	}
+	pageInput.Name = input.Name
+	pageInput.IsPublished = input.IsPublished
+
+	validationErrors = append(validationErrors, pageInput.Validate()...)
+
+	return pageInput, validationErrors, nil
+}
+
+func cleanUpdatePageAddFields(
+	addFields []core.PageField,
+	fields []core.PageField,
+) (
+	[]core.PageField,
+	[]core.ValidationError,
+) {
+	validationErrors := []core.ValidationError{}
+
+	fields = append(fields, addFields...)
+
+	for _, field := range fields {
+		validationErrors = append(
+			validationErrors,
+			field.Validate()...,
+		)
+	}
+
+	return fields, validationErrors
+}
+
+func cleanUpdatePageRemoveFields(
+	removeFields []string,
+	fields []core.PageField,
+) []core.PageField {
+	cleanedFields := []core.PageField{}
+
+	for _, field := range fields {
+		found := false
+
+		for _, removeField := range removeFields {
+			if field.Name == removeField {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			cleanedFields = append(cleanedFields, field)
+		}
+	}
+
+	return cleanedFields
+}
+
 func (res *Resolver) UpdatePage(
 	ctx context.Context,
-	args updatePageArgs,
+	args UpdatePageArgs,
 ) (*pageCreateResultResolver, error) {
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
@@ -167,151 +237,54 @@ func (res *Resolver) UpdatePage(
 	if err != nil {
 		return nil, err
 	}
+	page, err := res.dataSource.GetPage(localID)
+	if err != nil {
+		return nil, err
+	}
+
 	if args.Input != nil || args.AddFields != nil || args.RemoveFields != nil {
-		page, err := res.dataSource.GetPage(localID)
+		pageInput, _, err := cleanUpdatePageInput(
+			args.Input,
+			res.dataSource,
+		)
+
 		if err != nil {
 			return nil, err
 		}
-		pageInput := core.PageInput{}
-		if args.Input != nil {
-			if args.Input.Name != nil {
-				if *args.Input.Name == "" {
-					return &pageCreateResultResolver{
-						dataSource: res.dataSource,
-						data: pageCreateResult{
-							userErrors: &[]userError{
-								userError{
-									field:   "name",
-									message: errNoEmpty("name").Error(),
-								},
-							},
-						},
-					}, nil
-				}
-				pageInput.Name = args.Input.Name
-			}
-			if args.Input.Slug != nil {
-				if *args.Input.Slug == "" {
-					return &pageCreateResultResolver{
-						dataSource: res.dataSource,
-						data: pageCreateResult{
-							userErrors: &[]userError{
-								userError{
-									field:   "slug",
-									message: errNoEmpty("slug").Error(),
-								},
-							},
-						},
-					}, nil
-				}
-				pageInput.Slug = args.Input.Slug
-			}
-			if args.Input.ParentID != nil {
-				parentID := args.Input.ParentID
-				parentObjectID := bson.ObjectId(*parentID)
-				pageInput.ParentID = &parentObjectID
-			}
-			if args.Input.IsPublished != nil {
-				pageInput.IsPublished = args.Input.IsPublished
-			}
-			if args.Input.Fields != nil {
-				fields := *args.Input.Fields
-				for inputFieldIndex := range fields {
-					found := false
-					for pageFieldIndex := range page.Fields {
-						if page.Fields[pageFieldIndex].Name == fields[inputFieldIndex].Name {
-							found = true
-							if fields[inputFieldIndex].Update.Name != nil {
-								page.Fields[pageFieldIndex].Name = *fields[inputFieldIndex].Update.Name
-							}
-							if fields[inputFieldIndex].Update.Value != nil {
-								page.Fields[pageFieldIndex].Value = *fields[inputFieldIndex].Update.Value
-							}
-						}
-					}
-					if !found {
-						return &pageCreateResultResolver{
-							dataSource: res.dataSource,
-							data: pageCreateResult{
-								userErrors: &[]userError{
-									userError{
-										field:   fields[inputFieldIndex].Name,
-										message: errNoEmpty(fields[inputFieldIndex].Name).Error(),
-									},
-								},
-							},
-						}, nil
-					}
-				}
-				pageInput.Fields = &page.Fields
-			}
-		}
-		if args.AddFields != nil {
-			if pageInput.Fields == nil {
-				fields := make([]core.PageField, len(page.Fields))
-				copy(fields, page.Fields)
+
+		if args.AddFields != nil || args.RemoveFields != nil {
+			pageInput.Fields = &page.Fields
+
+			if args.AddFields != nil {
+				fields, _ := cleanUpdatePageAddFields(
+					*args.AddFields,
+					*pageInput.Fields,
+				)
 				pageInput.Fields = &fields
 			}
-			tmp := append(*pageInput.Fields, *args.AddFields...)
-			pageInput.Fields = &tmp
-		}
-		if args.RemoveFields != nil {
-			if pageInput.Fields == nil {
-				fields := make([]core.PageField, len(page.Fields))
-				copy(fields, page.Fields)
+
+			if args.RemoveFields != nil {
+				fields := cleanUpdatePageRemoveFields(
+					*args.RemoveFields,
+					*pageInput.Fields,
+				)
 				pageInput.Fields = &fields
 			}
-			fields := *pageInput.Fields
-			removeFields := *args.RemoveFields
-			for inputFieldIndex := range removeFields {
-				found := false
-				for pageFieldIndex := range page.Fields {
-					if fields[pageFieldIndex].Name == removeFields[inputFieldIndex] {
-						found = true
-					}
-				}
-				if !found {
-					return &pageCreateResultResolver{
-						dataSource: res.dataSource,
-						data: pageCreateResult{
-							userErrors: &[]userError{
-								userError{
-									field:   fields[inputFieldIndex].Name,
-									message: errNoEmpty(fields[inputFieldIndex].Name).Error(),
-								},
-							},
-						},
-					}, nil
-				}
-			}
-			fields = []core.PageField{}
-			pageFields := *pageInput.Fields
-			for pageFieldIndex := range pageFields {
-				found := false
-				for inputFieldIndex := range removeFields {
-					if pageFields[pageFieldIndex].Name == removeFields[inputFieldIndex] {
-						found = true
-					}
-				}
-				if !found {
-					fields = append(fields, pageFields[pageFieldIndex])
-				}
-			}
-			pageInput.Fields = &fields
 		}
+
 		err = res.dataSource.UpdatePage(localID, pageInput)
 		if err != nil {
 			return nil, err
 		}
 	}
-	page, err := res.dataSource.GetPage(localID)
+	page, err = res.dataSource.GetPage(localID)
 	if err != nil {
 		return nil, err
 	}
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
 		data: pageCreateResult{
-			page: page,
+			page: &page,
 		},
 	}, nil
 }

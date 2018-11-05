@@ -1,7 +1,7 @@
 {
     "data": {
-        "createPageField": {
-            "userErrors": null,
+        "updatePage": {
+            "errors": [],
             "page": {
                 "id": "cGFnZTowMDAwMDAwMDAwMDE=",
                 "createdAt": "2007-07-07T10:00:00.000Z",
@@ -12,15 +12,18 @@
                 "fields": [
                     {
                         "name": "Field 1",
-                        "type": "text"
+                        "type": "text",
+                        "value": "1"
                     },
                     {
                         "name": "Field 2",
-                        "type": "text"
+                        "type": "text",
+                        "value": "Some text"
                     },
                     {
-                        "name": "New field",
-                        "type": "text"
+                        "name": "Field 3",
+                        "type": "text",
+                        "value": "some value"
                     }
                 ]
             }

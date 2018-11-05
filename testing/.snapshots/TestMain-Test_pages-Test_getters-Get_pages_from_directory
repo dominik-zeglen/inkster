@@ -9,7 +9,7 @@
         "isPublished": false,
         "fields": [
             {
-                "type": "unique",
+                "type": "text",
                 "name": "Field 1",
                 "value": "1"
             },
@@ -30,7 +30,7 @@
         "isPublished": false,
         "fields": [
             {
-                "type": "unique",
+                "type": "text",
                 "name": "Field 3",
                 "value": "2"
             },

@@ -1,6 +1,9 @@
 type Mutation {
   createDirectory(input: DirectoryCreateInput!): DirectoryOperationResult
-  updateDirectory(id: ID!, input: DirectoryUpdateInput!): DirectoryOperationResult
+  updateDirectory(
+    id: ID!
+    input: DirectoryUpdateInput!
+  ): DirectoryOperationResult
   removeDirectory(id: ID!): Boolean!
 
   createTemplate(input: TemplateCreateInput!): Template
@@ -16,29 +19,12 @@ type Mutation {
   removeTemplate(id: ID!): TemplateRemoveResult
 
   createPage(input: PageCreateInput!): PageOperationResult
-  createPageField(
-    id: ID!
-    input: PageFieldCreateInput!
-  ): PageFieldOperationResult
-  renamePageField(
-    id: ID!
-    input: PageFieldRenameInput!
-  ): PageFieldOperationResult
   updatePage(
     id: ID!
     input: PageUpdateInput
     addFields: [PageFieldCreateInput!]
     removeFields: [String!]
   ): PageOperationResult
-
-  updatePageField(
-    id: ID!
-    input: PageFieldUpdateInput!
-  ): PageFieldOperationResult
-  removePageField(
-    id: ID!
-    input: PageFieldRemoveInput!
-  ): PageFieldOperationResult
   removePage(id: ID!): PageRemoveResult
 
   changeUserPassword(id: ID!, password: String!): Boolean!

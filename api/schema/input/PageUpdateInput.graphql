@@ -3,5 +3,4 @@ input PageUpdateInput {
   slug: String
   parentId: ID
   isPublished: Boolean
-  fields: [PageFieldUpdate2Input!]
 }
