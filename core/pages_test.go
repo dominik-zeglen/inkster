@@ -2,8 +2,6 @@ package core
 
 import (
 	"testing"
-
-	"github.com/globalsign/mgo/bson"
 )
 
 func TestPageValidation(t *testing.T) {
@@ -23,7 +21,7 @@ func TestPageValidation(t *testing.T) {
 		IsPublished: true,
 		Name:        "Example page",
 		Slug:        "example-page",
-		ParentID:    bson.ObjectId("000000000001"),
+		ParentID:    "000000000001",
 	}
 
 	testSuites := []struct {

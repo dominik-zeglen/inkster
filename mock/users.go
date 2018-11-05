@@ -7,14 +7,14 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-func (adapter Adapter) findUser(id *bson.ObjectId, name *string) (int, error) {
+func (adapter Adapter) findUser(id *string, name *string) (int, error) {
 	if id != nil {
 		for index := range users {
 			if users[index].ID == *id {
 				return index, nil
 			}
 		}
-		return 0, fmt.Errorf("User %s does not exist", id)
+		return 0, fmt.Errorf("User %s does not exist", *id)
 	}
 	if name != nil {
 		for index := range users {
@@ -42,11 +42,11 @@ func (adapter Adapter) AddUser(user core.User) (core.User, error) {
 		return core.User{}, core.ErrUserExists(user.Email)
 	}
 	if user.ID == "" {
-		user.ID = bson.NewObjectId()
+		user.ID = bson.NewObjectId().String()
 	} else {
 		_, err = adapter.findUser(&user.ID, nil)
 		if err == nil {
-			return core.User{}, core.ErrUserExists(user.ID.String())
+			return core.User{}, core.ErrUserExists(user.ID)
 		}
 	}
 	user.CreatedAt = adapter.GetCurrentTime()
@@ -70,7 +70,7 @@ func (adapter Adapter) AuthenticateUser(email string, password string) (core.Use
 }
 
 // GetUser allows user to fetch user from database
-func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
+func (adapter Adapter) GetUser(userID string) (core.User, error) {
 	index, err := adapter.findUser(&userID, nil)
 	return users[index], err
 }
@@ -87,7 +87,7 @@ func (adapter Adapter) GetUserList() ([]core.User, error) {
 }
 
 // UpdateUser allows user to update his properties
-func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (core.User, error) {
+func (adapter Adapter) UpdateUser(userID string, data core.UserInput) (core.User, error) {
 	index, err := adapter.findUser(&userID, nil)
 	if err != nil {
 		return core.User{}, err
@@ -110,7 +110,7 @@ func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (co
 }
 
 // RemoveUser removes user from database
-func (adapter Adapter) RemoveUser(userID bson.ObjectId) error {
+func (adapter Adapter) RemoveUser(userID string) error {
 	index, err := adapter.findUser(&userID, nil)
 	if err != nil {
 		return err

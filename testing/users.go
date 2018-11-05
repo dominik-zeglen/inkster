@@ -2,7 +2,6 @@ package testing
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 )
 
 func createUser(
@@ -13,7 +12,7 @@ func createUser(
 	password string,
 ) core.User {
 	user.CreatePassword(password)
-	user.ID = bson.ObjectId(id)
+	user.ID = id
 	user.CreatedAt = createdAt
 	user.UpdatedAt = updatedAt
 

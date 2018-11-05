@@ -2,11 +2,10 @@ package testing
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 )
 
 func createTemplate(template core.Template, id string, createdAt string, updatedAt string) core.Template {
-	template.ID = bson.ObjectId(id)
+	template.ID = id
 	template.CreatedAt = createdAt
 	template.UpdatedAt = updatedAt
 

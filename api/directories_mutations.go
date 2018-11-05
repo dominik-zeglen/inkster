@@ -5,7 +5,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/globalsign/mgo"
-	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -202,7 +201,7 @@ func (res *Resolver) UpdateDirectory(
 	}
 
 	localID, err := fromGlobalID("directory", string(args.ID))
-	var localParentID *bson.ObjectId
+	var localParentID *string
 	if err != nil {
 		return nil, err
 	}

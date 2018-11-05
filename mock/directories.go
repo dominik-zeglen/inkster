@@ -8,7 +8,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-func (adapter Adapter) findDirectory(id bson.ObjectId) (int, error) {
+func (adapter Adapter) findDirectory(id string) (int, error) {
 	for index := range directories {
 		if directories[index].ID == id {
 			return index, nil
@@ -25,7 +25,7 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 	}
 
 	if directory.ID == "" {
-		directory.ID = bson.NewObjectId()
+		directory.ID = bson.NewObjectId().String()
 	} else {
 		_, err := adapter.findDirectory(directory.ID)
 		if err == nil {
@@ -40,7 +40,7 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 }
 
 // GetDirectory gets directory from a in-memory array
-func (adapter Adapter) GetDirectory(id bson.ObjectId) (core.Directory, error) {
+func (adapter Adapter) GetDirectory(id string) (core.Directory, error) {
 	index, err := adapter.findDirectory(id)
 	if err != nil {
 		return core.Directory{}, err
@@ -66,7 +66,7 @@ func (adapter Adapter) GetRootDirectoryList() ([]core.Directory, error) {
 
 // GetDirectoryChildrenList gets directories from a in-memory array which
 // ParentID equals to function id parameter
-func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Directory, error) {
+func (adapter Adapter) GetDirectoryChildrenList(id string) ([]core.Directory, error) {
 	result := []core.Directory{}
 	for k := range directories {
 		if directories[k].ParentID == id {
@@ -77,7 +77,7 @@ func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Direct
 }
 
 // UpdateDirectory updates directory with given properties
-func (adapter Adapter) UpdateDirectory(id bson.ObjectId, data core.DirectoryInput) error {
+func (adapter Adapter) UpdateDirectory(id string, data core.DirectoryInput) error {
 	errors := core.ValidateModel(data)
 	if len(errors) > 0 {
 		return core.ErrNotValidated
@@ -101,7 +101,7 @@ func (adapter Adapter) UpdateDirectory(id bson.ObjectId, data core.DirectoryInpu
 }
 
 // RemoveDirectory removes directory from a in-memory array
-func (adapter Adapter) RemoveDirectory(id bson.ObjectId) error {
+func (adapter Adapter) RemoveDirectory(id string) error {
 	for index := range directories {
 		if directories[index].ID == id {
 			directories = append(directories[:index], directories[index+1:]...)

@@ -4,7 +4,7 @@
     },
     "errors": [
         {
-            "message": "Template ObjectIdHex(\"303030303030303030303939\") does not exist",
+            "message": "Template 000000000099 does not exist",
             "path": [
                 "template"
             ]

@@ -7,7 +7,6 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -59,7 +58,7 @@ func (res *Resolver) ResetUserPassword(
 				return nil, errors.New("Invalid token claims")
 			}
 
-			user, err := res.dataSource.GetUser(bson.ObjectId(claims.ID))
+			user, err := res.dataSource.GetUser(claims.ID)
 			if err != nil {
 				return nil, err
 			}

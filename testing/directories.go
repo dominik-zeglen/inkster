@@ -2,11 +2,10 @@ package testing
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 )
 
 func createDirectory(directory core.Directory, id string, createdAt string, updatedAt string) core.Directory {
-	directory.ID = bson.ObjectId(id)
+	directory.ID = id
 	directory.CreatedAt = createdAt
 	directory.UpdatedAt = updatedAt
 

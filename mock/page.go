@@ -8,14 +8,14 @@ import (
 	"github.com/gosimple/slug"
 )
 
-func (adapter Adapter) findPage(id *bson.ObjectId, slug *string) (int, error) {
+func (adapter Adapter) findPage(id *string, slug *string) (int, error) {
 	if id != nil {
 		for index := range pages {
 			if pages[index].ID == *id {
 				return index, nil
 			}
 		}
-		return 0, fmt.Errorf("Page %s does not exist", id)
+		return 0, fmt.Errorf("Page %s does not exist", *id)
 	}
 	if slug != nil {
 		for index := range pages {
@@ -30,7 +30,7 @@ func (adapter Adapter) findPage(id *bson.ObjectId, slug *string) (int, error) {
 	}
 	return 0, fmt.Errorf("")
 }
-func (adapter Adapter) findPageField(id bson.ObjectId, name string) (int, int, error) {
+func (adapter Adapter) findPageField(id string, name string) (int, int, error) {
 	index, err := adapter.findPage(&id, nil)
 	if err != nil {
 		return 0, 0, err
@@ -61,11 +61,11 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 		return core.Page{}, core.ErrPageExists(page.Name)
 	}
 	if page.ID == "" {
-		page.ID = bson.NewObjectId()
+		page.ID = bson.NewObjectId().String()
 	} else {
 		_, err = adapter.findPage(&page.ID, nil)
 		if err == nil {
-			return core.Page{}, core.ErrPageExists(page.ID.String())
+			return core.Page{}, core.ErrPageExists(page.ID)
 		}
 	}
 
@@ -79,7 +79,7 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 // AddPageFromTemplate creates new page based on a chosen template
 func (adapter Adapter) AddPageFromTemplate(
 	page core.PageInput,
-	templateID bson.ObjectId,
+	templateID string,
 ) (core.Page, error) {
 	template, err := adapter.GetTemplate(templateID)
 	if err != nil {
@@ -117,7 +117,7 @@ func (adapter Adapter) AddPageFromTemplate(
 }
 
 // AddPageField adds to page a new field at the end of it's field list
-func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
+func (adapter Adapter) AddPageField(pageID string, field core.PageField) error {
 	errs := field.Validate()
 	if len(errs) > 0 {
 		return core.ErrNotValidated
@@ -133,7 +133,7 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 }
 
 // GetPage allows user to fetch page by ID from database
-func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
+func (adapter Adapter) GetPage(id string) (core.Page, error) {
 	index, err := adapter.findPage(&id, nil)
 	return pages[index], err
 }
@@ -145,7 +145,7 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 }
 
 // GetPagesFromDirectory allows user to fetch pages by their parentId from database
-func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
+func (adapter Adapter) GetPagesFromDirectory(id string) ([]core.Page, error) {
 	var returnPages []core.Page
 	for index := range pages {
 		if pages[index].ParentID == id {
@@ -156,7 +156,7 @@ func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, err
 }
 
 // UpdatePage allows user to update page properties
-func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
+func (adapter Adapter) UpdatePage(pageID string, data core.PageInput) error {
 	index, err := adapter.findPage(&pageID, nil)
 	if err != nil {
 		return err
@@ -191,7 +191,7 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 }
 
 // UpdatePageField removes field from page
-func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
+func (adapter Adapter) UpdatePageField(pageID string, pageFieldName string, data string) error {
 	index, fieldIndex, err := adapter.findPageField(pageID, pageFieldName)
 	if err != nil {
 		return err
@@ -205,7 +205,7 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 }
 
 // RemovePage removes page from database
-func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
+func (adapter Adapter) RemovePage(pageID string) error {
 	index, err := adapter.findPage(&pageID, nil)
 	if err != nil {
 		return err
@@ -215,7 +215,7 @@ func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
 }
 
 // RemovePageField removes field from page
-func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
+func (adapter Adapter) RemovePageField(pageID string, pageFieldName string) error {
 	index, fieldIndex, err := adapter.findPageField(pageID, pageFieldName)
 	if err != nil {
 		return err

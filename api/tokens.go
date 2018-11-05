@@ -2,7 +2,6 @@ package api
 
 import (
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/globalsign/mgo/bson"
 )
 
 type Action int
@@ -13,7 +12,7 @@ const (
 
 // JWT claims
 type ActionTokenClaims struct {
-	ID            bson.ObjectId
+	ID            string
 	AllowedAction Action
 	jwt.StandardClaims
 }

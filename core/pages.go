@@ -2,18 +2,16 @@ package core
 
 import (
 	"fmt"
-
-	"github.com/globalsign/mgo/bson"
 )
 
 // Page is a object representing site content
 type Page struct {
 	BaseModel   `bson:",inline"`
-	Name        string        `json:"name" validate:"required,min=3"`
-	Slug        string        `json:"slug" validate:"omitempty,slug,min=3"`
-	ParentID    bson.ObjectId `bson:"parentId" json:"parentId" validate:"required"`
-	IsPublished bool          `bson:"isPublished" json:"isPublished"`
-	Fields      []PageField   `json:"fields" validate:"dive"`
+	Name        string      `json:"name" validate:"required,min=3"`
+	Slug        string      `json:"slug" validate:"omitempty,slug,min=3"`
+	ParentID    string      `bson:"parentId" json:"parentId" validate:"required"`
+	IsPublished bool        `bson:"isPublished" json:"isPublished"`
+	Fields      []PageField `json:"fields" validate:"dive"`
 }
 
 func (page Page) String() string {
@@ -59,11 +57,11 @@ func (field PageField) String() string {
 
 // PageInput is transactional model of an creation properties
 type PageInput struct {
-	Name        *string        `bson:"name,omitempty" validate:"min=3"`
-	Slug        *string        `bson:"slug,omitempty" validate:"min=3"`
-	ParentID    *bson.ObjectId `bson:"parentId,omitempty"`
-	IsPublished *bool          `bson:"isPublished",omitempty`
-	Fields      *[]PageField   `bson:"fields,omitempty" validate:"dive"`
+	Name        *string      `bson:"name,omitempty" validate:"min=3"`
+	Slug        *string      `bson:"slug,omitempty" validate:"min=3"`
+	ParentID    *string      `bson:"parentId,omitempty"`
+	IsPublished *bool        `bson:"isPublished",omitempty`
+	Fields      *[]PageField `bson:"fields,omitempty" validate:"dive"`
 }
 
 func (pageInput PageInput) Validate() []ValidationError {

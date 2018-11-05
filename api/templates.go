@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
 type templateUpdateResult struct {
 	userErrors *[]userError
-	templateID bson.ObjectId
+	templateID string
 }
 type templateRemoveResult struct {
 	userErrors *[]userError
-	templateID bson.ObjectId
+	templateID string
 }
 
 // Type resolvers
