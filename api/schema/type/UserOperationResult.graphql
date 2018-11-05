@@ -1,4 +1,4 @@
 type UserOperationResult {
-  errors: [UserError!]!
+  errors: [InputError!]!
   user: User
 }

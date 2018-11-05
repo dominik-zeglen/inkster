@@ -1,7 +1,7 @@
 {
     "data": {
         "updatePage": {
-            "userErrors": null,
+            "errors": [],
             "page": {
                 "id": "cGFnZTowMDAwMDAwMDAwMDE=",
                 "createdAt": "2007-07-07T10:00:00.000Z",
@@ -12,7 +12,7 @@
                 "fields": [
                     {
                         "name": "Field 1",
-                        "type": "unique",
+                        "type": "text",
                         "value": "1"
                     },
                     {

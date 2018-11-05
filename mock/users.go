@@ -33,11 +33,11 @@ func (adapter Adapter) findUser(id *bson.ObjectId, name *string) (int, error) {
 
 // AddUser puts user in the database
 func (adapter Adapter) AddUser(user core.User) (core.User, error) {
-	err := user.Validate()
-	if err != nil {
-		return core.User{}, err
+	errs := user.Validate()
+	if len(errs) > 0 {
+		return core.User{}, core.ErrNotValidated
 	}
-	_, err = adapter.findUser(nil, &user.Email)
+	_, err := adapter.findUser(nil, &user.Email)
 	if err == nil {
 		return core.User{}, core.ErrUserExists(user.Email)
 	}

@@ -8,9 +8,11 @@ import (
 
 // AddDirectory puts directory in the database
 func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, error) {
-	if directory.Name == "" {
-		return core.Directory{}, core.ErrNoEmpty("Name")
+	errors := directory.Validate()
+	if len(errors) > 0 {
+		return core.Directory{}, core.ErrNotValidated
 	}
+
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -92,6 +94,11 @@ func (adapter Adapter) UpdateDirectory(
 	directoryID bson.ObjectId,
 	data core.DirectoryInput,
 ) error {
+	errors := core.ValidateModel(data)
+	if len(errors) > 0 {
+		return core.ErrNotValidated
+	}
+
 	session := adapter.Session.Copy()
 	defer session.Close()
 

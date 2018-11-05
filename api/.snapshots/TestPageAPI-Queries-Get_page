@@ -10,7 +10,7 @@
             "fields": [
                 {
                     "name": "Field 1",
-                    "type": "unique",
+                    "type": "text",
                     "value": "1"
                 },
                 {

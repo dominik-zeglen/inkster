@@ -17,7 +17,7 @@ func testPages(t *testing.T) {
 				ParentID: Directories[0].ID,
 				Fields: []core.PageField{
 					core.PageField{
-						Type:  "unique",
+						Type:  "text",
 						Name:  "Field 1",
 						Value: "1",
 					},
@@ -46,7 +46,7 @@ func testPages(t *testing.T) {
 				Slug: "new-page",
 				Fields: []core.PageField{
 					core.PageField{
-						Type:  "unique",
+						Type:  "text",
 						Name:  "Field 1",
 						Value: "1",
 					},
@@ -69,7 +69,7 @@ func testPages(t *testing.T) {
 				Slug: Pages[0].Slug,
 				Fields: []core.PageField{
 					core.PageField{
-						Type:  "unique",
+						Type:  "text",
 						Name:  "Field 1",
 						Value: "1",
 					},
@@ -92,7 +92,7 @@ func testPages(t *testing.T) {
 				Slug: Pages[0].Slug,
 				Fields: []core.PageField{
 					core.PageField{
-						Type:  "unique",
+						Type:  "text",
 						Name:  "Field 1",
 						Value: "1",
 					},

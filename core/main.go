@@ -32,7 +32,6 @@ type Adapter interface {
 	UpdatePageField(bson.ObjectId, string, string) error
 	RemovePage(bson.ObjectId) error
 	RemovePageField(bson.ObjectId, string) error
-	ValidatePage(Page) error
 
 	AddUser(User) (User, error)
 	AuthenticateUser(string, string) (User, error)

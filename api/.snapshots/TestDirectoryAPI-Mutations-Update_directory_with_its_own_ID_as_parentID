@@ -1,0 +1,14 @@
+{
+    "data": {
+        "updateDirectory": {
+            "errors": [
+                {
+                    "code": 105,
+                    "field": "ParentID",
+                    "message": "Property ParentID cannot be equal ZGlyZWN0b3J5OjAwMDAwMDAwMDAwNA=="
+                }
+            ],
+            "directory": null
+        }
+    }
+}

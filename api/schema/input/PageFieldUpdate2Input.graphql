@@ -1,4 +1,0 @@
-input PageFieldUpdate2Input {
-  name: String!
-  update: PageFieldUpdate2InputPartial!
-}

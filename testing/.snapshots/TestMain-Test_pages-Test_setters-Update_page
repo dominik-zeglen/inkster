@@ -8,7 +8,7 @@
     "isPublished": true,
     "fields": [
         {
-            "type": "unique",
+            "type": "text",
             "name": "Field 1",
             "value": "1"
         },

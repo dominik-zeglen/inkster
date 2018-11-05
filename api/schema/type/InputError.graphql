@@ -1,0 +1,5 @@
+type InputError {
+  code: Int!
+  field: String!
+  message: String!
+}

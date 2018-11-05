@@ -8,9 +8,9 @@ import (
 
 // AddUser puts user in the database
 func (adapter Adapter) AddUser(user core.User) (core.User, error) {
-	err := user.Validate()
-	if err != nil {
-		return core.User{}, err
+	errs := user.Validate()
+	if len(errs) > 0 {
+		return core.User{}, core.ErrNotValidated
 	}
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})

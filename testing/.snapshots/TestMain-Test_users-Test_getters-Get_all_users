@@ -3,36 +3,36 @@
         "id": "303030303030303030303031",
         "createdAt": "2007-07-07T10:00:00.000Z",
         "updatedAt": "2007-07-07T10:00:00.000Z",
-        "Active": true,
-        "Email": "user1@xample.com",
-        "Password": "",
-        "Salt": ""
+        "active": true,
+        "email": "user1@xample.com",
+        "password": "",
+        "salt": ""
     },
     {
         "id": "303030303030303030303032",
         "createdAt": "2007-07-07T11:00:00.000Z",
         "updatedAt": "2007-07-07T11:00:00.000Z",
-        "Active": false,
-        "Email": "user2@example.com",
-        "Password": "",
-        "Salt": ""
+        "active": false,
+        "email": "user2@example.com",
+        "password": "",
+        "salt": ""
     },
     {
         "id": "303030303030303030303033",
         "createdAt": "2007-07-07T12:00:00.000Z",
         "updatedAt": "2007-07-07T12:00:00.000Z",
-        "Active": true,
-        "Email": "user3@example.com",
-        "Password": "",
-        "Salt": ""
+        "active": true,
+        "email": "user3@example.com",
+        "password": "",
+        "salt": ""
     },
     {
         "id": "303030303030303030303034",
         "createdAt": "2007-07-07T13:00:00.000Z",
         "updatedAt": "2007-07-07T13:00:00.000Z",
-        "Active": false,
-        "Email": "user4@example.com",
-        "Password": "",
-        "Salt": ""
+        "active": false,
+        "email": "user4@example.com",
+        "password": "",
+        "salt": ""
     }
 ]
