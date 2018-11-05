@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -75,7 +74,7 @@ func cleanCreatePageInput(input createPageArgsInput) (
 
 	page := core.Page{
 		Name:     input.Name,
-		ParentID: bson.ObjectId(localID),
+		ParentID: localID,
 	}
 
 	if input.IsPublished != nil {

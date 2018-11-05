@@ -2,11 +2,10 @@ package testing
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 )
 
 func createPage(page core.Page, id string, createdAt string, updatedAt string) core.Page {
-	page.ID = bson.ObjectId(id)
+	page.ID = id
 	page.CreatedAt = createdAt
 	page.UpdatedAt = updatedAt
 

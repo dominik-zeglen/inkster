@@ -6,7 +6,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/globalsign/mgo/bson"
 )
 
 type loginResult struct {
@@ -76,7 +75,7 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 
 type verifyTokenResult struct {
 	result bool
-	userID *bson.ObjectId
+	userID *string
 }
 
 type verifyTokenResultResolver struct {

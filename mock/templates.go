@@ -7,14 +7,14 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
-func (adapter Adapter) findTemplate(id *bson.ObjectId, name *string) (int, error) {
+func (adapter Adapter) findTemplate(id *string, name *string) (int, error) {
 	if id != nil {
 		for index := range templates {
 			if templates[index].ID == *id {
 				return index, nil
 			}
 		}
-		return 0, fmt.Errorf("Template %s does not exist", id)
+		return 0, fmt.Errorf("Template %s does not exist", *id)
 	}
 	if name != nil {
 		for index := range templates {
@@ -30,7 +30,7 @@ func (adapter Adapter) findTemplate(id *bson.ObjectId, name *string) (int, error
 
 	return 0, nil
 }
-func (adapter Adapter) findTemplateField(id bson.ObjectId, name string) (int, int, error) {
+func (adapter Adapter) findTemplateField(id string, name string) (int, int, error) {
 	index, err := adapter.findTemplate(&id, nil)
 	if err != nil {
 		return 0, 0, err
@@ -54,11 +54,11 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 		return core.Template{}, core.ErrTemplateExists(template.Name)
 	}
 	if template.ID == "" {
-		template.ID = bson.NewObjectId()
+		template.ID = bson.NewObjectId().String()
 	} else {
 		_, err = adapter.findTemplate(&template.ID, nil)
 		if err == nil {
-			return core.Template{}, core.ErrTemplateExists(template.ID.String())
+			return core.Template{}, core.ErrTemplateExists(template.ID)
 		}
 	}
 	template.CreatedAt = adapter.GetCurrentTime()
@@ -69,7 +69,7 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 }
 
 // AddTemplateField adds to template a new field at the end of it's field list
-func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.TemplateField) error {
+func (adapter Adapter) AddTemplateField(templateID string, field core.TemplateField) error {
 	err := field.Validate()
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 }
 
 // GetTemplate allows user to fetch template from database
-func (adapter Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, error) {
+func (adapter Adapter) GetTemplate(templateID string) (core.Template, error) {
 	index, err := adapter.findTemplate(&templateID, nil)
 	return templates[index], err
 }
@@ -99,7 +99,7 @@ func (adapter Adapter) GetTemplateList() ([]core.Template, error) {
 }
 
 // UpdateTemplate allows user to update template properties
-func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.TemplateInput) error {
+func (adapter Adapter) UpdateTemplate(templateID string, data core.TemplateInput) error {
 	index, err := adapter.findTemplate(nil, &data.Name)
 	if err == nil {
 		return core.ErrTemplateExists(data.Name)
@@ -111,7 +111,7 @@ func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Templa
 }
 
 // RemoveTemplate removes template from database
-func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
+func (adapter Adapter) RemoveTemplate(templateID string) error {
 	index, err := adapter.findTemplate(&templateID, nil)
 	if err != nil {
 		return err
@@ -121,7 +121,7 @@ func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 }
 
 // RemoveTemplateField removes field from template
-func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFieldName string) error {
+func (adapter Adapter) RemoveTemplateField(templateID string, templateFieldName string) error {
 	index, fieldIndex, err := adapter.findTemplateField(templateID, templateFieldName)
 	if err != nil {
 		return err

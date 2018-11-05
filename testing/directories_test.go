@@ -5,7 +5,6 @@ import (
 
 	"github.com/bradleyjkemp/cupaloy"
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo/bson"
 )
 
 func testDirectories(t *testing.T) {
@@ -41,7 +40,7 @@ func testDirectories(t *testing.T) {
 		t.Run("Update directory", func(t *testing.T) {
 			defer resetDatabase()
 			name := "Updated directory name"
-			parentID := bson.ObjectId(Directories[1].ID)
+			parentID := Directories[1].ID
 			isPublished := true
 			err := dataSource.UpdateDirectory(Directories[0].ID, core.DirectoryInput{
 				Name:        &name,

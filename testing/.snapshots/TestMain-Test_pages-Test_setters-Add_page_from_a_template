@@ -4,7 +4,7 @@
     "updatedAt": "2017-07-07T10:00:00.000Z",
     "name": "New page",
     "slug": "new-page",
-    "parentId": "303030303030303030303031",
+    "parentId": "000000000001",
     "isPublished": false,
     "fields": [
         {

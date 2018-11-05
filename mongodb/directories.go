@@ -19,7 +19,7 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 
 	collection := session.DB(adapter.DBName).C("directories")
 	if directory.ID == "" {
-		directory.ID = bson.NewObjectId()
+		directory.ID = bson.NewObjectId().String()
 	}
 	directory.CreatedAt = adapter.GetCurrentTime()
 	directory.UpdatedAt = adapter.GetCurrentTime()
@@ -29,7 +29,7 @@ func (adapter Adapter) AddDirectory(directory core.Directory) (core.Directory, e
 }
 
 // GetDirectory gets directory from the database
-func (adapter Adapter) GetDirectory(id bson.ObjectId) (core.Directory, error) {
+func (adapter Adapter) GetDirectory(id string) (core.Directory, error) {
 	session := adapter.Session.Copy()
 	defer session.Close()
 
@@ -65,13 +65,13 @@ func (adapter Adapter) GetRootDirectoryList() ([]core.Directory, error) {
 	err := session.
 		DB(adapter.DBName).
 		C("directories").
-		Find(bson.M{"parentId": bson.M{"$not": bson.M{"$type": 7}}}).
+		Find(bson.M{"parentId": bson.M{"$not": bson.M{"$type": 2}}}).
 		All(&directories)
 	return directories, err
 }
 
 // GetDirectoryChildrenList gets directories from a pg database which have same parent
-func (adapter Adapter) GetDirectoryChildrenList(id bson.ObjectId) ([]core.Directory, error) {
+func (adapter Adapter) GetDirectoryChildrenList(id string) ([]core.Directory, error) {
 	session := adapter.Session.Copy()
 	defer session.Close()
 
@@ -91,7 +91,7 @@ type directoryUpdateInput struct {
 
 // UpdateDirectory allows directory properties updaing
 func (adapter Adapter) UpdateDirectory(
-	directoryID bson.ObjectId,
+	directoryID string,
 	data core.DirectoryInput,
 ) error {
 	errors := core.ValidateModel(data)
@@ -114,7 +114,7 @@ func (adapter Adapter) UpdateDirectory(
 }
 
 // RemoveDirectory removes directory from a pg database
-func (adapter Adapter) RemoveDirectory(id bson.ObjectId) error {
+func (adapter Adapter) RemoveDirectory(id string) error {
 	session := adapter.Session.Copy()
 	defer session.Close()
 

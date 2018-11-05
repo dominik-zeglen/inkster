@@ -24,7 +24,7 @@ func (adapter Adapter) AddUser(user core.User) (core.User, error) {
 		return core.User{}, core.ErrUserExists(user.Email)
 	}
 	if user.ID == "" {
-		user.ID = bson.NewObjectId()
+		user.ID = bson.NewObjectId().String()
 	}
 	user.CreatedAt = adapter.GetCurrentTime()
 	user.UpdatedAt = adapter.GetCurrentTime()
@@ -58,7 +58,7 @@ func (adapter Adapter) AuthenticateUser(email string, password string) (core.Use
 }
 
 // GetUser allows user to fetch user from database
-func (adapter Adapter) GetUser(userID bson.ObjectId) (core.User, error) {
+func (adapter Adapter) GetUser(userID string) (core.User, error) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -110,7 +110,7 @@ type UserUpdateData struct {
 }
 
 // UpdateUser allows user to update his properties
-func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (core.User, error) {
+func (adapter Adapter) UpdateUser(userID string, data core.UserInput) (core.User, error) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -144,7 +144,7 @@ func (adapter Adapter) UpdateUser(userID bson.ObjectId, data core.UserInput) (co
 }
 
 // RemoveUser removes user from database
-func (adapter Adapter) RemoveUser(userID bson.ObjectId) error {
+func (adapter Adapter) RemoveUser(userID string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()

@@ -24,7 +24,7 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 		return core.Template{}, core.ErrTemplateExists(template.Name)
 	}
 	if template.ID == "" {
-		template.ID = bson.NewObjectId()
+		template.ID = bson.NewObjectId().String()
 	}
 	template.CreatedAt = adapter.GetCurrentTime()
 	template.UpdatedAt = adapter.GetCurrentTime()
@@ -34,7 +34,7 @@ func (adapter Adapter) AddTemplate(template core.Template) (core.Template, error
 }
 
 // AddTemplateField adds to template a new field at the end of it's field list
-func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.TemplateField) error {
+func (adapter Adapter) AddTemplateField(templateID string, field core.TemplateField) error {
 	err := field.Validate()
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (adapter Adapter) AddTemplateField(templateID bson.ObjectId, field core.Tem
 }
 
 // GetTemplate allows user to fetch template from database
-func (adapter Adapter) GetTemplate(templateID bson.ObjectId) (core.Template, error) {
+func (adapter Adapter) GetTemplate(templateID string) (core.Template, error) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -99,7 +99,7 @@ type templateUpdateInput struct {
 }
 
 // UpdateTemplate allows user to update template properties
-func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.TemplateInput) error {
+func (adapter Adapter) UpdateTemplate(templateID string, data core.TemplateInput) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -123,7 +123,7 @@ func (adapter Adapter) UpdateTemplate(templateID bson.ObjectId, data core.Templa
 }
 
 // RemoveTemplate removes template from database
-func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
+func (adapter Adapter) RemoveTemplate(templateID string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -133,7 +133,7 @@ func (adapter Adapter) RemoveTemplate(templateID bson.ObjectId) error {
 }
 
 // RemoveTemplateField removes field from template
-func (adapter Adapter) RemoveTemplateField(templateID bson.ObjectId, templateFieldName string) error {
+func (adapter Adapter) RemoveTemplateField(templateID string, templateFieldName string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()

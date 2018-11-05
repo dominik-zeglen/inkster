@@ -4,7 +4,7 @@
     },
     "errors": [
         {
-            "message": "Page ObjectIdHex(\"303030303030303030303939\") does not exist",
+            "message": "Page 000000000099 does not exist",
             "path": [
                 "page"
             ]

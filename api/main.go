@@ -9,7 +9,6 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/globalsign/mgo/bson"
 )
 
 type Resolver struct {
@@ -26,19 +25,19 @@ func NewResolver(dataSource core.Adapter, mailer mailer.Mailer, key string) Reso
 	}
 }
 
-func toGlobalID(dataType string, ID bson.ObjectId) string {
-	data := dataType + ":" + string(ID)
+func toGlobalID(dataType string, ID string) string {
+	data := dataType + ":" + ID
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
-func fromGlobalID(dataType string, ID string) (bson.ObjectId, error) {
+func fromGlobalID(dataType string, ID string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(ID)
 	if err != nil {
 		panic(err)
 	}
 	portionedData := strings.Split(string(data), ":")
 	if portionedData[0] == dataType {
-		return bson.ObjectId(portionedData[1]), nil
+		return portionedData[1], nil
 	}
 	return "", fmt.Errorf("Object types do not match")
 }

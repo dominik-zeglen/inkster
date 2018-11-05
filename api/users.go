@@ -6,7 +6,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/globalsign/mgo/bson"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -163,7 +162,7 @@ type UserUpdateMutationArgs struct {
 
 func (args UserUpdateMutationArgs) validate(
 	dataSource core.Adapter,
-	userID bson.ObjectId,
+	userID string,
 ) (
 	[]core.ValidationError,
 	*core.User,

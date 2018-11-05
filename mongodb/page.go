@@ -12,7 +12,7 @@ func cleanAddPageInput(page *core.Page) {
 		page.Slug = slug.Make(page.Name)
 	}
 	if page.ID == "" {
-		page.ID = bson.NewObjectId()
+		page.ID = bson.NewObjectId().String()
 	}
 }
 
@@ -48,7 +48,7 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 // AddPageFromTemplate creates new page based on a chosen template
 func (adapter Adapter) AddPageFromTemplate(
 	page core.PageInput,
-	templateID bson.ObjectId,
+	templateID string,
 ) (core.Page, error) {
 	template, err := adapter.GetTemplate(templateID)
 	if err != nil {
@@ -83,7 +83,7 @@ func (adapter Adapter) AddPageFromTemplate(
 }
 
 // AddPageField adds to page a new field at the end of it's field list
-func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
+func (adapter Adapter) AddPageField(pageID string, field core.PageField) error {
 	errs := field.Validate()
 	if len(errs) > 0 {
 		return core.ErrNotValidated
@@ -119,7 +119,7 @@ func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) 
 }
 
 // GetPage allows user to fetch page by ID from database
-func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
+func (adapter Adapter) GetPage(id string) (core.Page, error) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -153,7 +153,7 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 }
 
 // GetPagesFromDirectory allows user to fetch pages by their parentId from database
-func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
+func (adapter Adapter) GetPagesFromDirectory(id string) ([]core.Page, error) {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -175,7 +175,7 @@ type pageUpdateInput struct {
 }
 
 // UpdatePage allows user to update page properties
-func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
+func (adapter Adapter) UpdatePage(pageID string, data core.PageInput) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -207,7 +207,7 @@ func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) err
 }
 
 // UpdatePageField removes field from page
-func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
+func (adapter Adapter) UpdatePageField(pageID string, pageFieldName string, data string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -239,7 +239,7 @@ func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName strin
 }
 
 // RemovePage removes page from database
-func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
+func (adapter Adapter) RemovePage(pageID string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
@@ -249,7 +249,7 @@ func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
 }
 
 // RemovePageField removes field from page
-func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
+func (adapter Adapter) RemovePageField(pageID string, pageFieldName string) error {
 	session := adapter.Session.Copy()
 	session.SetSafe(&mgo.Safe{})
 	defer session.Close()
