@@ -2,11 +2,18 @@
 
 package schema
 
-import "bytes"
+import (
+	"bytes"
+	"sort"
+)
 
 func String() string {
+	assets := AssetNames()
 	buf := bytes.Buffer{}
-	for _, name := range AssetNames() {
+
+	sort.Strings(assets)
+
+	for _, name := range assets {
 		b := MustAsset(name)
 		buf.Write(b)
 
