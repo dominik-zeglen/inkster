@@ -1,0 +1,21 @@
+- created_at: "2007-07-07T10:00:00.000Z"
+  id: 1
+  is_published: false
+  name: Page 1
+  parent_id: 1
+  slug: page-1
+  updated_at: "2007-07-07T10:00:00.000Z"
+- created_at: "2007-07-07T11:00:00.000Z"
+  id: 2
+  is_published: false
+  name: Page 2
+  parent_id: 1
+  slug: page-2
+  updated_at: "2007-07-07T11:00:00.000Z"
+- created_at: "2007-07-07T12:00:00.000Z"
+  id: 3
+  is_published: false
+  name: Page 3
+  parent_id: 2
+  slug: page-3
+  updated_at: "2007-07-07T12:00:00.000Z"

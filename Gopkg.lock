@@ -34,20 +34,6 @@
   version = "v3.2.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:75979463a31c650b93225d9794a7e7c9174b1a4dd98b7e0d5d8eb14a10b1b6ac"
-  name = "github.com/globalsign/mgo"
-  packages = [
-    ".",
-    "bson",
-    "internal/json",
-    "internal/sasl",
-    "internal/scram",
-  ]
-  pruneopts = "UT"
-  revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
-
-[[projects]]
   digest = "1:3eacc547268cd715910b2edf370285248e7aa8d2ba60a773734c2c62c344b1c1"
   name = "github.com/go-pg/migrations"
   packages = ["."]
@@ -88,6 +74,14 @@
   pruneopts = "UT"
   revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
   version = "v0.16.0"
+
+[[projects]]
+  digest = "1:45dbf9b2f04a34ee616b063437d890a4f578704d62e7b03d7e704d9e317315af"
+  name = "github.com/go-testfixtures/testfixtures"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ffa9c72c24f9c78d1c5c12dcf2e1a7824606120a"
+  version = "v2.5.1"
 
 [[projects]]
   digest = "1:0ae2e1b2d4cdff4834aa28ce2e33a7b6de91e10150e3647fe1b9fd63a51b39ce"
@@ -135,6 +129,17 @@
   pruneopts = "UT"
   revision = "bbd0c6e271208dce66d8fda4bc536453cd27fc4a"
   version = "v3.0.7"
+
+[[projects]]
+  digest = "1:8ef506fc2bb9ced9b151dafa592d4046063d744c646c1bbe801982ce87e4bc24"
+  name = "github.com/lib/pq"
+  packages = [
+    ".",
+    "oid",
+  ]
+  pruneopts = "UT"
+  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:450b7623b185031f3a456801155c8320209f75d0d4c4e633c6b1e59d44d6e392"
@@ -197,6 +202,14 @@
   version = "v1.20.0"
 
 [[projects]]
+  digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
+[[projects]]
   digest = "1:999d566ad1ae4303c456af5a155f7b42401cca4fd33552567ed9dd997b107a08"
   name = "mellium.im/sasl"
   packages = ["."]
@@ -211,14 +224,15 @@
     "github.com/bradleyjkemp/cupaloy",
     "github.com/dchest/uniuri",
     "github.com/dgrijalva/jwt-go",
-    "github.com/globalsign/mgo",
-    "github.com/globalsign/mgo/bson",
     "github.com/go-pg/migrations",
     "github.com/go-pg/pg",
+    "github.com/go-pg/pg/orm",
+    "github.com/go-testfixtures/testfixtures",
     "github.com/gosimple/slug",
     "github.com/graph-gophers/graphql-go",
     "github.com/graph-gophers/graphql-go/relay",
     "github.com/jteeuwen/go-bindata",
+    "github.com/lib/pq",
     "golang.org/x/crypto/pbkdf2",
     "gopkg.in/go-playground/validator.v9",
     "gopkg.in/urfave/cli.v1",

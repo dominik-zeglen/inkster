@@ -30,6 +30,10 @@ func main() {
 	}
 
 	db := pg.Connect(pgOptions)
+	fmt.Printf(
+		"Applying migrations to %s database\n",
+		pgOptions.Database,
+	)
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
 
 	if err != nil {
@@ -38,7 +42,12 @@ func main() {
 
 	if os.Getenv("CI") == "" {
 		pgOptions.Database = "test_" + pgOptions.Database
-		oldVersion, newVersion, err = migrations.Run(db, flag.Args()...)
+		fmt.Printf(
+			"Applying migrations to %s database\n",
+			pgOptions.Database,
+		)
+		db = pg.Connect(pgOptions)
+		_, _, err = migrations.Run(db, flag.Args()...)
 		if err != nil {
 			exitf(err.Error())
 		}

@@ -9,14 +9,14 @@ services: postgresql
 install:                                                                 
   - make schema
 before_script:
-  - psql -c 'create database inkster;' -U postgres
+  - psql -c 'create database test_inkster;' -U postgres
   - go run postgres/migrations/*.go up
 script:
   - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
   - cd panel && npm i && npm run build
 env:
   global:
-    - POSTGRES_HOST=postgres://postgres@localhost:5432/inkster?sslmode=disable
+    - POSTGRES_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
     - INKSTER_PORT=8000 
     - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
 addons:
