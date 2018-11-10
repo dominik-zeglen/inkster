@@ -50,7 +50,6 @@ func InitDb() postgres.Adapter {
 	if err != nil {
 		panic(err)
 	}
-	pgOptions.Database = "test_" + pgOptions.Database
 
 	pgSession := pg.Connect(pgOptions)
 	pgAdapter := postgres.Adapter{

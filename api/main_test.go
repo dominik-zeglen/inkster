@@ -28,7 +28,9 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	pgOptions.Database = "test_" + pgOptions.Database
+	if os.Getenv("CI") != "" {
+		pgOptions.Database = "test_" + pgOptions.Database
+	}
 
 	pgSession := pg.Connect(pgOptions)
 	pgAdapter := postgres.Adapter{
