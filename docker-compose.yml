@@ -1,14 +1,6 @@
 version: '2'
 services: 
   db:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=inkster
-      - MONGO_INITDB_ROOT_PASSWORD=inkster
-      - MONGO_INITDB_DATABASE=inkster
-  pg:
     image: library/postgres:latest
     ports:
       - "5432:5432"
@@ -27,10 +19,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - POSTGRES_USER=inkster
-      - POSTGRES_PASSWORD=inkster
-      - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
-      - INKSTER_DB_NAME=inkster
+      - POSTGRES_HOST=postgres://inkster:inkster@db/inkster?sslmode=disable
       - INKSTER_PORT=8000 
       - INKSTER_STATIC=static
       - INKSTER_SERVE_STATIC=1

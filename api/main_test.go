@@ -24,11 +24,13 @@ var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
 var ErrNoError = fmt.Errorf("Did not return error")
 
 func init() {
-	pgSession := pg.Connect(&pg.Options{
-		User:     os.Getenv("POSTGRES_USER"),
-		Password: os.Getenv("POSTGRES_PASSWORD"),
-		Database: "test_" + os.Getenv("POSTGRES_DB"),
-	})
+	pgOptions, err := pg.ParseURL(os.Getenv("POSTGRES_HOST"))
+	if err != nil {
+		panic(err)
+	}
+	pgOptions.Database = "test_" + pgOptions.Database
+
+	pgSession := pg.Connect(pgOptions)
 	pgAdapter := postgres.Adapter{
 		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
 		Session: pgSession,
