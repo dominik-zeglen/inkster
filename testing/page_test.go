@@ -155,6 +155,9 @@ func testPages(t *testing.T) {
 				t.Error(err)
 			}
 			page, err := dataSource.GetPage(Pages[0].ID)
+			if err != nil {
+				t.Error(err)
+			}
 			page.Fields[2].ID = 0
 			data, err := ToJSON(page)
 			if err != nil {
