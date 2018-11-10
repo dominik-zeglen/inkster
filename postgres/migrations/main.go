@@ -24,26 +24,24 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	db := pg.Connect(&pg.Options{
-		User:     os.Getenv("POSTGRES_USER"),
-		Password: os.Getenv("POSTGRES_PASSWORD"),
-		Database: os.Getenv("POSTGRES_DB"),
-	})
-	_, _, err := migrations.Run(db, flag.Args()...)
+	pgOptions, err := pg.ParseURL(os.Getenv("POSTGRES_HOST"))
+	if err != nil {
+		exitf(err.Error())
+	}
+
+	db := pg.Connect(pgOptions)
+	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
 
 	if err != nil {
 		exitf(err.Error())
 	}
 
-	db = pg.Connect(&pg.Options{
-		User:     os.Getenv("POSTGRES_USER"),
-		Password: os.Getenv("POSTGRES_PASSWORD"),
-		Database: "test_" + os.Getenv("POSTGRES_DB"),
-	})
-
-	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
-	if err != nil {
-		exitf(err.Error())
+	if os.Getenv("CI") == "" {
+		pgOptions.Database = "test_" + pgOptions.Database
+		oldVersion, newVersion, err = migrations.Run(db, flag.Args()...)
+		if err != nil {
+			exitf(err.Error())
+		}
 	}
 
 	if newVersion != oldVersion {
