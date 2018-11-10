@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -22,6 +23,9 @@ func (res *Resolver) GetDirectory(
 		dataSource.
 		GetDirectory(localID)
 	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -38,6 +42,9 @@ func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
 	directories, err := res.dataSource.GetDirectoryList()
 	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	for index := range directories {
@@ -52,11 +59,14 @@ func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 	return &resolverList, nil
 }
 
-func (res *Resolver) GetRootDirectories() *[]*directoryResolver {
+func (res *Resolver) GetRootDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
 	directories, err := res.dataSource.GetRootDirectoryList()
 	if err != nil {
-		panic(err)
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
 	}
 	for index := range directories {
 		resolverList = append(
@@ -67,5 +77,5 @@ func (res *Resolver) GetRootDirectories() *[]*directoryResolver {
 			},
 		)
 	}
-	return &resolverList
+	return &resolverList, nil
 }

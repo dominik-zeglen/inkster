@@ -1,19 +1,25 @@
 [
     {
-        "id": "000000000002",
+        "id": 2,
         "createdAt": "2007-07-07T11:00:00.000Z",
         "updatedAt": "2007-07-07T11:00:00.000Z",
         "name": "Page 2",
         "slug": "page-2",
-        "parentId": "000000000001",
+        "parentId": 1,
         "isPublished": false,
         "fields": [
             {
+                "id": 200,
+                "createdAt": "2007-07-07T11:00:00.000Z",
+                "updatedAt": "2007-07-07T11:00:00.000Z",
                 "type": "text",
                 "name": "Field 3",
                 "value": "2"
             },
             {
+                "id": 201,
+                "createdAt": "2007-07-07T11:00:00.000Z",
+                "updatedAt": "2007-07-07T11:00:00.000Z",
                 "type": "file",
                 "name": "Field 4",
                 "value": "example.com/file"

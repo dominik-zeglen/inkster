@@ -4,7 +4,7 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 )
 
-func createTemplate(template core.Template, id string, createdAt string, updatedAt string) core.Template {
+func createTemplate(template core.Template, id int, createdAt string, updatedAt string) core.Template {
 	template.ID = id
 	template.CreatedAt = createdAt
 	template.UpdatedAt = updatedAt
@@ -33,13 +33,13 @@ func CreateTemplates() []core.Template {
 
 	templates[0] = createTemplate(
 		templates[0],
-		"000000000001",
+		1,
 		"2007-07-07T10:00:00.000Z",
 		"2007-07-07T10:00:00.000Z",
 	)
 	templates[1] = createTemplate(
 		templates[1],
-		"000000000002",
+		2,
 		"2007-07-07T11:00:00.000Z",
 		"2007-07-07T11:00:00.000Z",
 	)

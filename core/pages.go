@@ -6,11 +6,12 @@ import (
 
 // Page is a object representing site content
 type Page struct {
-	BaseModel   `bson:",inline"`
-	Name        string      `json:"name" validate:"required,min=3"`
-	Slug        string      `json:"slug" validate:"omitempty,slug,min=3"`
-	ParentID    string      `bson:"parentId" json:"parentId" validate:"required"`
-	IsPublished bool        `bson:"isPublished" json:"isPublished"`
+	BaseModel
+	Name        string      `sql:",notnull" json:"name" validate:"required,min=3"`
+	Slug        string      `sql:",unique,notnull" json:"slug" validate:"omitempty,slug,min=3"`
+	ParentID    int         `sql:",notnull,on_delete:CASCADE" json:"parentId" validate:"required"`
+	Parent      *Directory  `json:"-"`
+	IsPublished bool        `sql:",notnull" json:"isPublished"`
 	Fields      []PageField `json:"fields" validate:"dive"`
 }
 
@@ -30,16 +31,19 @@ func NewPage() Page {
 
 // UpdatePageArguments is transactional model of an update properties
 type UpdatePageArguments struct {
-	Name        *string `bson:"name",omitempty`
-	Slug        *string `bson:"slug",omitempty`
-	IsPublished *bool   `bson:"isPublished",omitempty`
+	Name        *string
+	Slug        *string
+	IsPublished *bool
 }
 
 // PageField represents a single field in template
 type PageField struct {
-	Type  string `json:"type" validate:"required,oneof=text longText image file"`
-	Name  string `json:"name" validate:"required,min=3"`
-	Value string `json:"value"`
+	BaseModel
+	Page   *Page  `json:"-"`
+	PageID int    `sql:",notnull,on_delete:CASCADE" json:"-"`
+	Type   string `json:"type" validate:"required,oneof=text longText image file"`
+	Name   string `json:"name" validate:"required,min=3"`
+	Value  string `json:"value"`
 }
 
 // Validate checks if field can be put into database
@@ -48,20 +52,20 @@ func (field PageField) Validate() []ValidationError {
 }
 
 func (field PageField) String() string {
-	return fmt.Sprintf("PageField<%s: %s (%s)>",
+	return fmt.Sprintf("PageField<%d: %s (%s)>",
+		field.ID,
 		field.Name,
 		field.Type,
-		field.Value[:20],
 	)
 }
 
 // PageInput is transactional model of an creation properties
 type PageInput struct {
-	Name        *string      `bson:"name,omitempty" validate:"min=3"`
-	Slug        *string      `bson:"slug,omitempty" validate:"min=3"`
-	ParentID    *string      `bson:"parentId,omitempty"`
-	IsPublished *bool        `bson:"isPublished",omitempty`
-	Fields      *[]PageField `bson:"fields,omitempty" validate:"dive"`
+	Name        *string `validate:"omitempty,min=3"`
+	Slug        *string `validate:"omitempty,min=3"`
+	ParentID    *int
+	IsPublished *bool
+	Fields      *[]PageField `validate:"omitempty,dive"`
 }
 
 func (pageInput PageInput) Validate() []ValidationError {
@@ -69,7 +73,11 @@ func (pageInput PageInput) Validate() []ValidationError {
 }
 
 // UpdatePageFieldArguments is transactional model of an update properties
-type UpdatePageFieldArguments struct {
-	Name  string `bson:",omitempty" validate:"min=3"`
-	Value string `bson:",omitempty"`
+type PageFieldInput struct {
+	Name  *string `validate:"min=3"`
+	Value *string
+}
+
+func (pageFieldInput PageFieldInput) Validate() []ValidationError {
+	return ValidateModel(pageFieldInput)
 }

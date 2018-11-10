@@ -11,7 +11,7 @@ import (
 
 type UserClaims struct {
 	Email string `json:"email"`
-	ID    string `json:"id"`
+	ID    int    `json:"id"`
 	jwt.StandardClaims
 }
 

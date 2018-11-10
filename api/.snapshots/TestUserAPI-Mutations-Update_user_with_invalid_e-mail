@@ -9,8 +9,8 @@
                 }
             ],
             "user": {
-                "id": "dXNlcjowMDAwMDAwMDAwMDE=",
-                "email": "user1@xample.com",
+                "id": "dXNlcjox",
+                "email": "user1@example.com",
                 "isActive": true
             }
         }

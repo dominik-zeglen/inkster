@@ -179,49 +179,17 @@ func cleanUpdatePageInput(
 	return pageInput, validationErrors, nil
 }
 
-func cleanUpdatePageAddFields(
-	addFields []core.PageField,
-	fields []core.PageField,
-) (
-	[]core.PageField,
-	[]core.ValidationError,
-) {
+func cleanUpdatePageAddFields(addFields []core.PageField) []core.ValidationError {
 	validationErrors := []core.ValidationError{}
 
-	fields = append(fields, addFields...)
-
-	for _, field := range fields {
+	for _, field := range addFields {
 		validationErrors = append(
 			validationErrors,
 			field.Validate()...,
 		)
 	}
 
-	return fields, validationErrors
-}
-
-func cleanUpdatePageRemoveFields(
-	removeFields []string,
-	fields []core.PageField,
-) []core.PageField {
-	cleanedFields := []core.PageField{}
-
-	for _, field := range fields {
-		found := false
-
-		for _, removeField := range removeFields {
-			if field.Name == removeField {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			cleanedFields = append(cleanedFields, field)
-		}
-	}
-
-	return cleanedFields
+	return validationErrors
 }
 
 func (res *Resolver) UpdatePage(
@@ -242,7 +210,7 @@ func (res *Resolver) UpdatePage(
 	}
 
 	if args.Input != nil || args.AddFields != nil || args.RemoveFields != nil {
-		pageInput, _, err := cleanUpdatePageInput(
+		pageInput, validationErrors, err := cleanUpdatePageInput(
 			args.Input,
 			res.dataSource,
 		)
@@ -251,23 +219,41 @@ func (res *Resolver) UpdatePage(
 			return nil, err
 		}
 
-		if args.AddFields != nil || args.RemoveFields != nil {
-			pageInput.Fields = &page.Fields
+		if args.AddFields != nil {
+			errs := cleanUpdatePageAddFields(*args.AddFields)
+			validationErrors = append(validationErrors, errs...)
 
-			if args.AddFields != nil {
-				fields, _ := cleanUpdatePageAddFields(
-					*args.AddFields,
-					*pageInput.Fields,
-				)
-				pageInput.Fields = &fields
+		}
+
+		if len(validationErrors) > 0 {
+			return &pageCreateResultResolver{
+				dataSource: res.dataSource,
+				data: pageCreateResult{
+					page:             nil,
+					validationErrors: validationErrors,
+				},
+			}, nil
+		}
+
+		if args.AddFields != nil {
+			for _, pageField := range *args.AddFields {
+				err = res.dataSource.AddPageField(localID, pageField)
+				if err != nil {
+					return nil, err
+				}
 			}
+		}
+		if args.RemoveFields != nil {
+			for _, pageField := range *args.RemoveFields {
+				localPageFieldID, err := fromGlobalID("pageField", pageField)
+				if err != nil {
+					return nil, err
+				}
 
-			if args.RemoveFields != nil {
-				fields := cleanUpdatePageRemoveFields(
-					*args.RemoveFields,
-					*pageInput.Fields,
-				)
-				pageInput.Fields = &fields
+				err = res.dataSource.RemovePageField(localPageFieldID)
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 

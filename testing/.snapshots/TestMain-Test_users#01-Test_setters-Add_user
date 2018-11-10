@@ -1,9 +1,0 @@
-{
-    "id": "",
-    "createdAt": "2017-07-07T10:00:00.000Z",
-    "updatedAt": "2017-07-07T10:00:00.000Z",
-    "active": false,
-    "email": "newuser@example.com",
-    "password": "",
-    "salt": ""
-}

@@ -4,10 +4,17 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 )
 
-func createPage(page core.Page, id string, createdAt string, updatedAt string) core.Page {
+func createPage(page core.Page, id int, createdAt string, updatedAt string) core.Page {
 	page.ID = id
 	page.CreatedAt = createdAt
 	page.UpdatedAt = updatedAt
+
+	for fieldIndex := range page.Fields {
+		fieldID := id*100 + fieldIndex
+		page.Fields[fieldIndex].ID = fieldID
+		page.Fields[fieldIndex].CreatedAt = createdAt
+		page.Fields[fieldIndex].UpdatedAt = updatedAt
+	}
 
 	return page
 }
@@ -64,19 +71,19 @@ func CreatePages() []core.Page {
 
 	pages[0] = createPage(
 		pages[0],
-		"000000000001",
+		1,
 		"2007-07-07T10:00:00.000Z",
 		"2007-07-07T10:00:00.000Z",
 	)
 	pages[1] = createPage(
 		pages[1],
-		"000000000002",
+		2,
 		"2007-07-07T11:00:00.000Z",
 		"2007-07-07T11:00:00.000Z",
 	)
 	pages[2] = createPage(
 		pages[2],
-		"000000000003",
+		3,
 		"2007-07-07T12:00:00.000Z",
 		"2007-07-07T12:00:00.000Z",
 	)

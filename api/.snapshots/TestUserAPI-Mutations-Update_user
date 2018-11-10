@@ -3,7 +3,7 @@
         "updateUser": {
             "errors": [],
             "user": {
-                "id": "dXNlcjowMDAwMDAwMDAwMDE=",
+                "id": "dXNlcjox",
                 "email": "new_email@example.com",
                 "isActive": false
             }

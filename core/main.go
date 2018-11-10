@@ -3,39 +3,38 @@ package core
 // Adapter interface provides abstraction over different data sources
 type Adapter interface {
 	AddDirectory(Directory) (Directory, error)
-	GetDirectory(string) (Directory, error)
+	GetDirectory(int) (Directory, error)
 	GetDirectoryList() ([]Directory, error)
 	GetRootDirectoryList() ([]Directory, error)
-	GetDirectoryChildrenList(string) ([]Directory, error)
-	UpdateDirectory(string, DirectoryInput) error
-	RemoveDirectory(string) error
+	GetDirectoryChildrenList(int) ([]Directory, error)
+	UpdateDirectory(int, DirectoryInput) error
+	RemoveDirectory(int) error
 
 	AddTemplate(Template) (Template, error)
-	AddTemplateField(string, TemplateField) error
-	GetTemplate(string) (Template, error)
+	AddTemplateField(int, TemplateField) error
+	GetTemplate(int) (Template, error)
 	GetTemplateList() ([]Template, error)
-	UpdateTemplate(string, TemplateInput) error
-	RemoveTemplate(string) error
-	RemoveTemplateField(string, string) error
+	UpdateTemplate(int, TemplateInput) error
+	RemoveTemplate(int) error
+	RemoveTemplateField(int, string) error
 
 	AddPage(Page) (Page, error)
-	AddPageFromTemplate(PageInput, string) (Page, error)
-	AddPageField(string, PageField) error
-	GetPage(string) (Page, error)
+	AddPageFromTemplate(PageInput, int) (Page, error)
+	AddPageField(int, PageField) error
+	GetPage(int) (Page, error)
 	GetPageBySlug(string) (Page, error)
-	GetPagesFromDirectory(string) ([]Page, error)
-	UpdatePage(string, PageInput) error
-	UpdatePageField(string, string, string) error
-	RemovePage(string) error
-	RemovePageField(string, string) error
+	GetPagesFromDirectory(int) ([]Page, error)
+	UpdatePage(int, PageInput) error
+	RemovePage(int) error
+	RemovePageField(int) error
 
 	AddUser(User) (User, error)
 	AuthenticateUser(string, string) (User, error)
-	GetUser(string) (User, error)
+	GetUser(int) (User, error)
 	GetUserByEmail(string) (User, error)
 	GetUserList() ([]User, error)
-	UpdateUser(string, UserInput) (User, error)
-	RemoveUser(string) error
+	UpdateUser(int, UserInput) (User, error)
+	RemoveUser(int) error
 
 	GetCurrentTime() string
 	ResetMockDatabase(
@@ -43,7 +42,7 @@ type Adapter interface {
 		templates []Template,
 		pages []Page,
 		users []User,
-	)
+	) error
 	String() string
 }
 
@@ -51,9 +50,9 @@ type Adapter interface {
 // should be composed of, providing most basic
 // fields to keep order and consistency within code
 type BaseModel struct {
-	ID        string `bson:"_id,omitempty" json:"id"`
-	CreatedAt string `json:"createdAt" bson:"createdAt"`
-	UpdatedAt string `json:"updatedAt" bson:"updatedAt"`
+	ID        int    `sql:",pk,autoincrement" json:"id"`
+	CreatedAt string `sql:",notnull" json:"createdAt" bson:"createdAt"`
+	UpdatedAt string `sql:",notnull" json:"updatedAt" bson:"updatedAt"`
 }
 
 // FieldTypes holds all allowed template field type names

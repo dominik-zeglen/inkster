@@ -5,23 +5,38 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/dominik-zeglen/inkster/mock"
+	"github.com/dominik-zeglen/inkster/postgres"
 	test "github.com/dominik-zeglen/inkster/testing"
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
-var dataSource = mock.Adapter{
-	GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
-}
+var dataSource postgres.Adapter
 var mailClient = mailer.MockMailClient{}
-var resolver = NewResolver(dataSource, &mailClient, "secretKey")
+var resolver = NewResolver(&dataSource, &mailClient, "secretKey")
 var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
 
 var ErrNoError = fmt.Errorf("Did not return error")
+
+func init() {
+	pgSession := pg.Connect(&pg.Options{
+		User:     os.Getenv("POSTGRES_USER"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+		Database: "test_" + os.Getenv("POSTGRES_DB"),
+	})
+	pgAdapter := postgres.Adapter{
+		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+		Session: pgSession,
+	}
+	dataSource = pgAdapter
+
+	resetDatabase()
+}
 
 func execQuery(query string, variables string, ctx *context.Context) (string, error) {
 	defaultClaims := middleware.UserClaims{
@@ -56,11 +71,14 @@ func execQuery(query string, variables string, ctx *context.Context) (string, er
 }
 
 func resetDatabase() {
-	dataSource.ResetMockDatabase(
+	err := dataSource.ResetMockDatabase(
 		test.Directories,
 		test.Templates,
 		test.Pages,
 		test.Users,
 	)
+	if err != nil {
+		panic(err)
+	}
 	mailClient.Reset()
 }

@@ -1,0 +1,14 @@
+{
+    "data": {
+        "createUser": {
+            "errors": [
+                {
+                    "code": 104,
+                    "field": "Email",
+                    "message": "Property Email is not of type email"
+                }
+            ],
+            "user": null
+        }
+    }
+}

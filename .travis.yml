@@ -11,7 +11,7 @@ install:
 before_script:
   - sleep 15
 script:
-  - GOCACHE=off go test ./... -coverprofile=/tmp/go-code-cover
+  - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
   - cd panel && npm i && npm run build
 env:
   global:

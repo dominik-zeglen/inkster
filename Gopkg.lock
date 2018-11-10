@@ -48,6 +48,14 @@
   revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
 
 [[projects]]
+  digest = "1:3eacc547268cd715910b2edf370285248e7aa8d2ba60a773734c2c62c344b1c1"
+  name = "github.com/go-pg/migrations"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6b0c3602ab5b3f065ca581bf57f76acb3da0a7e3"
+  version = "v6.3.0"
+
+[[projects]]
   digest = "1:0a2260bcfa15237979ef496f03fb6af215c247ad998881a4d039992228876ae3"
   name = "github.com/go-pg/pg"
   packages = [
@@ -205,6 +213,7 @@
     "github.com/dgrijalva/jwt-go",
     "github.com/globalsign/mgo",
     "github.com/globalsign/mgo/bson",
+    "github.com/go-pg/migrations",
     "github.com/go-pg/pg",
     "github.com/gosimple/slug",
     "github.com/graph-gophers/graphql-go",

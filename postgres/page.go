@@ -1,18 +1,13 @@
-package mongodb
+package postgres
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo"
-	"github.com/globalsign/mgo/bson"
 	"github.com/gosimple/slug"
 )
 
 func cleanAddPageInput(page *core.Page) {
 	if page.Slug == "" {
 		page.Slug = slug.Make(page.Name)
-	}
-	if page.ID == "" {
-		page.ID = bson.NewObjectId()
 	}
 }
 
@@ -23,37 +18,41 @@ func (adapter Adapter) AddPage(page core.Page) (core.Page, error) {
 	if len(errs) > 0 {
 		return core.Page{}, core.ErrNotValidated
 	}
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
 
-	collection := session.DB(adapter.DBName).C("pages")
-	if page.Slug != "" {
-		found, err := collection.
-			Find(bson.M{"slug": page.Slug}).
-			Count()
-		if err != nil {
-			return core.Page{}, err
-		}
-		if found > 0 {
-			return core.Page{}, core.ErrPageExists(page.Name)
-		}
-	}
 	page.CreatedAt = adapter.GetCurrentTime()
 	page.UpdatedAt = adapter.GetCurrentTime()
 
-	return page, collection.Insert(page)
+	_, err := adapter.
+		Session.
+		Model(&page).
+		Insert()
+
+	if err != nil {
+		return core.Page{}, err
+	}
+
+	for fieldIndex, _ := range page.Fields {
+		page.Fields[fieldIndex].PageID = page.ID
+	}
+
+	_, err = adapter.
+		Session.
+		Model(&page.Fields).
+		Insert()
+
+	return page, err
 }
 
 // AddPageFromTemplate creates new page based on a chosen template
 func (adapter Adapter) AddPageFromTemplate(
 	page core.PageInput,
-	templateID bson.ObjectId,
+	templateID int,
 ) (core.Page, error) {
 	template, err := adapter.GetTemplate(templateID)
 	if err != nil {
 		return core.Page{}, err
 	}
+
 	var fields []core.PageField
 	for _, field := range template.Fields {
 		fields = append(fields, core.PageField{
@@ -62,12 +61,7 @@ func (adapter Adapter) AddPageFromTemplate(
 			Value: "",
 		})
 	}
-	if page.Name == nil {
-		return core.Page{}, core.ErrNoEmpty("name")
-	}
-	if page.ParentID == nil {
-		return core.Page{}, core.ErrNoEmpty("parentID")
-	}
+
 	inputPage := core.Page{
 		Name:     *page.Name,
 		ParentID: *page.ParentID,
@@ -75,208 +69,193 @@ func (adapter Adapter) AddPageFromTemplate(
 	}
 	if page.Slug != nil {
 		inputPage.Slug = *page.Slug
-	} else {
-		slug := slug.Make(*page.Name)
-		inputPage.Slug = slug
 	}
+
 	return adapter.AddPage(inputPage)
 }
 
 // AddPageField adds to page a new field at the end of it's field list
-func (adapter Adapter) AddPageField(pageID bson.ObjectId, field core.PageField) error {
+func (adapter Adapter) AddPageField(pageID int, field core.PageField) error {
 	errs := field.Validate()
 	if len(errs) > 0 {
 		return core.ErrNotValidated
 	}
 
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+	field.PageID = pageID
+	field.CreatedAt = adapter.GetCurrentTime()
+	field.UpdatedAt = adapter.GetCurrentTime()
 
-	collection := session.DB(adapter.DBName).C("pages")
-	found, err := collection.Find(bson.M{
-		"_id": pageID,
-		"fields": bson.M{
-			"$elemMatch": bson.M{
-				"name": field.Name,
-			},
-		},
-	}).Count()
+	_, err := adapter.
+		Session.
+		Model(&field).
+		Insert()
+
 	if err != nil {
 		return err
 	}
-	if found != 0 {
-		return core.ErrFieldExists(field.Name)
-	}
-	return collection.UpdateId(pageID, bson.M{
-		"$set": bson.M{
-			"updatedAt": adapter.GetCurrentTime(),
-		},
-		"$push": bson.M{
-			"fields": field,
-		},
-	})
+
+	_, err = adapter.
+		Session.
+		Exec(
+			"UPDATE pages SET updated_at = ? WHERE id = ?",
+			adapter.GetCurrentTime(),
+			pageID,
+		)
+
+	return err
 }
 
 // GetPage allows user to fetch page by ID from database
-func (adapter Adapter) GetPage(id bson.ObjectId) (core.Page, error) {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+func (adapter Adapter) GetPage(id int) (core.Page, error) {
+	page := core.Page{}
 
-	collection := session.DB(adapter.DBName).C("pages")
-	var page core.Page
-	err := collection.
-		FindId(id).
-		One(&page)
-	if err != nil {
-		return core.Page{}, err
-	}
-	return page, nil
+	err := adapter.
+		Session.
+		Model(&page).
+		Where("id = ?", id).
+		Relation("Fields").
+		Select()
+
+	return page, err
 }
 
 // GetPageBySlug allows user to fetch page by slug from database
 func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+	page := core.Page{}
 
-	collection := session.DB(adapter.DBName).C("pages")
-	var page core.Page
-	err := collection.
-		Find(bson.M{"slug": slug}).
-		One(&page)
-	if err != nil {
-		return core.Page{}, err
-	}
-	return page, nil
+	err := adapter.
+		Session.
+		Model(&page).
+		Where("slug = ?", slug).
+		Relation("Fields").
+		Select()
+
+	return page, err
 }
 
 // GetPagesFromDirectory allows user to fetch pages by their parentId from database
-func (adapter Adapter) GetPagesFromDirectory(id bson.ObjectId) ([]core.Page, error) {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+func (adapter Adapter) GetPagesFromDirectory(id int) ([]core.Page, error) {
+	pages := []core.Page{}
 
-	collection := session.DB(adapter.DBName).C("pages")
-	var pages []core.Page
-	err := collection.
-		Find(bson.M{"parentId": id}).
-		All(&pages)
-	if err != nil {
-		return nil, err
-	}
-	return pages, nil
-}
+	err := adapter.
+		Session.
+		Model(&pages).
+		Where("parent_id = ?", id).
+		Relation("Fields").
+		Select()
 
-type pageUpdateInput struct {
-	Data      core.PageInput `bson:",inline"`
-	UpdatedAt string         `bson:"updatedAt"`
+	return pages, err
 }
 
 // UpdatePage allows user to update page properties
-func (adapter Adapter) UpdatePage(pageID bson.ObjectId, data core.PageInput) error {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
-
-	collection := session.DB(adapter.DBName).C("pages")
-
-	if data.Slug != nil {
-		count, err := collection.
-			Find(bson.M{
-				"_id": bson.M{
-					"$ne": pageID,
-				},
-				"slug": *data.Slug,
-			}).
-			Count()
-		if err != nil {
-			return err
-		}
-		if count != 0 {
-			return core.ErrPageExists(*data.Slug)
-		}
+func (adapter Adapter) UpdatePage(id int, data core.PageInput) error {
+	if len(data.Validate()) > 0 {
+		return core.ErrNotValidated
 	}
-	return collection.UpdateId(pageID, bson.M{
-		"$set": pageUpdateInput{
-			Data:      data,
-			UpdatedAt: adapter.GetCurrentTime(),
-		},
-	})
+
+	page := core.Page{}
+	page.ID = id
+	page.UpdatedAt = adapter.GetCurrentTime()
+
+	query := adapter.
+		Session.
+		Model(&page).
+		Column("updated_at")
+
+	if data.IsPublished != nil {
+		page.IsPublished = *data.IsPublished
+		query = query.Column("is_published")
+	}
+	if data.Name != nil {
+		page.Name = *data.Name
+		query = query.Column("name")
+	}
+	if data.ParentID != nil {
+		page.ParentID = *data.ParentID
+		query = query.Column("parent_id")
+	}
+	if data.Slug != nil {
+		page.Slug = *data.Slug
+		query = query.Column("slug")
+	}
+
+	_, err := query.
+		WherePK().
+		Update()
+
+	return err
 }
 
-// UpdatePageField removes field from page
-func (adapter Adapter) UpdatePageField(pageID bson.ObjectId, pageFieldName string, data string) error {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+// UpdatePageField allows user to update page's field's properties
+func (adapter Adapter) UpdatePageField(id int, data core.PageFieldInput) error {
+	if len(data.Validate()) > 0 {
+		return core.ErrNotValidated
+	}
 
-	collection := session.DB(adapter.DBName).C("pages")
-	found, err := collection.Find(bson.M{
-		"_id": pageID,
-		"fields": bson.M{
-			"$elemMatch": bson.M{
-				"name": pageFieldName,
-			},
-		},
-	}).Count()
-	if err != nil {
-		return err
+	pageField := core.PageField{}
+	pageField.ID = id
+	pageField.UpdatedAt = adapter.GetCurrentTime()
+
+	query := adapter.
+		Session.
+		Model(&pageField).
+		Column("updated_at")
+
+	if data.Name != nil {
+		pageField.Name = *data.Name
+		query = query.Column("name")
 	}
-	if found == 0 {
-		return core.ErrNoField(pageFieldName)
+	if data.Value != nil {
+		pageField.Value = *data.Value
+		query = query.Column("value")
 	}
-	return collection.Update(bson.M{
-		"_id":         pageID,
-		"fields.name": pageFieldName,
-	}, bson.M{
-		"$set": bson.M{
-			"updatedAt":      adapter.GetCurrentTime(),
-			"fields.$.value": data,
-		},
-	})
+
+	_, err := query.
+		WherePK().
+		Update()
+
+	return err
 }
 
 // RemovePage removes page from database
-func (adapter Adapter) RemovePage(pageID bson.ObjectId) error {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
-
-	collection := session.DB(adapter.DBName).C("pages")
-	return collection.RemoveId(pageID)
+func (adapter Adapter) RemovePage(id int) error {
+	_, err := adapter.
+		Session.
+		Exec("DELETE FROM pages WHERE id = ?", id)
+	return err
 }
 
 // RemovePageField removes field from page
-func (adapter Adapter) RemovePageField(pageID bson.ObjectId, pageFieldName string) error {
-	session := adapter.Session.Copy()
-	session.SetSafe(&mgo.Safe{})
-	defer session.Close()
+func (adapter Adapter) RemovePageField(id int) error {
+	pageField := core.PageField{}
+	pageField.ID = id
+	err := adapter.
+		Session.
+		Model(&pageField).
+		WherePK().
+		Select()
 
-	collection := session.DB(adapter.DBName).C("pages")
-	found, err := collection.Find(bson.M{
-		"_id": pageID,
-		"fields": bson.M{
-			"$elemMatch": bson.M{
-				"name": pageFieldName,
-			},
-		},
-	}).Count()
 	if err != nil {
 		return err
 	}
-	if found == 0 {
-		return core.ErrNoField(pageFieldName)
+
+	_, err = adapter.
+		Session.
+		Model(&pageField).
+		WherePK().
+		Delete()
+
+	if err != nil {
+		return err
 	}
-	return collection.UpdateId(pageID, bson.M{
-		"$set": bson.M{
-			"updatedAt": adapter.GetCurrentTime(),
-		},
-		"$pull": bson.M{
-			"fields": bson.M{
-				"name": pageFieldName,
-			},
-		},
-	})
+
+	_, err = adapter.
+		Session.
+		Exec(
+			"UPDATE pages SET updated_at = ? WHERE id = ?",
+			adapter.GetCurrentTime(),
+			pageField.PageID,
+		)
+
+	return err
 }

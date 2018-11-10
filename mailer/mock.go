@@ -32,5 +32,9 @@ func (client *MockMailClient) Reset() {
 	client.log = []string{}
 }
 func (client MockMailClient) Last() string {
-	return client.log[len(client.log)-1]
+	clients := len(client.log)
+	if clients > 0 {
+		return client.log[len(client.log)-1]
+	}
+	panic("No mails sent")
 }

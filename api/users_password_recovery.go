@@ -91,7 +91,7 @@ func (res *Resolver) SendUserPasswordResetToken(
 ) (bool, error) {
 	user, err := res.dataSource.GetUserByEmail(args.Email)
 	if err != nil {
-		return true, nil
+		return false, nil
 	}
 
 	claims := ActionTokenClaims{

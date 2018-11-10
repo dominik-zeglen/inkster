@@ -11,14 +11,14 @@ import (
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/dominik-zeglen/inkster/mongodb"
-	"github.com/globalsign/mgo"
+	"github.com/dominik-zeglen/inkster/postgres"
+	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
 
 var schema *graphql.Schema
-var DataSource mongodb.Adapter
+var dataSource postgres.Adapter
 
 func checkEnv() {
 	vars := []string{
@@ -45,22 +45,22 @@ func check(err error) {
 	}
 }
 
-func InitDb() mongodb.Adapter {
-	dataSource := mongodb.Adapter{
-		DBName: os.Getenv("INKSTER_DB_NAME"),
+func InitDb() postgres.Adapter {
+	pgSession := pg.Connect(&pg.Options{
+		User:     os.Getenv("POSTGRES_USER"),
+		Password: os.Getenv("POSTGRES_PASSWORD"),
+	})
+	pgAdapter := postgres.Adapter{
+		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+		Session: pgSession,
 	}
-	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
-	if err != nil {
-		log.Fatal("ERROR: Database is offline.")
-	}
-	dataSource.Session = session
-	return dataSource
+	return pgAdapter
 }
 
 func initApp() {
 	checkEnv()
 	var mailClient mailer.Mailer
-	DataSource = InitDb()
+	dataSource = InitDb()
 	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = &mailer.MockMailClient{}
 	} else {
@@ -72,7 +72,7 @@ func initApp() {
 			os.Getenv("INKSTER_SMTP_PORT"),
 		)
 	}
-	resolver := api.NewResolver(&DataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
+	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
 	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
 }
 

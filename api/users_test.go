@@ -51,7 +51,6 @@ func TestUserAPI(t *testing.T) {
 			}
 		}`
 	t.Run("Mutations", func(t *testing.T) {
-		resetDatabase()
 		t.Run("Create user", func(t *testing.T) {
 			defer resetDatabase()
 			variables := `{
@@ -187,8 +186,8 @@ func TestUserAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"email": "%s"
 			}`, test.Users[0].Email)
-			_, err := execQuery(query, variables, nil)
-			if err != nil {
+			r, err := execQuery(query, variables, nil)
+			if err != nil || r == "" {
 				t.Fatal(err)
 			}
 
@@ -210,7 +209,6 @@ func TestUserAPI(t *testing.T) {
 		})
 	})
 	t.Run("Queries", func(t *testing.T) {
-		resetDatabase()
 		t.Run("Get user by ID", func(t *testing.T) {
 			query := `query getUser($id: ID!){
 				user(id: $id) {

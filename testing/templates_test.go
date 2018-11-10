@@ -8,6 +8,7 @@ import (
 )
 
 func testTemplates(t *testing.T) {
+	dummyID := 0
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add template", func(t *testing.T) {
 			defer resetDatabase()
@@ -19,7 +20,7 @@ func testTemplates(t *testing.T) {
 				},
 			}
 			result, err := dataSource.AddTemplate(template)
-			result.ID = ""
+			result.ID = dummyID
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -57,7 +58,7 @@ func testTemplates(t *testing.T) {
 				Name: "New Template",
 			}
 			result, err := dataSource.AddTemplate(template)
-			result.ID = ""
+			result.ID = dummyID
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -146,7 +147,7 @@ func testTemplates(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Remove template that does not exist", func(t *testing.T) {
-			err := dataSource.RemoveTemplate("000000000099")
+			err := dataSource.RemoveTemplate(99)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
