@@ -10,6 +10,7 @@ install:
   - make schema
 before_script:
   - sleep 15
+  - psql -c 'create database inkster;' -U postgres
 script:
   - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
   - cd panel && npm i && npm run build
