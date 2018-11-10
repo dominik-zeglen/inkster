@@ -9,7 +9,6 @@ services: postgresql
 install:                                                                 
   - make schema
 before_script:
-  - sleep 15
   - psql -c 'create database inkster;' -U postgres
   - go run postgres/migrations/*.go up
 script:
