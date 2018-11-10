@@ -41,7 +41,7 @@ func TestMain(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	if os.Getenv("CI") != "" {
+	if os.Getenv("CI") == "" {
 		pgOptions.Database = "test_" + pgOptions.Database
 	}
 
