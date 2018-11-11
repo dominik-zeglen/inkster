@@ -22,7 +22,7 @@ var dataSource postgres.Adapter
 
 func checkEnv() {
 	vars := []string{
-		"INKSTER_DB_URI",
+		"POSTGRES_HOST",
 		"INKSTER_STATIC",
 		"INKSTER_PORT",
 		"INKSTER_SERVE_STATIC",
@@ -31,6 +31,7 @@ func checkEnv() {
 		"INKSTER_SMTP_ADDR",
 		"INKSTER_SMTP_PASS",
 		"INKSTER_SMTP_PORT",
+		"INKSTER_SECRET_KEY",
 	}
 	for _, env := range vars {
 		if os.Getenv(env) == "" {

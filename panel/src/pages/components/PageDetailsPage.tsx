@@ -45,7 +45,7 @@ interface Props extends ViewProps, FormViewProps<FormData> {
     fields: PageField[];
   };
   onUpload: (
-    cb: (event: React.ChangeEvent<any>) => void
+    cb: (event: React.ChangeEvent<any>) => void,
   ) => (event: React.ChangeEvent<any>) => void;
 }
 
@@ -54,10 +54,10 @@ const decorate = withStyles(
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "PageDetailsPage" }
+  { displayName: "PageDetailsPage" },
 );
 export const PageDetailsPage = decorate<Props>(
   ({
@@ -70,18 +70,15 @@ export const PageDetailsPage = decorate<Props>(
     onBack,
     onDelete,
     onUpload,
-    onSubmit
+    onSubmit,
   }) => {
     const initialForm = {
       name: page && page.name ? page.name : "",
       slug: page && page.slug ? page.slug : "",
       isPublished: page ? page.isPublished : false,
-      fields:
-        page && page.fields
-          ? (page.fields.map(f => ({ id: f.name, ...f })) as PageField[])
-          : [],
+      fields: (page && page.fields ? page.fields : []) as PageField[],
       addFields: [] as PageField[],
-      removeFields: [] as string[]
+      removeFields: [] as string[],
     };
     return (
       <Form
@@ -100,30 +97,30 @@ export const PageDetailsPage = decorate<Props>(
                     type: field.type,
                     id: "new-" + data.addFields.length,
                     name: "",
-                    value: ""
-                  }
-                ]
-              }
+                    value: "",
+                  },
+                ],
+              },
             } as any);
           };
           const handleFieldRemove = (name: string, id: string) => () => {
             change({
               target: {
                 name,
-                value: data[name].filter((f: PageField) => f.id !== id)
-              }
+                value: data[name].filter((f: PageField) => f.id !== id),
+              },
             } as any);
             if (name === "fields") {
               change({
                 target: {
                   name: "removeFields",
-                  value: [id, ...data.removeFields]
-                }
+                  value: [id, ...data.removeFields],
+                },
               } as any);
             }
           };
           const handleChange = (name: string, id: string) => (
-            event: React.ChangeEvent<any>
+            event: React.ChangeEvent<any>,
           ) =>
             change({
               target: {
@@ -132,9 +129,9 @@ export const PageDetailsPage = decorate<Props>(
                   (f: PageField) =>
                     f.id === id
                       ? { ...f, [event.target.name]: event.target.value }
-                      : f
-                )
-              }
+                      : f,
+                ),
+              },
             } as any);
           return (
             <Toggle>
@@ -144,7 +141,7 @@ export const PageDetailsPage = decorate<Props>(
                     <Toggle>
                       {(
                         openedFieldRemoveDialog,
-                        { toggle: toggleFieldRemoveDialog }
+                        { toggle: toggleFieldRemoveDialog },
                       ) => (
                         <>
                           <Container width="md">
@@ -177,7 +174,7 @@ export const PageDetailsPage = decorate<Props>(
                                     onChange={handleChange("fields", field.id)}
                                     onDelete={handleFieldRemove(
                                       "fields",
-                                      field.id
+                                      field.id,
                                     )}
                                     onUpload={onUpload}
                                   />
@@ -189,11 +186,11 @@ export const PageDetailsPage = decorate<Props>(
                                     name="addFields"
                                     onChange={handleChange(
                                       "addFields",
-                                      field.id
+                                      field.id,
                                     )}
                                     onDelete={handleFieldRemove(
                                       "addFields",
-                                      field.id
+                                      field.id,
                                     )}
                                     onUpload={onUpload}
                                   />
@@ -228,7 +225,7 @@ export const PageDetailsPage = decorate<Props>(
                                     >
                                       {i18n.t(
                                         "Are you sure you want to remove {{ name }}?",
-                                        { name: page.name }
+                                        { name: page.name },
                                       )}
                                     </ActionDialog>
                                   )}
@@ -239,7 +236,7 @@ export const PageDetailsPage = decorate<Props>(
                                   {({
                                     change: handleAddFieldChange,
                                     data: addFieldData,
-                                    submit: addField
+                                    submit: addField,
                                   }) => (
                                     <ActionDialog
                                       show={openedFieldAddDialog}
@@ -286,6 +283,6 @@ export const PageDetailsPage = decorate<Props>(
         }}
       </Form>
     );
-  }
+  },
 );
 export default PageDetailsPage;

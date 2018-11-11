@@ -29,5 +29,6 @@ services:
       - INKSTER_SMTP_ADDR=dummy
       - INKSTER_SMTP_PASS=dummy
       - INKSTER_SMTP_PORT=dummy
+      - INKSTER_SECRET_KEY=plschangeme
     volumes:
       - ./panel/build:/go/src/app/panel/build

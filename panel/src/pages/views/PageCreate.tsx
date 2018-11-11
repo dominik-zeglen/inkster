@@ -55,8 +55,8 @@ export class PageCreate extends React.Component<Props, State> {
               }) => {
                 if (
                   data.createPage &&
-                  data.createPage.userErrors &&
-                  data.createPage.userErrors.length > 0
+                  data.createPage.errors &&
+                  data.createPage.errors.length > 0
                 ) {
                   handleError();
                 }

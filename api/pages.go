@@ -139,6 +139,7 @@ type UpdatePageArgs struct {
 }
 
 func cleanUpdatePageInput(
+	id int,
 	input *UpdatePageInput,
 	dataSource core.Adapter,
 ) (core.PageInput, []core.ValidationError, error) {
@@ -150,16 +151,18 @@ func cleanUpdatePageInput(
 	}
 
 	if input.Slug != nil {
-		_, err := dataSource.GetPageBySlug(*input.Slug)
+		foundPage, err := dataSource.GetPageBySlug(*input.Slug)
 		if err == nil {
-			validationErrors = append(
-				validationErrors,
-				core.ValidationError{
-					Code:  core.ErrNotUnique,
-					Field: "Slug",
-					Param: input.Slug,
-				},
-			)
+			if foundPage.ID != id {
+				validationErrors = append(
+					validationErrors,
+					core.ValidationError{
+						Code:  core.ErrNotUnique,
+						Field: "Slug",
+						Param: input.Slug,
+					},
+				)
+			}
 		}
 		pageInput.Slug = input.Slug
 	}
@@ -211,6 +214,7 @@ func (res *Resolver) UpdatePage(
 
 	if args.Input != nil || args.AddFields != nil || args.RemoveFields != nil {
 		pageInput, validationErrors, err := cleanUpdatePageInput(
+			localID,
 			args.Input,
 			res.dataSource,
 		)

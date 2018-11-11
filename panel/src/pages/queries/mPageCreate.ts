@@ -7,9 +7,9 @@ const mPageCreate = gql`
     $fields: [PageFieldCreateInput!]
   ) {
     createPage(input: { name: $name, parentId: $parentId, fields: $fields }) {
-      userErrors {
+      errors {
         field
-        message
+        code
       }
       page {
         id
@@ -37,9 +37,9 @@ export interface variables {
   }>;
 }
 export interface result {
-  userErrors: Array<{
+  errors: Array<{
     field: string;
-    message: string;
+    code: number;
   }>;
   page: {
     id: string;
