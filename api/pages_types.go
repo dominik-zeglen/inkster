@@ -76,6 +76,11 @@ type pageFieldResolver struct {
 	data       *core.PageField
 }
 
+func (res *pageFieldResolver) ID() gql.ID {
+	globalID := toGlobalID("pageField", res.data.ID)
+	return gql.ID(globalID)
+}
+
 func (res *pageFieldResolver) Name() string {
 	return res.data.Name
 }

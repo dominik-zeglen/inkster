@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/globalsign/mgo"
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -63,7 +63,7 @@ func (args createDirectoryArgs) validate(dataSource core.Adapter) (
 		}
 		_, err = dataSource.GetDirectory(localID)
 		if err != nil {
-			if err == mgo.ErrNotFound {
+			if err == pg.ErrNoRows {
 				validationErrors = append(validationErrors, core.ValidationError{
 					Code:  core.ErrDoesNotExist,
 					Field: "ParentID",
@@ -162,7 +162,7 @@ func (args updateDirectoryArgs) validate(dataSource core.Adapter) (
 			}
 			_, err = dataSource.GetDirectory(localID)
 			if err != nil {
-				if err == mgo.ErrNotFound {
+				if err == pg.ErrNoRows {
 					validationErrors = append(validationErrors, core.ValidationError{
 						Code:  core.ErrDoesNotExist,
 						Field: "ParentID",
@@ -201,7 +201,7 @@ func (res *Resolver) UpdateDirectory(
 	}
 
 	localID, err := fromGlobalID("directory", string(args.ID))
-	var localParentID *string
+	var localParentID *int
 	if err != nil {
 		return nil, err
 	}

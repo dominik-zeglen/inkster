@@ -78,7 +78,6 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
-		resetDatabase()
 		t.Run("Create page", func(t *testing.T) {
 			defer resetDatabase()
 
@@ -152,16 +151,18 @@ func TestPageAPI(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Remove page fields", func(t *testing.T) {
 			defer resetDatabase()
 
 			id := toGlobalID("page", test.Pages[0].ID)
+			pageFieldID := toGlobalID("pageField", test.Pages[0].Fields[0].ID)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"removeFields": ["%s"]
-			}`, id, test.Pages[0].Fields[0].Name)
+			}`, id, pageFieldID)
 			result, err := execQuery(updatePage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -189,7 +190,6 @@ func TestPageAPI(t *testing.T) {
 		})
 	})
 	t.Run("Queries", func(t *testing.T) {
-		resetDatabase()
 		t.Run("Get page", func(t *testing.T) {
 			query := `query getPage($id: ID!){
 				page(id: $id) {
@@ -240,7 +240,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("page", "000000000099")
+			id := toGlobalID("page", 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

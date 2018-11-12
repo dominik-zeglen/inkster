@@ -1,13 +1,15 @@
 version: '2'
 services: 
   db:
-    image: mongo:latest
+    image: library/postgres:latest
     ports:
-      - "27017:27017"
+      - "5432:5432"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=inkster
-      - MONGO_INITDB_ROOT_PASSWORD=inkster
-      - MONGO_INITDB_DATABASE=inkster
+      - POSTGRES_USER=inkster
+      - POSTGRES_PASSWORD=inkster
+      - POSTGRES_MULTIPLE_DATABASES=test_inkster
+    volumes:
+      - ./postgres/docker:/docker-entrypoint-initdb.d
   web:
     links:
       - db
@@ -17,8 +19,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - INKSTER_DB_URI=mongodb://inkster:inkster@db/admin
-      - INKSTER_DB_NAME=inkster
+      - POSTGRES_HOST=postgres://inkster:inkster@db/inkster?sslmode=disable
       - INKSTER_PORT=8000 
       - INKSTER_STATIC=static
       - INKSTER_SERVE_STATIC=1
@@ -28,5 +29,6 @@ services:
       - INKSTER_SMTP_ADDR=dummy
       - INKSTER_SMTP_PASS=dummy
       - INKSTER_SMTP_PORT=dummy
+      - INKSTER_SECRET_KEY=plschangeme
     volumes:
       - ./panel/build:/go/src/app/panel/build

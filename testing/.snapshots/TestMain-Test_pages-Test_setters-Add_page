@@ -1,18 +1,24 @@
 {
-    "id": "",
+    "id": 0,
     "createdAt": "2017-07-07T10:00:00.000Z",
     "updatedAt": "2017-07-07T10:00:00.000Z",
     "name": "New Page",
     "slug": "new-page",
-    "parentId": "000000000001",
+    "parentId": 1,
     "isPublished": false,
     "fields": [
         {
+            "id": 0,
+            "createdAt": "",
+            "updatedAt": "",
             "type": "text",
             "name": "Field 1",
             "value": "1"
         },
         {
+            "id": 0,
+            "createdAt": "",
+            "updatedAt": "",
             "type": "text",
             "name": "Field 2",
             "value": "Some text"

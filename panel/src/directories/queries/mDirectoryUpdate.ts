@@ -6,10 +6,16 @@ const mDirectoryUpdate = gql`
       id: $id
       input: { name: $name, isPublished: $isPublished }
     ) {
-      id
-      updatedAt
-      name
-      isPublished
+      errors {
+        code
+        field
+      }
+      directory {
+        id
+        updatedAt
+        name
+        isPublished
+      }
     }
   }
 `;

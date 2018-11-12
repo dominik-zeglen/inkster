@@ -1,4 +1,5 @@
 type PageField {
+  id: ID!
   name: String!
   type: String!
   value: String

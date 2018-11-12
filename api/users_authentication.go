@@ -75,7 +75,7 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 
 type verifyTokenResult struct {
 	result bool
-	userID *string
+	userID *int
 }
 
 type verifyTokenResultResolver struct {

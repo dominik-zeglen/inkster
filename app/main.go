@@ -11,18 +11,18 @@ import (
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/dominik-zeglen/inkster/mongodb"
-	"github.com/globalsign/mgo"
+	"github.com/dominik-zeglen/inkster/postgres"
+	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
 
 var schema *graphql.Schema
-var DataSource mongodb.Adapter
+var dataSource postgres.Adapter
 
 func checkEnv() {
 	vars := []string{
-		"INKSTER_DB_URI",
+		"POSTGRES_HOST",
 		"INKSTER_STATIC",
 		"INKSTER_PORT",
 		"INKSTER_SERVE_STATIC",
@@ -31,6 +31,7 @@ func checkEnv() {
 		"INKSTER_SMTP_ADDR",
 		"INKSTER_SMTP_PASS",
 		"INKSTER_SMTP_PORT",
+		"INKSTER_SECRET_KEY",
 	}
 	for _, env := range vars {
 		if os.Getenv(env) == "" {
@@ -45,22 +46,24 @@ func check(err error) {
 	}
 }
 
-func InitDb() mongodb.Adapter {
-	dataSource := mongodb.Adapter{
-		DBName: os.Getenv("INKSTER_DB_NAME"),
-	}
-	session, err := mgo.Dial(os.Getenv("INKSTER_DB_URI"))
+func InitDb() postgres.Adapter {
+	pgOptions, err := pg.ParseURL(os.Getenv("POSTGRES_HOST"))
 	if err != nil {
-		log.Fatal("ERROR: Database is offline.")
+		panic(err)
 	}
-	dataSource.Session = session
-	return dataSource
+
+	pgSession := pg.Connect(pgOptions)
+	pgAdapter := postgres.Adapter{
+		Session: pgSession,
+	}
+
+	return pgAdapter
 }
 
 func initApp() {
 	checkEnv()
 	var mailClient mailer.Mailer
-	DataSource = InitDb()
+	dataSource = InitDb()
 	if os.Getenv("INKSTER_DEBUG") == "1" {
 		mailClient = &mailer.MockMailClient{}
 	} else {
@@ -72,7 +75,7 @@ func initApp() {
 			os.Getenv("INKSTER_SMTP_PORT"),
 		)
 	}
-	resolver := api.NewResolver(&DataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
+	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
 	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
 }
 

@@ -8,7 +8,7 @@ import (
 // adding the same fields each time
 type Template struct {
 	BaseModel `bson:",inline"`
-	Name      string          `json:"name"`
+	Name      string          `sql:",notnull,unique" json:"name"`
 	Fields    []TemplateField `json:"fields"`
 }
 

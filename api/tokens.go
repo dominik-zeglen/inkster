@@ -12,7 +12,7 @@ const (
 
 // JWT claims
 type ActionTokenClaims struct {
-	ID            string
+	ID            int
 	AllowedAction Action
 	jwt.StandardClaims
 }

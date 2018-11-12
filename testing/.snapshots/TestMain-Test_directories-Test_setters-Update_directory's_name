@@ -1,8 +1,8 @@
 {
-    "id": "000000000004",
+    "id": 4,
     "createdAt": "2007-07-07T13:00:00.000Z",
     "updatedAt": "2017-07-07T10:00:00.000Z",
     "name": "Updated directory name",
-    "parentId": "000000000001",
+    "parentId": 1,
     "isPublished": false
 }

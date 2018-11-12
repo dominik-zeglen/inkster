@@ -44,8 +44,8 @@ func TestUserValidation(t *testing.T) {
 			User{
 				Active:   true,
 				Email:    EMAIL,
-				Password: PASSWD_HASH,
-				Salt:     PASSWD_SALT,
+				Password: []byte(PASSWD_HASH),
+				Salt:     []byte(PASSWD_SALT),
 			},
 			[]ValidationError{},
 		},
@@ -53,8 +53,8 @@ func TestUserValidation(t *testing.T) {
 			User{
 				Active:   true,
 				Email:    "notanemail",
-				Password: PASSWD_HASH,
-				Salt:     PASSWD_SALT,
+				Password: []byte(PASSWD_HASH),
+				Salt:     []byte(PASSWD_SALT),
 			},
 			[]ValidationError{
 				ValidationError{

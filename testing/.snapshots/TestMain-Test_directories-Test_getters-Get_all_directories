@@ -1,34 +1,34 @@
 [
     {
-        "id": "000000000001",
+        "id": 1,
         "createdAt": "2007-07-07T10:00:00.000Z",
         "updatedAt": "2007-07-07T10:00:00.000Z",
         "name": "Directory 1",
-        "parentId": "",
+        "parentId": 0,
         "isPublished": false
     },
     {
-        "id": "000000000002",
+        "id": 2,
         "createdAt": "2007-07-07T11:00:00.000Z",
         "updatedAt": "2007-07-07T11:00:00.000Z",
         "name": "Directory 2",
-        "parentId": "",
+        "parentId": 0,
         "isPublished": false
     },
     {
-        "id": "000000000003",
+        "id": 3,
         "createdAt": "2007-07-07T12:00:00.000Z",
         "updatedAt": "2007-07-07T12:00:00.000Z",
         "name": "Directory 3",
-        "parentId": "",
+        "parentId": 0,
         "isPublished": false
     },
     {
-        "id": "000000000004",
+        "id": 4,
         "createdAt": "2007-07-07T13:00:00.000Z",
         "updatedAt": "2007-07-07T13:00:00.000Z",
         "name": "Directory 1.1",
-        "parentId": "000000000001",
+        "parentId": 1,
         "isPublished": false
     }
 ]

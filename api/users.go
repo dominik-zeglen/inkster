@@ -6,6 +6,7 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -162,7 +163,7 @@ type UserUpdateMutationArgs struct {
 
 func (args UserUpdateMutationArgs) validate(
 	dataSource core.Adapter,
-	userID string,
+	userID int,
 ) (
 	[]core.ValidationError,
 	*core.User,
@@ -178,7 +179,11 @@ func (args UserUpdateMutationArgs) validate(
 
 	if args.Input.Email != nil && *args.Input.Email != user.Email {
 		_, err := dataSource.GetUserByEmail(*args.Input.Email)
-		if err == nil {
+		if err != nil {
+			if err != pg.ErrNoRows {
+				return errors, nil, err
+			}
+		} else {
 			errors = append(errors, core.ValidationError{
 				Code:  core.ErrNotUnique,
 				Field: "email",

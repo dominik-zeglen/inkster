@@ -61,7 +61,6 @@ func TestDirectoryAPI(t *testing.T) {
 			}
 		}`
 	t.Run("Mutations", func(t *testing.T) {
-		resetDatabase()
 		t.Run("Create directory", func(t *testing.T) {
 			defer resetDatabase()
 			parentID := toGlobalID("directory", test.Directories[0].ID)
@@ -105,7 +104,7 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Create directory in parent that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			parentID := toGlobalID("directory", "000000000005")
+			parentID := toGlobalID("directory", 5)
 			variables := fmt.Sprintf(`{
 				"input": {
 					"name": "New Directory",
@@ -219,7 +218,6 @@ func TestDirectoryAPI(t *testing.T) {
 	})
 
 	t.Run("Queries", func(t *testing.T) {
-		resetDatabase()
 		t.Run("Get directory", func(t *testing.T) {
 			query := `query GetDirectory($id: ID!){
 				getDirectory(id: $id) {
@@ -276,7 +274,7 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("directory", "000000000099")
+			id := toGlobalID("directory", 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

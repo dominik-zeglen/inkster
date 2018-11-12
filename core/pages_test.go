@@ -21,7 +21,7 @@ func TestPageValidation(t *testing.T) {
 		IsPublished: true,
 		Name:        "Example page",
 		Slug:        "example-page",
-		ParentID:    "000000000001",
+		ParentID:    1,
 	}
 
 	testSuites := []struct {

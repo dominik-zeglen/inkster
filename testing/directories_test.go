@@ -8,6 +8,7 @@ import (
 )
 
 func testDirectories(t *testing.T) {
+	dummyID := 0
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add directory", func(t *testing.T) {
 			defer resetDatabase()
@@ -16,8 +17,7 @@ func testDirectories(t *testing.T) {
 				ParentID: Directories[0].ID,
 			}
 			result, err := dataSource.AddDirectory(directory)
-			id := result.ID
-			result.ID = ""
+			result.ID = dummyID
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -26,9 +26,9 @@ func testDirectories(t *testing.T) {
 				t.Error(err)
 			}
 			cupaloy.SnapshotT(t, data)
-			dataSource.RemoveDirectory(id)
 		})
 		t.Run("Add directory without name", func(t *testing.T) {
+			defer resetDatabase()
 			directory := core.Directory{
 				ParentID: Directories[0].ID,
 			}
@@ -86,13 +86,6 @@ func testDirectories(t *testing.T) {
 				t.Error(err)
 			}
 		})
-		t.Run("Remove directory that does not exist", func(t *testing.T) {
-			defer resetDatabase()
-			err := dataSource.RemoveDirectory("000000000099")
-			if err == nil {
-				t.Error(ErrNoError)
-			}
-		})
 	})
 	t.Run("Test getters", func(t *testing.T) {
 		t.Run("Get directory", func(t *testing.T) {
@@ -107,7 +100,7 @@ func testDirectories(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Get directory that does not exist", func(t *testing.T) {
-			_, err := dataSource.GetDirectory("000000000099")
+			_, err := dataSource.GetDirectory(99)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -139,15 +132,16 @@ func testDirectories(t *testing.T) {
 	})
 	t.Run("Test complex behaviour", func(t *testing.T) {
 		t.Run("Build directory tree", func(t *testing.T) {
+			defer resetDatabase()
 			parent := core.Directory{
 				Name: "Parent",
 			}
-			parent.ID = "200000000000"
 			result, err := dataSource.AddDirectory(parent)
 			parentID := result.ID
 			if err != nil {
 				t.Fatal(err)
 			}
+			result.ID = 0
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -158,12 +152,11 @@ func testDirectories(t *testing.T) {
 				Name:     "Child",
 				ParentID: parentID,
 			}
-			child.ID = "200000000001"
 			result, err = dataSource.AddDirectory(child)
-			childID := result.ID
 			if err != nil {
 				t.Fatal(err)
 			}
+			result.ID = 0
 			data, err = ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -174,14 +167,14 @@ func testDirectories(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			for idx := range resultList {
+				resultList[idx].ID = 0
+			}
 			data, err = ToJSON(resultList)
 			if err != nil {
 				t.Error(err)
 			}
 			cupaloy.SnapshotMulti("Parent's children", data)
-
-			dataSource.RemoveDirectory(childID)
-			dataSource.RemoveDirectory(parentID)
 		})
 	})
 }

@@ -28,7 +28,7 @@ func (res *directoryResolver) IsPublished() bool {
 	return res.data.IsPublished
 }
 func (res *directoryResolver) Parent() *directoryResolver {
-	if res.data.ParentID == "" {
+	if res.data.ParentID == 0 {
 		return nil
 	}
 	parent, err := res.dataSource.GetDirectory(res.data.ParentID)

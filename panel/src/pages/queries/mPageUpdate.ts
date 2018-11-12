@@ -8,9 +8,9 @@ const mPageUpdate = gql`
     $remove: [String!]
   ) {
     updatePage(id: $id, input: $input, addFields: $add, removeFields: $remove) {
-      userErrors {
+      errors {
+        code
         field
-        message
       }
       page {
         id
@@ -19,6 +19,7 @@ const mPageUpdate = gql`
         slug
         isPublished
         fields {
+          id
           name
           type
           value

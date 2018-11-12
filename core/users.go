@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/sha512"
 	"fmt"
@@ -19,25 +20,25 @@ const (
 
 type User struct {
 	BaseModel `bson:",inline"`
-	Active    bool   `json:"active"`
-	Email     string `json:"email" validate:"required,email"`
-	Password  string `json:"password" validate:"required"`
-	Salt      string `json:"salt" validate:"required"`
+	Active    bool   `sql:",notnull" json:"active"`
+	Email     string `sql:",notnull,unique" json:"email" validate:"required,email"`
+	Password  []byte `sql:",notnull" json:"password" validate:"required"`
+	Salt      []byte `sql:",notnull" json:"salt" validate:"required"`
 }
 
 func (user User) AuthPassword(pass string) bool {
 	if !user.Active {
 		return false
 	}
-	hashedPassword := string(pbkdf2.Key(
+	hashedPassword := pbkdf2.Key(
 		[]byte(pass),
 		[]byte(user.Salt),
 		PW_HASH_ITER,
 		PW_HASH_BYTES,
 		sha512.New,
-	))
+	)
 
-	return hashedPassword == user.Password
+	return bytes.Compare(hashedPassword, user.Password) == 0
 }
 
 func (user *User) CreateRandomPassword() (string, error) {
@@ -55,19 +56,18 @@ func (user *User) CreatePassword(pass string) error {
 		return err
 	}
 
-	user.Salt = string(salt)
-	user.Password = string(pbkdf2.Key(
+	user.Salt = salt
+	user.Password = pbkdf2.Key(
 		[]byte(pass),
 		salt,
 		PW_HASH_ITER,
 		PW_HASH_BYTES,
 		sha512.New,
-	))
+	)
 
 	return nil
 }
 
-// FIXME: #16
 func (user User) Validate() []ValidationError {
 	return ValidateModel(user)
 }
@@ -78,6 +78,10 @@ func (user User) String() string {
 
 type UserInput struct {
 	Active   *bool
-	Email    *string
-	Password *string
+	Email    *string `validate:"omitempty,email"`
+	Password *string `validate:"omitempty,min=5"`
+}
+
+func (userInput UserInput) Validate() []ValidationError {
+	return ValidateModel(userInput)
 }

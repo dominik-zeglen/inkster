@@ -6,7 +6,7 @@ import (
 
 const (
 	DIR_NAME   = "directory name"
-	DIR_PARENT = "parentID"
+	DIR_PARENT = 2
 )
 
 func TestDirectoryValidation(t *testing.T) {

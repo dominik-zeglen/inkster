@@ -23,4 +23,10 @@ server: schema ; $(info $(M) Starting development server...)
 image: ; $(info $(M) Building application image...)
 	docker build -t inkster .
 
+migrate: ; $(info $(M) Migrating database...)
+	go run postgres/migrations/*.go up
+
+test: schema migrate ; $(info $(M) Testing application...)
+	GOCACHE=off go test ./... -p 1
+
 .PHONY: build clean dep image schema setup server

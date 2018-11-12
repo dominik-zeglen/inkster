@@ -9,11 +9,11 @@ import (
 
 type templateUpdateResult struct {
 	userErrors *[]userError
-	templateID string
+	templateID int
 }
 type templateRemoveResult struct {
 	userErrors *[]userError
-	templateID string
+	templateID int
 }
 
 // Type resolvers

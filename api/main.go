@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/dominik-zeglen/inkster/core"
@@ -25,21 +26,21 @@ func NewResolver(dataSource core.Adapter, mailer mailer.Mailer, key string) Reso
 	}
 }
 
-func toGlobalID(dataType string, ID string) string {
-	data := dataType + ":" + ID
+func toGlobalID(dataType string, ID int) string {
+	data := dataType + ":" + strconv.Itoa(ID)
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
-func fromGlobalID(dataType string, ID string) (string, error) {
+func fromGlobalID(dataType string, ID string) (int, error) {
 	data, err := base64.StdEncoding.DecodeString(ID)
 	if err != nil {
 		panic(err)
 	}
 	portionedData := strings.Split(string(data), ":")
 	if portionedData[0] == dataType {
-		return portionedData[1], nil
+		return strconv.Atoi(portionedData[1])
 	}
-	return "", fmt.Errorf("Object types do not match")
+	return 0, fmt.Errorf("Object types do not match")
 }
 
 type userError struct {

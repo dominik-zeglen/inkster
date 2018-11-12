@@ -20,13 +20,15 @@ export const DirectoryRoot = () => (
         {navigate => {
           const handleRowClick = (id: string) => () =>
             navigate(urls.directoryDetails(id));
-          const handleCreate = (data: { createDirectory: { id: string } }) => {
+          const handleCreate = (data: {
+            createDirectory: { directory: { id: string } };
+          }) => {
             notify({
               text: i18n.t("Created directory", {
                 context: "notification",
               }),
             });
-            navigate(urls.directoryDetails(data.createDirectory.id));
+            navigate(urls.directoryDetails(data.createDirectory.directory.id));
           };
           return (
             <Query query={qRootDirectories} fetchPolicy="network-only">

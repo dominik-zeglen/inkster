@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -20,7 +21,11 @@ func (res *Resolver) Page(
 	}
 	result, err := res.dataSource.GetPage(localID)
 	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
+
 	}
 
 	if !result.IsPublished && !checkPermission(ctx) {

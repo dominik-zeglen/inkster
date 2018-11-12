@@ -11,7 +11,7 @@ import (
 
 type UserClaims struct {
 	Email string `json:"email"`
-	ID    string `json:"id"`
+	ID    int    `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -42,12 +42,15 @@ func WithJwt(next http.Handler, key string) http.Handler {
 					u := ctx.Value("user")
 					if u != nil {
 						next.ServeHTTP(w, r.WithContext(ctx))
+						return
 					}
 				} else {
 					next.ServeHTTP(w, r)
+					return
 				}
 			} else {
 				next.ServeHTTP(w, r)
+				return
 			}
 		},
 	)

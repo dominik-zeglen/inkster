@@ -10,6 +10,7 @@ const qPage = gql`
       slug
       isPublished
       fields {
+        id
         name
         type
         value

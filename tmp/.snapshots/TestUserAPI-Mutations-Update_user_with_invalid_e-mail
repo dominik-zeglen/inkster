@@ -1,0 +1,13 @@
+{
+    "data": {
+        "updateUser": null
+    },
+    "errors": [
+        {
+            "message": "pg: Scan(nonsettable string)",
+            "path": [
+                "updateUser"
+            ]
+        }
+    ]
+}

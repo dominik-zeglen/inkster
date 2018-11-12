@@ -8,6 +8,7 @@ import (
 )
 
 func testUsers(t *testing.T) {
+	dummyID := 0
 	t.Run("Test setters", func(t *testing.T) {
 		t.Run("Add user", func(t *testing.T) {
 			defer resetDatabase()
@@ -17,12 +18,13 @@ func testUsers(t *testing.T) {
 			}
 			user.CreatePassword("passwd")
 			result, err := dataSource.AddUser(user)
-			result.ID = ""
-			result.Password = ""
-			result.Salt = ""
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			result.ID = dummyID
+			result.Password = []byte("")
+			result.Salt = []byte("")
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -53,8 +55,8 @@ func testUsers(t *testing.T) {
 				t.Fatal()
 			}
 
-			result.Password = ""
-			result.Salt = ""
+			result.Password = []byte("")
+			result.Salt = []byte("")
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -65,7 +67,7 @@ func testUsers(t *testing.T) {
 		t.Run("Update user's name", func(t *testing.T) {
 			defer resetDatabase()
 
-			email := "Updated user email"
+			email := "updated.email@example.com"
 			result, err := dataSource.UpdateUser(Users[0].ID, core.UserInput{
 				Email: &email,
 			})
@@ -73,8 +75,8 @@ func testUsers(t *testing.T) {
 				t.Error(err)
 			}
 
-			result.Password = ""
-			result.Salt = ""
+			result.Password = []byte("")
+			result.Salt = []byte("")
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -89,13 +91,6 @@ func testUsers(t *testing.T) {
 				t.Error(err)
 			}
 		})
-		t.Run("Remove user that does not exist", func(t *testing.T) {
-			defer resetDatabase()
-			err := dataSource.RemoveUser("000000000099")
-			if err == nil {
-				t.Error(ErrNoError)
-			}
-		})
 	})
 	t.Run("Test getters", func(t *testing.T) {
 		t.Run("Get user", func(t *testing.T) {
@@ -103,8 +98,8 @@ func testUsers(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			result.Password = ""
-			result.Salt = ""
+			result.Password = []byte("")
+			result.Salt = []byte("")
 			data, err := ToJSON(result)
 			if err != nil {
 				t.Error(err)
@@ -112,7 +107,7 @@ func testUsers(t *testing.T) {
 			cupaloy.SnapshotT(t, data)
 		})
 		t.Run("Get user that does not exist", func(t *testing.T) {
-			_, err := dataSource.GetUser("000000000099")
+			_, err := dataSource.GetUser(99)
 			if err == nil {
 				t.Error(ErrNoError)
 			}
@@ -120,8 +115,8 @@ func testUsers(t *testing.T) {
 		t.Run("Get all users", func(t *testing.T) {
 			result, _ := dataSource.GetUserList()
 			for index := range result {
-				result[index].Password = ""
-				result[index].Salt = ""
+				result[index].Password = []byte("")
+				result[index].Salt = []byte("")
 			}
 			data, err := ToJSON(result)
 			if err != nil {

@@ -1,8 +1,8 @@
 {
-    "id": "200000000000",
+    "id": 0,
     "createdAt": "2017-07-07T10:00:00.000Z",
     "updatedAt": "2017-07-07T10:00:00.000Z",
     "name": "Parent",
-    "parentId": "",
+    "parentId": 0,
     "isPublished": false
 }
