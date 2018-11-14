@@ -3,17 +3,19 @@ package app
 import (
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
 
 type GraphQLHandler struct {
 	http.Handler
+	schema    *graphql.Schema
+	secretKey string
 }
 
-func (_ GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (handler GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		dat, err := ioutil.ReadFile("app/graphql.html")
 		check(err)
@@ -21,12 +23,20 @@ func (_ GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		check(err)
 	} else {
 		middleware.WithJwt(
-			&relay.Handler{Schema: schema},
-			os.Getenv("INKSTER_SECRET_KEY"),
+			&relay.Handler{
+				Schema: handler.schema,
+			},
+			handler.secretKey,
 		).ServeHTTP(w, r)
 	}
 }
 
-func newGraphQLHandler() GraphQLHandler {
-	return GraphQLHandler{}
+func newGraphQLHandler(
+	schema *graphql.Schema,
+	secretKey string,
+) GraphQLHandler {
+	return GraphQLHandler{
+		schema:    schema,
+		secretKey: secretKey,
+	}
 }

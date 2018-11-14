@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
+	"time"
 
 	"github.com/dominik-zeglen/inkster/api"
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
@@ -15,70 +15,85 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
-var schema *graphql.Schema
-var dataSource postgres.Adapter
-
-func checkEnv() {
-	vars := []string{
-		"POSTGRES_HOST",
-		"INKSTER_STATIC",
-		"INKSTER_PORT",
-		"INKSTER_SERVE_STATIC",
-		"INKSTER_SMTP_HOST",
-		"INKSTER_SMTP_LOGIN",
-		"INKSTER_SMTP_ADDR",
-		"INKSTER_SMTP_PASS",
-		"INKSTER_SMTP_PORT",
-		"INKSTER_SECRET_KEY",
-	}
-	for _, env := range vars {
-		if os.Getenv(env) == "" {
-			log.Fatalf("ERROR: Missing environment variable: %s", env)
-		}
-	}
-}
-
 func check(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func InitDb() postgres.Adapter {
-	pgOptions, err := pg.ParseURL(os.Getenv("POSTGRES_HOST"))
+type AppServer struct {
+	Config     AppConfig
+	DataSource postgres.Adapter
+	MailClient mailer.Mailer
+	Schema     *graphql.Schema
+}
+
+func (app *AppServer) initDataSource() *AppServer {
+	pgOptions, err := pg.ParseURL(app.Config.Postgres.URI)
 	if err != nil {
 		panic(err)
 	}
 
 	pgSession := pg.Connect(pgOptions)
-	pgAdapter := postgres.Adapter{
+	if app.Config.Postgres.LogQueries {
+		pgSession.OnQueryProcessed(func(event *pg.QueryProcessedEvent) {
+			query, err := event.FormattedQuery()
+			if err != nil {
+				panic(err)
+			}
+
+			log.Printf("%s %s", time.Since(event.StartTime), query)
+		})
+	}
+
+	app.DataSource = postgres.Adapter{
 		Session: pgSession,
 	}
 
-	return pgAdapter
+	return app
 }
 
-func initApp() {
-	checkEnv()
-	var mailClient mailer.Mailer
-	dataSource = InitDb()
-	if os.Getenv("INKSTER_DEBUG") == "1" {
-		mailClient = &mailer.MockMailClient{}
+func (app *AppServer) initMailer() *AppServer {
+	if app.Config.SMTP.UseDummy {
+		app.MailClient = &mailer.MockMailClient{}
 	} else {
-		mailClient = mailer.NewSmtpMailClient(
-			os.Getenv("INKSTER_SMTP_LOGIN"),
-			os.Getenv("INKSTER_SMTP_ADDR"),
-			os.Getenv("INKSTER_SMTP_PASS"),
-			os.Getenv("INKSTER_SMTP_HOST"),
-			os.Getenv("INKSTER_SMTP_PORT"),
+		app.MailClient = mailer.NewSmtpMailClient(
+			app.Config.SMTP.Login,
+			app.Config.SMTP.Address,
+			app.Config.SMTP.Password,
+			app.Config.SMTP.Host,
+			app.Config.SMTP.Port,
 		)
 	}
-	resolver := api.NewResolver(&dataSource, mailClient, os.Getenv("INKSTER_SECRET_KEY"))
-	schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
+
+	return app
 }
 
-func Run() {
-	initApp()
+func (app *AppServer) initSchema() *AppServer {
+	resolver := api.NewResolver(
+		&app.DataSource,
+		app.MailClient,
+		app.Config.Server.SecretKey,
+	)
+	app.Schema = graphql.MustParseSchema(apiSchema.String(), &resolver)
+
+	return app
+}
+
+func (app *AppServer) Init(configFilePath string) *AppServer {
+	appConfig, err := LoadConfig(configFilePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app.Config = *appConfig
+	return app.
+		initDataSource().
+		initMailer().
+		initSchema()
+}
+
+func (app *AppServer) Run() {
 	http.Handle("/panel/static/",
 		http.StripPrefix(
 			"/panel/static/",
@@ -87,7 +102,6 @@ func Run() {
 	http.Handle("/panel/",
 		http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
-				log.Println(r.URL)
 				dat, err := ioutil.ReadFile("panel/build/index.html")
 				check(err)
 				_, err = w.Write(dat)
@@ -95,16 +109,22 @@ func Run() {
 			},
 		),
 	)
-	if os.Getenv("INKSTER_SERVE_STATIC") == "1" {
+	if app.Config.Server.ServeStatic {
 		http.Handle("/static/",
 			http.StripPrefix(
 				"/static/",
-				http.FileServer(http.Dir(os.Getenv("INKSTER_STATIC"))),
+				http.FileServer(http.Dir(app.Config.Server.StaticPath)),
 			))
 	}
-	http.Handle("/graphql/", newGraphQLHandler())
+	http.Handle("/graphql/", newGraphQLHandler(
+		app.Schema,
+		app.Config.Server.SecretKey,
+	))
 	http.Handle("/upload", http.HandlerFunc(api.UploadHandler))
 
-	log.Printf("Running server on port %s\n", os.Getenv("INKSTER_PORT"))
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))
+	log.Printf("Running server on port %s\n", app.Config.Server.Port)
+	log.Fatal(http.ListenAndServe(
+		fmt.Sprintf(":%s", app.Config.Server.Port),
+		nil,
+	))
 }
