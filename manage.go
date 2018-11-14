@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/dominik-zeglen/inkster/api/schema"
-	serverApp "github.com/dominik-zeglen/inkster/app"
+	server "github.com/dominik-zeglen/inkster/app"
 	"github.com/dominik-zeglen/inkster/core"
 )
 
@@ -16,13 +16,16 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		if c.NArg() > 0 {
 			operation := c.Args().Get(0)
+			serverApp := server.AppServer{}
+			serverApp.Init("config.toml")
+
 			if operation == "runserver" {
 				serverApp.Run()
 				return nil
 			}
 
 			if operation == "add-user" {
-				dataSource := serverApp.InitDb()
+				dataSource := serverApp.DataSource
 				email := c.Args().Get(1)
 				password := c.Args().Get(2)
 				newUser := core.User{

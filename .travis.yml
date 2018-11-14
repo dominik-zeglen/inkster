@@ -17,5 +17,6 @@ env:
     - POSTGRES_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
     - INKSTER_PORT=8000 
     - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
+    - INKSTER_SECRET_KEY=secret
 addons:
   postgresql: 9.6
