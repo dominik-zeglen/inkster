@@ -1,13 +1,48 @@
 {
-    "errors": [
-        {
-            "message": "Cannot query field \"pages\" on type \"Query\". Did you mean \"page\"?",
-            "locations": [
-                {
-                    "line": 2,
-                    "column": 5
-                }
-            ]
-        }
-    ]
+    "data": {
+        "pages": [
+            {
+                "id": "cGFnZToz",
+                "createdAt": "2007-07-07T12:00:00.000Z",
+                "updatedAt": "2007-07-07T12:00:00.000Z",
+                "name": "Page 3",
+                "slug": "page-3",
+                "isPublished": false,
+                "fields": [
+                    {
+                        "name": "Field 5",
+                        "type": "text"
+                    }
+                ]
+            },
+            {
+                "id": "cGFnZToz",
+                "createdAt": "2007-07-07T12:00:00.000Z",
+                "updatedAt": "2007-07-07T12:00:00.000Z",
+                "name": "Page 3",
+                "slug": "page-3",
+                "isPublished": false,
+                "fields": [
+                    {
+                        "name": "Field 5",
+                        "type": "text"
+                    }
+                ]
+            },
+            {
+                "id": "cGFnZToz",
+                "createdAt": "2007-07-07T12:00:00.000Z",
+                "updatedAt": "2007-07-07T12:00:00.000Z",
+                "name": "Page 3",
+                "slug": "page-3",
+                "isPublished": false,
+                "fields": [
+                    {
+                        "name": "Field 5",
+                        "type": "text"
+                    }
+                ]
+            }
+        ]
+    }
 }

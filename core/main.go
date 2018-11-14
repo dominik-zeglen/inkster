@@ -23,6 +23,7 @@ type Adapter interface {
 	AddPageField(int, PageField) error
 	GetPage(int) (Page, error)
 	GetPageBySlug(string) (Page, error)
+	GetPages() ([]Page, error)
 	GetPagesFromDirectory(int) ([]Page, error)
 	UpdatePage(int, PageInput) error
 	RemovePage(int) error
