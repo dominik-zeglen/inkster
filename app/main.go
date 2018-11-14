@@ -10,11 +10,9 @@ import (
 	"github.com/dominik-zeglen/inkster/api"
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
-	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/postgres"
 	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
-	"github.com/graph-gophers/graphql-go/relay"
 )
 
 var schema *graphql.Schema
@@ -104,24 +102,8 @@ func Run() {
 				http.FileServer(http.Dir(os.Getenv("INKSTER_STATIC"))),
 			))
 	}
-	http.Handle("/graphiql/",
-		http.HandlerFunc(
-			func(w http.ResponseWriter, r *http.Request) {
-				dat, err := ioutil.ReadFile("app/graphiql.html")
-				check(err)
-				_, err = w.Write(dat)
-				check(err)
-			},
-		),
-	)
+	http.Handle("/graphql/", newGraphQLHandler())
 	http.Handle("/upload", http.HandlerFunc(api.UploadHandler))
-
-	http.Handle("/graphql/",
-		middleware.WithJwt(
-			&relay.Handler{Schema: schema},
-			os.Getenv("INKSTER_SECRET_KEY"),
-		),
-	)
 
 	log.Printf("Running server on port %s\n", os.Getenv("INKSTER_PORT"))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("INKSTER_PORT")), nil))
