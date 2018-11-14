@@ -110,6 +110,7 @@ type Query {
   templates: [Template]
 
   page(id: ID!): Page
+  pages: [Page]
 
   user(id: ID!): User
   users: [User]

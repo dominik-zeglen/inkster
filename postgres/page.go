@@ -133,6 +133,18 @@ func (adapter Adapter) GetPageBySlug(slug string) (core.Page, error) {
 	return page, err
 }
 
+func (adapter Adapter) GetPages() ([]core.Page, error) {
+	pages := []core.Page{}
+
+	err := adapter.
+		Session.
+		Model(&pages).
+		Relation("Fields").
+		Select()
+
+	return pages, err
+}
+
 // GetPagesFromDirectory allows user to fetch pages by their parentId from database
 func (adapter Adapter) GetPagesFromDirectory(id int) ([]core.Page, error) {
 	pages := []core.Page{}

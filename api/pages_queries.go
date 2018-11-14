@@ -37,3 +37,24 @@ func (res *Resolver) Page(
 		data:       &result,
 	}, nil
 }
+
+type pagesArgs struct{}
+
+func (res *Resolver) Pages(
+	ctx context.Context,
+) (*[]*pageResolver, error) {
+	pages, err := res.dataSource.GetPages()
+	if err != nil {
+		return nil, err
+	}
+
+	resolvers := make([]*pageResolver, len(pages))
+	for i, page := range pages {
+		resolvers[i] = &pageResolver{
+			dataSource: res.dataSource,
+			data:       &page,
+		}
+	}
+
+	return &resolvers, nil
+}
