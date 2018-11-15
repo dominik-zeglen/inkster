@@ -10,6 +10,7 @@ import (
 	"github.com/dominik-zeglen/inkster/api"
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/postgres"
 	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
@@ -116,11 +117,17 @@ func (app *AppServer) Run() {
 				http.FileServer(http.Dir(app.Config.Server.StaticPath)),
 			))
 	}
-	http.Handle("/graphql/", newGraphQLHandler(
-		app.Schema,
-		app.Config.Server.SecretKey,
+	http.Handle("/graphql/", middleware.WithCors(
+		app.Config.Server.AllowedHosts,
+		newGraphQLHandler(
+			app.Schema,
+			app.Config.Server.SecretKey,
+		),
 	))
-	http.Handle("/upload", http.HandlerFunc(api.UploadHandler))
+	http.Handle("/upload", middleware.WithCors(
+		app.Config.Server.AllowedHosts,
+		http.HandlerFunc(api.UploadHandler),
+	))
 
 	log.Printf("Running server on port %s\n", app.Config.Server.Port)
 	log.Fatal(http.ListenAndServe(
