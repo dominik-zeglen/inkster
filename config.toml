@@ -1,4 +1,7 @@
 [server]
+allowed_hosts = [
+    'http://localhost:3000'
+]
 serve_static = false
 static_path = "./"
 

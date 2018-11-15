@@ -18,10 +18,11 @@ type miscConfig struct {
 }
 
 type serverConfig struct {
-	Port        string
-	SecretKey   string
-	ServeStatic bool   `toml:"serve_static"`
-	StaticPath  string `toml:"static_path"`
+	AllowedHosts []string `toml:"allowed_hosts"`
+	Port         string
+	SecretKey    string
+	ServeStatic  bool   `toml:"serve_static"`
+	StaticPath   string `toml:"static_path"`
 }
 
 type smtpConfig struct {

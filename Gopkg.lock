@@ -178,6 +178,14 @@
   revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
+  digest = "1:b0c25f00bad20d783d259af2af8666969e2fc343fa0dc9efe52936bbd67fb758"
+  name = "github.com/rs/cors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9a47f48565a795472d43519dd49aac781f3034fb"
+  version = "v1.6.0"
+
+[[projects]]
   branch = "master"
   digest = "1:f92f6956e4059f6a3efc14924d2dd58ba90da25cc57fe07ae3779ef2f5e0c5f2"
   name = "golang.org/x/crypto"
@@ -242,6 +250,7 @@
     "github.com/graph-gophers/graphql-go/relay",
     "github.com/jteeuwen/go-bindata",
     "github.com/lib/pq",
+    "github.com/rs/cors",
     "golang.org/x/crypto/pbkdf2",
     "gopkg.in/go-playground/validator.v9",
     "gopkg.in/urfave/cli.v1",
