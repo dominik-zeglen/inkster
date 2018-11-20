@@ -49,7 +49,15 @@ func (res *directoryResolver) Parent() *directoryResolver {
 }
 func (res *directoryResolver) Children() *[]*directoryResolver {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetDirectoryChildrenList(res.data.ID)
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Where("parent_id = ?", res.data.ID).
+		Select()
+
 	if err != nil {
 		panic(err)
 	}
