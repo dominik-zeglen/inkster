@@ -14,7 +14,7 @@ type loginResult struct {
 }
 
 type loginResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       loginResult
 }
 
@@ -79,7 +79,7 @@ type verifyTokenResult struct {
 }
 
 type verifyTokenResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       verifyTokenResult
 }
 

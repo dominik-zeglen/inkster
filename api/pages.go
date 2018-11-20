@@ -13,7 +13,7 @@ type pageCreateResult struct {
 }
 
 type pageCreateResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       pageCreateResult
 }
 
@@ -44,7 +44,7 @@ type pageRemoveResult struct {
 }
 
 type pageRemoveResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       pageRemoveResult
 }
 
@@ -141,7 +141,7 @@ type UpdatePageArgs struct {
 func cleanUpdatePageInput(
 	id int,
 	input *UpdatePageInput,
-	dataSource core.Adapter,
+	dataSource core.AbstractDataContext,
 ) (core.PageInput, []core.ValidationError, error) {
 	validationErrors := []core.ValidationError{}
 	pageInput := core.PageInput{}

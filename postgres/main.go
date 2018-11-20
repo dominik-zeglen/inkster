@@ -9,7 +9,7 @@ import (
 
 // Adapter is an abstraction over mongodb session
 type Adapter struct {
-	core.Adapter
+	core.AbstractDataContext
 
 	GetTime func() string
 	Session *pg.DB

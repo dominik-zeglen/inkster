@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -19,9 +20,15 @@ func (res *Resolver) GetDirectory(
 	if err != nil {
 		return nil, err
 	}
-	directory, err := res.
-		dataSource.
-		GetDirectory(localID)
+
+	directory := core.Directory{}
+	directory.ID = localID
+	err = dataSource.
+		DB().
+		Model(&directory).
+		WherePK().
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, nil

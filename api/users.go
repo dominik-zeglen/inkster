@@ -16,7 +16,7 @@ type userOperationResult struct {
 }
 
 type userOperationResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       userOperationResult
 }
 
@@ -162,7 +162,7 @@ type UserUpdateMutationArgs struct {
 }
 
 func (args UserUpdateMutationArgs) validate(
-	dataSource core.Adapter,
+	dataSource core.AbstractDataContext,
 	userID int,
 ) (
 	[]core.ValidationError,

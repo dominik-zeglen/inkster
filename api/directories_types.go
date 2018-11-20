@@ -7,7 +7,7 @@ import (
 
 // Type resolvers
 type directoryResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       *core.Directory
 }
 
@@ -31,7 +31,14 @@ func (res *directoryResolver) Parent() *directoryResolver {
 	if res.data.ParentID == 0 {
 		return nil
 	}
-	parent, err := res.dataSource.GetDirectory(res.data.ParentID)
+	parent := core.Directory{}
+	parent.ID = res.data.ParentID
+	err := dataSource.
+		DB().
+		Model(&parent).
+		WherePK().
+		Select()
+
 	if err != nil {
 		panic(err)
 	}

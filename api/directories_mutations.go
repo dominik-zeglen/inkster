@@ -14,7 +14,7 @@ type directoryOperationResult struct {
 }
 
 type directoryOperationResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       directoryOperationResult
 }
 
@@ -50,7 +50,7 @@ type createDirectoryArgs struct {
 	Input directoryAddInput `validate:"dive"`
 }
 
-func (args createDirectoryArgs) validate(dataSource core.Adapter) (
+func (args createDirectoryArgs) validate(dataSource core.AbstractDataContext) (
 	[]core.ValidationError,
 	error,
 ) {
@@ -61,7 +61,15 @@ func (args createDirectoryArgs) validate(dataSource core.Adapter) (
 		if err != nil {
 			return nil, err
 		}
-		_, err = dataSource.GetDirectory(localID)
+
+		directory := core.Directory{}
+		directory.ID = localID
+		err = dataSource.
+			DB().
+			Model(&directory).
+			WherePK().
+			Select()
+
 		if err != nil {
 			if err == pg.ErrNoRows {
 				validationErrors = append(validationErrors, core.ValidationError{
@@ -86,21 +94,16 @@ func (res *Resolver) CreateDirectory(
 		return nil, errNoPermissions
 	}
 
-	var directory core.Directory
+	directory := core.CreateDirectory(res.dataSource)
+	directory.Name = args.Input.Name
+
 	input := args.Input
 	if input.ParentID != nil {
 		parentID, err := fromGlobalID("directory", *input.ParentID)
 		if err != nil {
 			return nil, err
 		}
-		directory = core.Directory{
-			Name:     input.Name,
-			ParentID: parentID,
-		}
-	} else {
-		directory = core.Directory{
-			Name: input.Name,
-		}
+		directory.ParentID = parentID
 	}
 	if input.IsPublished != nil {
 		directory.IsPublished = *input.IsPublished
@@ -120,7 +123,11 @@ func (res *Resolver) CreateDirectory(
 		}, nil
 	}
 
-	directory, err = res.dataSource.AddDirectory(directory)
+	_, err = res.dataSource.
+		DB().
+		Model(&directory).
+		Insert()
+
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +149,7 @@ type updateDirectoryArgs struct {
 	}
 }
 
-func (args updateDirectoryArgs) validate(dataSource core.Adapter) (
+func (args updateDirectoryArgs) validate(dataSource core.AbstractDataContext) (
 	[]core.ValidationError,
 	error,
 ) {
@@ -160,7 +167,13 @@ func (args updateDirectoryArgs) validate(dataSource core.Adapter) (
 			if err != nil {
 				return nil, err
 			}
-			_, err = dataSource.GetDirectory(localID)
+			directory := core.Directory{}
+			directory.ID = localID
+			err = dataSource.
+				DB().
+				Model(&directory).
+				WherePK().
+				Select()
 			if err != nil {
 				if err == pg.ErrNoRows {
 					validationErrors = append(validationErrors, core.ValidationError{
@@ -220,7 +233,15 @@ func (res *Resolver) UpdateDirectory(
 	if err != nil {
 		return nil, err
 	}
-	directory, err := res.dataSource.GetDirectory(localID)
+
+	directory := core.Directory{}
+	directory.ID = localID
+	err = dataSource.
+		DB().
+		Model(&directory).
+		WherePK().
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

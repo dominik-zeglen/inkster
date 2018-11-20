@@ -18,19 +18,19 @@ type templateRemoveResult struct {
 
 // Type resolvers
 type templateResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       *core.Template
 }
 type templateFieldResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       *core.TemplateField
 }
 type templateUpdateResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       templateUpdateResult
 }
 type templateRemoveResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       templateRemoveResult
 }
 
