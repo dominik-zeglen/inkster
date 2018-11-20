@@ -75,7 +75,15 @@ func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 
 func (res *Resolver) GetRootDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetRootDirectoryList()
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Where("parent_id IS NULL OR parent_id = 0").
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, nil
