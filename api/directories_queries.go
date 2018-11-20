@@ -47,10 +47,17 @@ func (res *Resolver) GetDirectory(
 
 func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetDirectoryList()
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
-			return nil, nil
+			return &[]*directoryResolver{}, nil
 		}
 		return nil, err
 	}

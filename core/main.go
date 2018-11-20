@@ -8,7 +8,6 @@ import (
 
 // Adapter interface provides abstraction over different data sources
 type AbstractDataContext interface {
-	GetDirectoryList() ([]Directory, error)
 	GetRootDirectoryList() ([]Directory, error)
 	GetDirectoryChildrenList(int) ([]Directory, error)
 	UpdateDirectory(int, DirectoryInput) error
