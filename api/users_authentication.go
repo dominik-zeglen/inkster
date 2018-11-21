@@ -91,7 +91,15 @@ func (res *verifyTokenResultResolver) User() (*userResolver, error) {
 	if res.data.userID == nil {
 		return nil, nil
 	}
-	user, err := res.dataSource.GetUser(*res.data.userID)
+	user := core.User{}
+	user.ID = *res.data.userID
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

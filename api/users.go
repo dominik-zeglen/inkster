@@ -172,13 +172,27 @@ func (args UserUpdateMutationArgs) validate(
 	errors := []core.ValidationError{}
 	errors = append(errors, core.ValidateModel(args)...)
 
-	user, err := dataSource.GetUser(userID)
+	user := core.User{}
+	user.ID = userID
+
+	err := dataSource.
+		DB().
+		Model(&user).
+		WherePK().
+		Select()
+
 	if err != nil {
 		return errors, nil, err
 	}
 
 	if args.Input.Email != nil && *args.Input.Email != user.Email {
-		_, err := dataSource.GetUserByEmail(*args.Input.Email)
+		user := core.User{}
+		err := dataSource.
+			DB().
+			Model(&user).
+			Where("email = ?", *args.Input.Email).
+			First()
+
 		if err != nil {
 			if err != pg.ErrNoRows {
 				return errors, nil, err

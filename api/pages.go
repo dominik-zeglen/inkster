@@ -151,7 +151,14 @@ func cleanUpdatePageInput(
 	}
 
 	if input.Slug != nil {
-		foundPage, err := dataSource.GetPageBySlug(*input.Slug)
+		foundPage := core.Page{}
+
+		err := dataSource.
+			DB().
+			Model(&foundPage).
+			Where("slug = ?", &input.Slug).
+			Select()
+
 		if err == nil {
 			if foundPage.ID != id {
 				validationErrors = append(
@@ -207,7 +214,17 @@ func (res *Resolver) UpdatePage(
 	if err != nil {
 		return nil, err
 	}
-	page, err := res.dataSource.GetPage(localID)
+
+	page := core.Page{}
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&page).
+		Where("id = ?", localID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}
@@ -266,7 +283,17 @@ func (res *Resolver) UpdatePage(
 			return nil, err
 		}
 	}
-	page, err = res.dataSource.GetPage(localID)
+
+	page = core.Page{}
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&page).
+		Where("id = ?", localID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

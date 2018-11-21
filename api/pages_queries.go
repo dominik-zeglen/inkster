@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -19,7 +20,17 @@ func (res *Resolver) Page(
 	if err != nil {
 		return nil, err
 	}
-	result, err := res.dataSource.GetPage(localID)
+
+	page := core.Page{}
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&page).
+		Where("id = ?", localID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, nil
@@ -28,13 +39,13 @@ func (res *Resolver) Page(
 
 	}
 
-	if !result.IsPublished && !checkPermission(ctx) {
+	if !page.IsPublished && !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
 
 	return &pageResolver{
 		dataSource: res.dataSource,
-		data:       &result,
+		data:       &page,
 	}, nil
 }
 
@@ -43,7 +54,14 @@ type pagesArgs struct{}
 func (res *Resolver) Pages(
 	ctx context.Context,
 ) (*[]*pageResolver, error) {
-	pages, err := res.dataSource.GetPages()
+	pages := []core.Page{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&pages).
+		Relation("Fields").
+		Select()
 	if err != nil {
 		return nil, err
 	}

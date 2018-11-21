@@ -58,7 +58,16 @@ func (res *Resolver) ResetUserPassword(
 				return nil, errors.New("Invalid token claims")
 			}
 
-			user, err := res.dataSource.GetUser(claims.ID)
+			user := core.User{}
+			user.ID = claims.ID
+
+			err := res.
+				dataSource.
+				DB().
+				Model(&user).
+				WherePK().
+				Select()
+
 			if err != nil {
 				return nil, err
 			}
@@ -89,7 +98,13 @@ func (res *Resolver) SendUserPasswordResetToken(
 	ctx context.Context,
 	args SendUserPasswordResetTokenArgs,
 ) (bool, error) {
-	user, err := res.dataSource.GetUserByEmail(args.Email)
+	user := core.User{}
+	err := dataSource.
+		DB().
+		Model(&user).
+		Where("email = ?", args.Email).
+		First()
+
 	if err != nil {
 		return false, nil
 	}

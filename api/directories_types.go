@@ -74,7 +74,16 @@ func (res *directoryResolver) Children() *[]*directoryResolver {
 }
 func (res *directoryResolver) Pages() (*[]*pageResolver, error) {
 	var resolverList []*pageResolver
-	pages, err := res.dataSource.GetPagesFromDirectory(res.data.ID)
+	pages := []core.Page{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&pages).
+		Where("parent_id = ?", res.data.ID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

@@ -22,29 +22,16 @@ type AbstractDataContext interface {
 	AddPage(Page) (Page, error)
 	AddPageFromTemplate(PageInput, int) (Page, error)
 	AddPageField(int, PageField) error
-	GetPage(int) (Page, error)
-	GetPageBySlug(string) (Page, error)
-	GetPages() ([]Page, error)
-	GetPagesFromDirectory(int) ([]Page, error)
 	UpdatePage(int, PageInput) error
 	RemovePage(int) error
 	RemovePageField(int) error
 
 	AddUser(User) (User, error)
 	AuthenticateUser(string, string) (User, error)
-	GetUser(int) (User, error)
-	GetUserByEmail(string) (User, error)
-	GetUserList() ([]User, error)
 	UpdateUser(int, UserInput) (User, error)
 	RemoveUser(int) error
 
 	GetCurrentTime() string
-	ResetMockDatabase(
-		directories []Directory,
-		templates []Template,
-		pages []Page,
-		users []User,
-	) error
 	DB() *pg.DB
 }
 
