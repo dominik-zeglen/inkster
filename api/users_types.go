@@ -6,7 +6,7 @@ import (
 )
 
 type userResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       *core.User
 }
 

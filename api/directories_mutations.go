@@ -14,7 +14,7 @@ type directoryOperationResult struct {
 }
 
 type directoryOperationResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       directoryOperationResult
 }
 
@@ -50,7 +50,7 @@ type createDirectoryArgs struct {
 	Input directoryAddInput `validate:"dive"`
 }
 
-func (args createDirectoryArgs) validate(dataSource core.Adapter) (
+func (args createDirectoryArgs) validate(dataSource core.AbstractDataContext) (
 	[]core.ValidationError,
 	error,
 ) {
@@ -61,7 +61,15 @@ func (args createDirectoryArgs) validate(dataSource core.Adapter) (
 		if err != nil {
 			return nil, err
 		}
-		_, err = dataSource.GetDirectory(localID)
+
+		directory := core.Directory{}
+		directory.ID = localID
+		err = dataSource.
+			DB().
+			Model(&directory).
+			WherePK().
+			Select()
+
 		if err != nil {
 			if err == pg.ErrNoRows {
 				validationErrors = append(validationErrors, core.ValidationError{
@@ -86,21 +94,16 @@ func (res *Resolver) CreateDirectory(
 		return nil, errNoPermissions
 	}
 
-	var directory core.Directory
+	directory := core.CreateDirectory(res.dataSource)
+	directory.Name = args.Input.Name
+
 	input := args.Input
 	if input.ParentID != nil {
 		parentID, err := fromGlobalID("directory", *input.ParentID)
 		if err != nil {
 			return nil, err
 		}
-		directory = core.Directory{
-			Name:     input.Name,
-			ParentID: parentID,
-		}
-	} else {
-		directory = core.Directory{
-			Name: input.Name,
-		}
+		directory.ParentID = parentID
 	}
 	if input.IsPublished != nil {
 		directory.IsPublished = *input.IsPublished
@@ -120,7 +123,11 @@ func (res *Resolver) CreateDirectory(
 		}, nil
 	}
 
-	directory, err = res.dataSource.AddDirectory(directory)
+	_, err = res.dataSource.
+		DB().
+		Model(&directory).
+		Insert()
+
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +149,7 @@ type updateDirectoryArgs struct {
 	}
 }
 
-func (args updateDirectoryArgs) validate(dataSource core.Adapter) (
+func (args updateDirectoryArgs) validate(dataSource core.AbstractDataContext) (
 	[]core.ValidationError,
 	error,
 ) {
@@ -160,7 +167,13 @@ func (args updateDirectoryArgs) validate(dataSource core.Adapter) (
 			if err != nil {
 				return nil, err
 			}
-			_, err = dataSource.GetDirectory(localID)
+			directory := core.Directory{}
+			directory.ID = localID
+			err = dataSource.
+				DB().
+				Model(&directory).
+				WherePK().
+				Select()
 			if err != nil {
 				if err == pg.ErrNoRows {
 					validationErrors = append(validationErrors, core.ValidationError{
@@ -201,29 +214,54 @@ func (res *Resolver) UpdateDirectory(
 	}
 
 	localID, err := fromGlobalID("directory", string(args.ID))
-	var localParentID *int
 	if err != nil {
 		return nil, err
 	}
+
+	directory := core.Directory{}
+	directory.ID = localID
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&directory).
+		Select()
+
+	directory.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+
+	query := res.
+		dataSource.
+		DB().
+		Model(&directory).
+		Column("updated_at")
+
+	if args.Input.IsPublished != nil {
+		directory.IsPublished = *args.Input.IsPublished
+		query = query.Column("is_published")
+	}
+	if args.Input.Name != nil {
+		directory.Name = *args.Input.Name
+		query = query.Column("name")
+	}
 	if args.Input.ParentID != nil {
-		tempID, err := fromGlobalID("directory", string(*args.Input.ParentID))
-		localParentID = &tempID
+		parentID, err := fromGlobalID("directory", string(*args.Input.ParentID))
 		if err != nil {
 			return nil, err
 		}
+		directory.ParentID = parentID
+		query = query.Column("parent_id")
 	}
-	err = res.dataSource.UpdateDirectory(localID, core.DirectoryInput{
-		Name:        args.Input.Name,
-		ParentID:    localParentID,
-		IsPublished: args.Input.IsPublished,
-	})
+
+	_, err = query.
+		WherePK().
+		Update()
+
 	if err != nil {
 		return nil, err
 	}
-	directory, err := res.dataSource.GetDirectory(localID)
-	if err != nil {
-		return nil, err
-	}
+
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
 			directory: &directory,
@@ -248,7 +286,12 @@ func (res *Resolver) RemoveDirectory(
 	if err != nil {
 		return false, err
 	}
-	err = res.dataSource.RemoveDirectory(localID)
+
+	_, err = res.
+		dataSource.
+		DB().
+		Exec("DELETE FROM directories WHERE id = ?", localID)
+
 	if err != nil {
 		return false, err
 	}

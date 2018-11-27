@@ -1,4 +1,0 @@
-type TemplateRemoveResult {
-  userErrors: [UserError]
-  removedObjectId: ID
-}

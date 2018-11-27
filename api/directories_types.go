@@ -7,7 +7,7 @@ import (
 
 // Type resolvers
 type directoryResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       *core.Directory
 }
 
@@ -31,7 +31,15 @@ func (res *directoryResolver) Parent() *directoryResolver {
 	if res.data.ParentID == 0 {
 		return nil
 	}
-	parent, err := res.dataSource.GetDirectory(res.data.ParentID)
+	parent := core.Directory{}
+	parent.ID = res.data.ParentID
+	err := res.
+		dataSource.
+		DB().
+		Model(&parent).
+		WherePK().
+		Select()
+
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +50,15 @@ func (res *directoryResolver) Parent() *directoryResolver {
 }
 func (res *directoryResolver) Children() *[]*directoryResolver {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetDirectoryChildrenList(res.data.ID)
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Where("parent_id = ?", res.data.ID).
+		Select()
+
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +75,16 @@ func (res *directoryResolver) Children() *[]*directoryResolver {
 }
 func (res *directoryResolver) Pages() (*[]*pageResolver, error) {
 	var resolverList []*pageResolver
-	pages, err := res.dataSource.GetPagesFromDirectory(res.data.ID)
+	pages := []core.Page{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&pages).
+		Where("parent_id = ?", res.data.ID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

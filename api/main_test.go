@@ -12,16 +12,15 @@ import (
 	"regexp"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/dominik-zeglen/inkster/postgres"
-	test "github.com/dominik-zeglen/inkster/testing"
 	"github.com/go-pg/pg"
 	"github.com/go-testfixtures/testfixtures"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
-var dataSource postgres.Adapter
+var dataSource core.MockContext
 var mailClient = mailer.MockMailClient{}
 var resolver = NewResolver(&dataSource, &mailClient, "secretKey")
 var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
@@ -47,8 +46,7 @@ func init() {
 	}
 
 	pgSession := pg.Connect(pgOptions)
-	pgAdapter := postgres.Adapter{
-		GetTime: func() string { return "2017-07-07T10:00:00.000Z" },
+	pgAdapter := core.MockContext{
 		Session: pgSession,
 	}
 	dataSource = pgAdapter
@@ -72,8 +70,8 @@ func init() {
 
 func execQuery(query string, variables string, ctx *context.Context) (string, error) {
 	defaultClaims := middleware.UserClaims{
-		Email: test.Users[0].Email,
-		ID:    test.Users[0].ID,
+		Email: "user1@example.com",
+		ID:    1,
 	}
 	defaultContext := context.WithValue(context.TODO(), "user", &defaultClaims)
 

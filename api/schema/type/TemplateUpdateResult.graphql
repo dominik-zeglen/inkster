@@ -1,4 +1,0 @@
-type TemplateUpdateResult {
-  userErrors: [UserError]
-  template: Template
-}

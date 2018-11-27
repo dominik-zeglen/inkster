@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -13,7 +14,7 @@ type pageCreateResult struct {
 }
 
 type pageCreateResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       pageCreateResult
 }
 
@@ -44,7 +45,7 @@ type pageRemoveResult struct {
 }
 
 type pageRemoveResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       pageRemoveResult
 }
 
@@ -63,7 +64,10 @@ type createPageArgs struct {
 	Input createPageArgsInput
 }
 
-func cleanCreatePageInput(input createPageArgsInput) (
+func cleanCreatePageInput(
+	input createPageArgsInput,
+	dataSource core.AbstractDataContext,
+) (
 	*core.Page,
 	error,
 ) {
@@ -75,6 +79,14 @@ func cleanCreatePageInput(input createPageArgsInput) (
 	page := core.Page{
 		Name:     input.Name,
 		ParentID: localID,
+	}
+	page.CreatedAt = dataSource.GetCurrentTime()
+	page.UpdatedAt = dataSource.GetCurrentTime()
+
+	if input.Slug != nil {
+		page.Slug = *input.Slug
+	} else {
+		page.Slug = slug.Make(page.Name)
 	}
 
 	if input.IsPublished != nil {
@@ -96,7 +108,7 @@ func (res *Resolver) CreatePage(
 		return nil, errNoPermissions
 	}
 
-	page, err := cleanCreatePageInput(args.Input)
+	page, err := cleanCreatePageInput(args.Input, res.dataSource)
 	if err != nil {
 		return nil, err
 	}
@@ -112,15 +124,31 @@ func (res *Resolver) CreatePage(
 		}, nil
 	}
 
-	result, err := res.dataSource.AddPage(*page)
+	_, err = res.
+		dataSource.
+		DB().
+		Model(page).
+		Insert()
+
 	if err != nil {
 		return nil, err
 	}
+
+	for fieldIndex, _ := range page.Fields {
+		page.Fields[fieldIndex].PageID = page.ID
+	}
+
+	_, err = res.
+		dataSource.
+		DB().
+		Model(&page.Fields).
+		Insert()
+
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
 		data: pageCreateResult{
 			validationErrors: errs,
-			page:             &result,
+			page:             page,
 		},
 	}, nil
 }
@@ -141,7 +169,7 @@ type UpdatePageArgs struct {
 func cleanUpdatePageInput(
 	id int,
 	input *UpdatePageInput,
-	dataSource core.Adapter,
+	dataSource core.AbstractDataContext,
 ) (core.PageInput, []core.ValidationError, error) {
 	validationErrors := []core.ValidationError{}
 	pageInput := core.PageInput{}
@@ -151,7 +179,14 @@ func cleanUpdatePageInput(
 	}
 
 	if input.Slug != nil {
-		foundPage, err := dataSource.GetPageBySlug(*input.Slug)
+		foundPage := core.Page{}
+
+		err := dataSource.
+			DB().
+			Model(&foundPage).
+			Where("slug = ?", &input.Slug).
+			Select()
+
 		if err == nil {
 			if foundPage.ID != id {
 				validationErrors = append(
@@ -207,13 +242,23 @@ func (res *Resolver) UpdatePage(
 	if err != nil {
 		return nil, err
 	}
-	page, err := res.dataSource.GetPage(localID)
+
+	page := core.Page{}
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&page).
+		Where("id = ?", localID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}
 
 	if args.Input != nil || args.AddFields != nil || args.RemoveFields != nil {
-		pageInput, validationErrors, err := cleanUpdatePageInput(
+		_, validationErrors, err := cleanUpdatePageInput(
 			localID,
 			args.Input,
 			res.dataSource,
@@ -226,7 +271,6 @@ func (res *Resolver) UpdatePage(
 		if args.AddFields != nil {
 			errs := cleanUpdatePageAddFields(*args.AddFields)
 			validationErrors = append(validationErrors, errs...)
-
 		}
 
 		if len(validationErrors) > 0 {
@@ -239,37 +283,106 @@ func (res *Resolver) UpdatePage(
 			}, nil
 		}
 
+		page.ID = localID
+		page.UpdatedAt = res.
+			dataSource.
+			GetCurrentTime()
+
+		query := res.
+			dataSource.
+			DB().
+			Model(&page).
+			Column("updated_at")
+
 		if args.AddFields != nil {
-			for _, pageField := range *args.AddFields {
-				err = res.dataSource.AddPageField(localID, pageField)
-				if err != nil {
-					return nil, err
-				}
+			addPageFields := *args.AddFields
+			for pageFieldIndex := range addPageFields {
+				addPageFields[pageFieldIndex].CreatedAt = res.
+					dataSource.
+					GetCurrentTime()
+				addPageFields[pageFieldIndex].UpdatedAt = res.
+					dataSource.
+					GetCurrentTime()
+				addPageFields[pageFieldIndex].PageID = localID
+			}
+			_, err = res.
+				dataSource.
+				DB().
+				Model(args.AddFields).
+				Insert()
+
+			if err != nil {
+				return nil, err
 			}
 		}
 		if args.RemoveFields != nil {
-			for _, pageField := range *args.RemoveFields {
-				localPageFieldID, err := fromGlobalID("pageField", pageField)
+			removePageFields := []core.PageField{}
+			for _, pageFieldID := range *args.RemoveFields {
+				localPageFieldID, err := fromGlobalID("pageField", pageFieldID)
 				if err != nil {
 					return nil, err
 				}
 
-				err = res.dataSource.RemovePageField(localPageFieldID)
+				pageField := core.PageField{}
+				pageField.ID = localPageFieldID
+				removePageFields = append(removePageFields, pageField)
+			}
+
+			_, err = res.
+				dataSource.
+				DB().
+				Model(&removePageFields).
+				Delete()
+
+			if err != nil {
+				return nil, err
+			}
+		}
+		if args.Input != nil {
+			if args.Input.IsPublished != nil {
+				page.IsPublished = *args.Input.IsPublished
+				query = query.Column("is_published")
+			}
+			if args.Input.Name != nil {
+				page.Name = *args.Input.Name
+				query = query.Column("name")
+			}
+			if args.Input.ParentID != nil {
+				localParentID, err := fromGlobalID("directory", *args.Input.ParentID)
 				if err != nil {
 					return nil, err
 				}
+				page.ParentID = localParentID
+				query = query.Column("parent_id")
+			}
+			if args.Input.Slug != nil {
+				page.Slug = *args.Input.Slug
+				query = query.Column("slug")
 			}
 		}
 
-		err = res.dataSource.UpdatePage(localID, pageInput)
+		_, err = query.
+			WherePK().
+			Update()
+
 		if err != nil {
 			return nil, err
 		}
 	}
-	page, err = res.dataSource.GetPage(localID)
+
+	page.Fields = []core.PageField{}
+	err = res.
+		dataSource.
+		DB().
+		Model(&page).
+		Where("id = ?", localID).
+		Relation("Fields").
+		Select()
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
 		data: pageCreateResult{
@@ -294,7 +407,12 @@ func (res *Resolver) RemovePage(
 	if err != nil {
 		return nil, err
 	}
-	err = res.dataSource.RemovePage(localID)
+
+	_, err = res.
+		dataSource.
+		DB().
+		Exec("DELETE FROM pages WHERE id = ?", localID)
+
 	if err != nil {
 		return nil, err
 	}

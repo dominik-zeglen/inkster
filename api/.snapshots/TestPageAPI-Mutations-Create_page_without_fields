@@ -1,13 +1,19 @@
 {
     "data": {
-        "createPage": null
-    },
-    "errors": [
-        {
-            "message": "pg: can't bulk-insert empty slice []core.PageField",
-            "path": [
-                "createPage"
-            ]
+        "createPage": {
+            "errors": [],
+            "page": {
+                "createdAt": "2017-07-07T10:00:00.000Z",
+                "updatedAt": "2017-07-07T10:00:00.000Z",
+                "name": "New Page",
+                "slug": "new-page",
+                "isPublished": false,
+                "fields": null,
+                "parent": {
+                    "id": "ZGlyZWN0b3J5OjE=",
+                    "name": "Directory 1"
+                }
+            }
         }
-    ]
+    }
 }

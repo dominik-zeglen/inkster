@@ -14,7 +14,7 @@ type loginResult struct {
 }
 
 type loginResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       loginResult
 }
 
@@ -38,15 +38,27 @@ type LoginArgs struct {
 }
 
 func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
-	user, err := res.dataSource.AuthenticateUser(args.Email, args.Password)
+	notAuthorizedOutput := loginResultResolver{
+		data: loginResult{
+			token: nil,
+			user:  nil,
+		},
+		dataSource: res.dataSource,
+	}
+	user := core.User{}
+	err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Where("email = ?", args.Email).
+		Select()
+
 	if err != nil {
-		return &loginResultResolver{
-			data: loginResult{
-				token: nil,
-				user:  nil,
-			},
-			dataSource: res.dataSource,
-		}, nil
+		return &notAuthorizedOutput, nil
+	}
+
+	if !user.AuthPassword(args.Password) {
+		return &notAuthorizedOutput, nil
 	}
 
 	claims := middleware.UserClaims{
@@ -79,7 +91,7 @@ type verifyTokenResult struct {
 }
 
 type verifyTokenResultResolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	data       verifyTokenResult
 }
 
@@ -91,7 +103,15 @@ func (res *verifyTokenResultResolver) User() (*userResolver, error) {
 	if res.data.userID == nil {
 		return nil, nil
 	}
-	user, err := res.dataSource.GetUser(*res.data.userID)
+	user := core.User{}
+	user.ID = *res.data.userID
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Select()
+
 	if err != nil {
 		return nil, err
 	}

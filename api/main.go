@@ -13,12 +13,12 @@ import (
 )
 
 type Resolver struct {
-	dataSource core.Adapter
+	dataSource core.AbstractDataContext
 	key        string
 	mailer     mailer.Mailer
 }
 
-func NewResolver(dataSource core.Adapter, mailer mailer.Mailer, key string) Resolver {
+func NewResolver(dataSource core.AbstractDataContext, mailer mailer.Mailer, key string) Resolver {
 	return Resolver{
 		dataSource: dataSource,
 		key:        key,

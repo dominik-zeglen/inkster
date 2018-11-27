@@ -24,7 +24,7 @@ image: ; $(info $(M) Building application image...)
 	docker build -t inkster .
 
 migrate: ; $(info $(M) Migrating database...)
-	go run postgres/migrations/*.go up
+	go run migrations/*.go up
 
 test: schema migrate ; $(info $(M) Testing application...)
 	GOCACHE=off go test ./... -p 1

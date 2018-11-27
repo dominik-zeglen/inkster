@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -19,9 +20,16 @@ func (res *Resolver) GetDirectory(
 	if err != nil {
 		return nil, err
 	}
-	directory, err := res.
+
+	directory := core.Directory{}
+	directory.ID = localID
+	err = res.
 		dataSource.
-		GetDirectory(localID)
+		DB().
+		Model(&directory).
+		WherePK().
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, nil
@@ -40,10 +48,17 @@ func (res *Resolver) GetDirectory(
 
 func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetDirectoryList()
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
-			return nil, nil
+			return &[]*directoryResolver{}, nil
 		}
 		return nil, err
 	}
@@ -61,7 +76,15 @@ func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
 
 func (res *Resolver) GetRootDirectories() (*[]*directoryResolver, error) {
 	var resolverList []*directoryResolver
-	directories, err := res.dataSource.GetRootDirectoryList()
+	directories := []core.Directory{}
+
+	err := res.
+		dataSource.
+		DB().
+		Model(&directories).
+		Where("parent_id IS NULL OR parent_id = 0").
+		Select()
+
 	if err != nil {
 		if err == pg.ErrNoRows {
 			return nil, nil

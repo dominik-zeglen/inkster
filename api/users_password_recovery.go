@@ -26,9 +26,24 @@ func (res *Resolver) ChangeUserPassword(
 	if err != nil {
 		return false, err
 	}
-	_, err = res.dataSource.UpdateUser(localID, core.UserInput{
-		Password: &args.Password,
-	})
+
+	user := core.User{}
+	user.ID = localID
+	user.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+	user.CreatePassword(args.Password)
+
+	_, err = res.
+		dataSource.
+		DB().
+		Model(&user).
+		Column("updated_at").
+		Column("password").
+		Column("salt").
+		WherePK().
+		Update()
+
 	if err != nil {
 		return false, err
 	}
@@ -58,7 +73,16 @@ func (res *Resolver) ResetUserPassword(
 				return nil, errors.New("Invalid token claims")
 			}
 
-			user, err := res.dataSource.GetUser(claims.ID)
+			user := core.User{}
+			user.ID = claims.ID
+
+			err := res.
+				dataSource.
+				DB().
+				Model(&user).
+				WherePK().
+				Select()
+
 			if err != nil {
 				return nil, err
 			}
@@ -73,9 +97,22 @@ func (res *Resolver) ResetUserPassword(
 	}
 
 	if claims, ok := tokenObject.Claims.(*ActionTokenClaims); ok {
-		_, err = res.dataSource.UpdateUser(claims.ID, core.UserInput{
-			Password: &args.Password,
-		})
+		user := core.User{}
+		user.ID = claims.ID
+		user.UpdatedAt = res.
+			dataSource.
+			GetCurrentTime()
+		user.CreatePassword(args.Password)
+
+		_, err = res.
+			dataSource.
+			DB().
+			Model(&user).
+			Column("updated_at").
+			Column("password").
+			Column("salt").
+			WherePK().
+			Update()
 		return true, nil
 	}
 	return false, nil
@@ -89,7 +126,14 @@ func (res *Resolver) SendUserPasswordResetToken(
 	ctx context.Context,
 	args SendUserPasswordResetTokenArgs,
 ) (bool, error) {
-	user, err := res.dataSource.GetUserByEmail(args.Email)
+	user := core.User{}
+	err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Where("email = ?", args.Email).
+		First()
+
 	if err != nil {
 		return false, nil
 	}

@@ -15,7 +15,10 @@ func validateSlug(fl validator.FieldLevel) bool {
 
 func init() {
 	validate = validator.New()
-	validate.RegisterValidation("slug", validateSlug)
+	err := validate.RegisterValidation("slug", validateSlug)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // ErrNoEmpty informs about missing property

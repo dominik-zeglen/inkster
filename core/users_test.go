@@ -26,7 +26,10 @@ func TestAuth(t *testing.T) {
 			Active: testData.active,
 			Email:  EMAIL,
 		}
-		user.CreatePassword(PASSWD)
+		err := user.CreatePassword(PASSWD)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		result := user.AuthPassword(testData.password)
 		if result != testData.expected {

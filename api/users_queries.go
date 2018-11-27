@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/dominik-zeglen/inkster/core"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -21,13 +22,23 @@ func (res *Resolver) User(
 	if err != nil {
 		return nil, err
 	}
-	result, err := res.dataSource.GetUser(localID)
+
+	user := core.User{}
+	user.ID = localID
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&user).
+		WherePK().
+		Select()
+
 	if err != nil {
 		return nil, err
 	}
 	return &userResolver{
 		dataSource: res.dataSource,
-		data:       &result,
+		data:       &user,
 	}, nil
 }
 
@@ -36,16 +47,23 @@ func (res *Resolver) Users(ctx context.Context) (*[]*userResolver, error) {
 		return nil, errNoPermissions
 	}
 	var resolverList []*userResolver
-	result, err := res.dataSource.GetUserList()
+
+	users := []core.User{}
+	err := res.
+		dataSource.
+		DB().
+		Model(&users).
+		Select()
+
 	if err != nil {
 		return nil, err
 	}
-	for index := range result {
+	for index := range users {
 		resolverList = append(
 			resolverList,
 			&userResolver{
 				dataSource: res.dataSource,
-				data:       &result[index],
+				data:       &users[index],
 			},
 		)
 	}
