@@ -15,7 +15,6 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	test "github.com/dominik-zeglen/inkster/testing"
 	"github.com/go-pg/pg"
 	"github.com/go-testfixtures/testfixtures"
 	gql "github.com/graph-gophers/graphql-go"
@@ -71,8 +70,8 @@ func init() {
 
 func execQuery(query string, variables string, ctx *context.Context) (string, error) {
 	defaultClaims := middleware.UserClaims{
-		Email: test.Users[0].Email,
-		ID:    test.Users[0].ID,
+		Email: "user1@example.com",
+		ID:    1,
 	}
 	defaultContext := context.WithValue(context.TODO(), "user", &defaultClaims)
 

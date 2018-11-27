@@ -1,8 +1,0 @@
-{
-    "id": 1,
-    "createdAt": "2007-07-07T10:00:00.000Z",
-    "updatedAt": "2007-07-07T10:00:00.000Z",
-    "name": "Directory 1",
-    "parentId": 0,
-    "isPublished": false
-}

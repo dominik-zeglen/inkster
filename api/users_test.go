@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-	test "github.com/dominik-zeglen/inkster/testing"
 )
 
 func TestUserAPI(t *testing.T) {
@@ -93,7 +92,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[1].ID)
+			id := toGlobalID("user", 2)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -105,7 +104,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user using his own token", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -117,7 +116,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -133,7 +132,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with invalid e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -148,13 +147,13 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with existing e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
 					"email": "%s"
 				}
-			}`, id, test.Users[1].Email)
+			}`, id, "user2@example.com")
 			result, err := execQuery(updateUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -163,13 +162,13 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with the same e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
 					"email": "%s"
 				}
-			}`, id, test.Users[0].Email)
+			}`, id, "user1@example.com")
 			result, err := execQuery(updateUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -185,7 +184,7 @@ func TestUserAPI(t *testing.T) {
 			}`
 			variables := fmt.Sprintf(`{
 				"email": "%s"
-			}`, test.Users[0].Email)
+			}`, "user1@example.com")
 			r, err := execQuery(query, variables, nil)
 			if err != nil || r == "" {
 				t.Fatal(err)
@@ -218,7 +217,7 @@ func TestUserAPI(t *testing.T) {
 					isActive
 				}
 			}`
-			id := toGlobalID("user", test.Users[0].ID)
+			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-	test "github.com/dominik-zeglen/inkster/testing"
 )
 
 func TestPageAPI(t *testing.T) {
@@ -96,7 +95,7 @@ func TestPageAPI(t *testing.T) {
 						"value": "Value 2"
 					}
 				]
-			}`, toGlobalID("directory", test.Directories[0].ID))
+			}`, toGlobalID("directory", 1))
 			result, err := execQuery(createPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -109,7 +108,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"name": "New Page",
 				"parentId": "%s"
-			}`, toGlobalID("directory", test.Directories[0].ID))
+			}`, toGlobalID("directory", 1))
 			result, err := execQuery(createPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -119,7 +118,7 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Update page properties", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", test.Pages[0].ID)
+			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {	
@@ -136,7 +135,7 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Add page fields", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", test.Pages[0].ID)
+			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"addFields": [
@@ -157,8 +156,8 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Remove page fields", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", test.Pages[0].ID)
-			pageFieldID := toGlobalID("pageField", test.Pages[0].Fields[0].ID)
+			id := toGlobalID("page", 1)
+			pageFieldID := toGlobalID("pageField", 100)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"removeFields": ["%s"]
@@ -178,7 +177,7 @@ func TestPageAPI(t *testing.T) {
 					removedObjectId
 				}
 			}`
-			id := toGlobalID("page", test.Pages[0].ID)
+			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -210,7 +209,7 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("page", test.Pages[0].ID)
+			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

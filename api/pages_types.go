@@ -58,7 +58,8 @@ func (res *pageResolver) Fields() *[]*pageFieldResolver {
 func (res *pageResolver) Parent(ctx context.Context) (*directoryResolver, error) {
 	parent := core.Directory{}
 	parent.ID = res.data.ParentID
-	err := dataSource.
+	err := res.
+		dataSource.
 		DB().
 		Model(&parent).
 		WherePK().

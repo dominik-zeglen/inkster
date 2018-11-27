@@ -23,7 +23,8 @@ func (res *Resolver) GetDirectory(
 
 	directory := core.Directory{}
 	directory.ID = localID
-	err = dataSource.
+	err = res.
+		dataSource.
 		DB().
 		Model(&directory).
 		WherePK().

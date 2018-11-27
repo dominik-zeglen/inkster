@@ -9,9 +9,9 @@ import (
 
 	"github.com/dominik-zeglen/inkster/api"
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/dominik-zeglen/inkster/postgres"
 	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
 )
@@ -24,7 +24,7 @@ func check(err error) {
 
 type AppServer struct {
 	Config     AppConfig
-	DataSource postgres.Adapter
+	DataSource core.DataContext
 	MailClient mailer.Mailer
 	Schema     *graphql.Schema
 }
@@ -47,7 +47,7 @@ func (app *AppServer) initDataSource() *AppServer {
 		})
 	}
 
-	app.DataSource = postgres.Adapter{
+	app.DataSource = core.DataContext{
 		Session: pgSession,
 	}
 

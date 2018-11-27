@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy"
-	test "github.com/dominik-zeglen/inkster/testing"
 )
 
 func TestDirectoryAPI(t *testing.T) {
@@ -32,7 +31,7 @@ func TestDirectoryAPI(t *testing.T) {
 	t.Run("Mutations", func(t *testing.T) {
 		t.Run("Create directory", func(t *testing.T) {
 			defer resetDatabase()
-			parentID := toGlobalID("directory", test.Directories[0].ID)
+			parentID := toGlobalID("directory", 1)
 			variables := fmt.Sprintf(`{
 				"input": {
 					"name": "New Directory",
@@ -71,7 +70,7 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("directory", test.Directories[0].ID)
+			id := toGlobalID("directory", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

@@ -37,7 +37,11 @@ func main() {
 					return err
 				}
 
-				_, err = dataSource.AddUser(newUser)
+				_, err = dataSource.
+					DB().
+					Model(&newUser).
+					Insert()
+
 				if err != nil {
 					return err
 				}

@@ -127,7 +127,8 @@ func (res *Resolver) SendUserPasswordResetToken(
 	args SendUserPasswordResetTokenArgs,
 ) (bool, error) {
 	user := core.User{}
-	err := dataSource.
+	err := res.
+		dataSource.
 		DB().
 		Model(&user).
 		Where("email = ?", args.Email).

@@ -33,7 +33,8 @@ func (res *directoryResolver) Parent() *directoryResolver {
 	}
 	parent := core.Directory{}
 	parent.ID = res.data.ParentID
-	err := dataSource.
+	err := res.
+		dataSource.
 		DB().
 		Model(&parent).
 		WherePK().

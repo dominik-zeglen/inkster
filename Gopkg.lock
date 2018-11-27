@@ -42,12 +42,12 @@
   version = "v3.2.0"
 
 [[projects]]
-  digest = "1:3eacc547268cd715910b2edf370285248e7aa8d2ba60a773734c2c62c344b1c1"
+  digest = "1:be3e81d8a4ef25767126093ab49479eade15b47a3a8be5df1a63b08ceb3994e2"
   name = "github.com/go-pg/migrations"
   packages = ["."]
   pruneopts = "UT"
-  revision = "6b0c3602ab5b3f065ca581bf57f76acb3da0a7e3"
-  version = "v6.3.0"
+  revision = "5160c21cd64c49880885f8d5fb38d853007a2e70"
+  version = "v6.4.0"
 
 [[projects]]
   digest = "1:0a2260bcfa15237979ef496f03fb6af215c247ad998881a4d039992228876ae3"
