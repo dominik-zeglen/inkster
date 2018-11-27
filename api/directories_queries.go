@@ -18,7 +18,7 @@ func (res *Resolver) GetDirectory(
 ) (*directoryResolver, error) {
 	localID, err := fromGlobalID("directory", string(args.Id))
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	directory := core.Directory{}

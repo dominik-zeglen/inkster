@@ -189,8 +189,8 @@ func TestPageAPI(t *testing.T) {
 		})
 	})
 	t.Run("Queries", func(t *testing.T) {
-		t.Run("Get page", func(t *testing.T) {
-			query := `query getPage($id: ID!){
+		getPage := `
+			query getPage($id: ID!){
 				page(id: $id) {
 					id
 					createdAt
@@ -209,41 +209,33 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
+		t.Run("Get page", func(t *testing.T) {
 			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(getPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get page that does not exist", func(t *testing.T) {
-			query := `query getPage($id: ID!){
-				page(id: $id) {
-					id
-					createdAt
-					updatedAt
-					name
-					slug
-					isPublished
-					fields {
-						name
-						type
-						value
-					}
-					parent {
-						id
-						name
-					}
-				}
-			}`
 			id := toGlobalID("page", 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(getPage, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get page with bad ID", func(t *testing.T) {
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, "lorem")
+			result, err := execQuery(getPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

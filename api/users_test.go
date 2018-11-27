@@ -208,8 +208,8 @@ func TestUserAPI(t *testing.T) {
 		})
 	})
 	t.Run("Queries", func(t *testing.T) {
-		t.Run("Get user by ID", func(t *testing.T) {
-			query := `query getUser($id: ID!){
+		getUser := `
+			query getUser($id: ID!){
 				user(id: $id) {
 					id
 					createdAt
@@ -217,11 +217,33 @@ func TestUserAPI(t *testing.T) {
 					isActive
 				}
 			}`
+		t.Run("Get user by ID", func(t *testing.T) {
 			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
-			result, err := execQuery(query, variables, nil)
+			result, err := execQuery(getUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get user that does not exists", func(t *testing.T) {
+			id := toGlobalID("user", 99)
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, id)
+			result, err := execQuery(getUser, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get user with bad ID", func(t *testing.T) {
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, "lorem")
+			result, err := execQuery(getUser, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

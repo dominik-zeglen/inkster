@@ -212,8 +212,8 @@ func TestDirectoryAPI(t *testing.T) {
 	})
 
 	t.Run("Queries", func(t *testing.T) {
-		t.Run("Get directory", func(t *testing.T) {
-			query := `query GetDirectory($id: ID!){
+		getDirectory := `
+			query GetDirectory($id: ID!){
 				getDirectory(id: $id) {
 					id
 					createdAt
@@ -235,51 +235,8 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			id := toGlobalID("directory", 1)
-			variables := fmt.Sprintf(`{
-				"id": "%s"
-			}`, id)
-			result, err := execQuery(query, variables, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			cupaloy.SnapshotT(t, result)
-		})
-		t.Run("Get directory that does not exist", func(t *testing.T) {
-			query := `query GetDirectory($id: ID!){
-				getDirectory(id: $id) {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-					pages {
-						id
-						name
-						slug
-					}
-				}
-			}`
-			id := toGlobalID("directory", 99)
-			variables := fmt.Sprintf(`{
-				"id": "%s"
-			}`, id)
-			result, err := execQuery(query, variables, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			cupaloy.SnapshotT(t, result)
-		})
-		t.Run("Get directory list", func(t *testing.T) {
-			query := `query GetDirectories{
+		getDirectories := `
+			query GetDirectories{
 				getDirectories {
 					id
 					createdAt
@@ -301,7 +258,40 @@ func TestDirectoryAPI(t *testing.T) {
 					}
 				}
 			}`
-			result, err := execQuery(query, "{}", nil)
+		t.Run("Get directory", func(t *testing.T) {
+			id := toGlobalID("directory", 1)
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, id)
+			result, err := execQuery(getDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get directory that does not exist", func(t *testing.T) {
+			id := toGlobalID("directory", 99)
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, id)
+			result, err := execQuery(getDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get directory with bad ID", func(t *testing.T) {
+			variables := fmt.Sprintf(`{
+				"id": "%s"
+			}`, "lorem")
+			result, err := execQuery(getDirectory, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Get directory list", func(t *testing.T) {
+			result, err := execQuery(getDirectories, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
