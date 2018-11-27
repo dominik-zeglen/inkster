@@ -220,6 +220,13 @@ func (res *Resolver) UpdateDirectory(
 
 	directory := core.Directory{}
 	directory.ID = localID
+
+	err = res.
+		dataSource.
+		DB().
+		Model(&directory).
+		Select()
+
 	directory.UpdatedAt = res.
 		dataSource.
 		GetCurrentTime()
