@@ -1,5 +1,8 @@
 import gql from "graphql-tag";
 
+import { TypedMutation } from "../../api";
+import { RemoveUser, RemoveUserVariables } from "./types/RemoveUser";
+
 const mRemoveUser = gql`
   mutation RemoveUser($id: ID!) {
     removeUser(id: $id) {
@@ -7,12 +10,4 @@ const mRemoveUser = gql`
     }
   }
 `;
-export interface Variables {
-  id: string;
-}
-export interface Result {
-  removeUser: {
-    removedObjectId: string;
-  };
-}
-export default mRemoveUser;
+export default TypedMutation<RemoveUser, RemoveUserVariables>(mRemoveUser);

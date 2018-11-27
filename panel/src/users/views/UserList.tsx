@@ -1,15 +1,14 @@
 import * as React from "react";
-import { Mutation, Query } from "react-apollo";
+import { Query } from "react-apollo";
 
-import mCreateUser, {
-  Result as CreateUserResult,
-} from "../queries/mCreateUser";
+import CreateUserMutation from "../queries/mCreateUser";
 import qUsers from "../queries/qUsers";
 import UserListPage from "../components/UserListPage";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import urls from "../../urls";
 import i18n from "../../i18n";
+import { CreateUser } from "../queries/types/CreateUser";
 
 export const UserList: React.StatelessComponent<{}> = () => (
   <Navigator>
@@ -18,7 +17,7 @@ export const UserList: React.StatelessComponent<{}> = () => (
         {notify => (
           <Query query={qUsers} fetchPolicy="cache-and-network">
             {query => {
-              const handleAddUser = (data: CreateUserResult) => {
+              const handleAddUser = (data: CreateUser) => {
                 if (data.createUser.errors.length === 0) {
                   notify({
                     text: i18n.t("Sent invitation e-mail", {
@@ -36,7 +35,7 @@ export const UserList: React.StatelessComponent<{}> = () => (
                 }
               };
               return (
-                <Mutation mutation={mCreateUser} onCompleted={handleAddUser}>
+                <CreateUserMutation onCompleted={handleAddUser}>
                   {(createUser, createUserData) => (
                     <UserListPage
                       disabled={query.loading || createUserData.loading}
@@ -48,7 +47,7 @@ export const UserList: React.StatelessComponent<{}> = () => (
                       onRowClick={id => () => navigate(urls.userDetails(id))}
                     />
                   )}
-                </Mutation>
+                </CreateUserMutation>
               );
             }}
           </Query>

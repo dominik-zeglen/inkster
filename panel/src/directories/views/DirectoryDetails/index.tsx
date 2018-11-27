@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Query } from "react-apollo";
-import { ApolloError } from "apollo-client";
 
 import MutationProvider from "./MutationProvider";
 import qDirectory from "../../queries/qDirectory";
@@ -28,10 +27,6 @@ export class DirectoryDetails extends React.Component<Props, State> {
     this.setState({ transaction: "success" });
     setTimeout(() => this.setState({ transaction: "default" }), 3000);
   };
-  handleUpdateError = (event: ApolloError) => {
-    this.setState({ transaction: "error" });
-    setTimeout(() => this.setState({ transaction: "default" }), 3000);
-  };
 
   render() {
     const { id } = this.props;
@@ -52,11 +47,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                 navigate(urls.directoryDetails(), true);
               };
               return (
-                <Query
-                  query={qDirectory}
-                  variables={{ id }}
-                  fetchPolicy="network-only"
-                >
+                <Query query={qDirectory} variables={{ id }}>
                   {({ data, error, loading }) => {
                     if (error) {
                       console.error(error);
@@ -66,9 +57,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                       <MutationProvider
                         id={id}
                         onDirectoryUpdate={this.handleUpdate}
-                        onDirectoryUpdateError={this.handleUpdateError}
                         onDirectoryDelete={handleDelete}
-                        onDirectoryDeleteError={dummy}
                       >
                         {({ deleteDirectory, updateDirectory }) => {
                           return (
@@ -77,7 +66,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                               disabled={loading}
                               loading={loading}
                               transaction={
-                                updateDirectory.loading
+                                updateDirectory.opts.loading
                                   ? "loading"
                                   : this.state.transaction
                               }
@@ -99,7 +88,12 @@ export class DirectoryDetails extends React.Component<Props, State> {
                               onNextPage={dummy}
                               onPreviousPage={dummy}
                               onRowClick={handleRowClick}
-                              onSubmit={updateDirectory.mutate}
+                              onSubmit={formData =>
+                                updateDirectory.mutate({
+                                  ...formData,
+                                  id,
+                                })
+                              }
                             />
                           );
                         }}

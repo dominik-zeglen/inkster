@@ -1,18 +1,14 @@
 import * as React from "react";
-import { Mutation } from "react-apollo";
-import { ApolloError } from "apollo-client";
 
 import { TransactionState } from "../../";
 import urls from "../../urls";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import PageCreatePage, { FormData } from "../components/PageCreatePage";
-import mPageCreate, {
-  result as PageCreateResult,
-  variables as PageCreateVariables,
-} from "../queries/mPageCreate";
+import PageCreateMutation from "../queries/mPageCreate";
 import i18n from "../../i18n";
 import { WithUpload } from "../../UploadProvider";
+import { PageCreate } from "../queries/types/PageCreate";
 
 interface Props {
   directory: string;
@@ -20,7 +16,7 @@ interface Props {
 interface State {
   transaction: TransactionState;
 }
-export class PageCreate extends React.Component<Props, State> {
+export class PageCreateView extends React.Component<Props, State> {
   state = {
     transaction: "default" as "default",
   };
@@ -28,10 +24,6 @@ export class PageCreate extends React.Component<Props, State> {
   handleSubmitSuccess = (cb: () => void) => {
     this.setState({ transaction: "success" });
     setTimeout(cb, 3000);
-  };
-  handleSubmitError = (event: ApolloError) => {
-    this.setState({ transaction: "error" });
-    setTimeout(() => this.setState({ transaction: "default" }), 3000);
   };
 
   render() {
@@ -43,22 +35,14 @@ export class PageCreate extends React.Component<Props, State> {
             {navigate => {
               const handleBack = () =>
                 navigate(urls.directoryDetails(directory));
-              const handleError = () =>
-                notify({
-                  text: i18n.t("Something has gone wrong", {
-                    context: "notification",
-                  }),
-                  type: NotificationType.ERROR,
-                });
-              const handleSubmitSuccess = (data: {
-                createPage: PageCreateResult;
-              }) => {
-                if (
-                  data.createPage &&
-                  data.createPage.errors &&
-                  data.createPage.errors.length > 0
-                ) {
-                  handleError();
+              const handleSubmitCompleted = (data: PageCreate) => {
+                if (data.createPage.errors.length > 0) {
+                  notify({
+                    text: i18n.t("Something has gone wrong", {
+                      context: "notification",
+                    }),
+                    type: NotificationType.ERROR,
+                  });
                 }
                 notify({
                   text: i18n.t("Page created", {
@@ -86,10 +70,7 @@ export class PageCreate extends React.Component<Props, State> {
                       });
                     };
                     return (
-                      <Mutation
-                        mutation={mPageCreate}
-                        onCompleted={handleSubmitSuccess}
-                      >
+                      <PageCreateMutation onCompleted={handleSubmitCompleted}>
                         {(createPage, { data, loading }) => {
                           const handleSubmit = (formData: FormData) =>
                             createPage({
@@ -97,7 +78,7 @@ export class PageCreate extends React.Component<Props, State> {
                                 name: formData.name,
                                 parentId: directory,
                                 fields: formData.addFields,
-                              } as PageCreateVariables,
+                              },
                             });
                           return (
                             <PageCreatePage
@@ -111,7 +92,7 @@ export class PageCreate extends React.Component<Props, State> {
                             />
                           );
                         }}
-                      </Mutation>
+                      </PageCreateMutation>
                     );
                   }}
                 </WithUpload>
@@ -123,4 +104,4 @@ export class PageCreate extends React.Component<Props, State> {
     );
   }
 }
-export default PageCreate;
+export default PageCreateView;

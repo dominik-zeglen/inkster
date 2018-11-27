@@ -14,7 +14,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": false,
     "noImplicitAny": false,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true
   },

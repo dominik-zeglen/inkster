@@ -1,4 +1,9 @@
 import gql from "graphql-tag";
+import { TypedMutation } from "../../api";
+import {
+  DirectoryUpdate,
+  DirectoryUpdateVariables,
+} from "./types/DirectoryUpdate";
 
 const mDirectoryUpdate = gql`
   mutation DirectoryUpdate($id: ID!, $name: String!, $isPublished: Boolean) {
@@ -19,8 +24,6 @@ const mDirectoryUpdate = gql`
     }
   }
 `;
-export interface variables {
-  id: string;
-  name: string;
-}
-export default mDirectoryUpdate;
+export default TypedMutation<DirectoryUpdate, DirectoryUpdateVariables>(
+  mDirectoryUpdate,
+);

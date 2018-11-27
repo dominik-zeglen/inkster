@@ -1,9 +1,11 @@
 import gql from "graphql-tag";
 
-export interface DirectoryCreateVariables {
-  name: string;
-  parentId?: string;
-}
+import {
+  DirectoryCreate,
+  DirectoryCreateVariables,
+} from "./types/DirectoryCreate";
+import { TypedMutation } from "../../api";
+
 const mDirectoryCreate = gql`
   mutation DirectoryCreate($name: String!, $parentId: ID) {
     createDirectory(input: { name: $name, parentId: $parentId }) {
@@ -27,4 +29,6 @@ const mDirectoryCreate = gql`
     }
   }
 `;
-export default mDirectoryCreate;
+export default TypedMutation<DirectoryCreate, DirectoryCreateVariables>(
+  mDirectoryCreate,
+);
