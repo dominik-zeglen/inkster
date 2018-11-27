@@ -18,7 +18,7 @@ func (res *Resolver) Page(
 ) (*pageResolver, error) {
 	localID, err := fromGlobalID("page", string(args.ID))
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	page := core.Page{}

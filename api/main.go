@@ -34,7 +34,7 @@ func toGlobalID(dataType string, ID int) string {
 func fromGlobalID(dataType string, ID string) (int, error) {
 	data, err := base64.StdEncoding.DecodeString(ID)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 	portionedData := strings.Split(string(data), ":")
 	if portionedData[0] == dataType {

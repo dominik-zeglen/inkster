@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -20,7 +21,7 @@ func (res *Resolver) User(
 	}
 	localID, err := fromGlobalID("user", string(args.ID))
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	user := core.User{}
@@ -34,6 +35,9 @@ func (res *Resolver) User(
 		Select()
 
 	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &userResolver{
