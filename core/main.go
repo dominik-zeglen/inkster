@@ -8,14 +8,6 @@ import (
 
 // Adapter interface provides abstraction over different data sources
 type AbstractDataContext interface {
-	AddTemplate(Template) (Template, error)
-	AddTemplateField(int, TemplateField) error
-	GetTemplate(int) (Template, error)
-	GetTemplateList() ([]Template, error)
-	UpdateTemplate(int, TemplateInput) error
-	RemoveTemplate(int) error
-	RemoveTemplateField(int, string) error
-
 	GetCurrentTime() string
 	DB() *pg.DB
 }
