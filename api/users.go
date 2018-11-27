@@ -74,6 +74,13 @@ func (res *Resolver) CreateUser(
 	user := core.User{
 		Email: args.Input.Email,
 	}
+	user.CreatedAt = res.
+		dataSource.
+		GetCurrentTime()
+	user.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+
 	var pwd string
 	if args.Input.Password == nil {
 		pwd, _ = user.CreateRandomPassword()
@@ -97,7 +104,12 @@ func (res *Resolver) CreateUser(
 		}, nil
 	}
 
-	result, err := res.dataSource.AddUser(user)
+	_, err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Insert()
+
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +126,7 @@ func (res *Resolver) CreateUser(
 		dataSource: res.dataSource,
 		data: userOperationResult{
 			errors: []core.ValidationError{},
-			user:   &result,
+			user:   &user,
 		},
 	}, nil
 }
@@ -141,10 +153,18 @@ func (res *Resolver) RemoveUser(
 		}
 	}
 
-	err = res.dataSource.RemoveUser(localID)
+	user := core.User{}
+	user.ID = localID
+	_, err = res.
+		dataSource.
+		DB().
+		Model(&user).
+		WherePK().
+		Delete()
 	if err != nil {
 		return nil, err
 	}
+
 	return &userRemoveResultResolver{
 		data: userRemoveResult{
 			id: &args.ID,
@@ -222,7 +242,7 @@ func (res *Resolver) UpdateUser(
 		return nil, err
 	}
 
-	validationErrors, user, err := args.validate(res.dataSource, localID)
+	validationErrors, cleanedUser, err := args.validate(res.dataSource, localID)
 	if err != nil {
 		return nil, err
 	}
@@ -231,16 +251,36 @@ func (res *Resolver) UpdateUser(
 			dataSource: res.dataSource,
 			data: userOperationResult{
 				errors: validationErrors,
-				user:   user,
+				user:   cleanedUser,
 			},
 		}, nil
 	}
 
-	input := core.UserInput{
-		Active: args.Input.IsActive,
-		Email:  args.Input.Email,
+	user := *cleanedUser
+	user.ID = localID
+	user.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+
+	query := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Column("updated_at")
+
+	if args.Input.Email != nil {
+		user.Email = *args.Input.Email
+		query = query.Column("email")
 	}
-	result, err := res.dataSource.UpdateUser(localID, input)
+	if args.Input.IsActive != nil {
+		user.Active = *args.Input.IsActive
+		query = query.Column("active")
+	}
+
+	_, err = query.
+		WherePK().
+		Update()
+
 	if err != nil {
 		return nil, err
 	}
@@ -248,7 +288,7 @@ func (res *Resolver) UpdateUser(
 		dataSource: res.dataSource,
 		data: userOperationResult{
 			errors: []core.ValidationError{},
-			user:   &result,
+			user:   &user,
 		},
 	}, nil
 }

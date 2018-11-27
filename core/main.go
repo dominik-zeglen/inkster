@@ -8,9 +8,6 @@ import (
 
 // Adapter interface provides abstraction over different data sources
 type AbstractDataContext interface {
-	UpdateDirectory(int, DirectoryInput) error
-	RemoveDirectory(int) error
-
 	AddTemplate(Template) (Template, error)
 	AddTemplateField(int, TemplateField) error
 	GetTemplate(int) (Template, error)
@@ -18,18 +15,6 @@ type AbstractDataContext interface {
 	UpdateTemplate(int, TemplateInput) error
 	RemoveTemplate(int) error
 	RemoveTemplateField(int, string) error
-
-	AddPage(Page) (Page, error)
-	AddPageFromTemplate(PageInput, int) (Page, error)
-	AddPageField(int, PageField) error
-	UpdatePage(int, PageInput) error
-	RemovePage(int) error
-	RemovePageField(int) error
-
-	AddUser(User) (User, error)
-	AuthenticateUser(string, string) (User, error)
-	UpdateUser(int, UserInput) (User, error)
-	RemoveUser(int) error
 
 	GetCurrentTime() string
 	DB() *pg.DB

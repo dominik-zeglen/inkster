@@ -38,15 +38,27 @@ type LoginArgs struct {
 }
 
 func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
-	user, err := res.dataSource.AuthenticateUser(args.Email, args.Password)
+	notAuthorizedOutput := loginResultResolver{
+		data: loginResult{
+			token: nil,
+			user:  nil,
+		},
+		dataSource: res.dataSource,
+	}
+	user := core.User{}
+	err := res.
+		dataSource.
+		DB().
+		Model(&user).
+		Where("email = ?", args.Email).
+		Select()
+
 	if err != nil {
-		return &loginResultResolver{
-			data: loginResult{
-				token: nil,
-				user:  nil,
-			},
-			dataSource: res.dataSource,
-		}, nil
+		return &notAuthorizedOutput, nil
+	}
+
+	if !user.AuthPassword(args.Password) {
+		return &notAuthorizedOutput, nil
 	}
 
 	claims := middleware.UserClaims{

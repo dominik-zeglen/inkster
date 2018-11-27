@@ -214,37 +214,47 @@ func (res *Resolver) UpdateDirectory(
 	}
 
 	localID, err := fromGlobalID("directory", string(args.ID))
-	var localParentID *int
-	if err != nil {
-		return nil, err
-	}
-	if args.Input.ParentID != nil {
-		tempID, err := fromGlobalID("directory", string(*args.Input.ParentID))
-		localParentID = &tempID
-		if err != nil {
-			return nil, err
-		}
-	}
-	err = res.dataSource.UpdateDirectory(localID, core.DirectoryInput{
-		Name:        args.Input.Name,
-		ParentID:    localParentID,
-		IsPublished: args.Input.IsPublished,
-	})
 	if err != nil {
 		return nil, err
 	}
 
 	directory := core.Directory{}
 	directory.ID = localID
-	err = dataSource.
+	directory.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+
+	query := res.
+		dataSource.
 		DB().
 		Model(&directory).
+		Column("updated_at")
+
+	if args.Input.IsPublished != nil {
+		directory.IsPublished = *args.Input.IsPublished
+		query = query.Column("is_published")
+	}
+	if args.Input.Name != nil {
+		directory.Name = *args.Input.Name
+		query = query.Column("name")
+	}
+	if args.Input.ParentID != nil {
+		parentID, err := fromGlobalID("directory", string(*args.Input.ParentID))
+		if err != nil {
+			return nil, err
+		}
+		directory.ParentID = parentID
+		query = query.Column("parent_id")
+	}
+
+	_, err = query.
 		WherePK().
-		Select()
+		Update()
 
 	if err != nil {
 		return nil, err
 	}
+
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
 			directory: &directory,
@@ -269,7 +279,12 @@ func (res *Resolver) RemoveDirectory(
 	if err != nil {
 		return false, err
 	}
-	err = res.dataSource.RemoveDirectory(localID)
+
+	_, err = res.
+		dataSource.
+		DB().
+		Exec("DELETE FROM directories WHERE id = ?", localID)
+
 	if err != nil {
 		return false, err
 	}
