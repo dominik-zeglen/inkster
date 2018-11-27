@@ -19,7 +19,6 @@
     "@types/react-router-dom": "^4.2.7",
     "@types/storybook__addon-actions": "^3.0.3",
     "@types/storybook__react": "^3.0.7",
-    "apollo": "^1.0.5",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
     "apollo-link-context": "^1.0.9",
@@ -97,7 +96,8 @@
     "build": "node panel/scripts/build.js",
     "test": "node panel/scripts/test.js --env=jsdom",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build-types": "apollo codegen:generate --target=typescript --addTypename types --globalTypesFile=panel/src/types/globalTypes.ts"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.8",
@@ -108,6 +108,7 @@
     "@types/node": "^10.3.4",
     "@types/react": "^16.4.1",
     "@types/react-dom": "^16.0.6",
+    "apollo": "^1.9.2",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "css-loader": "^0.28.7",
