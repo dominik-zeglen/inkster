@@ -8,7 +8,7 @@ install:
   - make schema
 before_script:
   - psql -c 'create database test_inkster;' -U postgres
-  - go run postgres/migrations/*.go up
+  - go run migrations/*.go up
 script:
   - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
   - cd panel && npm i && npm run build
