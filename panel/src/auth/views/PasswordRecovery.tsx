@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Mutation } from "react-apollo";
 import { RouteComponentProps } from "react-router-dom";
 import { parse as parseQs } from "qs";
 
@@ -12,12 +11,10 @@ import PasswordResetSendEmailPage, {
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import i18n from "../../i18n";
-import mResetUserPassword, {
-  Result as mResetUserPasswordResult,
-} from "../queries/mResetUserPassword";
-import mSendUserPasswordResetToken, {
-  Result as mSendUserPasswordResetTokenResult,
-} from "../queries/mSendUserPasswordResetToken";
+import ResetUserPasswordMutation from "../queries/mResetUserPassword";
+import SendUserPasswordResetTokenMutation from "../queries/mSendUserPasswordResetToken";
+import { ResetUserPassword } from "../queries/types/ResetUserPassword";
+import { SendUserPasswordResetToken } from "../queries/types/SendUserPasswordResetToken";
 
 const PasswordRecoveryView: React.StatelessComponent<
   RouteComponentProps<{}>
@@ -28,9 +25,7 @@ const PasswordRecoveryView: React.StatelessComponent<
       {navigate => (
         <Notificator>
           {notify => {
-            const handlePasswordResetComplete = (
-              data: mResetUserPasswordResult,
-            ) => {
+            const handlePasswordResetComplete = (data: ResetUserPassword) => {
               if (data.resetUserPassword) {
                 notify({
                   text: i18n.t(
@@ -46,7 +41,7 @@ const PasswordRecoveryView: React.StatelessComponent<
               navigate("/");
             };
             const handleEmailSendComplete = (
-              data: mSendUserPasswordResetTokenResult,
+              data: SendUserPasswordResetToken,
             ) => {
               if (data.sendUserPasswordResetToken) {
                 notify({
@@ -64,13 +59,11 @@ const PasswordRecoveryView: React.StatelessComponent<
             };
 
             return (
-              <Mutation
-                mutation={mSendUserPasswordResetToken}
+              <SendUserPasswordResetTokenMutation
                 onCompleted={handleEmailSendComplete}
               >
                 {(sendEmail, sendEmailOpts) => (
-                  <Mutation
-                    mutation={mResetUserPassword}
+                  <ResetUserPasswordMutation
                     onCompleted={handlePasswordResetComplete}
                   >
                     {(resetPassword, resetPasswordOpts) => {
@@ -98,9 +91,9 @@ const PasswordRecoveryView: React.StatelessComponent<
                         />
                       );
                     }}
-                  </Mutation>
+                  </ResetUserPasswordMutation>
                 )}
-              </Mutation>
+              </SendUserPasswordResetTokenMutation>
             );
           }}
         </Notificator>

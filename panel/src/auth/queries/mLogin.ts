@@ -1,16 +1,7 @@
 import gql from "graphql-tag";
 
-export interface Variables {
-  email: string;
-  password: string;
-}
-export interface Result {
-  token?: string;
-  user?: {
-    id: string;
-    email: string;
-  };
-}
+import { TypedMutation } from "../../api";
+import { Login, LoginVariables } from "./types/Login";
 
 export const mLogin = gql`
   mutation Login($email: String!, $password: String!) {
@@ -23,4 +14,4 @@ export const mLogin = gql`
     }
   }
 `;
-export default mLogin;
+export default TypedMutation<Login, LoginVariables>(mLogin);
