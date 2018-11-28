@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Query } from "react-apollo";
 
 import UpdateUserMutation from "../queries/mUpdateUser";
 import RemoveUserMutation from "../queries/mRemoveUser";
-import qUser from "../queries/qUser";
+import User from "../queries/qUser";
 import UserDetailsPage from "../components/UserDetailsPage";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
@@ -51,7 +50,7 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
             navigate("/users/");
           };
           return (
-            <Query query={qUser} variables={{ id }}>
+            <User variables={{ id }}>
               {userData => (
                 <RemoveUserMutation onCompleted={handleRemoveUser}>
                   {removeUser => (
@@ -78,7 +77,7 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
                   )}
                 </RemoveUserMutation>
               )}
-            </Query>
+            </User>
           );
         }}
       </Navigator>

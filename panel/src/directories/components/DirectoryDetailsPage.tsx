@@ -14,23 +14,14 @@ import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
 import DirectoryStatus from "./DirectoryStatus";
 import i18n from "../../i18n";
+import { Directory_getDirectory } from "../queries/types/Directory";
 
 interface FormData {
   name: string;
   isPublished: boolean;
 }
 interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
-  directory?: {
-    id: string;
-    name?: string;
-    pages?: Array<{
-      id: string;
-      name?: string;
-    }>;
-    createdAt?: string;
-    updatedAt?: string;
-    isPublished: boolean;
-  };
+  directory: Directory_getDirectory;
   onDelete: () => void;
 }
 
@@ -39,10 +30,10 @@ const decorate = withStyles(
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "DirectoryDetailsPage" }
+  { displayName: "DirectoryDetailsPage" },
 );
 export const DirectoryDetailsPage = decorate<Props>(
   ({
@@ -58,15 +49,18 @@ export const DirectoryDetailsPage = decorate<Props>(
     onSubmit,
     onNextPage,
     onPreviousPage,
-    onRowClick
+    onRowClick,
   }) => (
     <Toggle>
       {(openedDeleteDialog, { toggle: toggleDeleteDialog }) => (
         <>
           <Form
             initial={{
-              isPublished: directory && directory.isPublished ? directory.isPublished : false,
-              name: directory && directory.name ? directory.name : ""
+              isPublished:
+                directory && directory.isPublished
+                  ? directory.isPublished
+                  : false,
+              name: directory && directory.name ? directory.name : "",
             }}
             onSubmit={onSubmit}
             key={JSON.stringify(directory)}
@@ -128,13 +122,13 @@ export const DirectoryDetailsPage = decorate<Props>(
                 onConfirm={onDelete}
               >
                 {i18n.t("Are you sure you want to remove {{ name }}?", {
-                  name: directory.name
+                  name: directory.name,
                 })}
               </ActionDialog>
             )}
         </>
       )}
     </Toggle>
-  )
+  ),
 );
 export default DirectoryDetailsPage;

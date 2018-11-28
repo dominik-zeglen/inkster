@@ -11,36 +11,31 @@ import i18n from "../../i18n";
 import IconButton from "../../components/IconButton";
 import PageHeader from "../../components/PageHeader";
 import Toggle from "../../components/Toggle";
-import UserStatus from './UserStatus'
-import UserProperties from './UserProperties'
+import UserStatus from "./UserStatus";
+import UserProperties from "./UserProperties";
+import { UserDetails_user } from "../queries/types/UserDetails";
 
 interface FormData {
   email: string;
   isActive: boolean;
 }
 interface Props extends FormViewProps<FormData> {
-  user?: {
-    id: string;
-    email: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
+  user: UserDetails_user;
   onDelete: () => void;
 }
 
 const decorate = withStyles(
   theme => ({
     cardContainer: {
-      marginBottom: theme.spacing
+      marginBottom: theme.spacing,
     },
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "UserDetailsPage" }
+  { displayName: "UserDetailsPage" },
 );
 export const UserDetailsPage = decorate<Props>(
   ({
@@ -51,7 +46,7 @@ export const UserDetailsPage = decorate<Props>(
     user,
     onBack,
     onDelete,
-    onSubmit
+    onSubmit,
   }) => (
     <Toggle>
       {(openedDeleteDialog, { toggle: toggleDeleteDialog }) => (
@@ -59,7 +54,7 @@ export const UserDetailsPage = decorate<Props>(
           <Form
             initial={{
               email: user ? user.email : "",
-              isActive: user ? user.isActive : false
+              isActive: user ? user.isActive : false,
             }}
             onSubmit={onSubmit}
             key={JSON.stringify(user)}
@@ -78,7 +73,11 @@ export const UserDetailsPage = decorate<Props>(
                 </PageHeader>
                 <div className={classes.root}>
                   <div>
-                    <UserProperties data={data} disabled={disabled || loading} onChange={change} />
+                    <UserProperties
+                      data={data}
+                      disabled={disabled || loading}
+                      onChange={change}
+                    />
                   </div>
                   <div>
                     <UserStatus
@@ -105,12 +104,12 @@ export const UserDetailsPage = decorate<Props>(
             onConfirm={onDelete}
           >
             {i18n.t("Are you sure you want to remove {{ email }}?", {
-              email: user ? user.email : ""
+              email: user ? user.email : "",
             })}
           </ActionDialog>
         </>
       )}
     </Toggle>
-  )
+  ),
 );
 export default UserDetailsPage;

@@ -1,4 +1,7 @@
-import gql from 'graphql-tag'
+import gql from "graphql-tag";
+
+import { TypedQuery } from "../../api";
+import { UserDetails, UserDetailsVariables } from "./types/UserDetails";
 
 const qUser = gql`
   query UserDetails($id: ID!) {
@@ -10,14 +13,5 @@ const qUser = gql`
       updatedAt
     }
   }
-`
-export interface result {
-  user: {
-    id: string;
-    email: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }
-}
-export default qUser;
+`;
+export default TypedQuery<UserDetails, UserDetailsVariables>(qUser);

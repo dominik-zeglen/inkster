@@ -24,6 +24,7 @@ import Login from "./auth/views/Login";
 import PasswordRecovery from "./auth/views/PasswordRecovery";
 import { NotificationProvider } from "./components/Notificator";
 import urls from "./urls";
+import { AppProgressProvider } from "./components/AppProgress";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -62,56 +63,58 @@ const apolloClient = new ApolloClient({
 });
 
 render(
-  <DateProvider>
-    <UploadProvider>
-      {uploadState => (
-        <ApolloProvider client={apolloClient}>
-          <BrowserRouter
-            basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
-          >
-            <ThemeProvider theme={theme}>
-              <>
-                <GlobalStylesheet />
-                <NotificationProvider>
-                  <AuthProvider>
-                    {({
-                      hasToken,
-                      isAuthenticated,
-                      loginLoading,
-                      tokenVerifyLoading,
-                    }) =>
-                      isAuthenticated ? (
-                        <>
-                          <AppRoot>
-                            <App />
-                          </AppRoot>
-                          {uploadState.active && (
-                            <LoaderOverlay progress={uploadState.progress} />
-                          )}
-                        </>
-                      ) : hasToken && tokenVerifyLoading ? (
-                        <span />
-                      ) : (
-                        <Switch>
-                          <Route
-                            path={urls.passwordRecovery}
-                            component={PasswordRecovery}
-                          />
-                          <Route
-                            component={() => <Login loading={loginLoading} />}
-                          />
-                        </Switch>
-                      )
-                    }
-                  </AuthProvider>
-                </NotificationProvider>
-              </>
-            </ThemeProvider>
-          </BrowserRouter>
-        </ApolloProvider>
-      )}
-    </UploadProvider>
-  </DateProvider>,
+  <AppProgressProvider>
+    <DateProvider>
+      <UploadProvider>
+        {uploadState => (
+          <ApolloProvider client={apolloClient}>
+            <BrowserRouter
+              basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
+            >
+              <ThemeProvider theme={theme}>
+                <>
+                  <GlobalStylesheet />
+                  <NotificationProvider>
+                    <AuthProvider>
+                      {({
+                        hasToken,
+                        isAuthenticated,
+                        loginLoading,
+                        tokenVerifyLoading,
+                      }) =>
+                        isAuthenticated ? (
+                          <>
+                            <AppRoot>
+                              <App />
+                            </AppRoot>
+                            {uploadState.active && (
+                              <LoaderOverlay progress={uploadState.progress} />
+                            )}
+                          </>
+                        ) : hasToken && tokenVerifyLoading ? (
+                          <span />
+                        ) : (
+                          <Switch>
+                            <Route
+                              path={urls.passwordRecovery}
+                              component={PasswordRecovery}
+                            />
+                            <Route
+                              component={() => <Login loading={loginLoading} />}
+                            />
+                          </Switch>
+                        )
+                      }
+                    </AuthProvider>
+                  </NotificationProvider>
+                </>
+              </ThemeProvider>
+            </BrowserRouter>
+          </ApolloProvider>
+        )}
+      </UploadProvider>
+    </DateProvider>
+  </AppProgressProvider>,
   document.querySelector("#root"),
 );
 

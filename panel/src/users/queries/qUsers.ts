@@ -1,4 +1,7 @@
-import gql from 'graphql-tag'
+import gql from "graphql-tag";
+
+import { TypedQuery } from "../../api";
+import { UserList } from "./types/UserList";
 
 const qUsers = gql`
   query UserList {
@@ -8,12 +11,5 @@ const qUsers = gql`
       isActive
     }
   }
-`
-export interface result {
-  users: Array<{
-    id: string;
-    email: string;
-    isActive: boolean;
-  }>
-}
-export default qUsers;
+`;
+export default TypedQuery<UserList, {}>(qUsers);

@@ -2,16 +2,14 @@ import * as React from "react";
 import { Panel } from "react-bootstrap";
 import { User as UserIcon } from "react-feather";
 
-import i18n from '../../i18n'
+import i18n from "../../i18n";
 import ListElement from "../../components/ListElement";
 import Paginator from "../../components/Paginator";
 import { ViewProps, PaginatedListProps } from "../..";
+import { UserList_users } from "../queries/types/UserList";
 
 interface Props extends ViewProps, PaginatedListProps {
-  users?: Array<{
-    id: string;
-    email: string;
-  }>
+  users: UserList_users[];
 }
 
 export const UserListPage: React.StatelessComponent<Props> = ({
@@ -21,7 +19,7 @@ export const UserListPage: React.StatelessComponent<Props> = ({
   users,
   onNextPage,
   onPreviousPage,
-  onRowClick
+  onRowClick,
 }) => (
   <Panel>
     <Panel.Body>

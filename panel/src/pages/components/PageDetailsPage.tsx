@@ -15,6 +15,7 @@ import i18n from "../../i18n";
 import PageProperties from "./PageProperties";
 import PageFieldProperties from "./PageFieldProperties";
 import PageStatus from "./PageStatus";
+import { Page_page } from "../queries/types/Page";
 
 interface PageField {
   id: string;
@@ -31,19 +32,7 @@ export interface FormData {
   removeFields: string[];
 }
 interface Props extends ViewProps, FormViewProps<FormData> {
-  page?: {
-    id: string;
-    createdAt?: string;
-    updatedAt?: string;
-    name?: string;
-    slug?: string;
-    isPublished: boolean;
-    parent?: {
-      id: string;
-      name?: string;
-    };
-    fields: PageField[];
-  };
+  page: Page_page;
   onUpload: (
     cb: (event: React.ChangeEvent<any>) => void,
   ) => (event: React.ChangeEvent<any>) => void;

@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Query } from "react-apollo";
 
-import qPage from "../../queries/qPage";
+import Page from "../../queries/qPage";
 import PageDetailsPage, { FormData } from "../../components/PageDetailsPage";
 import Navigator from "../../../components/Navigator";
 import Notificator, { NotificationType } from "../../../components/Notificator";
@@ -38,16 +37,8 @@ export class PageDetails extends React.Component<Props, State> {
         {notify => (
           <Navigator>
             {navigate => (
-              <Query
-                query={qPage}
-                variables={{ id }}
-                fetchPolicy="network-only"
-              >
-                {({ data, error, loading }) => {
-                  if (error) {
-                    console.error(error);
-                    return JSON.stringify(error);
-                  }
+              <Page variables={{ id }}>
+                {({ data }) => {
                   const handleBack = () =>
                     navigate(
                       urls.directoryDetails(
@@ -141,7 +132,7 @@ export class PageDetails extends React.Component<Props, State> {
                     </WithUpload>
                   );
                 }}
-              </Query>
+              </Page>
             )}
           </Navigator>
         )}

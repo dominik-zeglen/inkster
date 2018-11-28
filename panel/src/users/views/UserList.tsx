@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Query } from "react-apollo";
 
 import CreateUserMutation from "../queries/mCreateUser";
-import qUsers from "../queries/qUsers";
+import Users from "../queries/qUsers";
 import UserListPage from "../components/UserListPage";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
@@ -15,8 +14,8 @@ export const UserList: React.StatelessComponent<{}> = () => (
     {navigate => (
       <Notificator>
         {notify => (
-          <Query query={qUsers} fetchPolicy="cache-and-network">
-            {query => {
+          <Users>
+            {users => {
               const handleAddUser = (data: CreateUser) => {
                 if (data.createUser.errors.length === 0) {
                   notify({
@@ -38,9 +37,9 @@ export const UserList: React.StatelessComponent<{}> = () => (
                 <CreateUserMutation onCompleted={handleAddUser}>
                   {(createUser, createUserData) => (
                     <UserListPage
-                      disabled={query.loading || createUserData.loading}
-                      loading={query.loading || createUserData.loading}
-                      users={query.data ? query.data.users : undefined}
+                      disabled={users.loading || createUserData.loading}
+                      loading={users.loading || createUserData.loading}
+                      users={users.data ? users.data.users : undefined}
                       onAdd={data => createUser({ variables: { input: data } })}
                       onNextPage={() => undefined}
                       onPreviousPage={() => undefined}
@@ -50,7 +49,7 @@ export const UserList: React.StatelessComponent<{}> = () => (
                 </CreateUserMutation>
               );
             }}
-          </Query>
+          </Users>
         )}
       </Notificator>
     )}

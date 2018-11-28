@@ -1,7 +1,6 @@
 import * as React from "react";
-import { Query } from "react-apollo";
 
-import qRootDirectories from "../queries/qRootDirectories";
+import RootDirectories from "../queries/qRootDirectories";
 import DirectoryCreateMutation from "../queries/mDirectoryCreate";
 import DirectoryRootPage from "../components/DirectoryRootPage";
 import Navigator from "../../components/Navigator";
@@ -35,36 +34,28 @@ export const DirectoryRoot = () => (
             }
           };
           return (
-            <Query query={qRootDirectories} fetchPolicy="network-only">
-              {({ data, error, loading }) => {
-                if (error) {
-                  console.error(error);
-                  return <div>{JSON.stringify(error)}</div>;
-                }
-                return (
-                  <DirectoryCreateMutation onCompleted={handleCreate}>
-                    {addDirectory => {
-                      const handleAddDirectory = (
-                        variables: DirectoryCreateVariables,
-                      ) => addDirectory({ variables });
-                      return (
-                        <DirectoryRootPage
-                          directories={
-                            data ? data.getRootDirectories : undefined
-                          }
-                          disabled={loading}
-                          loading={loading}
-                          onAdd={handleAddDirectory}
-                          onNextPage={dummy}
-                          onPreviousPage={dummy}
-                          onRowClick={handleRowClick}
-                        />
-                      );
-                    }}
-                  </DirectoryCreateMutation>
-                );
-              }}
-            </Query>
+            <RootDirectories>
+              {({ data, loading }) => (
+                <DirectoryCreateMutation onCompleted={handleCreate}>
+                  {addDirectory => {
+                    const handleAddDirectory = (
+                      variables: DirectoryCreateVariables,
+                    ) => addDirectory({ variables });
+                    return (
+                      <DirectoryRootPage
+                        directories={data ? data.getRootDirectories : undefined}
+                        disabled={loading}
+                        loading={loading}
+                        onAdd={handleAddDirectory}
+                        onNextPage={dummy}
+                        onPreviousPage={dummy}
+                        onRowClick={handleRowClick}
+                      />
+                    );
+                  }}
+                </DirectoryCreateMutation>
+              )}
+            </RootDirectories>
           );
         }}
       </Navigator>
