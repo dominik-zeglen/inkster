@@ -1,15 +1,14 @@
 import * as React from "react";
-import { Query } from "react-apollo";
-import { ApolloError } from "apollo-client";
 
 import MutationProvider from "./MutationProvider";
-import qDirectory from "../../queries/qDirectory";
+import Directory from "../../queries/qDirectory";
 import DirectoryDetailsPage from "../../components/DirectoryDetailsPage";
 import Navigator from "../../../components/Navigator";
 import Notificator from "../../../components/Notificator";
 import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
+import { maybe } from "../../../utils";
 
 const dummy = () => {};
 
@@ -26,10 +25,6 @@ export class DirectoryDetails extends React.Component<Props, State> {
 
   handleUpdate = () => {
     this.setState({ transaction: "success" });
-    setTimeout(() => this.setState({ transaction: "default" }), 3000);
-  };
-  handleUpdateError = (event: ApolloError) => {
-    this.setState({ transaction: "error" });
     setTimeout(() => this.setState({ transaction: "default" }), 3000);
   };
 
@@ -52,61 +47,52 @@ export class DirectoryDetails extends React.Component<Props, State> {
                 navigate(urls.directoryDetails(), true);
               };
               return (
-                <Query
-                  query={qDirectory}
-                  variables={{ id }}
-                  fetchPolicy="network-only"
-                >
-                  {({ data, error, loading }) => {
-                    if (error) {
-                      console.error(error);
-                      return <div>{JSON.stringify(error)}</div>;
-                    }
-                    return (
-                      <MutationProvider
-                        id={id}
-                        onDirectoryUpdate={this.handleUpdate}
-                        onDirectoryUpdateError={this.handleUpdateError}
-                        onDirectoryDelete={handleDelete}
-                        onDirectoryDeleteError={dummy}
-                      >
-                        {({ deleteDirectory, updateDirectory }) => {
-                          return (
-                            <DirectoryDetailsPage
-                              directory={data ? data.getDirectory : undefined}
-                              disabled={loading}
-                              loading={loading}
-                              transaction={
-                                updateDirectory.loading
-                                  ? "loading"
-                                  : this.state.transaction
-                              }
-                              onAdd={handleAddPage}
-                              onBack={
-                                data && data.getDirectory
-                                  ? data.getDirectory.parent &&
-                                    data.getDirectory.parent.id
-                                    ? () =>
-                                        navigate(
-                                          urls.directoryDetails(
-                                            data.getDirectory.parent.id,
-                                          ),
-                                        )
-                                    : () => navigate(urls.directoryDetails(""))
-                                  : () => window.history.back()
-                              }
-                              onDelete={deleteDirectory.mutate}
-                              onNextPage={dummy}
-                              onPreviousPage={dummy}
-                              onRowClick={handleRowClick}
-                              onSubmit={updateDirectory.mutate}
-                            />
-                          );
-                        }}
-                      </MutationProvider>
-                    );
-                  }}
-                </Query>
+                <Directory variables={{ id }}>
+                  {directory => (
+                    <MutationProvider
+                      id={id}
+                      onDirectoryUpdate={this.handleUpdate}
+                      onDirectoryDelete={handleDelete}
+                    >
+                      {({ deleteDirectory, updateDirectory }) => (
+                        <DirectoryDetailsPage
+                          directory={maybe(() => directory.data.getDirectory)}
+                          disabled={directory.loading}
+                          loading={directory.loading}
+                          transaction={
+                            updateDirectory.opts.loading
+                              ? "loading"
+                              : this.state.transaction
+                          }
+                          onAdd={handleAddPage}
+                          onBack={
+                            directory.data && directory.data.getDirectory
+                              ? directory.data.getDirectory.parent &&
+                                directory.data.getDirectory.parent.id
+                                ? () =>
+                                    navigate(
+                                      urls.directoryDetails(
+                                        directory.data.getDirectory.parent.id,
+                                      ),
+                                    )
+                                : () => navigate(urls.directoryDetails(""))
+                              : () => window.history.back()
+                          }
+                          onDelete={deleteDirectory.mutate}
+                          onNextPage={dummy}
+                          onPreviousPage={dummy}
+                          onRowClick={handleRowClick}
+                          onSubmit={formData =>
+                            updateDirectory.mutate({
+                              ...formData,
+                              id,
+                            })
+                          }
+                        />
+                      )}
+                    </MutationProvider>
+                  )}
+                </Directory>
               );
             }}
           </Navigator>

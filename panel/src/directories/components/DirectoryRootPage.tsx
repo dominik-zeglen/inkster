@@ -12,12 +12,10 @@ import PageHeader from "../../components/PageHeader";
 import IconButton from "../../components/IconButton";
 import Toggle from "../../components/Toggle";
 import DirectoryRootList from "./DirectoryRootList";
+import { RootDirectories_getRootDirectories } from "../queries/types/RootDirectories";
 
-interface Props extends ListViewProps<{name: string}> {
-  directories?: Array<{
-    id: string;
-    name: string;
-  }>;
+interface Props extends ListViewProps<{ name: string }> {
+  directories: RootDirectories_getRootDirectories[];
 }
 
 const decorate = withStyles(
@@ -25,10 +23,10 @@ const decorate = withStyles(
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing,
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "DirectoryRootPage" }
+  { displayName: "DirectoryRootPage" },
 );
 export const DirectoryRootPage = decorate<Props>(
   ({
@@ -40,7 +38,7 @@ export const DirectoryRootPage = decorate<Props>(
     onAdd,
     onNextPage,
     onPreviousPage,
-    onRowClick
+    onRowClick,
   }) => (
     <Toggle>
       {(openedAddDirectoryDialog, { toggle: toggleAddDirectoryDialog }) => (
@@ -68,7 +66,7 @@ export const DirectoryRootPage = decorate<Props>(
               <div />
             </div>
           </Container>
-          <Form initial={{ name: '' }} onSubmit={onAdd}>
+          <Form initial={{ name: "" }} onSubmit={onAdd}>
             {({ change, data, submit }) => (
               <ActionDialog
                 show={openedAddDirectoryDialog}
@@ -89,6 +87,6 @@ export const DirectoryRootPage = decorate<Props>(
         </>
       )}
     </Toggle>
-  )
+  ),
 );
 export default DirectoryRootPage;

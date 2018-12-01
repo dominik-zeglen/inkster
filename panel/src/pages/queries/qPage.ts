@@ -1,4 +1,7 @@
-import  gql from "graphql-tag";
+import gql from "graphql-tag";
+
+import { TypedQuery } from "../../api";
+import { Page, PageVariables } from "./types/Page";
 
 const qPage = gql`
   query Page($id: ID!) {
@@ -21,4 +24,4 @@ const qPage = gql`
     }
   }
 `;
-export default qPage;
+export default TypedQuery<Page, PageVariables>(qPage);

@@ -1,15 +1,14 @@
 import * as React from "react";
-import { Mutation } from "react-apollo";
 
 import {
   getAuthToken,
   removeAuthToken,
   setAuthToken,
   User,
-  UserContext
+  UserContext,
 } from ".";
-import mTokenVerify from "../../queries/mTokenVerify";
-import mLogin from "../../queries/mLogin";
+import TokenVerifyMutation from "../../queries/mTokenVerify";
+import LoginMutation from "../../queries/mLogin";
 
 interface AuthProviderOperationsProps {
   children:
@@ -19,7 +18,7 @@ interface AuthProviderOperationsProps {
           isAuthenticated: boolean;
           loginLoading: boolean;
           tokenVerifyLoading: boolean;
-        }
+        },
       ) => React.ReactElement<any>)
     | React.ReactNode;
   onError?: () => void;
@@ -28,9 +27,9 @@ const AuthProviderOperations: React.StatelessComponent<
   AuthProviderOperationsProps
 > = ({ children, onError }) => {
   return (
-    <Mutation mutation={mLogin} onError={onError}>
+    <LoginMutation onError={onError}>
       {(login, loginData) => (
-        <Mutation mutation={mTokenVerify} onError={onError}>
+        <TokenVerifyMutation onError={onError}>
           {(tokenVerify, tokenVerifyData) => (
             <AuthProvider
               login={{ ...loginData, mutate: login }}
@@ -39,9 +38,9 @@ const AuthProviderOperations: React.StatelessComponent<
               {children}
             </AuthProvider>
           )}
-        </Mutation>
+        </TokenVerifyMutation>
       )}
-    </Mutation>
+    </LoginMutation>
   );
 };
 
@@ -53,7 +52,7 @@ interface AuthProviderProps {
           isAuthenticated: boolean;
           loginLoading: boolean;
           tokenVerifyLoading: boolean;
-        }
+        },
       ) => React.ReactElement<any>)
     | React.ReactNode;
   login: any;
@@ -128,7 +127,7 @@ class AuthProvider extends React.Component<
               hasToken: !!getAuthToken(),
               isAuthenticated,
               loginLoading: login.loading,
-              tokenVerifyLoading: tokenVerify.loading
+              tokenVerifyLoading: tokenVerify.loading,
             })
           : children}
       </UserContext.Provider>

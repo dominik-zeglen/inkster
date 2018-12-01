@@ -1,15 +1,13 @@
 import * as React from "react";
-import { Mutation, Query } from "react-apollo";
 
-import mUpdateUser, {
-  Result as UpdateUserResult
-} from "../queries/mUpdateUser";
-import mRemoveUser from "../queries/mRemoveUser";
-import qUser from "../queries/qUser";
+import UpdateUserMutation from "../queries/mUpdateUser";
+import RemoveUserMutation from "../queries/mRemoveUser";
+import User from "../queries/qUser";
 import UserDetailsPage from "../components/UserDetailsPage";
 import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import i18n from "../../i18n";
+import { UpdateUser } from "../queries/types/UpdateUser";
 
 interface Props {
   id: string;
@@ -23,11 +21,11 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
           const handleError = () =>
             notify({
               text: i18n.t("Something went wrong", {
-                context: "notification"
+                context: "notification",
               }),
-              type: NotificationType.ERROR
+              type: NotificationType.ERROR,
             });
-          const handleUpdateUser = (data: UpdateUserResult) => {
+          const handleUpdateUser = (data: UpdateUser) => {
             if (
               data &&
               data.updateUser &&
@@ -38,33 +36,25 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
             } else {
               notify({
                 text: i18n.t("Updated user", {
-                  context: "notification"
-                })
+                  context: "notification",
+                }),
               });
             }
           };
           const handleRemoveUser = () => {
             notify({
               text: i18n.t("Deleted user", {
-                context: "notification"
-              })
+                context: "notification",
+              }),
             });
             navigate("/users/");
           };
           return (
-            <Query query={qUser} variables={{ id }}>
+            <User variables={{ id }}>
               {userData => (
-                <Mutation
-                  mutation={mRemoveUser}
-                  onCompleted={handleRemoveUser}
-                  onError={handleError}
-                >
+                <RemoveUserMutation onCompleted={handleRemoveUser}>
                   {removeUser => (
-                    <Mutation
-                      mutation={mUpdateUser}
-                      onCompleted={handleUpdateUser}
-                      onError={handleError}
-                    >
+                    <UpdateUserMutation onCompleted={handleUpdateUser}>
                       {updateUser => (
                         <UserDetailsPage
                           disabled={userData.loading}
@@ -83,11 +73,11 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
                           }
                         />
                       )}
-                    </Mutation>
+                    </UpdateUserMutation>
                   )}
-                </Mutation>
+                </RemoveUserMutation>
               )}
-            </Query>
+            </User>
           );
         }}
       </Navigator>

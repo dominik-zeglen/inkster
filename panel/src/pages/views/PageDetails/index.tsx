@@ -1,11 +1,9 @@
 import * as React from "react";
-import { Query } from "react-apollo";
-import { ApolloError } from "apollo-client";
 
-import qPage from "../../queries/qPage";
+import Page from "../../queries/qPage";
 import PageDetailsPage, { FormData } from "../../components/PageDetailsPage";
 import Navigator from "../../../components/Navigator";
-import Notificator, {NotificationType} from "../../../components/Notificator";
+import Notificator, { NotificationType } from "../../../components/Notificator";
 import MutationProvider from "./MutationProvider";
 import urls from "../../../urls";
 import i18n from "../../../i18n";
@@ -20,14 +18,14 @@ interface State {
 }
 export class PageDetails extends React.Component<Props, State> {
   state = {
-    transaction: "default" as "default"
+    transaction: "default" as "default",
   };
 
   handleUpdate = () => {
     this.setState({ transaction: "success" });
     setTimeout(() => this.setState({ transaction: "default" }), 3000);
   };
-  handleUpdateError = (event: ApolloError) => {
+  handleUpdateError = () => {
     this.setState({ transaction: "error" });
     setTimeout(() => this.setState({ transaction: "default" }), 3000);
   };
@@ -39,43 +37,36 @@ export class PageDetails extends React.Component<Props, State> {
         {notify => (
           <Navigator>
             {navigate => (
-              <Query
-                query={qPage}
-                variables={{ id }}
-                fetchPolicy="network-only"
-              >
-                {({ data, error, loading }) => {
-                  if (error) {
-                    console.error(error);
-                    return JSON.stringify(error);
-                  }
+              <Page variables={{ id }}>
+                {({ data }) => {
                   const handleBack = () =>
                     navigate(
                       urls.directoryDetails(
                         data && data.page && data.page.parent
                           ? data.page.parent.id
-                          : undefined
-                      )
+                          : undefined,
+                      ),
                     );
                   const handleDelete = () => {
                     notify({
                       text: i18n.t("Page deleted", {
-                        context: "notification"
-                      })
+                        context: "notification",
+                      }),
                     });
                     handleBack();
                   };
-                  const handleError = () => notify({
+                  const handleError = () =>
+                    notify({
                       text: i18n.t("Something has gone wrong", {
-                        context: "notification"
+                        context: "notification",
                       }),
-                      type: NotificationType.ERROR
+                      type: NotificationType.ERROR,
                     });
                   return (
                     <WithUpload>
                       {uploadFile => {
                         const handleUpload = (onChange: any) => (
-                          event: React.ChangeEvent<any>
+                          event: React.ChangeEvent<any>,
                         ) => {
                           uploadFile.uploadFile({
                             file: event.target.files[0],
@@ -83,10 +74,10 @@ export class PageDetails extends React.Component<Props, State> {
                               onChange({
                                 target: {
                                   name: "value",
-                                  value: filename
-                                }
+                                  value: filename,
+                                },
                               } as any),
-                            onError: handleError
+                            onError: handleError,
                           });
                         };
                         return (
@@ -97,8 +88,8 @@ export class PageDetails extends React.Component<Props, State> {
                             onError={handleError}
                           >
                             {({ deletePage, updatePage }) => {
-                              const formLoading = updatePage.loading;
-                              const modalLoading = deletePage.loading;
+                              const formLoading = updatePage.opts.loading;
+                              const modalLoading = deletePage.opts.loading;
 
                               const handleSubmit = (formData: FormData) =>
                                 updatePage.mutate({
@@ -107,13 +98,15 @@ export class PageDetails extends React.Component<Props, State> {
                                     isPublished: formData.isPublished,
                                     name: formData.name,
                                     slug: formData.slug,
-                                    fields: formData.fields.map(f => ({
-                                      name: f.id,
-                                      update: { name: f.name, value: f.value }
-                                    }))
                                   },
-                                  add: formData.addFields,
-                                  remove: formData.removeFields
+                                  add:
+                                    formData.addFields.length > 0
+                                      ? formData.addFields
+                                      : null,
+                                  remove:
+                                    formData.removeFields.length > 0
+                                      ? formData.removeFields
+                                      : null,
                                 });
                               return (
                                 <PageDetailsPage
@@ -127,7 +120,7 @@ export class PageDetails extends React.Component<Props, State> {
                                   transaction={this.state.transaction}
                                   page={data ? data.page : undefined}
                                   onBack={handleBack}
-                                  onDelete={deletePage.mutate}
+                                  onDelete={() => deletePage.mutate({ id })}
                                   onUpload={handleUpload}
                                   onSubmit={handleSubmit}
                                 />
@@ -139,7 +132,7 @@ export class PageDetails extends React.Component<Props, State> {
                     </WithUpload>
                   );
                 }}
-              </Query>
+              </Page>
             )}
           </Navigator>
         )}

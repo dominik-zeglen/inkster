@@ -1,4 +1,7 @@
-import  gql from "graphql-tag";
+import gql from "graphql-tag";
+
+import { TypedQuery } from "../../api";
+import { Directory, DirectoryVariables } from "./types/Directory";
 
 const qDirectory = gql`
   query Directory($id: ID!) {
@@ -18,4 +21,4 @@ const qDirectory = gql`
     }
   }
 `;
-export default qDirectory;
+export default TypedQuery<Directory, DirectoryVariables>(qDirectory);

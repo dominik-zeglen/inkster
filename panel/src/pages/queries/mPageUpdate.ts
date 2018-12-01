@@ -1,5 +1,8 @@
 import gql from "graphql-tag";
 
+import { TypedMutation } from "../../api";
+import { PageUpdate, PageUpdateVariables } from "./types/PageUpdate";
+
 const mPageUpdate = gql`
   mutation PageUpdate(
     $id: ID!
@@ -28,25 +31,4 @@ const mPageUpdate = gql`
     }
   }
 `;
-export interface variables {
-  id: string;
-  input: {
-    name: string;
-    slug: string;
-    isPublished?: boolean;
-    fields: Array<{
-      name: string;
-      update: {
-        name: string;
-        value: string;
-      };
-    }>;
-  };
-  add: Array<{
-    name: string;
-    type: string;
-    value: string;
-  }>;
-  remove: string[];
-}
-export default mPageUpdate;
+export default TypedMutation<PageUpdate, PageUpdateVariables>(mPageUpdate);

@@ -1,31 +1,31 @@
 import * as React from "react";
-import { Mutation } from "react-apollo";
+import { MutationResult } from "react-apollo";
 import { ApolloError } from "apollo-client";
 
-import mPageDelete from "../../queries/mPageDelete";
-import mPageUpdate, {
-  variables as updatePageVariables
-} from "../../queries/mPageUpdate";
+import PageDeleteMutation from "../../queries/mPageDelete";
+import PageUpdateMutation from "../../queries/mPageUpdate";
+import {
+  PageUpdateVariables,
+  PageUpdate,
+} from "../../queries/types/PageUpdate";
+import {
+  PageDelete,
+  PageDeleteVariables,
+} from "../../queries/types/PageDelete";
 
 interface Props {
-  children:
-    | ((
-        props: {
-          deletePage: {
-            mutate: () => void;
-            loading: boolean;
-          };
-          updatePage: {
-            mutate: (variables: updatePageVariables) => void;
-            loading: boolean;
-          };
-          formErrors: Array<{
-            field: string;
-            message: string;
-          }>;
-        }
-      ) => React.ReactElement<any>)
-    | React.ReactNode;
+  children: ((
+    props: {
+      deletePage: {
+        mutate: (variables: PageDeleteVariables) => void;
+        opts: MutationResult<PageDelete>;
+      };
+      updatePage: {
+        mutate: (variables: PageUpdateVariables) => void;
+        opts: MutationResult<PageUpdate>;
+      };
+    },
+  ) => React.ReactElement<any>);
   id: string;
   onError: (error: ApolloError) => void;
   onPageDelete: () => void;
@@ -34,37 +34,29 @@ interface Props {
 
 export const MutationProvider: React.StatelessComponent<Props> = ({
   children,
-  id,
   onPageDelete,
   onPageUpdate,
-  onError
+  onError,
 }) => (
-  <Mutation mutation={mPageDelete} onCompleted={onPageDelete} onError={onError}>
-    {(deletePage, { loading: deletePageLoading }) => {
+  <PageDeleteMutation onCompleted={onPageDelete} onError={onError}>
+    {(deletePage, deletePageOpts) => {
       return (
-        <Mutation
-          mutation={mPageUpdate}
-          onCompleted={onPageUpdate}
-          onError={onError}
-        >
-          {(updatePage, { loading: updatePageLoading }) => {
-            return children && typeof children === "function"
-              ? children({
-                  deletePage: {
-                    mutate: () => deletePage({ variables: { id } }),
-                    loading: deletePageLoading
-                  },
-                  formErrors: [],
-                  updatePage: {
-                    mutate: (variables: updatePageVariables) => updatePage({variables}),
-                    loading: updatePageLoading
-                  }
-                })
-              : null;
-          }}
-        </Mutation>
+        <PageUpdateMutation onCompleted={onPageUpdate} onError={onError}>
+          {(updatePage, updatePageOpts) =>
+            children({
+              deletePage: {
+                mutate: variables => deletePage({ variables }),
+                opts: deletePageOpts,
+              },
+              updatePage: {
+                mutate: variables => updatePage({ variables }),
+                opts: updatePageOpts,
+              },
+            })
+          }
+        </PageUpdateMutation>
       );
     }}
-  </Mutation>
+  </PageDeleteMutation>
 );
 export default MutationProvider;

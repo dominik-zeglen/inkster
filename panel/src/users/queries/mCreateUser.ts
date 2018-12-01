@@ -1,5 +1,8 @@
 import gql from "graphql-tag";
 
+import { TypedMutation } from "../../api";
+import { CreateUser, CreateUserVariables } from "./types/CreateUser";
+
 const mCreateUser = gql`
   mutation CreateUser($input: UserCreateInput!) {
     createUser(input: $input, sendInvitation: true) {
@@ -17,24 +20,4 @@ const mCreateUser = gql`
     }
   }
 `;
-export interface Variables {
-  input: {
-    email: string;
-  };
-}
-export interface Result {
-  createUser: {
-    errors: Array<{
-      field: string;
-      message: string;
-    }>;
-    user: {
-      id: string;
-      email: string;
-      createdAt: string;
-      updatedAt: string;
-      isActive: boolean;
-    };
-  };
-}
-export default mCreateUser;
+export default TypedMutation<CreateUser, CreateUserVariables>(mCreateUser);

@@ -1,15 +1,7 @@
 import gql from "graphql-tag";
 
-export interface Variables {
-  token: string;
-}
-export interface Result {
-  result: boolean;
-  user?: {
-    id: string;
-    email: string;
-  }
-}
+import { TypedMutation } from "../../api";
+import { TokenVerify, TokenVerifyVariables } from "./types/TokenVerify";
 
 const mTokenVerify = gql`
   mutation TokenVerify($token: String!) {
@@ -22,4 +14,4 @@ const mTokenVerify = gql`
     }
   }
 `;
-export default mTokenVerify;
+export default TypedMutation<TokenVerify, TokenVerifyVariables>(mTokenVerify);

@@ -1,5 +1,8 @@
 import gql from "graphql-tag";
 
+import { TypedMutation } from "../../api";
+import { PageCreate, PageCreateVariables } from "./types/PageCreate";
+
 const mPageCreate = gql`
   mutation PageCreate(
     $parentId: ID!
@@ -27,30 +30,4 @@ const mPageCreate = gql`
     }
   }
 `;
-export interface variables {
-  name: string;
-  parentId: string;
-  fields?: Array<{
-    name: string;
-    type: string;
-    value: string;
-  }>;
-}
-export interface result {
-  errors: Array<{
-    field: string;
-    code: number;
-  }>;
-  page: {
-    id: string;
-    name: string;
-    slug: string;
-    isPublished: boolean;
-    fields: Array<{
-      name: string;
-      type: string;
-      value: string;
-    }>;
-  };
-}
-export default mPageCreate;
+export default TypedMutation<PageCreate, PageCreateVariables>(mPageCreate);

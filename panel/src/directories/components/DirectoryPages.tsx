@@ -7,13 +7,11 @@ import ListElement from "../../components/ListElement";
 import IconButton from "../../components/IconButton";
 import Paginator from "../../components/Paginator";
 import i18n from "../../i18n";
+import { Directory_getDirectory_pages } from "../queries/types/Directory";
 
 interface Props extends PaginatedListProps {
   disabled: boolean;
-  pages?: Array<{
-    id: string;
-    name?: string;
-  }>;
+  pages: Directory_getDirectory_pages[];
   onAdd: () => void;
 }
 
@@ -24,12 +22,12 @@ export const DirectoryRootList: React.StatelessComponent<Props> = ({
   onAdd,
   onNextPage,
   onPreviousPage,
-  onRowClick
+  onRowClick,
 }) => (
   <Panel>
     <Panel.Heading>
       <Panel.Title>{i18n.t("Pages")}</Panel.Title>
-  <IconButton disabled={disabled} icon={Plus} onClick={onAdd} />
+      <IconButton disabled={disabled} icon={Plus} onClick={onAdd} />
     </Panel.Heading>
     <Panel.Body>
       {pages ? (

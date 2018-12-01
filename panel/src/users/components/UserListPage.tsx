@@ -11,12 +11,10 @@ import { ListViewProps } from "../../";
 import PageHeader from "../../components/PageHeader";
 import Toggle from "../../components/Toggle";
 import UserList from "./UserList";
+import { UserList_users } from "../queries/types/UserList";
 
 interface Props extends ListViewProps<{ email: string }> {
-  users?: Array<{
-    id: string;
-    email: string;
-  }>;
+  users: UserList_users[];
 }
 
 const decorate = withStyles(
@@ -24,10 +22,10 @@ const decorate = withStyles(
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing,
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "UserRootPage" }
+  { displayName: "UserRootPage" },
 );
 export const UserListPage = decorate<Props>(
   ({
@@ -39,7 +37,7 @@ export const UserListPage = decorate<Props>(
     onAdd,
     onNextPage,
     onPreviousPage,
-    onRowClick
+    onRowClick,
   }) => (
     <Toggle>
       {(openedAddUserDialog, { toggle: toggleAddUserDialog }) => (
@@ -75,19 +73,19 @@ export const UserListPage = decorate<Props>(
             title={i18n.t("Add new user")}
             initial={{ email: "" }}
           >
-              {({ change, data }) => (
-                <Input
-                  name="email"
-                  onChange={change}
-                  value={data.email}
-                  label={i18n.t("User email")}
-                  type="email"
-                />
-              )}
+            {({ change, data }) => (
+              <Input
+                name="email"
+                onChange={change}
+                value={data.email}
+                label={i18n.t("User email")}
+                type="email"
+              />
+            )}
           </FormDialog>
         </>
       )}
     </Toggle>
-  )
+  ),
 );
 export default UserListPage;

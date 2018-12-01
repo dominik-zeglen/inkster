@@ -6,7 +6,7 @@ import withStyles from "react-jss";
 export enum NotificationType {
   DEFAULT,
   WARNING,
-  ERROR
+  ERROR,
 }
 
 const CLOSE_AFTER = 5000;
@@ -22,17 +22,18 @@ interface NotificationComponentProps {
 const decorate = withStyles(theme => ({
   iconContainer: {
     alignItems: "center" as "center",
-    display: "flex" as "flex"
+    display: "flex" as "flex",
   },
   root: {
     "& svg": {
       height: ICON_SIZE,
-      width: ICON_SIZE
+      width: ICON_SIZE,
     },
     display: "grid" as "grid",
     gridColumnGap: theme.spacing * 2 + "px",
-    gridTemplateColumns: `${ICON_SIZE}px 1fr`
-  }
+    gridTemplateColumns: `${ICON_SIZE}px 1fr`,
+    zIndex: 1,
+  },
 }));
 
 const NotificationComponent = decorate<NotificationComponentProps>(
@@ -62,7 +63,7 @@ const NotificationComponent = decorate<NotificationComponentProps>(
         <div>{text}</div>
       </div>
     </Alert>
-  )
+  ),
 );
 
 export interface NotificationProps {
@@ -79,7 +80,7 @@ export class Notification extends React.Component<
   NotificationState
 > {
   state: NotificationState = {
-    timer: setTimeout(this.props.onClose, this.props.closeAfter || CLOSE_AFTER)
+    timer: setTimeout(this.props.onClose, this.props.closeAfter || CLOSE_AFTER),
   };
 
   componentWillUnmount() {
@@ -100,8 +101,8 @@ export class Notification extends React.Component<
     this.setState({
       timer: setTimeout(
         this.props.onClose,
-        this.props.closeAfter || CLOSE_AFTER
-      )
+        this.props.closeAfter || CLOSE_AFTER,
+      ),
     });
 
   render() {

@@ -1,4 +1,7 @@
-import  gql from "graphql-tag";
+import gql from "graphql-tag";
+
+import { TypedQuery } from "../../api";
+import { RootDirectories } from "./types/RootDirectories";
 
 const qRootDirectories = gql`
   query RootDirectories {
@@ -9,4 +12,4 @@ const qRootDirectories = gql`
     }
   }
 `;
-export default qRootDirectories;
+export default TypedQuery<RootDirectories, {}>(qRootDirectories);
