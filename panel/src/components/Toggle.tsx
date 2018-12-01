@@ -18,7 +18,7 @@ interface ToggleState {
   value: boolean;
 }
 
-class Toggle extends React.Component<ToggleProps, ToggleState> {
+export class Toggle extends React.Component<ToggleProps, ToggleState> {
   state = {
     value: this.props.initial !== undefined ? this.props.initial : false,
   };
