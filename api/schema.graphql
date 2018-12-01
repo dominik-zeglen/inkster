@@ -27,9 +27,13 @@ input PageFieldRenameInput {
   name: String!
   renameTo: String!
 }
+input PageFieldUpdate {
+    id: ID!
+    input: PageFieldUpdateInput!
+}
 input PageFieldUpdateInput {
-  name: String!
-  value: String!
+  name: String
+  value: String
 }
 input PageUpdateInput {
   name: String
@@ -58,6 +62,7 @@ type Mutation {
     id: ID!
     input: PageUpdateInput
     addFields: [PageFieldCreateInput!]
+    updateFields: [PageFieldUpdate!]
     removeFields: [String!]
   ): PageOperationResult
   removePage(id: ID!): PageRemoveResult

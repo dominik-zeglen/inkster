@@ -49,12 +49,14 @@ func TestPageAPI(t *testing.T) {
 					$id: ID!
 					$input: PageUpdateInput
 					$addFields: [PageFieldCreateInput!]
+					$updateFields: [PageFieldUpdate!]
 					$removeFields: [String!]
 				) {
 					updatePage(
 					id: $id 
 					input: $input
 					addFields: $addFields
+					updateFields: $updateFields
 					removeFields: $removeFields
 				) {
 					errors {
@@ -146,6 +148,30 @@ func TestPageAPI(t *testing.T) {
 					}
 				]
 			}`, id)
+			result, err := execQuery(updatePage, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			cupaloy.SnapshotT(t, result)
+		})
+		t.Run("Update page fields", func(t *testing.T) {
+			defer resetDatabase()
+
+			id := toGlobalID("page", 1)
+			pageFieldID := toGlobalID("pageField", 100)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"updateFields": [
+					{
+						"id": "%s",
+						"input": {
+							"name": "Updated name",
+							"value": "Updated value"
+						}
+					}
+				]
+			}`, id, pageFieldID)
 			result, err := execQuery(updatePage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
