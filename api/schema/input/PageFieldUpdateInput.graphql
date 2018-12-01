@@ -1,4 +1,4 @@
 input PageFieldUpdateInput {
-  name: String!
-  value: String!
+  name: String
+  value: String
 }

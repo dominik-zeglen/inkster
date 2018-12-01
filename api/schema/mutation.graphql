@@ -11,6 +11,7 @@ type Mutation {
     id: ID!
     input: PageUpdateInput
     addFields: [PageFieldCreateInput!]
+    updateFields: [PageFieldUpdate!]
     removeFields: [String!]
   ): PageOperationResult
   removePage(id: ID!): PageRemoveResult

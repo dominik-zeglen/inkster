@@ -1,0 +1,4 @@
+input PageFieldUpdate {
+    id: ID!
+    input: PageFieldUpdateInput!
+}

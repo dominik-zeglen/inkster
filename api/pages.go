@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg/orm"
 	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -153,6 +154,14 @@ func (res *Resolver) CreatePage(
 	}, nil
 }
 
+type UpdatePageFieldsInput struct {
+	Name  *string
+	Value *string
+}
+type UpdatePageFields struct {
+	ID    gql.ID
+	Input UpdatePageFieldsInput
+}
 type UpdatePageInput struct {
 	Name        *string
 	Slug        *string
@@ -163,6 +172,7 @@ type UpdatePageArgs struct {
 	ID           gql.ID
 	Input        *UpdatePageInput
 	AddFields    *[]core.PageField
+	UpdateFields *[]UpdatePageFields
 	RemoveFields *[]string
 }
 
@@ -257,7 +267,10 @@ func (res *Resolver) UpdatePage(
 		return nil, err
 	}
 
-	if args.Input != nil || args.AddFields != nil || args.RemoveFields != nil {
+	if args.Input != nil ||
+		args.AddFields != nil ||
+		args.UpdateFields != nil ||
+		args.RemoveFields != nil {
 		_, validationErrors, err := cleanUpdatePageInput(
 			localID,
 			args.Input,
@@ -313,6 +326,46 @@ func (res *Resolver) UpdatePage(
 
 			if err != nil {
 				return nil, err
+			}
+		}
+		if args.UpdateFields != nil {
+			for _, inputPageField := range *args.UpdateFields {
+				localPageFieldID, err := fromGlobalID(
+					"pageField",
+					string(inputPageField.ID),
+				)
+				if err != nil {
+					return nil, err
+				}
+
+				field := core.PageField{}
+				field.ID = localPageFieldID
+				field.UpdatedAt = res.
+					dataSource.
+					GetCurrentTime()
+
+				query := res.
+					dataSource.
+					DB().
+					Model(&field).
+					Column("updated_at")
+
+				if inputPageField.Input.Name != nil {
+					field.Name = *inputPageField.Input.Name
+					query = query.Column("name")
+				}
+				if inputPageField.Input.Value != nil {
+					field.Value = *inputPageField.Input.Value
+					query = query.Column("value")
+				}
+
+				_, err = query.
+					WherePK().
+					Update()
+
+				if err != nil {
+					return nil, err
+				}
 			}
 		}
 		if args.RemoveFields != nil {
@@ -376,7 +429,9 @@ func (res *Resolver) UpdatePage(
 		DB().
 		Model(&page).
 		Where("id = ?", localID).
-		Relation("Fields").
+		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
+			return query.OrderExpr("id ASC"), nil
+		}).
 		Select()
 
 	if err != nil {
