@@ -29,13 +29,6 @@ func NewPage() Page {
 	return page
 }
 
-// UpdatePageArguments is transactional model of an update properties
-type UpdatePageArguments struct {
-	Name        *string
-	Slug        *string
-	IsPublished *bool
-}
-
 // PageField represents a single field in template
 type PageField struct {
 	BaseModel
