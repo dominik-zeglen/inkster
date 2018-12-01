@@ -11,6 +11,16 @@ export interface PageFieldCreateInput {
   value: string;
 }
 
+export interface PageFieldUpdate {
+  id: string;
+  input: PageFieldUpdateInput;
+}
+
+export interface PageFieldUpdateInput {
+  name?: string | null;
+  value?: string | null;
+}
+
 export interface PageUpdateInput {
   name?: string | null;
   slug?: string | null;

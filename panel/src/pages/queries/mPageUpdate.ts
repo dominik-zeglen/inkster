@@ -8,9 +8,16 @@ const mPageUpdate = gql`
     $id: ID!
     $input: PageUpdateInput
     $add: [PageFieldCreateInput!]
+    $update: [PageFieldUpdate!]
     $remove: [String!]
   ) {
-    updatePage(id: $id, input: $input, addFields: $add, removeFields: $remove) {
+    updatePage(
+      id: $id
+      input: $input
+      addFields: $add
+      updateFields: $update
+      removeFields: $remove
+    ) {
       errors {
         code
         field
