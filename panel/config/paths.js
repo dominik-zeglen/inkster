@@ -40,19 +40,19 @@ function getServedPath(appPackageJson) {
 
 // config after eject: we're in ./config/
 module.exports = {
-  appBuild: resolveApp("build"),
-  appHtml: resolveApp("public/index.html"),
-  appIndexJs: resolveApp("src/index.tsx"),
+  appBuild: resolveApp("panel/build"),
+  appHtml: resolveApp("panel/public/index.html"),
+  appIndexJs: resolveApp("panel/src/index.tsx"),
   appNodeModules: resolveApp("node_modules"),
   appPackageJson: resolveApp("package.json"),
-  appPublic: resolveApp("public"),
-  appSrc: resolveApp("src"),
+  appPublic: resolveApp("panel/public"),
+  appSrc: resolveApp("panel/src"),
   appTsConfig: resolveApp("tsconfig.json"),
   appTsLint: resolveApp("tslint.json"),
   appTsProdConfig: resolveApp("tsconfig.prod.json"),
   dotenv: resolveApp(".env"),
   publicUrl: getPublicUrl(resolveApp("package.json")),
   servedPath: getServedPath(resolveApp("package.json")),
-  testsSetup: resolveApp("src/setupTests.ts"),
+  testsSetup: resolveApp("panel/src/setupTests.ts"),
   yarnLockFile: resolveApp("yarn.lock")
 };
