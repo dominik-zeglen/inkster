@@ -20,10 +20,11 @@
   },
   "exclude": [
     "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts"
+    "panel/build",
+    "panel/config",
+    "panel/scripts",
+    "panel/acceptance-tests",
+    "panel/webpack",
+    "panel/jest",
+    "panel/src/setupTests.ts"
   ]}
