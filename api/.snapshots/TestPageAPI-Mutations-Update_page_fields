@@ -11,14 +11,14 @@
                 "isPublished": false,
                 "fields": [
                     {
-                        "name": "Field 2",
-                        "type": "text",
-                        "value": "Some text"
-                    },
-                    {
                         "name": "Updated name",
                         "type": "text",
                         "value": "Updated value"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "text",
+                        "value": "Some text"
                     }
                 ]
             }

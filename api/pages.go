@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg/orm"
 	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -428,7 +429,9 @@ func (res *Resolver) UpdatePage(
 		DB().
 		Model(&page).
 		Where("id = ?", localID).
-		Relation("Fields").
+		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
+			return query.OrderExpr("id ASC"), nil
+		}).
 		Select()
 
 	if err != nil {
