@@ -7,9 +7,11 @@ import (
 // Page is a object representing site content
 type Page struct {
 	BaseModel
+	AuthorID    int         `sql:",notnull" json:"authorId" validate:"required"`
+	Author      *User       `json:"-"`
 	Name        string      `sql:",notnull" json:"name" validate:"required,min=3"`
 	Slug        string      `sql:",unique,notnull" json:"slug" validate:"omitempty,slug,min=3"`
-	ParentID    int         `sql:",notnull,on_delete:CASCADE" json:"parentId" validate:"required"`
+	ParentID    int         `sql:",notnull" json:"parentId" validate:"required"`
 	Parent      *Directory  `json:"-"`
 	IsPublished bool        `sql:",notnull" json:"isPublished"`
 	Fields      []PageField `json:"fields" validate:"dive"`

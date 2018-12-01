@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/go-pg/pg/orm"
 	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
@@ -68,10 +69,12 @@ type createPageArgs struct {
 func cleanCreatePageInput(
 	input createPageArgsInput,
 	dataSource core.AbstractDataContext,
+	ctx context.Context,
 ) (
 	*core.Page,
 	error,
 ) {
+	user := ctx.Value("user").(*middleware.UserClaims)
 	localID, err := fromGlobalID("directory", input.ParentID)
 	if err != nil {
 		return nil, err
@@ -83,6 +86,7 @@ func cleanCreatePageInput(
 	}
 	page.CreatedAt = dataSource.GetCurrentTime()
 	page.UpdatedAt = dataSource.GetCurrentTime()
+	page.AuthorID = user.ID
 
 	if input.Slug != nil {
 		page.Slug = *input.Slug
@@ -109,7 +113,7 @@ func (res *Resolver) CreatePage(
 		return nil, errNoPermissions
 	}
 
-	page, err := cleanCreatePageInput(args.Input, res.dataSource)
+	page, err := cleanCreatePageInput(args.Input, res.dataSource, ctx)
 	if err != nil {
 		return nil, err
 	}
