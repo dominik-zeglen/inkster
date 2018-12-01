@@ -28,10 +28,11 @@ func (res *Resolver) Page(
 		dataSource.
 		DB().
 		Model(&page).
-		Where("id = ?", localID).
+		Where("page.id = ?", localID).
 		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
 			return query.OrderExpr("id ASC"), nil
 		}).
+		Relation("Author").
 		Select()
 
 	if err != nil {
@@ -66,16 +67,17 @@ func (res *Resolver) Pages(
 		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
 			return query.OrderExpr("id ASC"), nil
 		}).
+		Relation("Author").
 		Select()
 	if err != nil {
 		return nil, err
 	}
 
 	resolvers := make([]*pageResolver, len(pages))
-	for i, page := range pages {
+	for i := range pages {
 		resolvers[i] = &pageResolver{
 			dataSource: res.dataSource,
-			data:       &page,
+			data:       &pages[i],
 		}
 	}
 

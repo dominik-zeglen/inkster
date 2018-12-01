@@ -143,11 +143,28 @@ func (res *Resolver) CreatePage(
 		page.Fields[fieldIndex].PageID = page.ID
 	}
 
-	_, err = res.
+	if len(page.Fields) > 0 {
+		_, err = res.
+			dataSource.
+			DB().
+			Model(&page.Fields).
+			Insert()
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = res.
 		dataSource.
 		DB().
-		Model(&page.Fields).
-		Insert()
+		Model(page).
+		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
+			return query.OrderExpr("id ASC"), nil
+		}).
+		Relation("Author").
+		WherePK().
+		Select()
 
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
@@ -155,7 +172,7 @@ func (res *Resolver) CreatePage(
 			validationErrors: errs,
 			page:             page,
 		},
-	}, nil
+	}, err
 }
 
 type UpdatePageFieldsInput struct {
@@ -432,10 +449,11 @@ func (res *Resolver) UpdatePage(
 		dataSource.
 		DB().
 		Model(&page).
-		Where("id = ?", localID).
+		Where("page.id = ?", localID).
 		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
 			return query.OrderExpr("id ASC"), nil
 		}).
+		Relation("Author").
 		Select()
 
 	if err != nil {

@@ -3,12 +3,26 @@
         "createPage": {
             "errors": [],
             "page": {
+                "author": {
+                    "id": "dXNlcjox",
+                    "email": "user1@example.com"
+                },
                 "createdAt": "2017-07-07T10:00:00.000Z",
                 "updatedAt": "2017-07-07T10:00:00.000Z",
                 "name": "New Page",
                 "slug": "new-page",
                 "isPublished": false,
                 "fields": [
+                    {
+                        "name": "Field 1",
+                        "type": "text",
+                        "value": "Value 1"
+                    },
+                    {
+                        "name": "Field 2",
+                        "type": "text",
+                        "value": "Value 2"
+                    },
                     {
                         "name": "Field 1",
                         "type": "text",

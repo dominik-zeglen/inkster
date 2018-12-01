@@ -1,5 +1,6 @@
 type Page {
   id: ID!
+  author: User!
   createdAt: String!
   updatedAt: String!
   name: String!

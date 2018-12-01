@@ -6,10 +6,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/lib/pq"
-	_ "github.com/lib/pq"
 	"os"
 	"regexp"
+
+	"github.com/lib/pq"
+	_ "github.com/lib/pq"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/core"
