@@ -11,11 +11,13 @@
                 "isPublished": false,
                 "fields": [
                     {
+                        "id": "cGFnZUZpZWxkOjEwMA==",
                         "name": "Updated name",
                         "type": "text",
                         "value": "Updated value"
                     },
                     {
+                        "id": "cGFnZUZpZWxkOjEwMQ==",
                         "name": "Field 2",
                         "type": "text",
                         "value": "Some text"

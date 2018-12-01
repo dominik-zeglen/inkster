@@ -36,6 +36,7 @@ func TestPageAPI(t *testing.T) {
 						fields {
 							name
 							type
+							value
 						}
 						parent {
 							id
@@ -72,6 +73,7 @@ func TestPageAPI(t *testing.T) {
 						slug
 						isPublished
 						fields {
+							id
 							name
 							type
 							value

@@ -11,6 +11,7 @@
                 "isPublished": false,
                 "fields": [
                     {
+                        "id": "cGFnZUZpZWxkOjEwMQ==",
                         "name": "Field 2",
                         "type": "text",
                         "value": "Some text"

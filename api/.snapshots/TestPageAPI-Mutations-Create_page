@@ -11,11 +11,13 @@
                 "fields": [
                     {
                         "name": "Field 1",
-                        "type": "text"
+                        "type": "text",
+                        "value": "Value 1"
                     },
                     {
                         "name": "Field 2",
-                        "type": "text"
+                        "type": "text",
+                        "value": "Value 2"
                     }
                 ],
                 "parent": {
