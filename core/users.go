@@ -20,10 +20,11 @@ const (
 
 type User struct {
 	BaseModel `bson:",inline"`
-	Active    bool   `sql:",notnull" json:"active"`
-	Email     string `sql:",notnull,unique" json:"email" validate:"required,email"`
-	Password  []byte `sql:",notnull" json:"password" validate:"required"`
-	Salt      []byte `sql:",notnull" json:"salt" validate:"required"`
+	Active    bool    `sql:",notnull" json:"active"`
+	Email     string  `sql:",notnull,unique" json:"email" validate:"required,email"`
+	Pages     *[]Page `sql:"-" json:"pages"`
+	Password  []byte  `sql:",notnull" json:"password" validate:"required"`
+	Salt      []byte  `sql:",notnull" json:"salt" validate:"required"`
 }
 
 func (user User) AuthPassword(pass string) bool {

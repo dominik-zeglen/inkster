@@ -10,7 +10,7 @@ func init() {
 		func(db migrations.DB) error {
 			_, err := orm.
 				NewQuery(db, nil).
-				Exec("ALTER TABLE pages ADD COLUMN author_id INTEGER")
+				Exec("ALTER TABLE pages ADD COLUMN author_id BIGINT NOT NULL")
 			if err != nil {
 				return err
 			}

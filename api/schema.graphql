@@ -152,6 +152,7 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
+  pages: [Page!]!
 }
 type UserError {
   field: String!

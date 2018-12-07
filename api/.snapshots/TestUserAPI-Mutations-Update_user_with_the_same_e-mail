@@ -5,7 +5,17 @@
             "user": {
                 "id": "dXNlcjox",
                 "email": "user1@example.com",
-                "isActive": true
+                "isActive": true,
+                "pages": [
+                    {
+                        "id": "cGFnZTox",
+                        "name": "Page 1"
+                    },
+                    {
+                        "id": "cGFnZToy",
+                        "name": "Page 2"
+                    }
+                ]
             }
         }
     }

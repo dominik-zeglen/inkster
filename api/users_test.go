@@ -21,6 +21,10 @@ func TestUserAPI(t *testing.T) {
 					updatedAt
 					email
 					isActive
+					pages {
+						id
+						name
+					}
 				}
 			}
 		}`
@@ -40,6 +44,10 @@ func TestUserAPI(t *testing.T) {
 					id
 					email
 					isActive
+					pages {
+						id
+						name
+					}
 				}
 			}
 		}`
@@ -215,6 +223,10 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
+					pages {
+						id
+						name
+					}
 				}
 			}`
 		t.Run("Get user by ID", func(t *testing.T) {
@@ -256,6 +268,10 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
+					pages {
+						id
+						name
+					}
 				}
 			}`
 			result, err := execQuery(query, "{}", nil)
