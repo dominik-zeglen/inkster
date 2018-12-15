@@ -280,5 +280,24 @@ func TestUserAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Get current user", func(t *testing.T) {
+			query := `query Viewer {
+				viewer {
+					id
+					createdAt
+					updatedAt
+					isActive
+					pages {
+						id
+						name
+					}
+				}
+			}`
+			result, err := execQuery(query, "{}", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			cupaloy.SnapshotT(t, result)
+		})
 	})
 }

@@ -90,6 +90,7 @@ type Query {
 
   user(id: ID!): User
   users: [User]
+  viewer: User
 }
 schema {
   query: Query

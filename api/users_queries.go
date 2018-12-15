@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -72,4 +73,25 @@ func (res *Resolver) Users(ctx context.Context) (*[]*userResolver, error) {
 		)
 	}
 	return &resolverList, nil
+}
+
+func (res *Resolver) Viewer(ctx context.Context) (*userResolver, error) {
+	viewer, ok := ctx.Value("user").(*middleware.UserClaims)
+	if ok {
+		user := core.User{}
+		user.ID = viewer.ID
+
+		err := res.
+			dataSource.
+			DB().
+			Model(&user).
+			WherePK().
+			Select()
+
+		return &userResolver{
+			data:       &user,
+			dataSource: res.dataSource,
+		}, err
+	}
+	return nil, nil
 }
