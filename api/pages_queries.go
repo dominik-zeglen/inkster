@@ -64,6 +64,7 @@ func (res *Resolver) Pages(
 		dataSource.
 		DB().
 		Model(&pages).
+		OrderExpr("id ASC").
 		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
 			return query.OrderExpr("id ASC"), nil
 		}).
