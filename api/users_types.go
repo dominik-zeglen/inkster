@@ -30,3 +30,29 @@ func (res *userResolver) Email() string {
 func (res *userResolver) IsActive() bool {
 	return res.data.Active
 }
+
+func (res *userResolver) Pages() []*pageResolver {
+	if res.data.Pages == nil {
+		res.data.Pages = &[]core.Page{}
+		err := res.
+			dataSource.
+			DB().
+			Model(res.data.Pages).
+			Where("author_id = ?", res.data.ID).
+			OrderExpr("id ASC").
+			Select()
+
+		if err != nil {
+			panic(err)
+		}
+	}
+	resolvers := []*pageResolver{}
+	pages := *res.data.Pages
+	for index := range pages {
+		resolvers = append(resolvers, &pageResolver{
+			data:       &pages[index],
+			dataSource: res.dataSource,
+		})
+	}
+	return resolvers
+}

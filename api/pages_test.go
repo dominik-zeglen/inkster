@@ -28,6 +28,10 @@ func TestPageAPI(t *testing.T) {
 						message
 					}
 					page {
+						author {
+							id
+							email
+						}
 						createdAt
 						updatedAt
 						name
@@ -36,6 +40,7 @@ func TestPageAPI(t *testing.T) {
 						fields {
 							name
 							type
+							value
 						}
 						parent {
 							id
@@ -66,12 +71,17 @@ func TestPageAPI(t *testing.T) {
 					}
 					page {
 						id
+						author {
+							id
+							email
+						}
 						createdAt
 						updatedAt
 						name
 						slug
 						isPublished
 						fields {
+							id
 							name
 							type
 							value
@@ -219,6 +229,10 @@ func TestPageAPI(t *testing.T) {
 			query getPage($id: ID!){
 				page(id: $id) {
 					id
+					author {
+						id
+						email
+					}
 					createdAt
 					updatedAt
 					name
@@ -271,6 +285,10 @@ func TestPageAPI(t *testing.T) {
 			query := `query Pages{
 				pages {
 					id
+					author {
+						id
+						email
+					}
 					createdAt
 					updatedAt
 					name

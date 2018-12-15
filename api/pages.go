@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/go-pg/pg/orm"
 	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
@@ -68,10 +69,12 @@ type createPageArgs struct {
 func cleanCreatePageInput(
 	input createPageArgsInput,
 	dataSource core.AbstractDataContext,
+	ctx context.Context,
 ) (
 	*core.Page,
 	error,
 ) {
+	user := ctx.Value("user").(*middleware.UserClaims)
 	localID, err := fromGlobalID("directory", input.ParentID)
 	if err != nil {
 		return nil, err
@@ -83,6 +86,7 @@ func cleanCreatePageInput(
 	}
 	page.CreatedAt = dataSource.GetCurrentTime()
 	page.UpdatedAt = dataSource.GetCurrentTime()
+	page.AuthorID = user.ID
 
 	if input.Slug != nil {
 		page.Slug = *input.Slug
@@ -109,7 +113,7 @@ func (res *Resolver) CreatePage(
 		return nil, errNoPermissions
 	}
 
-	page, err := cleanCreatePageInput(args.Input, res.dataSource)
+	page, err := cleanCreatePageInput(args.Input, res.dataSource, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -139,11 +143,28 @@ func (res *Resolver) CreatePage(
 		page.Fields[fieldIndex].PageID = page.ID
 	}
 
-	_, err = res.
+	if len(page.Fields) > 0 {
+		_, err = res.
+			dataSource.
+			DB().
+			Model(&page.Fields).
+			Insert()
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = res.
 		dataSource.
 		DB().
-		Model(&page.Fields).
-		Insert()
+		Model(page).
+		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
+			return query.OrderExpr("id ASC"), nil
+		}).
+		Relation("Author").
+		WherePK().
+		Select()
 
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
@@ -151,7 +172,7 @@ func (res *Resolver) CreatePage(
 			validationErrors: errs,
 			page:             page,
 		},
-	}, nil
+	}, err
 }
 
 type UpdatePageFieldsInput struct {
@@ -428,10 +449,11 @@ func (res *Resolver) UpdatePage(
 		dataSource.
 		DB().
 		Model(&page).
-		Where("id = ?", localID).
+		Where("page.id = ?", localID).
 		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
 			return query.OrderExpr("id ASC"), nil
 		}).
+		Relation("Author").
 		Select()
 
 	if err != nil {

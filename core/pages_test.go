@@ -6,6 +6,7 @@ import (
 
 func TestPageValidation(t *testing.T) {
 	defaultPage := Page{
+		AuthorID: 1,
 		Fields: []PageField{
 			PageField{
 				Name:  "field1",
@@ -34,6 +35,7 @@ func TestPageValidation(t *testing.T) {
 		},
 		{
 			Page{
+				AuthorID:    defaultPage.AuthorID,
 				Name:        "a",
 				Slug:        defaultPage.Slug,
 				ParentID:    defaultPage.ParentID,
@@ -49,6 +51,7 @@ func TestPageValidation(t *testing.T) {
 		},
 		{
 			Page{
+				AuthorID:    defaultPage.AuthorID,
 				Name:        defaultPage.Name,
 				Slug:        "not valid",
 				ParentID:    defaultPage.ParentID,
@@ -64,6 +67,7 @@ func TestPageValidation(t *testing.T) {
 		},
 		{
 			Page{
+				AuthorID:    defaultPage.AuthorID,
 				Name:        defaultPage.Name,
 				Slug:        defaultPage.Slug,
 				ParentID:    defaultPage.ParentID,

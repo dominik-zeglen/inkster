@@ -120,6 +120,7 @@ type LoginResult {
 }
 type Page {
   id: ID!
+  author: User!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -151,6 +152,7 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
+  pages: [Page!]!
 }
 type UserError {
   field: String!

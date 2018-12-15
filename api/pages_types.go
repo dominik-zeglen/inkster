@@ -17,6 +17,13 @@ func (res *pageResolver) ID() gql.ID {
 	return gql.ID(globalID)
 }
 
+func (res *pageResolver) Author() *userResolver {
+	return &userResolver{
+		data:       res.data.Author,
+		dataSource: res.dataSource,
+	}
+}
+
 func (res *pageResolver) CreatedAt() string {
 	return res.data.CreatedAt
 }

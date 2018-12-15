@@ -4,7 +4,17 @@
             "id": "dXNlcjox",
             "createdAt": "2007-07-07T10:00:00.000Z",
             "updatedAt": "2007-07-07T10:00:00.000Z",
-            "isActive": true
+            "isActive": true,
+            "pages": [
+                {
+                    "id": "cGFnZTox",
+                    "name": "Page 1"
+                },
+                {
+                    "id": "cGFnZToy",
+                    "name": "Page 2"
+                }
+            ]
         }
     }
 }
