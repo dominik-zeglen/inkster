@@ -12,36 +12,31 @@ interface Props {
 
 const decorate = withStyles((theme: any) => ({
   root: {
-    marginTop: theme.spacing,
-    marginBottom: theme.spacing * 2
+    marginTop: theme.spacing * 2.5,
+    marginBottom: theme.spacing * 2,
   },
   container: {
     alignItems: "center",
-    display: "flex"
+    display: "flex",
   },
   title: {
     flex: 1,
     marginLeft: theme.spacing,
     marginTop: -2,
-    ...theme.typography.mainHeading
-  }
+    ...theme.typography.mainHeading,
+  },
 }));
-export const PageHeader =
-  decorate <
-  Props >
-  (({ children, classes, title, onBack }) => (
+export const PageHeader = decorate<Props>(
+  ({ children, classes, title, onBack }) => (
     <div className={classes.root}>
       <div className={classes.container}>
         {!!onBack ? <IconButton icon={ArrowLeft} onClick={onBack} /> : <div />}
         <span className={classes.title}>
-          {title ? (
-            title
-          ) : (
-            <Skeleton style={{ width: "14rem" }} />
-          )}
+          {title ? title : <Skeleton style={{ width: "14rem" }} />}
         </span>
         {children}
       </div>
     </div>
-  ));
+  ),
+);
 export default PageHeader;
