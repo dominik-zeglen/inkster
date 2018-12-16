@@ -5,15 +5,11 @@ import { FileText } from "react-feather";
 import i18n from "../../i18n";
 import { renderCollection, maybe } from "../../utils";
 import ListElement from "../../components/ListElement";
+import { Viewer_viewer_pages } from "../queries/types/Viewer";
 
 interface Props {
   disabled: boolean;
-  pages: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    isPublished: boolean;
-  }>;
+  pages: Viewer_viewer_pages[];
   onPageClick: (id: string) => void;
 }
 

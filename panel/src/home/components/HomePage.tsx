@@ -5,18 +5,11 @@ import Container from "../../components/Container";
 import PageHeader from "../../components/PageHeader";
 import i18n from "../../i18n";
 import HomePageNewestPages from "./HomePageNewestPages";
+import { Viewer_viewer } from "../queries/types/Viewer";
 
 export interface Props {
   disabled: boolean;
-  user: {
-    email: string;
-    pages: Array<{
-      id: string;
-      name: string;
-      slug: string;
-      isPublished: boolean;
-    }>;
-  };
+  user: Viewer_viewer;
   onPageClick: (id: string) => void;
 }
 
