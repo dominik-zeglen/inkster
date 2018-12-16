@@ -1,0 +1,41 @@
+import * as React from "react";
+import { Panel } from "react-bootstrap";
+import { FileText } from "react-feather";
+
+import i18n from "../../i18n";
+import { renderCollection, maybe } from "../../utils";
+import ListElement from "../../components/ListElement";
+
+interface Props {
+  disabled: boolean;
+  pages: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    isPublished: boolean;
+  }>;
+  onPageClick: (id: string) => void;
+}
+
+export const HomePageNewestPages: React.StatelessComponent<Props> = ({
+  disabled,
+  pages,
+  onPageClick,
+}) => (
+  <Panel>
+    <Panel.Heading>
+      <Panel.Title>{i18n.t("Your newest pages")}</Panel.Title>
+    </Panel.Heading>
+    <Panel.Body>
+      {renderCollection(pages, page => (
+        <ListElement
+          icon={FileText}
+          disabled={disabled}
+          title={maybe(() => page.name)}
+          onClick={page ? () => onPageClick(page.id) : undefined}
+        />
+      ))}
+    </Panel.Body>
+  </Panel>
+);
+export default HomePageNewestPages;
