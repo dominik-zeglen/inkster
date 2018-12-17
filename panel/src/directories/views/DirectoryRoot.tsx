@@ -11,10 +11,19 @@ import {
   DirectoryCreateVariables,
   DirectoryCreate,
 } from "../queries/types/DirectoryCreate";
+import Input from "../../components/Input";
+import FormDialog from "../../components/FormDialog";
+import { mergeQs } from "../../utils";
+import { Modal } from "../../types";
 
 const dummy = () => {};
 
-export const DirectoryRoot = () => (
+export type QueryParams = Partial<Modal<"create-directory">>;
+export interface Props {
+  params: QueryParams;
+}
+
+export const DirectoryRoot: React.StatelessComponent<Props> = ({ params }) => (
   <Notificator>
     {notify => (
       <Navigator>
@@ -42,15 +51,48 @@ export const DirectoryRoot = () => (
                       variables: DirectoryCreateVariables,
                     ) => addDirectory({ variables });
                     return (
-                      <DirectoryRootPage
-                        directories={data ? data.getRootDirectories : undefined}
-                        disabled={loading}
-                        loading={loading}
-                        onAdd={handleAddDirectory}
-                        onNextPage={dummy}
-                        onPreviousPage={dummy}
-                        onRowClick={handleRowClick}
-                      />
+                      <>
+                        <DirectoryRootPage
+                          directories={
+                            data ? data.getRootDirectories : undefined
+                          }
+                          disabled={loading}
+                          loading={loading}
+                          onAdd={() =>
+                            navigate(
+                              mergeQs(params, {
+                                modal: "create-directory",
+                              }),
+                            )
+                          }
+                          onNextPage={dummy}
+                          onPreviousPage={dummy}
+                          onRowClick={handleRowClick}
+                        />
+                        <FormDialog
+                          onClose={() =>
+                            navigate(
+                              mergeQs(params, {
+                                modal: undefined,
+                              }),
+                            )
+                          }
+                          onConfirm={handleAddDirectory}
+                          show={params.modal === "create-directory"}
+                          title={i18n.t("Create directory")}
+                          width="sm"
+                          initial={{ name: "" }}
+                        >
+                          {({ change, data: formData }) => (
+                            <Input
+                              name="name"
+                              onChange={change}
+                              value={formData.name}
+                              label={i18n.t("Directory name")}
+                            />
+                          )}
+                        </FormDialog>
+                      </>
                     );
                   }}
                 </DirectoryCreateMutation>

@@ -1,3 +1,5 @@
+import { stringify as stringifyQs } from "qs";
+
 export function maybe<T>(exp: () => T, d?: T) {
   try {
     const result = exp();
@@ -34,4 +36,8 @@ export function renderCollection<T>(
     return !!renderEmpty ? renderEmpty(collection) : null;
   }
   return collection.map(renderItem);
+}
+
+export function mergeQs<T extends {} = {}>(qs: T, params: Partial<T>): string {
+  return "?" + stringifyQs(Object.assign({}, qs, params));
 }
