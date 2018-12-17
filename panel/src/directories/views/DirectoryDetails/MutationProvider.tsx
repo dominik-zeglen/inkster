@@ -8,10 +8,19 @@ import {
   DirectoryUpdate,
 } from "../../queries/types/DirectoryUpdate";
 import { DirectoryDelete } from "../../queries/types/DirectoryDelete";
+import PageCreateMutation from "../../queries/mPageCreate";
+import {
+  PageCreateVariables,
+  PageCreate,
+} from "../../queries/types/PageCreate";
 
 interface Props {
   children: ((
     props: {
+      createPage: {
+        mutate: (variables: PageCreateVariables) => void;
+        opts: MutationResult<PageCreate>;
+      };
       deleteDirectory: {
         mutate: () => void;
         opts: MutationResult<DirectoryDelete>;
@@ -25,6 +34,7 @@ interface Props {
   id: string;
   onDirectoryDelete: () => void;
   onDirectoryUpdate: () => void;
+  onPageCreate: (data: PageCreate) => void;
 }
 
 export const MutationProvider: React.StatelessComponent<Props> = ({
@@ -32,27 +42,36 @@ export const MutationProvider: React.StatelessComponent<Props> = ({
   id,
   onDirectoryDelete,
   onDirectoryUpdate,
+  onPageCreate,
 }) => (
-  <DirectoryDeleteMutation onCompleted={onDirectoryDelete}>
-    {(deleteDirectory, deleteDirectoryOpts) => (
-      <DirectoryUpdateMutation onCompleted={onDirectoryUpdate}>
-        {(updateDirectory, updateDirectoryOpts) =>
-          children({
-            deleteDirectory: {
-              mutate: () => deleteDirectory({ variables: { id } }),
-              opts: deleteDirectoryOpts,
-            },
-            updateDirectory: {
-              mutate: variables =>
-                updateDirectory({
-                  variables,
-                }),
-              opts: updateDirectoryOpts,
-            },
-          })
-        }
-      </DirectoryUpdateMutation>
+  <PageCreateMutation onCompleted={onPageCreate}>
+    {(createPage, createPageOpts) => (
+      <DirectoryDeleteMutation onCompleted={onDirectoryDelete}>
+        {(deleteDirectory, deleteDirectoryOpts) => (
+          <DirectoryUpdateMutation onCompleted={onDirectoryUpdate}>
+            {(updateDirectory, updateDirectoryOpts) =>
+              children({
+                createPage: {
+                  mutate: variables => createPage({ variables }),
+                  opts: createPageOpts,
+                },
+                deleteDirectory: {
+                  mutate: () => deleteDirectory({ variables: { id } }),
+                  opts: deleteDirectoryOpts,
+                },
+                updateDirectory: {
+                  mutate: variables =>
+                    updateDirectory({
+                      variables,
+                    }),
+                  opts: updateDirectoryOpts,
+                },
+              })
+            }
+          </DirectoryUpdateMutation>
+        )}
+      </DirectoryDeleteMutation>
     )}
-  </DirectoryDeleteMutation>
+  </PageCreateMutation>
 );
 export default MutationProvider;

@@ -7,7 +7,6 @@ import DirectoryDetailsComponent, {
 import DirectoryRoot, {
   QueryParams as DirectoryRootQueryParams,
 } from "./DirectoryRoot";
-import PageCreateComponent from "../../pages/views/PageCreate";
 import { paths } from "../../urls";
 import { parse as parseQs } from "qs";
 
@@ -37,9 +36,6 @@ const DirectoryDetails: React.StatelessComponent<RouteComponentProps<any>> = ({
     />
   );
 };
-const PageCreate: React.StatelessComponent<RouteComponentProps<any>> = ({
-  match,
-}) => <PageCreateComponent directory={decodeURIComponent(match.params.id)} />;
 
 export const DirectorySection: React.StatelessComponent = () => (
   <Switch>
@@ -49,7 +45,6 @@ export const DirectorySection: React.StatelessComponent = () => (
       path={paths.directoryDetails(":id")}
       component={DirectoryDetails}
     />
-    <Route exact={true} path={paths.pageCreate(":id")} component={PageCreate} />
   </Switch>
 );
 export default DirectorySection;

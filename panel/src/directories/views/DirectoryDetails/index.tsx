@@ -11,10 +11,13 @@ import { TransactionState } from "../../../";
 import { maybe, mergeQs } from "../../../utils";
 import { Modal } from "../../../types";
 import ActionDialog from "../../../components/ActionDialog";
+import FormDialog from "../../../components/FormDialog";
+import Input from "../../../components/Input";
+import { PageCreate } from "../../queries/types/PageCreate";
 
 const dummy = () => {};
 
-export type QueryParams = Partial<Modal<"remove">>;
+export type QueryParams = Partial<Modal<"remove" | "create-page">>;
 interface Props {
   id: string;
   params: QueryParams;
@@ -39,7 +42,16 @@ export class DirectoryDetails extends React.Component<Props, State> {
         {notify => (
           <Navigator>
             {navigate => {
-              const handleAddPage = () => navigate(urls.pageCreate(id));
+              const handleAddPageSuccess = (data: PageCreate) => {
+                if (data.createPage.errors.length === 0) {
+                  notify({
+                    text: i18n.t("Created page", {
+                      context: "notification",
+                    }),
+                  });
+                  navigate(urls.pageDetails(data.createPage.page.id));
+                }
+              };
               const handleRowClick = (pageId: string) => () =>
                 navigate(urls.pageDetails(pageId));
               const handleDelete = () => {
@@ -57,8 +69,9 @@ export class DirectoryDetails extends React.Component<Props, State> {
                       id={id}
                       onDirectoryUpdate={this.handleUpdate}
                       onDirectoryDelete={handleDelete}
+                      onPageCreate={handleAddPageSuccess}
                     >
-                      {({ deleteDirectory, updateDirectory }) => (
+                      {({ createPage, deleteDirectory, updateDirectory }) => (
                         <>
                           <DirectoryDetailsPage
                             directory={maybe(() => directory.data.getDirectory)}
@@ -69,7 +82,13 @@ export class DirectoryDetails extends React.Component<Props, State> {
                                 ? "loading"
                                 : this.state.transaction
                             }
-                            onAdd={handleAddPage}
+                            onAdd={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: "create-page",
+                                }),
+                              )
+                            }
                             onBack={
                               directory.data && directory.data.getDirectory
                                 ? directory.data.getDirectory.parent &&
@@ -122,6 +141,34 @@ export class DirectoryDetails extends React.Component<Props, State> {
                               },
                             )}
                           </ActionDialog>
+                          <FormDialog
+                            onClose={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: undefined,
+                                }),
+                              )
+                            }
+                            onConfirm={variables =>
+                              createPage.mutate({
+                                ...variables,
+                                parentId: id,
+                              })
+                            }
+                            show={params.modal === "create-page"}
+                            title={i18n.t("Create new page")}
+                            width="sm"
+                            initial={{ name: "" }}
+                          >
+                            {({ change, data: formData }) => (
+                              <Input
+                                name="name"
+                                onChange={change}
+                                value={formData.name}
+                                label={i18n.t("Page name")}
+                              />
+                            )}
+                          </FormDialog>
                         </>
                       )}
                     </MutationProvider>
