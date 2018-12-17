@@ -9,6 +9,7 @@ import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
 import { WithUpload } from "../../../UploadProvider";
+import { maybe } from "../../../utils";
 
 interface Props {
   id: string;
@@ -41,10 +42,9 @@ export class PageDetails extends React.Component<Props, State> {
                 {({ data }) => {
                   const handleBack = () =>
                     navigate(
-                      urls.directoryDetails(
-                        data && data.page && data.page.parent
-                          ? data.page.parent.id
-                          : undefined,
+                      maybe(
+                        () => urls.directoryDetails(data.page.parent.id),
+                        urls.directoryList,
                       ),
                     );
                   const handleDelete = () => {

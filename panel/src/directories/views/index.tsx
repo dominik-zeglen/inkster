@@ -4,10 +4,7 @@ import { Switch, Route, RouteComponentProps } from "react-router-dom";
 import DirectoryDetailsComponent from "./DirectoryDetails";
 import DirectoryRoot from "./DirectoryRoot";
 import PageCreateComponent from "../../pages/views/PageCreate";
-
-interface Props {
-  match: any;
-}
+import { paths } from "../../urls";
 
 const DirectoryDetails: React.StatelessComponent<RouteComponentProps<any>> = ({
   match,
@@ -16,21 +13,15 @@ const PageCreate: React.StatelessComponent<RouteComponentProps<any>> = ({
   match,
 }) => <PageCreateComponent directory={decodeURIComponent(match.params.id)} />;
 
-export const DirectorySection: React.StatelessComponent<Props> = ({
-  match,
-}) => (
+export const DirectorySection: React.StatelessComponent = () => (
   <Switch>
-    <Route exact={true} path={`${match.url}/`} component={DirectoryRoot} />
+    <Route exact={true} path={paths.directoryList} component={DirectoryRoot} />
     <Route
       exact={true}
-      path={`${match.url}/:id/`}
+      path={paths.directoryDetails(":id")}
       component={DirectoryDetails}
     />
-    <Route
-      exact={true}
-      path={`${match.url}/:id/createPage`}
-      component={PageCreate}
-    />
+    <Route exact={true} path={paths.pageCreate(":id")} component={PageCreate} />
   </Switch>
 );
 export default DirectorySection;

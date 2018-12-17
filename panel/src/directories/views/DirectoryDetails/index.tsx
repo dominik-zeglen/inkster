@@ -44,7 +44,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                     context: "notification",
                   }),
                 });
-                navigate(urls.directoryDetails(), true);
+                navigate(urls.directoryList, true);
               };
               return (
                 <Directory variables={{ id }}>
@@ -75,7 +75,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                                         directory.data.getDirectory.parent.id,
                                       ),
                                     )
-                                : () => navigate(urls.directoryDetails(""))
+                                : () => navigate(urls.directoryList)
                               : () => window.history.back()
                           }
                           onDelete={deleteDirectory.mutate}

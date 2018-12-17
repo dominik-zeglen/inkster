@@ -71,7 +71,7 @@ export class PageCreateView extends React.Component<Props, State> {
                     };
                     return (
                       <PageCreateMutation onCompleted={handleSubmitCompleted}>
-                        {(createPage, { data, loading }) => {
+                        {(createPage, { loading }) => {
                           const handleSubmit = (formData: FormData) =>
                             createPage({
                               variables: {

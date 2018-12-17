@@ -13,9 +13,7 @@ export const Home: React.StatelessComponent = () => (
           <HomePage
             disabled={viewer.loading}
             user={viewer.data.viewer}
-            onPageClick={id =>
-              navigate(urls.pageDetails(encodeURIComponent(id)))
-            }
+            onPageClick={id => navigate(urls.pageDetails(id))}
           />
         )}
       </ViewerQuery>

@@ -8,6 +8,7 @@ import Navigator from "../../components/Navigator";
 import Notificator, { NotificationType } from "../../components/Notificator";
 import i18n from "../../i18n";
 import { UpdateUser } from "../queries/types/UpdateUser";
+import urls from "../../urls";
 
 interface Props {
   id: string;
@@ -47,7 +48,7 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
                 context: "notification",
               }),
             });
-            navigate("/users/");
+            navigate(urls.userList);
           };
           return (
             <User variables={{ id }}>
@@ -59,7 +60,7 @@ export const UserDetails: React.StatelessComponent<Props> = ({ id }) => (
                         <UserDetailsPage
                           disabled={userData.loading}
                           loading={userData.loading}
-                          onBack={() => navigate("/users/")}
+                          onBack={() => navigate(urls.userList)}
                           onDelete={() => removeUser({ variables: { id } })}
                           title={
                             userData.data && userData.data.user

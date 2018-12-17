@@ -15,6 +15,7 @@ import ResetUserPasswordMutation from "../queries/mResetUserPassword";
 import SendUserPasswordResetTokenMutation from "../queries/mSendUserPasswordResetToken";
 import { ResetUserPassword } from "../queries/types/ResetUserPassword";
 import { SendUserPasswordResetToken } from "../queries/types/SendUserPasswordResetToken";
+import urls from "../../urls";
 
 const PasswordRecoveryView: React.StatelessComponent<
   RouteComponentProps<{}>
@@ -38,7 +39,7 @@ const PasswordRecoveryView: React.StatelessComponent<
                   type: NotificationType.ERROR,
                 });
               }
-              navigate("/");
+              navigate(urls.home);
             };
             const handleEmailSendComplete = (
               data: SendUserPasswordResetToken,
@@ -49,7 +50,7 @@ const PasswordRecoveryView: React.StatelessComponent<
                     "An e-mail containing link to password reset had been sent",
                   ),
                 });
-                navigate("/");
+                navigate(urls.home);
               } else {
                 notify({
                   text: i18n.t("Could not send e-mail"),
