@@ -8,12 +8,16 @@ import Notificator from "../../../components/Notificator";
 import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
-import { maybe } from "../../../utils";
+import { maybe, mergeQs } from "../../../utils";
+import { Modal } from "../../../types";
+import ActionDialog from "../../../components/ActionDialog";
 
 const dummy = () => {};
 
+export type QueryParams = Partial<Modal<"remove">>;
 interface Props {
   id: string;
+  params: QueryParams;
 }
 interface State {
   transaction: TransactionState;
@@ -29,7 +33,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
   };
 
   render() {
-    const { id } = this.props;
+    const { id, params } = this.props;
     return (
       <Notificator>
         {notify => (
@@ -55,40 +59,70 @@ export class DirectoryDetails extends React.Component<Props, State> {
                       onDirectoryDelete={handleDelete}
                     >
                       {({ deleteDirectory, updateDirectory }) => (
-                        <DirectoryDetailsPage
-                          directory={maybe(() => directory.data.getDirectory)}
-                          disabled={directory.loading}
-                          loading={directory.loading}
-                          transaction={
-                            updateDirectory.opts.loading
-                              ? "loading"
-                              : this.state.transaction
-                          }
-                          onAdd={handleAddPage}
-                          onBack={
-                            directory.data && directory.data.getDirectory
-                              ? directory.data.getDirectory.parent &&
-                                directory.data.getDirectory.parent.id
-                                ? () =>
-                                    navigate(
-                                      urls.directoryDetails(
-                                        directory.data.getDirectory.parent.id,
-                                      ),
-                                    )
-                                : () => navigate(urls.directoryList)
-                              : () => window.history.back()
-                          }
-                          onDelete={deleteDirectory.mutate}
-                          onNextPage={dummy}
-                          onPreviousPage={dummy}
-                          onRowClick={handleRowClick}
-                          onSubmit={formData =>
-                            updateDirectory.mutate({
-                              ...formData,
-                              id,
-                            })
-                          }
-                        />
+                        <>
+                          <DirectoryDetailsPage
+                            directory={maybe(() => directory.data.getDirectory)}
+                            disabled={directory.loading}
+                            loading={directory.loading}
+                            transaction={
+                              updateDirectory.opts.loading
+                                ? "loading"
+                                : this.state.transaction
+                            }
+                            onAdd={handleAddPage}
+                            onBack={
+                              directory.data && directory.data.getDirectory
+                                ? directory.data.getDirectory.parent &&
+                                  directory.data.getDirectory.parent.id
+                                  ? () =>
+                                      navigate(
+                                        urls.directoryDetails(
+                                          directory.data.getDirectory.parent.id,
+                                        ),
+                                      )
+                                  : () => navigate(urls.directoryList)
+                                : () => window.history.back()
+                            }
+                            onDelete={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: "remove",
+                                }),
+                              )
+                            }
+                            onNextPage={dummy}
+                            onPreviousPage={dummy}
+                            onRowClick={handleRowClick}
+                            onSubmit={formData =>
+                              updateDirectory.mutate({
+                                ...formData,
+                                id,
+                              })
+                            }
+                          />
+                          <ActionDialog
+                            show={params.modal === "remove"}
+                            size="xs"
+                            title={i18n.t("Remove directory")}
+                            onClose={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: undefined,
+                                }),
+                              )
+                            }
+                            onConfirm={deleteDirectory.mutate}
+                          >
+                            {i18n.t(
+                              "Are you sure you want to remove {{ name }}?",
+                              {
+                                name: maybe(
+                                  () => directory.data.getDirectory.name,
+                                ),
+                              },
+                            )}
+                          </ActionDialog>
+                        </>
                       )}
                     </MutationProvider>
                   )}
