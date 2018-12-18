@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/dominik-zeglen/inkster/core"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -16,11 +18,11 @@ func (res *userResolver) ID() gql.ID {
 }
 
 func (res *userResolver) CreatedAt() string {
-	return res.data.CreatedAt
+	return res.data.CreatedAt.UTC().Format(time.RFC3339)
 }
 
 func (res *userResolver) UpdatedAt() string {
-	return res.data.UpdatedAt
+	return res.data.UpdatedAt.UTC().Format(time.RFC3339)
 }
 
 func (res *userResolver) Email() string {

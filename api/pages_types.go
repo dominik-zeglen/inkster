@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"time"
 
 	"github.com/dominik-zeglen/inkster/core"
 	gql "github.com/graph-gophers/graphql-go"
@@ -25,11 +26,11 @@ func (res *pageResolver) Author() *userResolver {
 }
 
 func (res *pageResolver) CreatedAt() string {
-	return res.data.CreatedAt
+	return res.data.CreatedAt.UTC().Format(time.RFC3339)
 }
 
 func (res *pageResolver) UpdatedAt() string {
-	return res.data.UpdatedAt
+	return res.data.UpdatedAt.UTC().Format(time.RFC3339)
 }
 
 func (res *pageResolver) Name() string {

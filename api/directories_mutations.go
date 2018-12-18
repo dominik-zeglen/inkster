@@ -94,7 +94,9 @@ func (res *Resolver) CreateDirectory(
 		return nil, errNoPermissions
 	}
 
-	directory := core.CreateDirectory(res.dataSource)
+	directory := core.Directory{}
+	directory.CreatedAt = res.dataSource.GetCurrentTime()
+	directory.UpdatedAt = res.dataSource.GetCurrentTime()
 	directory.Name = args.Input.Name
 
 	input := args.Input

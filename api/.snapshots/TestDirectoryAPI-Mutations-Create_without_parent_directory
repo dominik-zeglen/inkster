@@ -3,8 +3,8 @@
         "createDirectory": {
             "errors": [],
             "directory": {
-                "createdAt": "2017-07-07T10:00:00.000Z",
-                "updatedAt": "2017-07-07T10:00:00.000Z",
+                "createdAt": "2017-07-07T10:00:00Z",
+                "updatedAt": "2017-07-07T10:00:00Z",
                 "name": "New Directory",
                 "isPublished": false,
                 "parent": null

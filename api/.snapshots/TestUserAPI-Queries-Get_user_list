@@ -3,8 +3,8 @@
         "users": [
             {
                 "id": "dXNlcjox",
-                "createdAt": "2007-07-07T10:00:00.000Z",
-                "updatedAt": "2007-07-07T10:00:00.000Z",
+                "createdAt": "2007-07-07T10:00:00Z",
+                "updatedAt": "2007-07-07T10:00:00Z",
                 "isActive": true,
                 "pages": [
                     {
@@ -19,8 +19,8 @@
             },
             {
                 "id": "dXNlcjoy",
-                "createdAt": "2007-07-07T11:00:00.000Z",
-                "updatedAt": "2007-07-07T11:00:00.000Z",
+                "createdAt": "2007-07-07T11:00:00Z",
+                "updatedAt": "2007-07-07T11:00:00Z",
                 "isActive": false,
                 "pages": [
                     {
@@ -31,15 +31,15 @@
             },
             {
                 "id": "dXNlcjoz",
-                "createdAt": "2007-07-07T12:00:00.000Z",
-                "updatedAt": "2007-07-07T12:00:00.000Z",
+                "createdAt": "2007-07-07T12:00:00Z",
+                "updatedAt": "2007-07-07T12:00:00Z",
                 "isActive": true,
                 "pages": []
             },
             {
                 "id": "dXNlcjo0",
-                "createdAt": "2007-07-07T13:00:00.000Z",
-                "updatedAt": "2007-07-07T13:00:00.000Z",
+                "createdAt": "2007-07-07T13:00:00Z",
+                "updatedAt": "2007-07-07T13:00:00Z",
                 "isActive": false,
                 "pages": []
             }

@@ -8,25 +8,17 @@ import (
 
 // Adapter interface provides abstraction over different data sources
 type AbstractDataContext interface {
-	GetCurrentTime() string
+	GetCurrentTime() time.Time
 	DB() *pg.DB
-}
-
-func CreateDirectory(dataContext AbstractDataContext) Directory {
-	directory := Directory{}
-	directory.CreatedAt = dataContext.GetCurrentTime()
-	directory.UpdatedAt = dataContext.GetCurrentTime()
-
-	return directory
 }
 
 // BaseModel is an abstraction over that all models
 // should be composed of, providing most basic
 // fields to keep order and consistency within code
 type BaseModel struct {
-	ID        int    `sql:",pk,autoincrement" json:"id"`
-	CreatedAt string `sql:",notnull" json:"createdAt" bson:"createdAt"`
-	UpdatedAt string `sql:",notnull" json:"updatedAt" bson:"updatedAt"`
+	ID        int       `sql:",pk,autoincrement" json:"id"`
+	CreatedAt time.Time `sql:",notnull" json:"createdAt" bson:"createdAt"`
+	UpdatedAt time.Time `sql:",notnull" json:"updatedAt" bson:"updatedAt"`
 }
 
 type DataContext struct {
@@ -35,8 +27,8 @@ type DataContext struct {
 	Session *pg.DB
 }
 
-func (_ DataContext) GetCurrentTime() string {
-	return time.Now().UTC().Format(time.RFC3339)
+func (_ DataContext) GetCurrentTime() time.Time {
+	return time.Now()
 }
 
 func (dataContext DataContext) DB() *pg.DB {
@@ -49,8 +41,12 @@ type MockContext struct {
 	Session *pg.DB
 }
 
-func (_ MockContext) GetCurrentTime() string {
-	return "2017-07-07T10:00:00.000Z"
+func (_ MockContext) GetCurrentTime() time.Time {
+	output, _ := time.Parse(
+		"2006-01-02T15:04:05.000Z",
+		"2017-07-07T10:00:00.000Z",
+	)
+	return output
 }
 
 func (dataContext MockContext) DB() *pg.DB {

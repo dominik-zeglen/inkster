@@ -2,8 +2,8 @@
     "data": {
         "viewer": {
             "id": "dXNlcjox",
-            "createdAt": "2007-07-07T10:00:00.000Z",
-            "updatedAt": "2007-07-07T10:00:00.000Z",
+            "createdAt": "2007-07-07T10:00:00Z",
+            "updatedAt": "2007-07-07T10:00:00Z",
             "isActive": true,
             "pages": [
                 {

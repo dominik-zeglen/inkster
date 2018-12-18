@@ -6,8 +6,8 @@
                 "id": "dXNlcjox",
                 "email": "user1@example.com"
             },
-            "createdAt": "2007-07-07T10:00:00.000Z",
-            "updatedAt": "2007-07-07T10:00:00.000Z",
+            "createdAt": "2007-07-07T10:00:00Z",
+            "updatedAt": "2007-07-07T10:00:00Z",
             "name": "Page 1",
             "slug": "page-1",
             "isPublished": false,
