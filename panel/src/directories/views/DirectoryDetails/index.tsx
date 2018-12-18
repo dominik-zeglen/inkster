@@ -8,12 +8,19 @@ import Notificator from "../../../components/Notificator";
 import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
-import { maybe } from "../../../utils";
+import { maybe, mergeQs } from "../../../utils";
+import { Modal } from "../../../types";
+import ActionDialog from "../../../components/ActionDialog";
+import FormDialog from "../../../components/FormDialog";
+import Input from "../../../components/Input";
+import { PageCreate } from "../../queries/types/PageCreate";
 
 const dummy = () => {};
 
+export type QueryParams = Partial<Modal<"remove" | "create-page">>;
 interface Props {
   id: string;
+  params: QueryParams;
 }
 interface State {
   transaction: TransactionState;
@@ -29,13 +36,22 @@ export class DirectoryDetails extends React.Component<Props, State> {
   };
 
   render() {
-    const { id } = this.props;
+    const { id, params } = this.props;
     return (
       <Notificator>
         {notify => (
           <Navigator>
             {navigate => {
-              const handleAddPage = () => navigate(urls.pageCreate(id));
+              const handleAddPageSuccess = (data: PageCreate) => {
+                if (data.createPage.errors.length === 0) {
+                  notify({
+                    text: i18n.t("Created page", {
+                      context: "notification",
+                    }),
+                  });
+                  navigate(urls.pageDetails(data.createPage.page.id));
+                }
+              };
               const handleRowClick = (pageId: string) => () =>
                 navigate(urls.pageDetails(pageId));
               const handleDelete = () => {
@@ -44,7 +60,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                     context: "notification",
                   }),
                 });
-                navigate(urls.directoryDetails(), true);
+                navigate(urls.directoryList, true);
               };
               return (
                 <Directory variables={{ id }}>
@@ -53,42 +69,107 @@ export class DirectoryDetails extends React.Component<Props, State> {
                       id={id}
                       onDirectoryUpdate={this.handleUpdate}
                       onDirectoryDelete={handleDelete}
+                      onPageCreate={handleAddPageSuccess}
                     >
-                      {({ deleteDirectory, updateDirectory }) => (
-                        <DirectoryDetailsPage
-                          directory={maybe(() => directory.data.getDirectory)}
-                          disabled={directory.loading}
-                          loading={directory.loading}
-                          transaction={
-                            updateDirectory.opts.loading
-                              ? "loading"
-                              : this.state.transaction
-                          }
-                          onAdd={handleAddPage}
-                          onBack={
-                            directory.data && directory.data.getDirectory
-                              ? directory.data.getDirectory.parent &&
-                                directory.data.getDirectory.parent.id
-                                ? () =>
-                                    navigate(
-                                      urls.directoryDetails(
-                                        directory.data.getDirectory.parent.id,
-                                      ),
-                                    )
-                                : () => navigate(urls.directoryDetails(""))
-                              : () => window.history.back()
-                          }
-                          onDelete={deleteDirectory.mutate}
-                          onNextPage={dummy}
-                          onPreviousPage={dummy}
-                          onRowClick={handleRowClick}
-                          onSubmit={formData =>
-                            updateDirectory.mutate({
-                              ...formData,
-                              id,
-                            })
-                          }
-                        />
+                      {({ createPage, deleteDirectory, updateDirectory }) => (
+                        <>
+                          <DirectoryDetailsPage
+                            directory={maybe(() => directory.data.getDirectory)}
+                            disabled={directory.loading}
+                            loading={directory.loading}
+                            transaction={
+                              updateDirectory.opts.loading
+                                ? "loading"
+                                : this.state.transaction
+                            }
+                            onAdd={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: "create-page",
+                                }),
+                              )
+                            }
+                            onBack={
+                              directory.data && directory.data.getDirectory
+                                ? directory.data.getDirectory.parent &&
+                                  directory.data.getDirectory.parent.id
+                                  ? () =>
+                                      navigate(
+                                        urls.directoryDetails(
+                                          directory.data.getDirectory.parent.id,
+                                        ),
+                                      )
+                                  : () => navigate(urls.directoryList)
+                                : () => window.history.back()
+                            }
+                            onDelete={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: "remove",
+                                }),
+                              )
+                            }
+                            onNextPage={dummy}
+                            onPreviousPage={dummy}
+                            onRowClick={handleRowClick}
+                            onSubmit={formData =>
+                              updateDirectory.mutate({
+                                ...formData,
+                                id,
+                              })
+                            }
+                          />
+                          <ActionDialog
+                            show={params.modal === "remove"}
+                            size="xs"
+                            title={i18n.t("Remove directory")}
+                            onClose={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: undefined,
+                                }),
+                              )
+                            }
+                            onConfirm={deleteDirectory.mutate}
+                          >
+                            {i18n.t(
+                              "Are you sure you want to remove {{ name }}?",
+                              {
+                                name: maybe(
+                                  () => directory.data.getDirectory.name,
+                                ),
+                              },
+                            )}
+                          </ActionDialog>
+                          <FormDialog
+                            onClose={() =>
+                              navigate(
+                                mergeQs(params, {
+                                  modal: undefined,
+                                }),
+                              )
+                            }
+                            onConfirm={variables =>
+                              createPage.mutate({
+                                ...variables,
+                                parentId: id,
+                              })
+                            }
+                            show={params.modal === "create-page"}
+                            title={i18n.t("Create new page")}
+                            width="xs"
+                            initial={{ name: "" }}
+                          >
+                            {({ change, data: formData }) => (
+                              <Input
+                                name="name"
+                                onChange={change}
+                                value={formData.name}
+                                label={i18n.t("Page name")}
+                              />
+                            )}
+                          </FormDialog>
+                        </>
                       )}
                     </MutationProvider>
                   )}

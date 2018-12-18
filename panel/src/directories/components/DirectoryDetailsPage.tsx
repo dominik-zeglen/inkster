@@ -2,18 +2,15 @@ import * as React from "react";
 import withStyles from "react-jss";
 import { Trash } from "react-feather";
 
-import ActionDialog from "../../components/ActionDialog";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
-import Toggle from "../../components/Toggle";
 import PageHeader from "../../components/PageHeader";
 import IconButton from "../../components/IconButton";
 import { FormViewProps, ListViewProps } from "../../";
 import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
 import DirectoryStatus from "./DirectoryStatus";
-import i18n from "../../i18n";
 import { Directory_getDirectory } from "../queries/types/Directory";
 
 interface FormData {
@@ -51,84 +48,61 @@ export const DirectoryDetailsPage = decorate<Props>(
     onPreviousPage,
     onRowClick,
   }) => (
-    <Toggle>
-      {(openedDeleteDialog, { toggle: toggleDeleteDialog }) => (
-        <>
-          <Form
-            initial={{
-              isPublished:
-                directory && directory.isPublished
-                  ? directory.isPublished
-                  : false,
-              name: directory && directory.name ? directory.name : "",
-            }}
-            onSubmit={onSubmit}
-            key={JSON.stringify(directory)}
+    <Form
+      initial={{
+        isPublished:
+          directory && directory.isPublished ? directory.isPublished : false,
+        name: directory && directory.name ? directory.name : "",
+      }}
+      onSubmit={onSubmit}
+      key={JSON.stringify(directory)}
+    >
+      {({ change, data, hasChanged, submit }) => (
+        <Container width="md">
+          <PageHeader
+            title={directory ? directory.name : undefined}
+            onBack={onBack}
           >
-            {({ change, data, hasChanged, submit }) => (
-              <Container width="md">
-                <PageHeader
-                  title={directory ? directory.name : undefined}
-                  onBack={onBack}
-                >
-                  <IconButton
-                    disabled={disabled || loading}
-                    icon={Trash}
-                    onClick={toggleDeleteDialog}
-                  />
-                </PageHeader>
-                <div className={classes.root}>
-                  <div>
-                    <DirectoryProperties
-                      data={data}
-                      disabled={disabled || loading}
-                      onChange={change}
-                    />
-                    <DirectoryPages
-                      pages={directory ? directory.pages : undefined}
-                      disabled={disabled || loading}
-                      pageInfo={pageInfo}
-                      onAdd={onAdd}
-                      onNextPage={onNextPage}
-                      onPreviousPage={onPreviousPage}
-                      onRowClick={onRowClick}
-                    />
-                  </div>
-                  <div>
-                    <DirectoryStatus
-                      createdAt={directory ? directory.createdAt : undefined}
-                      data={data}
-                      updatedAt={directory ? directory.updatedAt : undefined}
-                      onChange={change}
-                    />
-                  </div>
-                </div>
-                <FormSave
-                  disabled={disabled || !hasChanged}
-                  variant={transaction}
-                  onConfirm={submit}
-                />
-              </Container>
-            )}
-          </Form>
-          {!(disabled || loading) &&
-            directory &&
-            directory.name && (
-              <ActionDialog
-                show={openedDeleteDialog}
-                size="xs"
-                title={i18n.t("Remove directory")}
-                onClose={toggleDeleteDialog}
-                onConfirm={onDelete}
-              >
-                {i18n.t("Are you sure you want to remove {{ name }}?", {
-                  name: directory.name,
-                })}
-              </ActionDialog>
-            )}
-        </>
+            <IconButton
+              disabled={disabled || loading}
+              icon={Trash}
+              onClick={onDelete}
+            />
+          </PageHeader>
+          <div className={classes.root}>
+            <div>
+              <DirectoryProperties
+                data={data}
+                disabled={disabled || loading}
+                onChange={change}
+              />
+              <DirectoryPages
+                pages={directory ? directory.pages : undefined}
+                disabled={disabled || loading}
+                pageInfo={pageInfo}
+                onAdd={onAdd}
+                onNextPage={onNextPage}
+                onPreviousPage={onPreviousPage}
+                onRowClick={onRowClick}
+              />
+            </div>
+            <div>
+              <DirectoryStatus
+                createdAt={directory ? directory.createdAt : undefined}
+                data={data}
+                updatedAt={directory ? directory.updatedAt : undefined}
+                onChange={change}
+              />
+            </div>
+          </div>
+          <FormSave
+            disabled={disabled || !hasChanged}
+            variant={transaction}
+            onConfirm={submit}
+          />
+        </Container>
       )}
-    </Toggle>
+    </Form>
   ),
 );
 export default DirectoryDetailsPage;
