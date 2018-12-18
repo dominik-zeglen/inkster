@@ -110,6 +110,7 @@ func (res *verifyTokenResultResolver) User() (*userResolver, error) {
 		dataSource.
 		DB().
 		Model(&user).
+		WherePK().
 		Select()
 
 	if err != nil {
