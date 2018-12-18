@@ -1,25 +1,33 @@
 import * as React from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
+import { parse as parseQs } from "qs";
 
 import UserList from "./UserList";
-import UserDetailsComponent from "./UserDetails";
+import UserDetailsComponent, {
+  QueryParams as UserDetailsQueryParams,
+} from "./UserDetails";
+import { paths } from "../../urls";
 
 interface UserDetailsRouteParams {
   id: string;
 }
 const UserDetails: React.StatelessComponent<
   RouteComponentProps<UserDetailsRouteParams>
-> = ({ match }) => {
+> = ({ match, location }) => {
+  const qs = parseQs(location.search.substr(1));
+  const params: UserDetailsQueryParams = {
+    modal: qs.modal,
+  };
   const decodedId = decodeURIComponent(match.params.id);
-  return <UserDetailsComponent id={decodedId} />;
+  return <UserDetailsComponent id={decodedId} params={params} />;
 };
 
-export const UserSection: React.StatelessComponent<RouteComponentProps<{}>> = ({
-  match,
-}) => (
+export const UserSection: React.StatelessComponent<
+  RouteComponentProps<{}>
+> = () => (
   <Switch>
-    <Route path={`${match.url}/:id/`} component={UserDetails} />
-    <Route path={`${match.url}/`} component={UserList} />
+    <Route path={paths.userDetails(":id")} component={UserDetails} />
+    <Route path={paths.userList} component={UserList} />
   </Switch>
 );
 export default UserSection;
