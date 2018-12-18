@@ -157,7 +157,7 @@ export class DirectoryDetails extends React.Component<Props, State> {
                             }
                             show={params.modal === "create-page"}
                             title={i18n.t("Create new page")}
-                            width="sm"
+                            width="xs"
                             initial={{ name: "" }}
                           >
                             {({ change, data: formData }) => (

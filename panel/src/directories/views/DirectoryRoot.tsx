@@ -80,7 +80,7 @@ export const DirectoryRoot: React.StatelessComponent<Props> = ({ params }) => (
                           onConfirm={handleAddDirectory}
                           show={params.modal === "create-directory"}
                           title={i18n.t("Create directory")}
-                          width="sm"
+                          width="xs"
                           initial={{ name: "" }}
                         >
                           {({ change, data: formData }) => (
