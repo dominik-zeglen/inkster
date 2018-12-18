@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"log"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dominik-zeglen/inkster/core"
@@ -53,14 +54,16 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 		Where("email = ?", args.Email).
 		Select()
 
+	log.Print(user.Email)
+
 	if err != nil {
+		log.Fatal(err)
 		return &notAuthorizedOutput, nil
 	}
 
 	if !user.AuthPassword(args.Password) {
 		return &notAuthorizedOutput, nil
 	}
-
 	claims := middleware.UserClaims{
 		Email: user.Email,
 		ID:    user.ID,

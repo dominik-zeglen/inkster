@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/dominik-zeglen/inkster/core"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -16,10 +18,10 @@ func (res *directoryResolver) ID() gql.ID {
 	return gql.ID(globalID)
 }
 func (res *directoryResolver) CreatedAt() string {
-	return res.data.CreatedAt
+	return res.data.CreatedAt.UTC().Format(time.RFC3339)
 }
 func (res *directoryResolver) UpdatedAt() string {
-	return res.data.UpdatedAt
+	return res.data.UpdatedAt.UTC().Format(time.RFC3339)
 }
 func (res *directoryResolver) Name() string {
 	return res.data.Name

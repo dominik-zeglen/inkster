@@ -2,8 +2,8 @@
     "data": {
         "getDirectory": {
             "id": "ZGlyZWN0b3J5OjE=",
-            "createdAt": "2007-07-07T10:00:00.000Z",
-            "updatedAt": "2007-07-07T10:00:00.000Z",
+            "createdAt": "2007-07-07T10:00:00Z",
+            "updatedAt": "2007-07-07T10:00:00Z",
             "name": "Directory 1",
             "isPublished": false,
             "parent": null,
