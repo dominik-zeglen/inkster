@@ -2,7 +2,9 @@ import * as React from "react";
 import { Switch, Route, RouteComponentProps } from "react-router-dom";
 import { parse as parseQs } from "qs";
 
-import UserList from "./UserList";
+import UserListComponent, {
+  QueryParams as UserListQueryParams,
+} from "./UserList";
 import UserDetailsComponent, {
   QueryParams as UserDetailsQueryParams,
 } from "./UserDetails";
@@ -20,6 +22,16 @@ const UserDetails: React.StatelessComponent<
   };
   const decodedId = decodeURIComponent(match.params.id);
   return <UserDetailsComponent id={decodedId} params={params} />;
+};
+
+const UserList: React.StatelessComponent<
+  RouteComponentProps<UserDetailsRouteParams>
+> = ({ location }) => {
+  const qs = parseQs(location.search.substr(1));
+  const params: UserListQueryParams = {
+    modal: qs.modal,
+  };
+  return <UserListComponent params={params} />;
 };
 
 export const UserSection: React.StatelessComponent<
