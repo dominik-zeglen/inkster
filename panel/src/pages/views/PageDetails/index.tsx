@@ -9,10 +9,14 @@ import urls from "../../../urls";
 import i18n from "../../../i18n";
 import { TransactionState } from "../../../";
 import { WithUpload } from "../../../UploadProvider";
-import { maybe } from "../../../utils";
+import { maybe, mergeQs } from "../../../utils";
+import ActionDialog from "../../../components/ActionDialog";
+import { Modal } from "../../../types";
 
-interface Props {
+export type QueryParams = Partial<Modal<"remove">>;
+export interface Props {
   id: string;
+  params: QueryParams;
 }
 interface State {
   transaction: TransactionState;
@@ -32,7 +36,7 @@ export class PageDetails extends React.Component<Props, State> {
   };
 
   render() {
-    const { id } = this.props;
+    const { id, params } = this.props;
     return (
       <Notificator>
         {notify => (
@@ -116,21 +120,47 @@ export class PageDetails extends React.Component<Props, State> {
                                   })),
                                 });
                               return (
-                                <PageDetailsPage
-                                  disabled={formLoading || modalLoading}
-                                  loading={formLoading || modalLoading}
-                                  title={
-                                    data && data.page
-                                      ? data.page.name
-                                      : undefined
-                                  }
-                                  transaction={this.state.transaction}
-                                  page={data ? data.page : undefined}
-                                  onBack={handleBack}
-                                  onDelete={() => deletePage.mutate({ id })}
-                                  onUpload={handleUpload}
-                                  onSubmit={handleSubmit}
-                                />
+                                <>
+                                  <PageDetailsPage
+                                    disabled={formLoading || modalLoading}
+                                    loading={formLoading || modalLoading}
+                                    title={
+                                      data && data.page
+                                        ? data.page.name
+                                        : undefined
+                                    }
+                                    transaction={this.state.transaction}
+                                    page={data ? data.page : undefined}
+                                    onBack={handleBack}
+                                    onDelete={() =>
+                                      navigate(
+                                        mergeQs(params, {
+                                          modal: "remove",
+                                        }),
+                                      )
+                                    }
+                                    onUpload={handleUpload}
+                                    onSubmit={handleSubmit}
+                                  />
+                                  <ActionDialog
+                                    show={params.modal === "remove"}
+                                    size="xs"
+                                    title={i18n.t("Remove page")}
+                                    onClose={() =>
+                                      navigate(
+                                        mergeQs(params, {
+                                          modal: undefined,
+                                        }),
+                                      )
+                                    }
+                                    onConfirm={() => deletePage.mutate({ id })}
+                                  >
+                                    {i18n.t(
+                                      "Are you sure you want to remove {{ name }}?",
+                                      { name: maybe(() => data.page.name) },
+                                    )}
+                                  </ActionDialog>
+                                </>
                               );
                             }}
                           </MutationProvider>
