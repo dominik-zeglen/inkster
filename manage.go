@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"gopkg.in/urfave/cli.v1"
 	"log"
 	"os"
+
+	"gopkg.in/urfave/cli.v1"
 
 	"github.com/dominik-zeglen/inkster/api/schema"
 	server "github.com/dominik-zeglen/inkster/app"
@@ -32,6 +33,12 @@ func main() {
 					Email:  email,
 					Active: true,
 				}
+				newUser.CreatedAt = serverApp.
+					DataSource.
+					GetCurrentTime()
+				newUser.UpdatedAt = serverApp.
+					DataSource.
+					GetCurrentTime()
 				err := newUser.CreatePassword(password)
 				if err != nil {
 					return err
