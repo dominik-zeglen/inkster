@@ -54,8 +54,6 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 		Where("email = ?", args.Email).
 		Select()
 
-	log.Print(user.Email)
-
 	if err != nil {
 		log.Fatal(err)
 		return &notAuthorizedOutput, nil
