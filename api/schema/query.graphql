@@ -1,7 +1,7 @@
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories: [Directory]
-  getRootDirectories: [Directory]
+  getDirectories(sort: DirectorySort): [Directory]
+  getRootDirectories(sort: DirectorySort): [Directory]
 
   page(id: ID!): Page
   pages(sort: PageSort): [Page]

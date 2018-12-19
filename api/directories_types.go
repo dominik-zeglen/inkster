@@ -52,30 +52,18 @@ func (res *directoryResolver) Parent() *directoryResolver {
 		data:       &parent,
 	}
 }
-func (res *directoryResolver) Children() *[]*directoryResolver {
-	var resolverList []*directoryResolver
-	directories := []core.Directory{}
 
-	err := res.
-		dataSource.
-		DB().
-		Model(&directories).
-		Where("parent_id = ?", res.data.ID).
-		Select()
+type DirectoryChildrenArgs struct {
+	Sort *Sort
+}
 
-	if err != nil {
-		panic(err)
+func (res *directoryResolver) Children(
+	args DirectoryChildrenArgs,
+) (*[]*directoryResolver, error) {
+	where := func(query *orm.Query) *orm.Query {
+		return query.Where("parent_id = ?", res.data.ID)
 	}
-	for index := range directories {
-		resolverList = append(
-			resolverList,
-			&directoryResolver{
-				dataSource: res.dataSource,
-				data:       &directories[index],
-			},
-		)
-	}
-	return &resolverList
+	return resolveDirectories(res.dataSource, args.Sort, &where)
 }
 
 type DirectoryPagesArgs struct {

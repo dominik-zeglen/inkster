@@ -1,0 +1,4 @@
+input DirectorySort {
+    field: DirectorySortableField!
+    order: SortOrder!
+}

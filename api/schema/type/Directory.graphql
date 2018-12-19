@@ -5,6 +5,6 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children: [Directory]
+  children(sort: DirectorySort): [Directory]
   pages(sort: PageSort): [Page!]
 }

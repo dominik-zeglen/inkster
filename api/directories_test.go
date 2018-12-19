@@ -236,8 +236,8 @@ func TestDirectoryAPI(t *testing.T) {
 				}
 			}`
 		getDirectories := `
-			query GetDirectories{
-				getDirectories {
+			query GetDirectories($sort: DirectorySort){
+				getDirectories(sort: $sort) {
 					id
 					createdAt
 					updatedAt
@@ -297,6 +297,36 @@ func TestDirectoryAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+
+		testSortingFields := []string{
+			"CREATED_AT",
+			"IS_PUBLISHED",
+			"NAME",
+			"UPDATED_AT",
+		}
+		testSortingOrders := []string{"ASC", "DESC"}
+
+		for _, field := range testSortingFields {
+			for _, order := range testSortingOrders {
+				t.Run(
+					"Get directory list using "+field+" "+order,
+					func(t *testing.T) {
+						variables := fmt.Sprintf(`{
+							"sort": {
+								"field": "%s",
+								"order": "%s"
+							}
+						}`, field, order)
+						result, err := execQuery(getDirectories, variables, nil)
+						if err != nil {
+							t.Fatal(err)
+						}
+						cupaloy.SnapshotT(t, result)
+					},
+				)
+			}
+		}
+
 		t.Run("Get root directory list", func(t *testing.T) {
 			query := `query GetRootDirectories{
 				getRootDirectories {

@@ -3,6 +3,10 @@ input DirectoryCreateInput {
   parentId: ID
   isPublished: Boolean
 }
+input DirectorySort {
+    field: DirectorySortableField!
+    order: SortOrder!
+}
 input DirectoryUpdateInput {
   name: String
   parentId: ID
@@ -90,8 +94,8 @@ type Mutation {
 }
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories: [Directory]
-  getRootDirectories: [Directory]
+  getDirectories(sort: DirectorySort): [Directory]
+  getRootDirectories(sort: DirectorySort): [Directory]
 
   page(id: ID!): Page
   pages(sort: PageSort): [Page]
@@ -111,12 +115,18 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children: [Directory]
+  children(sort: DirectorySort): [Directory]
   pages(sort: PageSort): [Page!]
 }
 type DirectoryOperationResult {
   errors: [InputError!]!
   directory: Directory
+}
+enum DirectorySortableField {
+    CREATED_AT
+    IS_PUBLISHED
+    NAME
+    UPDATED_AT
 }
 type InputError {
   code: Int!
