@@ -20,7 +20,11 @@ func resolvePages(
 	query := dataSource.
 		DB().
 		Model(&pages)
-	query = (*where)(query)
+
+	if where != nil {
+		query = (*where)(query)
+	}
+
 	query = sortPages(query, sort)
 	err := query.Select()
 
