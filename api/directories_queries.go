@@ -5,6 +5,7 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -46,59 +47,25 @@ func (res *Resolver) GetDirectory(
 	}, nil
 }
 
-func (res *Resolver) GetDirectories() (*[]*directoryResolver, error) {
-	var resolverList []*directoryResolver
-	directories := []core.Directory{}
-
-	err := res.
-		dataSource.
-		DB().
-		Model(&directories).
-		Select()
-
-	if err != nil {
-		if err == pg.ErrNoRows {
-			return &[]*directoryResolver{}, nil
-		}
-		return nil, err
-	}
-	for index := range directories {
-		resolverList = append(
-			resolverList,
-			&directoryResolver{
-				dataSource: res.dataSource,
-				data:       &directories[index],
-			},
-		)
-	}
-	return &resolverList, nil
+type DirectoriesArgs struct {
+	Sort *Sort
 }
 
-func (res *Resolver) GetRootDirectories() (*[]*directoryResolver, error) {
-	var resolverList []*directoryResolver
-	directories := []core.Directory{}
+func (res *Resolver) GetDirectories(
+	args DirectoriesArgs,
+) (*[]*directoryResolver, error) {
+	return resolveDirectories(res.dataSource, args.Sort, nil)
+}
 
-	err := res.
-		dataSource.
-		DB().
-		Model(&directories).
-		Where("parent_id IS NULL OR parent_id = 0").
-		Select()
+type RootDirectoriesArgs struct {
+	Sort *Sort
+}
 
-	if err != nil {
-		if err == pg.ErrNoRows {
-			return nil, nil
-		}
-		return nil, err
+func (res *Resolver) GetRootDirectories(
+	args RootDirectoriesArgs,
+) (*[]*directoryResolver, error) {
+	where := func(query *orm.Query) *orm.Query {
+		return query.Where("parent_id IS NULL OR parent_id = 0")
 	}
-	for index := range directories {
-		resolverList = append(
-			resolverList,
-			&directoryResolver{
-				dataSource: res.dataSource,
-				data:       &directories[index],
-			},
-		)
-	}
-	return &resolverList, nil
+	return resolveDirectories(res.dataSource, args.Sort, &where)
 }

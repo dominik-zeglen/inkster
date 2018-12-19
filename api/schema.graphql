@@ -3,6 +3,10 @@ input DirectoryCreateInput {
   parentId: ID
   isPublished: Boolean
 }
+input DirectorySort {
+    field: DirectorySortableField!
+    order: SortOrder!
+}
 input DirectoryUpdateInput {
   name: String
   parentId: ID
@@ -35,6 +39,10 @@ input PageFieldUpdateInput {
   name: String
   value: String
 }
+input PageSort {
+    field: PageSortableField!
+    order: SortOrder!
+}
 input PageUpdateInput {
   name: String
   slug: String
@@ -44,6 +52,10 @@ input PageUpdateInput {
 input UserCreateInput {
   email: String!
   password: String
+}
+input UserSort {
+    field: UserSortableField!
+    order: SortOrder!
 }
 input UserUpdateInput {
   isActive: Boolean
@@ -82,14 +94,14 @@ type Mutation {
 }
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories: [Directory]
-  getRootDirectories: [Directory]
+  getDirectories(sort: DirectorySort): [Directory]
+  getRootDirectories(sort: DirectorySort): [Directory]
 
   page(id: ID!): Page
-  pages: [Page]
+  pages(sort: PageSort): [Page]
 
   user(id: ID!): User
-  users: [User]
+  users(sort: UserSort): [User]
   viewer: User
 }
 schema {
@@ -103,12 +115,18 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children: [Directory]
-  pages: [Page]
+  children(sort: DirectorySort): [Directory]
+  pages(sort: PageSort): [Page!]
 }
 type DirectoryOperationResult {
   errors: [InputError!]!
   directory: Directory
+}
+enum DirectorySortableField {
+    CREATED_AT
+    IS_PUBLISHED
+    NAME
+    UPDATED_AT
 }
 type InputError {
   code: Int!
@@ -147,13 +165,25 @@ type PageOperationResult {
 type PageRemoveResult {
   removedObjectId: ID!
 }
+enum PageSortableField {
+    AUTHOR
+    CREATED_AT
+    IS_PUBLISHED
+    NAME
+    SLUG
+    UPDATED_AT
+}
+enum SortOrder {
+    ASC
+    DESC
+}
 type User {
   id: ID!
   createdAt: String!
   updatedAt: String!
   email: String!
   isActive: Boolean!
-  pages: [Page!]!
+  pages(sort: PageSort): [Page!]
 }
 type UserError {
   field: String!
@@ -165,6 +195,12 @@ type UserOperationResult {
 }
 type UserRemoveResult {
   removedObjectId: ID
+}
+enum UserSortableField {
+    ACTIVE
+    CREATED_AT
+    EMAIL
+    UPDATED_AT
 }
 type VerifyTokenResult {
   result: Boolean!

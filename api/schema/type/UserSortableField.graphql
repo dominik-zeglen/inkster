@@ -1,0 +1,6 @@
+enum UserSortableField {
+    ACTIVE
+    CREATED_AT
+    EMAIL
+    UPDATED_AT
+}

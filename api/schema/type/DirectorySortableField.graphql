@@ -1,0 +1,6 @@
+enum DirectorySortableField {
+    CREATED_AT
+    IS_PUBLISHED
+    NAME
+    UPDATED_AT
+}

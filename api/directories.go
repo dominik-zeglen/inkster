@@ -5,54 +5,55 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-func resolveUsers(
+func resolveDirectories(
 	dataSource core.AbstractDataContext,
 	sort *Sort,
 	where *func(*orm.Query) *orm.Query,
-) (*[]*userResolver, error) {
-	users := []core.User{}
+) (*[]*directoryResolver, error) {
+	directories := []core.Directory{}
 
 	query := dataSource.
 		DB().
-		Model(&users)
+		Model(&directories)
 
 	if where != nil {
 		query = (*where)(query)
 	}
 
-	query = sortUsers(query, sort).OrderExpr("created_at ASC")
+	query = sortDirectories(query, sort).OrderExpr("created_at ASC")
 	err := query.Select()
 
 	if err != nil {
 		return nil, err
 	}
 
-	resolvers := make([]*userResolver, len(users))
-	for i := range users {
-		resolvers[i] = &userResolver{
+	resolvers := make([]*directoryResolver, len(directories))
+	for i := range directories {
+		resolvers[i] = &directoryResolver{
 			dataSource: dataSource,
-			data:       &users[i],
+			data:       &directories[i],
 		}
 	}
 
 	return &resolvers, nil
 }
 
-func sortUsers(query *orm.Query, sort *Sort) *orm.Query {
+func sortDirectories(query *orm.Query, sort *Sort) *orm.Query {
 	if sort != nil {
 		switch sort.Field {
-		case "ACTIVE":
-			return query.OrderExpr("active " + sort.Order)
-
 		case "CREATED_AT":
 			return query.OrderExpr("created_at " + sort.Order)
 
-		case "EMAIL":
-			return query.OrderExpr("email " + sort.Order)
+		case "IS_PUBLISHED":
+			return query.OrderExpr("is_published " + sort.Order)
+
+		case "NAME":
+			return query.OrderExpr("name " + sort.Order)
 
 		case "UPDATED_AT":
 			return query.OrderExpr("updated_at " + sort.Order)
 		}
+
 	}
 
 	return query.OrderExpr("created_at ASC")

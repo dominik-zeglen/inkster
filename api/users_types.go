@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"time"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg/orm"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -33,28 +35,16 @@ func (res *userResolver) IsActive() bool {
 	return res.data.Active
 }
 
-func (res *userResolver) Pages() []*pageResolver {
-	if res.data.Pages == nil {
-		res.data.Pages = &[]core.Page{}
-		err := res.
-			dataSource.
-			DB().
-			Model(res.data.Pages).
-			Where("author_id = ?", res.data.ID).
-			OrderExpr("id ASC").
-			Select()
+type UserPagesArgs struct {
+	Sort *Sort
+}
 
-		if err != nil {
-			panic(err)
-		}
+func (res *userResolver) Pages(
+	ctx context.Context,
+	args UserPagesArgs,
+) (*[]*pageResolver, error) {
+	where := func(query *orm.Query) *orm.Query {
+		return query.Where("author_id = ?", res.data.ID)
 	}
-	resolvers := []*pageResolver{}
-	pages := *res.data.Pages
-	for index := range pages {
-		resolvers = append(resolvers, &pageResolver{
-			data:       &pages[index],
-			dataSource: res.dataSource,
-		})
-	}
-	return resolvers
+	return resolvePages(res.dataSource, args.Sort, &where)
 }

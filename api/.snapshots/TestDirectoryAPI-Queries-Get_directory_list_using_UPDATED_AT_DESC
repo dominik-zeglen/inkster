@@ -1,0 +1,71 @@
+{
+    "data": {
+        "getDirectories": [
+            {
+                "id": "ZGlyZWN0b3J5OjQ=",
+                "createdAt": "2007-07-07T13:00:00Z",
+                "updatedAt": "2007-07-07T13:00:00Z",
+                "name": "Directory 1.1",
+                "isPublished": false,
+                "parent": {
+                    "id": "ZGlyZWN0b3J5OjE=",
+                    "name": "Directory 1"
+                },
+                "children": [],
+                "pages": []
+            },
+            {
+                "id": "ZGlyZWN0b3J5OjM=",
+                "createdAt": "2007-07-07T12:00:00Z",
+                "updatedAt": "2007-07-07T12:00:00Z",
+                "name": "Directory 3",
+                "isPublished": false,
+                "parent": null,
+                "children": [],
+                "pages": []
+            },
+            {
+                "id": "ZGlyZWN0b3J5OjI=",
+                "createdAt": "2007-07-07T11:00:00Z",
+                "updatedAt": "2007-07-07T11:00:00Z",
+                "name": "Directory 2",
+                "isPublished": false,
+                "parent": null,
+                "children": [],
+                "pages": [
+                    {
+                        "id": "cGFnZToz",
+                        "name": "Page 3",
+                        "slug": "page-3"
+                    }
+                ]
+            },
+            {
+                "id": "ZGlyZWN0b3J5OjE=",
+                "createdAt": "2007-07-07T10:00:00Z",
+                "updatedAt": "2007-07-07T10:00:00Z",
+                "name": "Directory 1",
+                "isPublished": false,
+                "parent": null,
+                "children": [
+                    {
+                        "id": "ZGlyZWN0b3J5OjQ=",
+                        "name": "Directory 1.1"
+                    }
+                ],
+                "pages": [
+                    {
+                        "id": "cGFnZTox",
+                        "name": "Page 1",
+                        "slug": "page-1"
+                    },
+                    {
+                        "id": "cGFnZToy",
+                        "name": "Page 2",
+                        "slug": "page-2"
+                    }
+                ]
+            }
+        ]
+    }
+}

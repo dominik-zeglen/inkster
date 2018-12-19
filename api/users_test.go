@@ -229,6 +229,20 @@ func TestUserAPI(t *testing.T) {
 					}
 				}
 			}`
+		getUsers := `
+			query getUsers($sort: UserSort) {
+				users(sort: $sort) {
+					id
+					email
+					createdAt
+					updatedAt
+					isActive
+					pages {
+						id
+						name
+					}
+				}
+			}`
 		t.Run("Get user by ID", func(t *testing.T) {
 			id := toGlobalID("user", 1)
 			variables := fmt.Sprintf(`{
@@ -262,24 +276,42 @@ func TestUserAPI(t *testing.T) {
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get user list", func(t *testing.T) {
-			query := `query getUsers {
-				users {
-					id
-					createdAt
-					updatedAt
-					isActive
-					pages {
-						id
-						name
-					}
-				}
-			}`
-			result, err := execQuery(query, "{}", nil)
+			result, err := execQuery(getUsers, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+
+		testSortingFields := []string{
+			"ACTIVE",
+			"CREATED_AT",
+			"EMAIL",
+			"UPDATED_AT",
+		}
+		testSortingOrders := []string{"ASC", "DESC"}
+
+		for _, field := range testSortingFields {
+			for _, order := range testSortingOrders {
+				t.Run(
+					"Get user list using "+field+" "+order,
+					func(t *testing.T) {
+						variables := fmt.Sprintf(`{
+							"sort": {
+								"field": "%s",
+								"order": "%s"
+							}
+						}`, field, order)
+						result, err := execQuery(getUsers, variables, nil)
+						if err != nil {
+							t.Fatal(err)
+						}
+						cupaloy.SnapshotT(t, result)
+					},
+				)
+			}
+		}
+
 		t.Run("Get current user", func(t *testing.T) {
 			query := `query Viewer {
 				viewer {

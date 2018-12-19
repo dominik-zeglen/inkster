@@ -5,7 +5,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -23,16 +22,13 @@ func (res *Resolver) Page(
 	}
 
 	page := core.Page{}
+	page.ID = localID
 
 	err = res.
 		dataSource.
 		DB().
 		Model(&page).
-		Where("page.id = ?", localID).
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
-		Relation("Author").
+		WherePK().
 		Select()
 
 	if err != nil {
@@ -53,34 +49,13 @@ func (res *Resolver) Page(
 	}, nil
 }
 
-type pagesArgs struct{}
+type PagesArgs struct {
+	Sort *Sort
+}
 
 func (res *Resolver) Pages(
 	ctx context.Context,
+	args PagesArgs,
 ) (*[]*pageResolver, error) {
-	pages := []core.Page{}
-
-	err := res.
-		dataSource.
-		DB().
-		Model(&pages).
-		OrderExpr("id ASC").
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
-		Relation("Author").
-		Select()
-	if err != nil {
-		return nil, err
-	}
-
-	resolvers := make([]*pageResolver, len(pages))
-	for i := range pages {
-		resolvers[i] = &pageResolver{
-			dataSource: res.dataSource,
-			data:       &pages[i],
-		}
-	}
-
-	return &resolvers, nil
+	return resolvePages(res.dataSource, args.Sort, nil)
 }

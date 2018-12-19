@@ -18,11 +18,27 @@ func (res *pageResolver) ID() gql.ID {
 	return gql.ID(globalID)
 }
 
-func (res *pageResolver) Author() *userResolver {
+func (res *pageResolver) Author() (*userResolver, error) {
+	if res.data.Author == nil {
+		author := core.User{}
+		author.ID = res.data.AuthorID
+
+		err := res.
+			dataSource.
+			DB().
+			Model(&author).
+			WherePK().
+			Select()
+
+		return &userResolver{
+			data:       &author,
+			dataSource: res.dataSource,
+		}, err
+	}
 	return &userResolver{
 		data:       res.data.Author,
 		dataSource: res.dataSource,
-	}
+	}, nil
 }
 
 func (res *pageResolver) CreatedAt() string {
@@ -45,11 +61,23 @@ func (res *pageResolver) IsPublished() bool {
 	return res.data.IsPublished
 }
 
-func (res *pageResolver) Fields() *[]*pageFieldResolver {
+func (res *pageResolver) Fields() (*[]*pageFieldResolver, error) {
 	var resolverList []*pageFieldResolver
 	fields := res.data.Fields
 	if fields == nil {
-		return nil
+		err := res.
+			dataSource.
+			DB().
+			Model(&fields).
+			Where("page_id = ?", res.data.ID).
+			OrderExpr("id ASC").
+			Select()
+
+		if err != nil {
+			return nil, err
+		}
+
+		res.data.Fields = fields
 	}
 	for i := range fields {
 		resolverList = append(
@@ -60,7 +88,7 @@ func (res *pageResolver) Fields() *[]*pageFieldResolver {
 			},
 		)
 	}
-	return &resolverList
+	return &resolverList, nil
 }
 
 func (res *pageResolver) Parent(ctx context.Context) (*directoryResolver, error) {

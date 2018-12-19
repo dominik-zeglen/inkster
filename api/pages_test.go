@@ -249,6 +249,25 @@ func TestPageAPI(t *testing.T) {
 					}
 				}
 			}`
+		getPages := `
+			query Pages($sort: PageSort){
+				pages(sort: $sort) {
+					id
+					author {
+						id
+						email
+					}
+					createdAt
+					updatedAt
+					name
+					slug
+					isPublished
+					fields {
+						name
+						type
+					}
+				}
+			}`
 		t.Run("Get page", func(t *testing.T) {
 			id := toGlobalID("page", 1)
 			variables := fmt.Sprintf(`{
@@ -282,29 +301,42 @@ func TestPageAPI(t *testing.T) {
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get page list", func(t *testing.T) {
-			query := `query Pages{
-				pages {
-					id
-					author {
-						id
-						email
-					}
-					createdAt
-					updatedAt
-					name
-					slug
-					isPublished
-					fields {
-						name
-						type
-					}
-				}
-			}`
-			result, err := execQuery(query, "{}", nil)
+			result, err := execQuery(getPages, "{}", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 			cupaloy.SnapshotT(t, result)
 		})
+
+		testSortingFields := []string{
+			"AUTHOR",
+			"CREATED_AT",
+			"IS_PUBLISHED",
+			"NAME",
+			"SLUG",
+			"UPDATED_AT",
+		}
+		testSortingOrders := []string{"ASC", "DESC"}
+
+		for _, field := range testSortingFields {
+			for _, order := range testSortingOrders {
+				t.Run(
+					"Get page list using "+field+" "+order,
+					func(t *testing.T) {
+						variables := fmt.Sprintf(`{
+							"sort": {
+								"field": "%s",
+								"order": "%s"
+							}
+						}`, field, order)
+						result, err := execQuery(getPages, variables, nil)
+						if err != nil {
+							t.Fatal(err)
+						}
+						cupaloy.SnapshotT(t, result)
+					},
+				)
+			}
+		}
 	})
 }
