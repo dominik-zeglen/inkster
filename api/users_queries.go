@@ -47,32 +47,18 @@ func (res *Resolver) User(
 	}, nil
 }
 
-func (res *Resolver) Users(ctx context.Context) (*[]*userResolver, error) {
+type UsersArgs struct {
+	Sort *Sort
+}
+
+func (res *Resolver) Users(
+	ctx context.Context,
+	args UsersArgs,
+) (*[]*userResolver, error) {
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
-	var resolverList []*userResolver
-
-	users := []core.User{}
-	err := res.
-		dataSource.
-		DB().
-		Model(&users).
-		Select()
-
-	if err != nil {
-		return nil, err
-	}
-	for index := range users {
-		resolverList = append(
-			resolverList,
-			&userResolver{
-				dataSource: res.dataSource,
-				data:       &users[index],
-			},
-		)
-	}
-	return &resolverList, nil
+	return resolveUsers(res.dataSource, args.Sort, nil)
 }
 
 func (res *Resolver) Viewer(ctx context.Context) (*userResolver, error) {

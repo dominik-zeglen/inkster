@@ -5,14 +5,9 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-type PageSort struct {
-	Field string
-	Order string
-}
-
 func resolvePages(
 	dataSource core.AbstractDataContext,
-	sort *PageSort,
+	sort *Sort,
 	where *func(*orm.Query) *orm.Query,
 ) (*[]*pageResolver, error) {
 	pages := []core.Page{}
@@ -43,7 +38,7 @@ func resolvePages(
 	return &resolvers, nil
 }
 
-func sortPages(query *orm.Query, sort *PageSort) *orm.Query {
+func sortPages(query *orm.Query, sort *Sort) *orm.Query {
 	if sort != nil {
 		switch sort.Field {
 		case "AUTHOR":

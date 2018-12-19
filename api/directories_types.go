@@ -79,7 +79,7 @@ func (res *directoryResolver) Children() *[]*directoryResolver {
 }
 
 type DirectoryPagesArgs struct {
-	Sort *PageSort
+	Sort *Sort
 }
 
 func (res *directoryResolver) Pages(

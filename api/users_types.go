@@ -36,7 +36,7 @@ func (res *userResolver) IsActive() bool {
 }
 
 type UserPagesArgs struct {
-	Sort *PageSort
+	Sort *Sort
 }
 
 func (res *userResolver) Pages(

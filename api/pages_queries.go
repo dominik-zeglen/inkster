@@ -54,7 +54,7 @@ func (res *Resolver) Page(
 }
 
 type PagesArgs struct {
-	Sort *PageSort
+	Sort *Sort
 }
 
 func (res *Resolver) Pages(

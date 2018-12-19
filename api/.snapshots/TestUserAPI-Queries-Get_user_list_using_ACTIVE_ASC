@@ -2,6 +2,27 @@
     "data": {
         "users": [
             {
+                "id": "dXNlcjoy",
+                "email": "user2@example.com",
+                "createdAt": "2007-07-07T11:00:00Z",
+                "updatedAt": "2007-07-07T11:00:00Z",
+                "isActive": false,
+                "pages": [
+                    {
+                        "id": "cGFnZToz",
+                        "name": "Page 3"
+                    }
+                ]
+            },
+            {
+                "id": "dXNlcjo0",
+                "email": "user4@example.com",
+                "createdAt": "2007-07-07T13:00:00Z",
+                "updatedAt": "2007-07-07T13:00:00Z",
+                "isActive": false,
+                "pages": []
+            },
+            {
                 "id": "dXNlcjox",
                 "email": "user1@example.com",
                 "createdAt": "2007-07-07T10:00:00Z",
@@ -19,32 +40,11 @@
                 ]
             },
             {
-                "id": "dXNlcjoy",
-                "email": "user2@example.com",
-                "createdAt": "2007-07-07T11:00:00Z",
-                "updatedAt": "2007-07-07T11:00:00Z",
-                "isActive": false,
-                "pages": [
-                    {
-                        "id": "cGFnZToz",
-                        "name": "Page 3"
-                    }
-                ]
-            },
-            {
                 "id": "dXNlcjoz",
                 "email": "user3@example.com",
                 "createdAt": "2007-07-07T12:00:00Z",
                 "updatedAt": "2007-07-07T12:00:00Z",
                 "isActive": true,
-                "pages": []
-            },
-            {
-                "id": "dXNlcjo0",
-                "email": "user4@example.com",
-                "createdAt": "2007-07-07T13:00:00Z",
-                "updatedAt": "2007-07-07T13:00:00Z",
-                "isActive": false,
                 "pages": []
             }
         ]

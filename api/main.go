@@ -67,3 +67,8 @@ func checkPermission(ctx context.Context) bool {
 	}
 	return false
 }
+
+type Sort struct {
+	Field string
+	Order string
+}

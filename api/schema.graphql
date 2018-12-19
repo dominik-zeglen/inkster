@@ -35,6 +35,10 @@ input PageFieldUpdateInput {
   name: String
   value: String
 }
+input PageSort {
+    field: PageSortableField!
+    order: SortOrder!
+}
 input PageUpdateInput {
   name: String
   slug: String
@@ -44,6 +48,10 @@ input PageUpdateInput {
 input UserCreateInput {
   email: String!
   password: String
+}
+input UserSort {
+    field: UserSortableField!
+    order: SortOrder!
 }
 input UserUpdateInput {
   isActive: Boolean
@@ -89,7 +97,7 @@ type Query {
   pages(sort: PageSort): [Page]
 
   user(id: ID!): User
-  users: [User]
+  users(sort: UserSort): [User]
   viewer: User
 }
 schema {
@@ -147,10 +155,6 @@ type PageOperationResult {
 type PageRemoveResult {
   removedObjectId: ID!
 }
-input PageSort {
-    field: PageSortableField!
-    order: SortOrder!
-}
 enum PageSortableField {
     AUTHOR
     CREATED_AT
@@ -181,6 +185,12 @@ type UserOperationResult {
 }
 type UserRemoveResult {
   removedObjectId: ID
+}
+enum UserSortableField {
+    ACTIVE
+    CREATED_AT
+    EMAIL
+    UPDATED_AT
 }
 type VerifyTokenResult {
   result: Boolean!

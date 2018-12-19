@@ -7,6 +7,6 @@ type Query {
   pages(sort: PageSort): [Page]
 
   user(id: ID!): User
-  users: [User]
+  users(sort: UserSort): [User]
   viewer: User
 }
