@@ -53,23 +53,27 @@ func (res *Resolver) Page(
 	}, nil
 }
 
-type pagesArgs struct{}
+type PageSort struct {
+	Field string
+	Order string
+}
+type PagesArgs struct {
+	Sort *PageSort
+}
 
 func (res *Resolver) Pages(
 	ctx context.Context,
+	args PagesArgs,
 ) (*[]*pageResolver, error) {
 	pages := []core.Page{}
 
-	err := res.
+	query := res.
 		dataSource.
 		DB().
 		Model(&pages).
-		OrderExpr("id ASC").
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
-		Relation("Author").
-		Select()
+		OrderExpr("id ASC")
+
+	err := query.Select()
 	if err != nil {
 		return nil, err
 	}

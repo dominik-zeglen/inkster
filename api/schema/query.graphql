@@ -4,7 +4,7 @@ type Query {
   getRootDirectories: [Directory]
 
   page(id: ID!): Page
-  pages: [Page]
+  pages(sort: PageSort): [Page]
 
   user(id: ID!): User
   users: [User]

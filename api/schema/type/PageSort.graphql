@@ -1,0 +1,4 @@
+input PageSort {
+    field: PageSortableField!
+    order: SortOrder!
+}

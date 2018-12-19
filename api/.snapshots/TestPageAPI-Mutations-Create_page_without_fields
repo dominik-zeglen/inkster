@@ -12,7 +12,7 @@
                 "name": "New Page",
                 "slug": "new-page",
                 "isPublished": false,
-                "fields": null,
+                "fields": [],
                 "parent": {
                     "id": "ZGlyZWN0b3J5OjE=",
                     "name": "Directory 1"

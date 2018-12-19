@@ -33,7 +33,7 @@ func (res *userResolver) IsActive() bool {
 	return res.data.Active
 }
 
-func (res *userResolver) Pages() []*pageResolver {
+func (res *userResolver) Pages() ([]*pageResolver, error) {
 	if res.data.Pages == nil {
 		res.data.Pages = &[]core.Page{}
 		err := res.
@@ -45,7 +45,7 @@ func (res *userResolver) Pages() []*pageResolver {
 			Select()
 
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 	resolvers := []*pageResolver{}
@@ -56,5 +56,5 @@ func (res *userResolver) Pages() []*pageResolver {
 			dataSource: res.dataSource,
 		})
 	}
-	return resolvers
+	return resolvers, nil
 }

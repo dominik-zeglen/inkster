@@ -1,0 +1,8 @@
+enum PageSortableField {
+    AUTHOR
+    CREATED_AT
+    IS_ACTIVE
+    NAME
+    SLUG
+    UPDATED_AT
+}
