@@ -4,5 +4,5 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
-  pages: [Page!]!
+  pages(sort: PageSort): [Page!]
 }

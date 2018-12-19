@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"time"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg/orm"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -75,29 +77,17 @@ func (res *directoryResolver) Children() *[]*directoryResolver {
 	}
 	return &resolverList
 }
-func (res *directoryResolver) Pages() (*[]*pageResolver, error) {
-	var resolverList []*pageResolver
-	pages := []core.Page{}
 
-	err := res.
-		dataSource.
-		DB().
-		Model(&pages).
-		Where("parent_id = ?", res.data.ID).
-		Relation("Fields").
-		Select()
+type DirectoryPagesArgs struct {
+	Sort *PageSort
+}
 
-	if err != nil {
-		return nil, err
+func (res *directoryResolver) Pages(
+	ctx context.Context,
+	args DirectoryPagesArgs,
+) (*[]*pageResolver, error) {
+	where := func(query *orm.Query) *orm.Query {
+		return query.Where("parent_id = ?", res.data.ID)
 	}
-	for index := range pages {
-		resolverList = append(
-			resolverList,
-			&pageResolver{
-				dataSource: res.dataSource,
-				data:       &pages[index],
-			},
-		)
-	}
-	return &resolverList, nil
+	return resolvePages(res.dataSource, args.Sort, &where)
 }

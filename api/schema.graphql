@@ -104,7 +104,7 @@ type Directory {
   parent: Directory
   isPublished: Boolean!
   children: [Directory]
-  pages: [Page]
+  pages(sort: PageSort): [Page!]
 }
 type DirectoryOperationResult {
   errors: [InputError!]!
@@ -169,7 +169,7 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
-  pages: [Page!]!
+  pages(sort: PageSort): [Page!]
 }
 type UserError {
   field: String!
