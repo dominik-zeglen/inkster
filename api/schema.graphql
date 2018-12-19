@@ -154,7 +154,7 @@ input PageSort {
 enum PageSortableField {
     AUTHOR
     CREATED_AT
-    IS_ACTIVE
+    IS_PUBLISHED
     NAME
     SLUG
     UPDATED_AT
