@@ -5,7 +5,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -23,16 +22,13 @@ func (res *Resolver) Page(
 	}
 
 	page := core.Page{}
+	page.ID = localID
 
 	err = res.
 		dataSource.
 		DB().
 		Model(&page).
-		Where("page.id = ?", localID).
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
-		Relation("Author").
+		WherePK().
 		Select()
 
 	if err != nil {

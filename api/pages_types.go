@@ -76,6 +76,8 @@ func (res *pageResolver) Fields() (*[]*pageFieldResolver, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		res.data.Fields = fields
 	}
 	for i := range fields {
 		resolverList = append(
