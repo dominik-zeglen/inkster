@@ -70,6 +70,7 @@ func (res *pageResolver) Fields() (*[]*pageFieldResolver, error) {
 			DB().
 			Model(&fields).
 			Where("page_id = ?", res.data.ID).
+			OrderExpr("id ASC").
 			Select()
 
 		if err != nil {
