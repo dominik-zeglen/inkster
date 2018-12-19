@@ -20,7 +20,7 @@ func resolvePages(
 		query = (*where)(query)
 	}
 
-	query = sortPages(query, sort)
+	query = sortPages(query, sort).OrderExpr("created_at ASC")
 	err := query.Select()
 
 	if err != nil {

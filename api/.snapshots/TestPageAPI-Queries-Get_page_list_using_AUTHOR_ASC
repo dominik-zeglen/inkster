@@ -2,28 +2,6 @@
     "data": {
         "pages": [
             {
-                "id": "cGFnZToy",
-                "author": {
-                    "id": "dXNlcjox",
-                    "email": "user1@example.com"
-                },
-                "createdAt": "2007-07-07T11:00:00Z",
-                "updatedAt": "2007-07-07T11:00:00Z",
-                "name": "Page 2",
-                "slug": "page-2",
-                "isPublished": false,
-                "fields": [
-                    {
-                        "name": "Field 3",
-                        "type": "text"
-                    },
-                    {
-                        "name": "Field 4",
-                        "type": "file"
-                    }
-                ]
-            },
-            {
                 "id": "cGFnZTox",
                 "author": {
                     "id": "dXNlcjox",
@@ -42,6 +20,28 @@
                     {
                         "name": "Field 2",
                         "type": "text"
+                    }
+                ]
+            },
+            {
+                "id": "cGFnZToy",
+                "author": {
+                    "id": "dXNlcjox",
+                    "email": "user1@example.com"
+                },
+                "createdAt": "2007-07-07T11:00:00Z",
+                "updatedAt": "2007-07-07T11:00:00Z",
+                "name": "Page 2",
+                "slug": "page-2",
+                "isPublished": false,
+                "fields": [
+                    {
+                        "name": "Field 3",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Field 4",
+                        "type": "file"
                     }
                 ]
             },

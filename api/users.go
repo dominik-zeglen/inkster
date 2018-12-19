@@ -20,7 +20,7 @@ func resolveUsers(
 		query = (*where)(query)
 	}
 
-	query = sortUsers(query, sort)
+	query = sortUsers(query, sort).OrderExpr("created_at ASC")
 	err := query.Select()
 
 	if err != nil {

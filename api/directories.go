@@ -20,7 +20,7 @@ func resolveDirectories(
 		query = (*where)(query)
 	}
 
-	query = sortDirectories(query, sort)
+	query = sortDirectories(query, sort).OrderExpr("created_at ASC")
 	err := query.Select()
 
 	if err != nil {
