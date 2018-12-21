@@ -26,18 +26,26 @@ func NewResolver(dataSource core.AbstractDataContext, mailer mailer.Mailer, key 
 	}
 }
 
-func toGlobalID(dataType string, ID int) string {
-	data := dataType + ":" + strconv.Itoa(ID)
+type gqlType string
+
+const (
+	gqlDirectory gqlType = "directory"
+	gqlPage              = "page"
+	gqlUser              = "user"
+)
+
+func toGlobalID(dataType gqlType, ID int) string {
+	data := string(dataType) + ":" + strconv.Itoa(ID)
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
-func fromGlobalID(dataType string, ID string) (int, error) {
+func fromGlobalID(dataType gqlType, ID string) (int, error) {
 	data, err := base64.StdEncoding.DecodeString(ID)
 	if err != nil {
 		return 0, err
 	}
 	portionedData := strings.Split(string(data), ":")
-	if portionedData[0] == dataType {
+	if portionedData[0] == string(dataType) {
 		return strconv.Atoi(portionedData[1])
 	}
 	return 0, fmt.Errorf("Object types do not match")
