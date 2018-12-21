@@ -33,6 +33,7 @@ const (
 	gqlPage              = "page"
 	gqlPageField         = "pageField"
 	gqlUser              = "user"
+	gqlCursor            = "cursor"
 )
 
 func toGlobalID(dataType gqlType, ID int) string {
