@@ -31,6 +31,7 @@ type gqlType string
 const (
 	gqlDirectory gqlType = "directory"
 	gqlPage              = "page"
+	gqlPageField         = "pageField"
 	gqlUser              = "user"
 )
 

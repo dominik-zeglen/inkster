@@ -14,7 +14,7 @@ type pageResolver struct {
 }
 
 func (res *pageResolver) ID() gql.ID {
-	globalID := toGlobalID("page", res.data.ID)
+	globalID := toGlobalID(gqlPage, res.data.ID)
 	return gql.ID(globalID)
 }
 
@@ -121,7 +121,7 @@ type pageFieldResolver struct {
 }
 
 func (res *pageFieldResolver) ID() gql.ID {
-	globalID := toGlobalID("pageField", res.data.ID)
+	globalID := toGlobalID(gqlPageField, res.data.ID)
 	return gql.ID(globalID)
 }
 

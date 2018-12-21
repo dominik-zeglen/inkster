@@ -16,7 +16,7 @@ type directoryResolver struct {
 }
 
 func (res *directoryResolver) ID() gql.ID {
-	globalID := toGlobalID("directory", res.data.ID)
+	globalID := toGlobalID(gqlDirectory, res.data.ID)
 	return gql.ID(globalID)
 }
 func (res *directoryResolver) CreatedAt() string {

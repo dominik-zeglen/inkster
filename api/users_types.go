@@ -15,7 +15,7 @@ type userResolver struct {
 }
 
 func (res *userResolver) ID() gql.ID {
-	globalID := toGlobalID("user", res.data.ID)
+	globalID := toGlobalID(gqlUser, res.data.ID)
 	return gql.ID(globalID)
 }
 
