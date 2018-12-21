@@ -82,3 +82,17 @@ type Sort struct {
 	Field string
 	Order string
 }
+
+type Paginate struct {
+	After  *string
+	Before *string
+	First  *int32
+	Last   *int32
+}
+
+type PageInfo struct {
+	EndCursor       *string
+	hasNextPage     bool
+	hasPreviousPage bool
+	startCursor     *string
+}

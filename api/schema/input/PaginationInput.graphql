@@ -1,0 +1,6 @@
+input PaginationInput {
+    after: String
+    before: String
+    first: Int
+    last: Int
+}

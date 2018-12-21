@@ -36,7 +36,8 @@ func (res *userResolver) IsActive() bool {
 }
 
 type UserPagesArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate *Paginate
 }
 
 func (res *userResolver) Pages(
@@ -46,5 +47,5 @@ func (res *userResolver) Pages(
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("author_id = ?", res.data.ID)
 	}
-	return resolvePages(res.dataSource, args.Sort, &where)
+	return resolvePages(res.dataSource, args.Sort, args.Paginate, &where)
 }

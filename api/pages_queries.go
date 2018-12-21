@@ -50,12 +50,18 @@ func (res *Resolver) Page(
 }
 
 type PagesArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate *Paginate
 }
 
 func (res *Resolver) Pages(
 	ctx context.Context,
 	args PagesArgs,
 ) (*[]*pageResolver, error) {
-	return resolvePages(res.dataSource, args.Sort, nil)
+	return resolvePages(
+		res.dataSource,
+		args.Sort,
+		args.Paginate,
+		nil,
+	)
 }

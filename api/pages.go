@@ -8,6 +8,7 @@ import (
 func resolvePages(
 	dataSource core.AbstractDataContext,
 	sort *Sort,
+	paginationInput *Paginate,
 	where *func(*orm.Query) *orm.Query,
 ) (*[]*pageResolver, error) {
 	pages := []core.Page{}
@@ -21,10 +22,23 @@ func resolvePages(
 	}
 
 	query = sortPages(query, sort).OrderExpr("created_at ASC")
+	query = paginate(query, paginationInput)
 	err := query.Select()
 
 	if err != nil {
 		return nil, err
+	}
+
+	if paginationInput != nil {
+		if paginationInput.First != nil {
+			if int(*paginationInput.First) < len(pages) {
+				pages = pages[:len(pages)-1]
+			}
+		} else if paginationInput.Last != nil {
+			if int(*paginationInput.Last) < len(pages) {
+				pages = pages[1:]
+			}
+		}
 	}
 
 	resolvers := make([]*pageResolver, len(pages))

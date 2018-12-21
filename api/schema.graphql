@@ -49,6 +49,12 @@ input PageUpdateInput {
   parentId: ID
   isPublished: Boolean
 }
+input PaginationInput {
+    after: String
+    before: String
+    first: Int
+    last: Int
+}
 input UserCreateInput {
   email: String!
   password: String
@@ -98,7 +104,7 @@ type Query {
   getRootDirectories(sort: DirectorySort): [Directory]
 
   page(id: ID!): Page
-  pages(sort: PageSort): [Page]
+  pages(sort: PageSort, paginate: PaginationInput): [Page]
 
   user(id: ID!): User
   users(sort: UserSort): [User]
@@ -116,7 +122,7 @@ type Directory {
   parent: Directory
   isPublished: Boolean!
   children(sort: DirectorySort): [Directory]
-  pages(sort: PageSort): [Page!]
+  pages(sort: PageSort, paginate: PaginationInput): [Page!]
 }
 type DirectoryOperationResult {
   errors: [InputError!]!
@@ -158,6 +164,12 @@ type PageFieldOperationResult {
   userErrors: [UserError]
   page: Page
 }
+type PageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+}
 type PageOperationResult {
   errors: [InputError!]!
   page: Page
@@ -183,7 +195,7 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
-  pages(sort: PageSort): [Page!]
+  pages(sort: PageSort, paginate: PaginationInput): [Page!]
 }
 type UserError {
   field: String!

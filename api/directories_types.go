@@ -67,7 +67,8 @@ func (res *directoryResolver) Children(
 }
 
 type DirectoryPagesArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate *Paginate
 }
 
 func (res *directoryResolver) Pages(
@@ -77,5 +78,5 @@ func (res *directoryResolver) Pages(
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("parent_id = ?", res.data.ID)
 	}
-	return resolvePages(res.dataSource, args.Sort, &where)
+	return resolvePages(res.dataSource, args.Sort, args.Paginate, &where)
 }
