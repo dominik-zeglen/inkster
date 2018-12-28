@@ -7,12 +7,16 @@
             "name": "Directory 1",
             "isPublished": false,
             "parent": null,
-            "children": [
-                {
-                    "id": "ZGlyZWN0b3J5OjQ=",
-                    "name": "Directory 1.1"
-                }
-            ],
+            "children": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "ZGlyZWN0b3J5OjQ=",
+                            "name": "Directory 1.1"
+                        }
+                    }
+                ]
+            },
             "pages": {
                 "edges": [
                     {

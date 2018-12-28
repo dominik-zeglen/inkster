@@ -54,16 +54,22 @@ func (res *directoryResolver) Parent() *directoryResolver {
 }
 
 type DirectoryChildrenArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate PaginationInput
 }
 
 func (res *directoryResolver) Children(
 	args DirectoryChildrenArgs,
-) (*[]*directoryResolver, error) {
+) (*directoryConnectionResolver, error) {
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("parent_id = ?", res.data.ID)
 	}
-	return resolveDirectories(res.dataSource, args.Sort, &where)
+	return resolveDirectories(
+		res.dataSource,
+		args.Sort,
+		getPaginationData(args.Paginate),
+		&where,
+	)
 }
 
 type DirectoryPagesArgs struct {
@@ -79,4 +85,47 @@ func (res *directoryResolver) Pages(
 		return query.Where("parent_id = ?", res.data.ID)
 	}
 	return resolvePages(res.dataSource, args.Sort, args.Paginate, &where)
+}
+
+type directoryConnectionResolver struct {
+	dataSource core.AbstractDataContext
+	data       []core.Directory
+	pageInfo   PageInfo
+	sortColumn string
+}
+
+func (res directoryConnectionResolver) Edges() []directoryConnectionEdgeResolver {
+	resolvers := make([]directoryConnectionEdgeResolver, len(res.data))
+	for resolverIndex := range resolvers {
+		resolvers[resolverIndex] = directoryConnectionEdgeResolver{
+			dataSource: &res.dataSource,
+			data:       res.data[resolverIndex],
+			cursor:     pageCursor(resolverIndex),
+		}
+	}
+	return resolvers
+}
+
+func (res directoryConnectionResolver) PageInfo() pageInfoResolver {
+	return pageInfoResolver{
+		pageInfo:   res.pageInfo,
+		sortColumn: res.sortColumn,
+	}
+}
+
+type directoryConnectionEdgeResolver struct {
+	dataSource *core.AbstractDataContext
+	data       core.Directory
+	cursor     pageCursor
+}
+
+func (res directoryConnectionEdgeResolver) Cursor() string {
+	return toGlobalID(gqlCursor, int(res.cursor))
+}
+
+func (res directoryConnectionEdgeResolver) Node() *directoryResolver {
+	return &directoryResolver{
+		dataSource: *res.dataSource,
+		data:       &res.data,
+	}
 }

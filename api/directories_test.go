@@ -52,10 +52,14 @@ func TestDirectoryAPI(t *testing.T) {
 						id	
 						name	
 					}	
-					children {	
-						id	
-						name	
-					}	
+					children(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
+					}
 			}	
 			}	
 		}`
@@ -224,9 +228,13 @@ func TestDirectoryAPI(t *testing.T) {
 						id
 						name
 					}
-					children {
-						id
-						name
+					children(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 					pages(paginate: { first: 5 }) {
 						edges {
@@ -241,26 +249,34 @@ func TestDirectoryAPI(t *testing.T) {
 			}`
 		getDirectories := `
 			query GetDirectories($sort: DirectorySort){
-				getDirectories(sort: $sort) {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-					pages(paginate: { first: 5 }) {
-						edges {
-							node {
+				getDirectories(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							createdAt
+							updatedAt
+							name
+							isPublished
+							parent {
 								id
 								name
-								slug
+							}
+							children(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
+							}
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+										slug
+									}
+								}
 							}
 						}
 					}
@@ -337,26 +353,34 @@ func TestDirectoryAPI(t *testing.T) {
 
 		t.Run("Get root directory list", func(t *testing.T) {
 			query := `query GetRootDirectories{
-				getRootDirectories {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-					pages(paginate: { first: 5 }) {
-						edges {
-							node {
+				getRootDirectories(paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							createdAt
+							updatedAt
+							name
+							isPublished
+							parent {
 								id
 								name
-								slug
+							}
+							children(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
+							}
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+										slug
+									}
+								}
 							}
 						}
 					}

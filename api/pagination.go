@@ -46,6 +46,36 @@ func paginate(
 	return query, pager.Offset
 }
 
+func getPaginationData(paginationInput PaginationInput) Paginate {
+	paginate := Paginate{}
+
+	if paginationInput.First != nil {
+		paginate.First = paginationInput.First
+	}
+
+	if paginationInput.Last != nil {
+		paginate.Last = paginationInput.Last
+	}
+
+	if paginationInput.After != nil {
+		cursor, err := fromGlobalCursor(*paginationInput.After)
+		if err == nil {
+			paginate.After = &cursor
+		}
+	}
+
+	if paginationInput.Before != nil {
+		cursor, err := fromGlobalCursor(*paginationInput.Before)
+		if err == nil {
+			paginate.Before = &cursor
+		}
+	}
+
+	return paginate
+}
+
+type pageCursor int
+
 type pageInfoResolver struct {
 	data       string
 	pageInfo   PageInfo

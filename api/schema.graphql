@@ -100,8 +100,8 @@ type Mutation {
 }
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories(sort: DirectorySort): [Directory]
-  getRootDirectories(sort: DirectorySort): [Directory]
+  getDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
+  getRootDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
 
   page(id: ID!): Page
   pages(sort: PageSort, paginate: PaginationInput!): PageConnection
@@ -121,8 +121,16 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children(sort: DirectorySort): [Directory]
+  children(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
   pages(sort: PageSort, paginate: PaginationInput!): PageConnection
+}
+type DirectoryConnection {
+    edges: [DirectoryConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+type DirectoryConnectionEdge {
+    cursor: String!
+    node: Directory!
 }
 type DirectoryOperationResult {
   errors: [InputError!]!

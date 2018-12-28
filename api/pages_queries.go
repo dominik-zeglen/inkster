@@ -64,34 +64,10 @@ func (res *Resolver) Pages(
 	ctx context.Context,
 	args PagesArgs,
 ) (*pageConnectionResolver, error) {
-	paginate := Paginate{}
-
-	if args.Paginate.First != nil {
-		paginate.First = args.Paginate.First
-	}
-
-	if args.Paginate.Last != nil {
-		paginate.Last = args.Paginate.Last
-	}
-
-	if args.Paginate.After != nil {
-		cursor, err := fromGlobalCursor(*args.Paginate.After)
-		if err == nil {
-			paginate.After = &cursor
-		}
-	}
-
-	if args.Paginate.Before != nil {
-		cursor, err := fromGlobalCursor(*args.Paginate.Before)
-		if err == nil {
-			paginate.Before = &cursor
-		}
-	}
-
 	return resolvePages(
 		res.dataSource,
 		args.Sort,
-		paginate,
+		getPaginationData(args.Paginate),
 		nil,
 	)
 }

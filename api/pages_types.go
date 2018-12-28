@@ -137,8 +137,6 @@ func (res *pageFieldResolver) Value() *string {
 	return &res.data.Value
 }
 
-type pageCursor int
-
 type pageConnectionResolver struct {
 	dataSource core.AbstractDataContext
 	data       []core.Page
