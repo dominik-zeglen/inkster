@@ -243,17 +243,21 @@ func TestUserAPI(t *testing.T) {
 			}`
 		getUsers := `
 			query getUsers($sort: UserSort) {
-				users(sort: $sort) {
-					id
-					email
-					createdAt
-					updatedAt
-					isActive
-					pages(paginate: { first: 5 }) {
-						edges {
-							node {
-								id
-								name
+				users(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							email
+							createdAt
+							updatedAt
+							isActive
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
 							}
 						}
 					}

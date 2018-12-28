@@ -1,0 +1,4 @@
+type UserConnection {
+    edges: [UserConnectionEdge!]!
+    pageInfo: PageInfo!
+}

@@ -49,3 +49,46 @@ func (res *userResolver) Pages(
 	}
 	return resolvePages(res.dataSource, args.Sort, args.Paginate, &where)
 }
+
+type userConnectionResolver struct {
+	dataSource core.AbstractDataContext
+	data       []core.User
+	pageInfo   PageInfo
+	sortColumn string
+}
+
+func (res userConnectionResolver) Edges() []userConnectionEdgeResolver {
+	resolvers := make([]userConnectionEdgeResolver, len(res.data))
+	for resolverIndex := range resolvers {
+		resolvers[resolverIndex] = userConnectionEdgeResolver{
+			dataSource: &res.dataSource,
+			data:       res.data[resolverIndex],
+			cursor:     pageCursor(resolverIndex),
+		}
+	}
+	return resolvers
+}
+
+func (res userConnectionResolver) PageInfo() pageInfoResolver {
+	return pageInfoResolver{
+		pageInfo:   res.pageInfo,
+		sortColumn: res.sortColumn,
+	}
+}
+
+type userConnectionEdgeResolver struct {
+	dataSource *core.AbstractDataContext
+	data       core.User
+	cursor     pageCursor
+}
+
+func (res userConnectionEdgeResolver) Cursor() string {
+	return toGlobalID(gqlCursor, int(res.cursor))
+}
+
+func (res userConnectionEdgeResolver) Node() *userResolver {
+	return &userResolver{
+		dataSource: *res.dataSource,
+		data:       &res.data,
+	}
+}
