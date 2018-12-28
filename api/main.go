@@ -53,6 +53,16 @@ func fromGlobalID(dataType gqlType, ID string) (int, error) {
 	return 0, fmt.Errorf("Object types do not match")
 }
 
+func toGlobalCursor(ID Cursor) string {
+	return toGlobalID(gqlCursor, int(ID))
+}
+
+func fromGlobalCursor(cursor string) (Cursor, error) {
+	data, err := fromGlobalID(gqlCursor, cursor)
+
+	return Cursor(data), err
+}
+
 type userError struct {
 	field   string
 	message string
@@ -78,21 +88,23 @@ func checkPermission(ctx context.Context) bool {
 	return false
 }
 
+type Cursor int32
+
 type Sort struct {
 	Field string
 	Order string
 }
 
 type Paginate struct {
-	After  *string
-	Before *string
+	After  *Cursor
+	Before *Cursor
 	First  *int32
 	Last   *int32
 }
 
 type PageInfo struct {
-	EndCursor       *string
+	endCursor       *Cursor
 	hasNextPage     bool
 	hasPreviousPage bool
-	startCursor     *string
+	startCursor     *Cursor
 }

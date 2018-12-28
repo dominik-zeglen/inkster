@@ -37,13 +37,13 @@ func (res *userResolver) IsActive() bool {
 
 type UserPagesArgs struct {
 	Sort     *Sort
-	Paginate *Paginate
+	Paginate Paginate
 }
 
 func (res *userResolver) Pages(
 	ctx context.Context,
 	args UserPagesArgs,
-) (*[]*pageResolver, error) {
+) (*pageConnectionResolver, error) {
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("author_id = ?", res.data.ID)
 	}

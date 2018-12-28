@@ -49,19 +49,49 @@ func (res *Resolver) Page(
 	}, nil
 }
 
+type PaginationInput struct {
+	After  *string `json:"after,omitempty"`
+	Before *string `json:"before,omitempty"`
+	First  *int32  `json:"first,omitempty"`
+	Last   *int32  `json:"last,omitempty"`
+}
 type PagesArgs struct {
 	Sort     *Sort
-	Paginate *Paginate
+	Paginate PaginationInput
 }
 
 func (res *Resolver) Pages(
 	ctx context.Context,
 	args PagesArgs,
-) (*[]*pageResolver, error) {
+) (*pageConnectionResolver, error) {
+	paginate := Paginate{}
+
+	if args.Paginate.First != nil {
+		paginate.First = args.Paginate.First
+	}
+
+	if args.Paginate.Last != nil {
+		paginate.Last = args.Paginate.Last
+	}
+
+	if args.Paginate.After != nil {
+		cursor, err := fromGlobalCursor(*args.Paginate.After)
+		if err == nil {
+			paginate.After = &cursor
+		}
+	}
+
+	if args.Paginate.Before != nil {
+		cursor, err := fromGlobalCursor(*args.Paginate.Before)
+		if err == nil {
+			paginate.Before = &cursor
+		}
+	}
+
 	return resolvePages(
 		res.dataSource,
 		args.Sort,
-		args.Paginate,
+		paginate,
 		nil,
 	)
 }

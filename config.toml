@@ -6,7 +6,7 @@ serve_static = false
 static_path = "./"
 
 [postgres]
-log_queries = false
+log_queries = true
 
 [smtp]
 use_dummy = false

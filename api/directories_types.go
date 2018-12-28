@@ -68,13 +68,13 @@ func (res *directoryResolver) Children(
 
 type DirectoryPagesArgs struct {
 	Sort     *Sort
-	Paginate *Paginate
+	Paginate Paginate
 }
 
 func (res *directoryResolver) Pages(
 	ctx context.Context,
 	args DirectoryPagesArgs,
-) (*[]*pageResolver, error) {
+) (*pageConnectionResolver, error) {
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("parent_id = ?", res.data.ID)
 	}
