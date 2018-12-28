@@ -9,7 +9,17 @@
                 "isPublished": false,
                 "parent": null,
                 "children": [],
-                "pages": []
+                "pages": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": "cGFnZTo0",
+                                "name": "Page 4",
+                                "slug": "page-4"
+                            }
+                        }
+                    ]
+                }
             },
             {
                 "id": "ZGlyZWN0b3J5OjI=",
@@ -19,13 +29,17 @@
                 "isPublished": false,
                 "parent": null,
                 "children": [],
-                "pages": [
-                    {
-                        "id": "cGFnZToz",
-                        "name": "Page 3",
-                        "slug": "page-3"
-                    }
-                ]
+                "pages": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": "cGFnZToz",
+                                "name": "Page 3",
+                                "slug": "page-3"
+                            }
+                        }
+                    ]
+                }
             },
             {
                 "id": "ZGlyZWN0b3J5OjQ=",
@@ -38,7 +52,9 @@
                     "name": "Directory 1"
                 },
                 "children": [],
-                "pages": []
+                "pages": {
+                    "edges": []
+                }
             },
             {
                 "id": "ZGlyZWN0b3J5OjE=",
@@ -53,18 +69,24 @@
                         "name": "Directory 1.1"
                     }
                 ],
-                "pages": [
-                    {
-                        "id": "cGFnZTox",
-                        "name": "Page 1",
-                        "slug": "page-1"
-                    },
-                    {
-                        "id": "cGFnZToy",
-                        "name": "Page 2",
-                        "slug": "page-2"
-                    }
-                ]
+                "pages": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": "cGFnZTox",
+                                "name": "Page 1",
+                                "slug": "page-1"
+                            }
+                        },
+                        {
+                            "node": {
+                                "id": "cGFnZToy",
+                                "name": "Page 2",
+                                "slug": "page-2"
+                            }
+                        }
+                    ]
+                }
             }
         ]
     }

@@ -228,10 +228,14 @@ func TestDirectoryAPI(t *testing.T) {
 						id
 						name
 					}
-					pages {
-						id
-						name
-						slug
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+								slug
+							}
+						}
 					}
 				}
 			}`
@@ -251,10 +255,14 @@ func TestDirectoryAPI(t *testing.T) {
 						id
 						name
 					}
-					pages {
-						id
-						name
-						slug
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+								slug
+							}
+						}
 					}
 				}
 			}`
@@ -343,10 +351,14 @@ func TestDirectoryAPI(t *testing.T) {
 						id
 						name
 					}
-					pages {
-						id
-						name
-						slug
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+								slug
+							}
+						}
 					}
 				}
 			}`

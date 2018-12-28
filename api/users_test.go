@@ -21,9 +21,13 @@ func TestUserAPI(t *testing.T) {
 					updatedAt
 					email
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}
@@ -44,9 +48,13 @@ func TestUserAPI(t *testing.T) {
 					id
 					email
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}
@@ -223,9 +231,13 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}`
@@ -237,9 +249,13 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}`
@@ -319,9 +335,13 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}`

@@ -251,20 +251,24 @@ func TestPageAPI(t *testing.T) {
 			}`
 		getPages := `
 			query Pages($sort: PageSort){
-				pages(sort: $sort) {
-					id
-					author {
-						id
-						email
-					}
-					createdAt
-					updatedAt
-					name
-					slug
-					isPublished
-					fields {
-						name
-						type
+				pages(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							author {
+								id
+								email
+							}
+							createdAt
+							updatedAt
+							name
+							slug
+							isPublished
+							fields {
+								name
+								type
+							}
+						}
 					}
 				}
 			}`

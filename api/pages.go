@@ -70,7 +70,7 @@ func resolvePages(
 
 func sortPages(query *orm.Query, sort *Sort) *orm.Query {
 	if sort != nil {
-		var orderColumn string
+		orderColumn := "id"
 		switch sort.Field {
 		case "AUTHOR":
 			query = query.Relation("Author")
