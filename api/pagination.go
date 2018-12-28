@@ -77,9 +77,8 @@ func getPaginationData(paginationInput PaginationInput) Paginate {
 type pageCursor int
 
 type pageInfoResolver struct {
-	data       string
-	pageInfo   PageInfo
-	sortColumn string
+	data     string
+	pageInfo PageInfo
 }
 
 func (res pageInfoResolver) EndCursor() *string {

@@ -91,7 +91,7 @@ type directoryConnectionResolver struct {
 	dataSource core.AbstractDataContext
 	data       []core.Directory
 	pageInfo   PageInfo
-	sortColumn string
+	offset     int
 }
 
 func (res directoryConnectionResolver) Edges() []directoryConnectionEdgeResolver {
@@ -100,7 +100,7 @@ func (res directoryConnectionResolver) Edges() []directoryConnectionEdgeResolver
 		resolvers[resolverIndex] = directoryConnectionEdgeResolver{
 			dataSource: &res.dataSource,
 			data:       res.data[resolverIndex],
-			cursor:     pageCursor(resolverIndex),
+			cursor:     pageCursor(resolverIndex + res.offset),
 		}
 	}
 	return resolvers
@@ -108,8 +108,7 @@ func (res directoryConnectionResolver) Edges() []directoryConnectionEdgeResolver
 
 func (res directoryConnectionResolver) PageInfo() pageInfoResolver {
 	return pageInfoResolver{
-		pageInfo:   res.pageInfo,
-		sortColumn: res.sortColumn,
+		pageInfo: res.pageInfo,
 	}
 }
 

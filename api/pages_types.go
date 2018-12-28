@@ -141,7 +141,7 @@ type pageConnectionResolver struct {
 	dataSource core.AbstractDataContext
 	data       []core.Page
 	pageInfo   PageInfo
-	sortColumn string
+	offset     int
 }
 
 func (res pageConnectionResolver) Edges() []pageConnectionEdgeResolver {
@@ -150,7 +150,7 @@ func (res pageConnectionResolver) Edges() []pageConnectionEdgeResolver {
 		resolvers[resolverIndex] = pageConnectionEdgeResolver{
 			dataSource: &res.dataSource,
 			data:       res.data[resolverIndex],
-			cursor:     pageCursor(resolverIndex),
+			cursor:     pageCursor(resolverIndex + res.offset),
 		}
 	}
 	return resolvers
@@ -158,8 +158,7 @@ func (res pageConnectionResolver) Edges() []pageConnectionEdgeResolver {
 
 func (res pageConnectionResolver) PageInfo() pageInfoResolver {
 	return pageInfoResolver{
-		pageInfo:   res.pageInfo,
-		sortColumn: res.sortColumn,
+		pageInfo: res.pageInfo,
 	}
 }
 

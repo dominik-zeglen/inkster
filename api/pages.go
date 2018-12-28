@@ -65,6 +65,7 @@ func resolvePages(
 		dataSource: dataSource,
 		data:       pages,
 		pageInfo:   pageInfo,
+		offset:     offset,
 	}, nil
 }
 
