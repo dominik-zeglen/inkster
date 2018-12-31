@@ -1,0 +1,42 @@
+{
+    "data": {
+        "pages": {
+            "edges": [
+                {
+                    "cursor": "Y3Vyc29yOjA=",
+                    "node": {
+                        "id": "cGFnZTox",
+                        "name": "Page 1"
+                    }
+                },
+                {
+                    "cursor": "Y3Vyc29yOjE=",
+                    "node": {
+                        "id": "cGFnZToy",
+                        "name": "Page 2"
+                    }
+                },
+                {
+                    "cursor": "Y3Vyc29yOjI=",
+                    "node": {
+                        "id": "cGFnZToz",
+                        "name": "Page 3"
+                    }
+                },
+                {
+                    "cursor": "Y3Vyc29yOjM=",
+                    "node": {
+                        "id": "cGFnZTo0",
+                        "name": "Page 4"
+                    }
+                }
+            ],
+            "pageInfo": {
+                "endCursor": "Y3Vyc29yOjM=",
+                "hasNextPage": false,
+                "hasPreviousPage": false,
+                "startCursor": "Y3Vyc29yOjA="
+            }
+        }
+    }
+}

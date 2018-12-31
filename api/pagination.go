@@ -28,16 +28,16 @@ func paginate(
 		pager.Limit = int(*paginate.Last) + 1
 		if paginate.Before != nil {
 			pager.Offset = int(*paginate.Before) - int(*paginate.Last) - 1
-			if pager.Offset < 0 {
-				pager.Limit += pager.Offset
-				pager.Offset = 0
-			}
 		} else {
 			totalCount, err := query.Copy().Apply(pager.Paginate).Count()
 			if err != nil {
 				panic(err)
 			}
 			pager.Offset = totalCount - int(*paginate.Last) - 1
+		}
+		if pager.Offset < 0 {
+			pager.Limit += pager.Offset
+			pager.Offset = 0
 		}
 	}
 
