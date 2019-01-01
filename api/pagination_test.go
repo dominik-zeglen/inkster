@@ -35,6 +35,7 @@ func TestPagination(t *testing.T) {
 	limit1 := int32(2)
 	limit2 := int32(3)
 	limit3 := int32(10)
+	limit4 := int32(1)
 	cursor1 := toGlobalCursor(Cursor(2))
 	cursor2 := toGlobalCursor(Cursor(3))
 
@@ -63,6 +64,10 @@ func TestPagination(t *testing.T) {
 		},
 		PaginationInput{
 			Last: &limit3,
+		},
+		PaginationInput{
+			Before: &cursor1,
+			Last:   &limit4,
 		},
 	}
 

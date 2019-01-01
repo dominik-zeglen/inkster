@@ -74,7 +74,7 @@ func (res *directoryResolver) Children(
 
 type DirectoryPagesArgs struct {
 	Sort     *Sort
-	Paginate Paginate
+	Paginate PaginationInput
 }
 
 func (res *directoryResolver) Pages(
@@ -84,7 +84,12 @@ func (res *directoryResolver) Pages(
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("parent_id = ?", res.data.ID)
 	}
-	return resolvePages(res.dataSource, args.Sort, args.Paginate, &where)
+	return resolvePages(
+		res.dataSource,
+		args.Sort,
+		getPaginationData(args.Paginate),
+		&where,
+	)
 }
 
 type directoryConnectionResolver struct {

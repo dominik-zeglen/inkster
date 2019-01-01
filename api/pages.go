@@ -42,12 +42,8 @@ func resolvePages(
 		}
 	} else if paginationInput.Last != nil {
 		if int(*paginationInput.Last) < len(pages) {
-			if paginationInput.Before != nil {
-				if offset > 0 {
-					pageInfo.hasPreviousPage = true
-				}
-			} else {
-				pages = pages[1:]
+			pages = pages[1:]
+			if (paginationInput.Before != nil && offset > 0) || paginationInput.Before == nil {
 				pageInfo.hasPreviousPage = true
 			}
 		}
