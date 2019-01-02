@@ -4,13 +4,13 @@ import { Folder } from "react-feather";
 
 import { ViewProps, PaginatedListProps } from "../..";
 import ListElement from "../../components/ListElement";
-import Paginator from "../../components/Paginator";
-import i18n from '../../i18n'
+import PaginationArrows from "../../components/PaginationArrows";
+import i18n from "../../i18n";
 
 interface Props extends ViewProps, PaginatedListProps {
   directories?: Array<{
-    id: string,
-    name?: string
+    id: string;
+    name?: string;
   }>;
 }
 
@@ -21,7 +21,7 @@ export const DirectoryDetailsList: React.StatelessComponent<Props> = ({
   pageInfo,
   onNextPage,
   onPreviousPage,
-  onRowClick
+  onRowClick,
 }) => (
   <Panel>
     <Panel.Body>
@@ -43,7 +43,7 @@ export const DirectoryDetailsList: React.StatelessComponent<Props> = ({
       )}
     </Panel.Body>
     <Panel.Footer>
-      <Paginator
+      <PaginationArrows
         pageInfo={pageInfo}
         onNextPage={onNextPage}
         onPreviousPage={onPreviousPage}

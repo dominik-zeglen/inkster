@@ -1,0 +1,28 @@
+{
+    "data": {
+        "pages": {
+            "edges": [
+                {
+                    "cursor": "Y3Vyc29yOjI=",
+                    "node": {
+                        "id": "cGFnZToz",
+                        "name": "Page 3"
+                    }
+                },
+                {
+                    "cursor": "Y3Vyc29yOjM=",
+                    "node": {
+                        "id": "cGFnZTo0",
+                        "name": "Page 4"
+                    }
+                }
+            ],
+            "pageInfo": {
+                "endCursor": "Y3Vyc29yOjM=",
+                "hasNextPage": false,
+                "hasPreviousPage": true,
+                "startCursor": "Y3Vyc29yOjI="
+            }
+        }
+    }
+}

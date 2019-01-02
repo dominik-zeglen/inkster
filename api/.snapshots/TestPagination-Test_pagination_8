@@ -1,0 +1,21 @@
+{
+    "data": {
+        "pages": {
+            "edges": [
+                {
+                    "cursor": "Y3Vyc29yOjE=",
+                    "node": {
+                        "id": "cGFnZTox",
+                        "name": "Page 1"
+                    }
+                }
+            ],
+            "pageInfo": {
+                "endCursor": "Y3Vyc29yOjE=",
+                "hasNextPage": false,
+                "hasPreviousPage": false,
+                "startCursor": "Y3Vyc29yOjE="
+            }
+        }
+    }
+}

@@ -7,24 +7,34 @@
             "name": "Directory 1",
             "isPublished": false,
             "parent": null,
-            "children": [
-                {
-                    "id": "ZGlyZWN0b3J5OjQ=",
-                    "name": "Directory 1.1"
-                }
-            ],
-            "pages": [
-                {
-                    "id": "cGFnZTox",
-                    "name": "Page 1",
-                    "slug": "page-1"
-                },
-                {
-                    "id": "cGFnZToy",
-                    "name": "Page 2",
-                    "slug": "page-2"
-                }
-            ]
+            "children": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "ZGlyZWN0b3J5OjQ=",
+                            "name": "Directory 1.1"
+                        }
+                    }
+                ]
+            },
+            "pages": {
+                "edges": [
+                    {
+                        "node": {
+                            "id": "cGFnZTox",
+                            "name": "Page 1",
+                            "slug": "page-1"
+                        }
+                    },
+                    {
+                        "node": {
+                            "id": "cGFnZToy",
+                            "name": "Page 2",
+                            "slug": "page-2"
+                        }
+                    }
+                ]
+            }
         }
     }
 }

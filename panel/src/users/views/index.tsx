@@ -30,6 +30,8 @@ const UserList: React.StatelessComponent<
   const qs = parseQs(location.search.substr(1));
   const params: UserListQueryParams = {
     modal: qs.modal,
+    after: qs.after,
+    before: qs.before,
   };
   return <UserListComponent params={params} />;
 };

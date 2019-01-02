@@ -107,7 +107,7 @@ func TestPageAPI(t *testing.T) {
 						"value": "Value 2"
 					}
 				]
-			}`, toGlobalID("directory", 1))
+			}`, toGlobalID(gqlDirectory, 1))
 			result, err := execQuery(createPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -120,7 +120,7 @@ func TestPageAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{
 				"name": "New Page",
 				"parentId": "%s"
-			}`, toGlobalID("directory", 1))
+			}`, toGlobalID(gqlDirectory, 1))
 			result, err := execQuery(createPage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
@@ -130,7 +130,7 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Update page properties", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", 1)
+			id := toGlobalID(gqlPage, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {	
@@ -147,7 +147,7 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Add page fields", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", 1)
+			id := toGlobalID(gqlPage, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"addFields": [
@@ -168,8 +168,8 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Update page fields", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", 1)
-			pageFieldID := toGlobalID("pageField", 100)
+			id := toGlobalID(gqlPage, 1)
+			pageFieldID := toGlobalID(gqlPageField, 100)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"updateFields": [
@@ -192,8 +192,8 @@ func TestPageAPI(t *testing.T) {
 		t.Run("Remove page fields", func(t *testing.T) {
 			defer resetDatabase()
 
-			id := toGlobalID("page", 1)
-			pageFieldID := toGlobalID("pageField", 100)
+			id := toGlobalID(gqlPage, 1)
+			pageFieldID := toGlobalID(gqlPageField, 100)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"removeFields": ["%s"]
@@ -213,7 +213,7 @@ func TestPageAPI(t *testing.T) {
 					removedObjectId
 				}
 			}`
-			id := toGlobalID("page", 1)
+			id := toGlobalID(gqlPage, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -251,25 +251,29 @@ func TestPageAPI(t *testing.T) {
 			}`
 		getPages := `
 			query Pages($sort: PageSort){
-				pages(sort: $sort) {
-					id
-					author {
-						id
-						email
-					}
-					createdAt
-					updatedAt
-					name
-					slug
-					isPublished
-					fields {
-						name
-						type
+				pages(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							author {
+								id
+								email
+							}
+							createdAt
+							updatedAt
+							name
+							slug
+							isPublished
+							fields {
+								name
+								type
+							}
+						}
 					}
 				}
 			}`
 		t.Run("Get page", func(t *testing.T) {
-			id := toGlobalID("page", 1)
+			id := toGlobalID(gqlPage, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -280,7 +284,7 @@ func TestPageAPI(t *testing.T) {
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get page that does not exist", func(t *testing.T) {
-			id := toGlobalID("page", 99)
+			id := toGlobalID(gqlPage, 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)

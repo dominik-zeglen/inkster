@@ -1,10 +1,11 @@
 import gql from "graphql-tag";
 
-import { TypedQuery } from "../../api";
+import { TypedQuery, pageInfoFragment } from "../../api";
 import { Directory, DirectoryVariables } from "./types/Directory";
 
 const qDirectory = gql`
-  query Directory($id: ID!) {
+  ${pageInfoFragment}
+  query Directory($id: ID!, $paginate: PaginationInput!) {
     getDirectory(id: $id) {
       id
       createdAt
@@ -14,9 +15,16 @@ const qDirectory = gql`
       parent {
         id
       }
-      pages {
-        id
-        name
+      pages(paginate: $paginate) {
+        edges {
+          node {
+            id
+            name
+          }
+        }
+        pageInfo {
+          ...PageInfoFragment
+        }
       }
     }
   }

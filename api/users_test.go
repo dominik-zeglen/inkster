@@ -21,9 +21,13 @@ func TestUserAPI(t *testing.T) {
 					updatedAt
 					email
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}
@@ -44,9 +48,13 @@ func TestUserAPI(t *testing.T) {
 					id
 					email
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}
@@ -100,7 +108,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 2)
+			id := toGlobalID(gqlUser, 2)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -112,7 +120,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Remove user using his own token", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -124,7 +132,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -140,7 +148,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with invalid e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -155,7 +163,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with existing e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -170,7 +178,7 @@ func TestUserAPI(t *testing.T) {
 		})
 		t.Run("Update user with the same e-mail", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
 				"input": {
@@ -223,28 +231,40 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}`
 		getUsers := `
 			query getUsers($sort: UserSort) {
-				users(sort: $sort) {
-					id
-					email
-					createdAt
-					updatedAt
-					isActive
-					pages {
-						id
-						name
+				users(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							email
+							createdAt
+							updatedAt
+							isActive
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
+							}
+						}
 					}
 				}
 			}`
 		t.Run("Get user by ID", func(t *testing.T) {
-			id := toGlobalID("user", 1)
+			id := toGlobalID(gqlUser, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -255,7 +275,7 @@ func TestUserAPI(t *testing.T) {
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get user that does not exists", func(t *testing.T) {
-			id := toGlobalID("user", 99)
+			id := toGlobalID(gqlUser, 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -319,9 +339,13 @@ func TestUserAPI(t *testing.T) {
 					createdAt
 					updatedAt
 					isActive
-					pages {
-						id
-						name
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
 				}
 			}`

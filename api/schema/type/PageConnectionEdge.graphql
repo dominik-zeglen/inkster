@@ -1,0 +1,4 @@
+type PageConnectionEdge {
+    cursor: String!
+    node: Page!
+}

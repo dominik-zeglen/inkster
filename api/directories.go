@@ -2,14 +2,16 @@ package api
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 )
 
 func resolveDirectories(
 	dataSource core.AbstractDataContext,
 	sort *Sort,
+	paginationInput Paginate,
 	where *func(*orm.Query) *orm.Query,
-) (*[]*directoryResolver, error) {
+) (*directoryConnectionResolver, error) {
 	directories := []core.Directory{}
 
 	query := dataSource.
@@ -20,22 +22,50 @@ func resolveDirectories(
 		query = (*where)(query)
 	}
 
-	query = sortDirectories(query, sort).OrderExpr("created_at ASC")
+	query = sortPages(query, sort)
+	query = query.OrderExpr("id ASC")
+	query, offset, didOffsetReset := paginate(query, paginationInput)
 	err := query.Select()
 
 	if err != nil {
-		return nil, err
-	}
-
-	resolvers := make([]*directoryResolver, len(directories))
-	for i := range directories {
-		resolvers[i] = &directoryResolver{
-			dataSource: dataSource,
-			data:       &directories[i],
+		if err != pg.ErrNoRows {
+			return nil, err
 		}
 	}
 
-	return &resolvers, nil
+	pageInfo := PageInfo{}
+
+	if paginationInput.First != nil {
+		if int(*paginationInput.First) < len(directories) {
+			directories = directories[:len(directories)-1]
+			pageInfo.hasNextPage = true
+		}
+	} else if paginationInput.Last != nil {
+		if int(*paginationInput.Last) < len(directories) {
+			if paginationInput.Before != nil || (paginationInput.Before == nil && !didOffsetReset) {
+				pageInfo.hasPreviousPage = true
+			}
+			directories = directories[1:]
+		}
+	}
+
+	if paginationInput.Last != nil {
+		offset = offset + 1
+	}
+
+	if len(directories) > 0 {
+		endCursor := Cursor(offset + len(directories) - 1)
+		pageInfo.endCursor = &endCursor
+
+		startCursor := Cursor(offset)
+		pageInfo.startCursor = &startCursor
+	}
+
+	return &directoryConnectionResolver{
+		dataSource: dataSource,
+		data:       directories,
+		pageInfo:   pageInfo,
+	}, nil
 }
 
 func sortDirectories(query *orm.Query, sort *Sort) *orm.Query {

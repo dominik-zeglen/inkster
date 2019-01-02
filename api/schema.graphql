@@ -49,6 +49,12 @@ input PageUpdateInput {
   parentId: ID
   isPublished: Boolean
 }
+input PaginationInput {
+    after: String
+    before: String
+    first: Int
+    last: Int
+}
 input UserCreateInput {
   email: String!
   password: String
@@ -94,14 +100,14 @@ type Mutation {
 }
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories(sort: DirectorySort): [Directory]
-  getRootDirectories(sort: DirectorySort): [Directory]
+  getDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
+  getRootDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
 
   page(id: ID!): Page
-  pages(sort: PageSort): [Page]
+  pages(sort: PageSort, paginate: PaginationInput!): PageConnection
 
   user(id: ID!): User
-  users(sort: UserSort): [User]
+  users(sort: UserSort, paginate: PaginationInput!): UserConnection
   viewer: User
 }
 schema {
@@ -115,8 +121,16 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children(sort: DirectorySort): [Directory]
-  pages(sort: PageSort): [Page!]
+  children(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
+  pages(sort: PageSort, paginate: PaginationInput!): PageConnection
+}
+type DirectoryConnection {
+    edges: [DirectoryConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+type DirectoryConnectionEdge {
+    cursor: String!
+    node: Directory!
 }
 type DirectoryOperationResult {
   errors: [InputError!]!
@@ -148,6 +162,14 @@ type Page {
   fields: [PageField]
   parent: Directory!
 }
+type PageConnection {
+    edges: [PageConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+type PageConnectionEdge {
+    cursor: String!
+    node: Page!
+}
 type PageField {
   id: ID!
   name: String!
@@ -157,6 +179,12 @@ type PageField {
 type PageFieldOperationResult {
   userErrors: [UserError]
   page: Page
+}
+type PageInfo {
+    endCursor: String
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
 }
 type PageOperationResult {
   errors: [InputError!]!
@@ -183,7 +211,15 @@ type User {
   updatedAt: String!
   email: String!
   isActive: Boolean!
-  pages(sort: PageSort): [Page!]
+  pages(sort: PageSort, paginate: PaginationInput!): PageConnection
+}
+type UserConnection {
+    edges: [UserConnectionEdge!]!
+    pageInfo: PageInfo!
+}
+type UserConnectionEdge {
+    cursor: String!
+    node: User!
 }
 type UserError {
   field: String!

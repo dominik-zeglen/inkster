@@ -26,21 +26,41 @@ func NewResolver(dataSource core.AbstractDataContext, mailer mailer.Mailer, key 
 	}
 }
 
-func toGlobalID(dataType string, ID int) string {
-	data := dataType + ":" + strconv.Itoa(ID)
+type gqlType string
+
+const (
+	gqlDirectory gqlType = "directory"
+	gqlPage              = "page"
+	gqlPageField         = "pageField"
+	gqlUser              = "user"
+	gqlCursor            = "cursor"
+)
+
+func toGlobalID(dataType gqlType, ID int) string {
+	data := string(dataType) + ":" + strconv.Itoa(ID)
 	return base64.StdEncoding.EncodeToString([]byte(data))
 }
 
-func fromGlobalID(dataType string, ID string) (int, error) {
+func fromGlobalID(dataType gqlType, ID string) (int, error) {
 	data, err := base64.StdEncoding.DecodeString(ID)
 	if err != nil {
 		return 0, err
 	}
 	portionedData := strings.Split(string(data), ":")
-	if portionedData[0] == dataType {
+	if portionedData[0] == string(dataType) {
 		return strconv.Atoi(portionedData[1])
 	}
 	return 0, fmt.Errorf("Object types do not match")
+}
+
+func toGlobalCursor(ID Cursor) string {
+	return toGlobalID(gqlCursor, int(ID))
+}
+
+func fromGlobalCursor(cursor string) (Cursor, error) {
+	data, err := fromGlobalID(gqlCursor, cursor)
+
+	return Cursor(data), err
 }
 
 type userError struct {
@@ -68,7 +88,23 @@ func checkPermission(ctx context.Context) bool {
 	return false
 }
 
+type Cursor int32
+
 type Sort struct {
 	Field string
 	Order string
+}
+
+type Paginate struct {
+	After  *Cursor
+	Before *Cursor
+	First  *int32
+	Last   *int32
+}
+
+type PageInfo struct {
+	endCursor       *Cursor
+	hasNextPage     bool
+	hasPreviousPage bool
+	startCursor     *Cursor
 }

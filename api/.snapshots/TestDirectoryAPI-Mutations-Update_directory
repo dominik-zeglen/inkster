@@ -12,7 +12,9 @@
                     "id": "ZGlyZWN0b3J5OjI=",
                     "name": "Directory 2"
                 },
-                "children": []
+                "children": {
+                    "edges": []
+                }
             }
         }
     }

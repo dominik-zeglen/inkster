@@ -8,10 +8,10 @@ import Container from "../../components/Container";
 import PageHeader from "../../components/PageHeader";
 import IconButton from "../../components/IconButton";
 import DirectoryRootList from "./DirectoryRootList";
-import { RootDirectories_getRootDirectories } from "../queries/types/RootDirectories";
+import { RootDirectories_getRootDirectories_edges_node } from "../queries/types/RootDirectories";
 
 interface Props extends ListViewProps<{ name: string }> {
-  directories: RootDirectories_getRootDirectories[];
+  directories: RootDirectories_getRootDirectories_edges_node[];
 }
 
 const decorate = withStyles(

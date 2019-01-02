@@ -52,17 +52,21 @@ func TestDirectoryAPI(t *testing.T) {
 						id	
 						name	
 					}	
-					children {	
-						id	
-						name	
-					}	
+					children(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
+					}
 			}	
 			}	
 		}`
 	t.Run("Mutations", func(t *testing.T) {
 		t.Run("Create directory", func(t *testing.T) {
 			defer resetDatabase()
-			parentID := toGlobalID("directory", 1)
+			parentID := toGlobalID(gqlDirectory, 1)
 			variables := fmt.Sprintf(`{
 				"input": {
 					"name": "New Directory",
@@ -103,7 +107,7 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Create directory in parent that does not exist", func(t *testing.T) {
 			defer resetDatabase()
-			parentID := toGlobalID("directory", 5)
+			parentID := toGlobalID(gqlDirectory, 5)
 			variables := fmt.Sprintf(`{	
 				"input": {	
 					"name": "New Directory",	
@@ -118,8 +122,8 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("directory", 4)
-			parentID := toGlobalID("directory", 2)
+			id := toGlobalID(gqlDirectory, 4)
+			parentID := toGlobalID(gqlDirectory, 2)
 			variables := fmt.Sprintf(`{	
 				"id": "%s",	
 				"input": {	
@@ -136,7 +140,7 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory partially", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("directory", 4)
+			id := toGlobalID(gqlDirectory, 4)
 			variables := fmt.Sprintf(`{	
 				"id": "%s",	
 				"input": {	
@@ -151,7 +155,7 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory with too short name", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("directory", 4)
+			id := toGlobalID(gqlDirectory, 4)
 			variables := fmt.Sprintf(`{	
 				"id": "%s",	
 				"input": {	
@@ -166,7 +170,7 @@ func TestDirectoryAPI(t *testing.T) {
 		})
 		t.Run("Update directory with its own ID as parentID", func(t *testing.T) {
 			defer resetDatabase()
-			id := toGlobalID("directory", 4)
+			id := toGlobalID(gqlDirectory, 4)
 			variables := fmt.Sprintf(`{	
 				"id": "%s",	
 				"input": {	
@@ -184,7 +188,7 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `mutation RemoveDirectory($id: ID!){	
 				removeDirectory(id: $id)	
 			}`
-			id := toGlobalID("directory", 1)
+			id := toGlobalID(gqlDirectory, 1)
 			variables := fmt.Sprintf(`{	
 				"id": "%s"	
 			}`, id)
@@ -199,7 +203,7 @@ func TestDirectoryAPI(t *testing.T) {
 			query := `mutation RemoveDirectory($id: ID!){	
 				removeDirectory(id: $id)	
 			}`
-			id := toGlobalID("directory", 1)
+			id := toGlobalID(gqlDirectory, 1)
 			variables := fmt.Sprintf(`{	
 				"id": "%s"	
 			}`, id)
@@ -224,42 +228,62 @@ func TestDirectoryAPI(t *testing.T) {
 						id
 						name
 					}
-					children {
-						id
-						name
+					children(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+							}
+						}
 					}
-					pages {
-						id
-						name
-						slug
+					pages(paginate: { first: 5 }) {
+						edges {
+							node {
+								id
+								name
+								slug
+							}
+						}
 					}
 				}
 			}`
 		getDirectories := `
 			query GetDirectories($sort: DirectorySort){
-				getDirectories(sort: $sort) {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-					pages {
-						id
-						name
-						slug
+				getDirectories(sort: $sort, paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							createdAt
+							updatedAt
+							name
+							isPublished
+							parent {
+								id
+								name
+							}
+							children(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
+							}
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+										slug
+									}
+								}
+							}
+						}
 					}
 				}
 			}`
 		t.Run("Get directory", func(t *testing.T) {
-			id := toGlobalID("directory", 1)
+			id := toGlobalID(gqlDirectory, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -270,7 +294,7 @@ func TestDirectoryAPI(t *testing.T) {
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Get directory that does not exist", func(t *testing.T) {
-			id := toGlobalID("directory", 99)
+			id := toGlobalID(gqlDirectory, 99)
 			variables := fmt.Sprintf(`{
 				"id": "%s"
 			}`, id)
@@ -329,24 +353,36 @@ func TestDirectoryAPI(t *testing.T) {
 
 		t.Run("Get root directory list", func(t *testing.T) {
 			query := `query GetRootDirectories{
-				getRootDirectories {
-					id
-					createdAt
-					updatedAt
-					name
-					isPublished
-					parent {
-						id
-						name
-					}
-					children {
-						id
-						name
-					}
-					pages {
-						id
-						name
-						slug
+				getRootDirectories(paginate: { first: 5 }) {
+					edges {
+						node {
+							id
+							createdAt
+							updatedAt
+							name
+							isPublished
+							parent {
+								id
+								name
+							}
+							children(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+									}
+								}
+							}
+							pages(paginate: { first: 5 }) {
+								edges {
+									node {
+										id
+										name
+										slug
+									}
+								}
+							}
+						}
 					}
 				}
 			}`

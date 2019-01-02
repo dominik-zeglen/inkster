@@ -5,6 +5,6 @@ type Directory {
   name: String!
   parent: Directory
   isPublished: Boolean!
-  children(sort: DirectorySort): [Directory]
-  pages(sort: PageSort): [Page!]
+  children(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
+  pages(sort: PageSort, paginate: PaginationInput!): PageConnection
 }

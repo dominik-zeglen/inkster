@@ -48,17 +48,23 @@ func (res *Resolver) User(
 }
 
 type UsersArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate PaginationInput
 }
 
 func (res *Resolver) Users(
 	ctx context.Context,
 	args UsersArgs,
-) (*[]*userResolver, error) {
+) (*userConnectionResolver, error) {
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
-	return resolveUsers(res.dataSource, args.Sort, nil)
+	return resolveUsers(
+		res.dataSource,
+		args.Sort,
+		getPaginationData(args.Paginate),
+		nil,
+	)
 }
 
 func (res *Resolver) Viewer(ctx context.Context) (*userResolver, error) {

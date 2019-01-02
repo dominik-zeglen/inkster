@@ -13,12 +13,12 @@ import {
 } from "../queries/types/DirectoryCreate";
 import Input from "../../components/Input";
 import FormDialog from "../../components/FormDialog";
-import { mergeQs } from "../../utils";
-import { Modal } from "../../types";
+import { mergeQs, maybe } from "../../utils";
+import { Modal, Pagination } from "../../types";
+import Paginator, { createPaginationState } from "../../components/Paginator";
+import { PAGINATE_BY } from "../..";
 
-const dummy = () => {};
-
-export type QueryParams = Partial<Modal<"create-directory">>;
+export type QueryParams = Partial<Modal<"create-directory"> & Pagination>;
 export interface Props {
   params: QueryParams;
 }
@@ -42,8 +42,9 @@ export const DirectoryRoot: React.StatelessComponent<Props> = ({ params }) => (
               );
             }
           };
+          const paginationState = createPaginationState(PAGINATE_BY, params);
           return (
-            <RootDirectories>
+            <RootDirectories variables={{ paginate: paginationState }}>
               {({ data, loading }) => (
                 <DirectoryCreateMutation onCompleted={handleCreate}>
                   {addDirectory => {
@@ -52,23 +53,36 @@ export const DirectoryRoot: React.StatelessComponent<Props> = ({ params }) => (
                     ) => addDirectory({ variables });
                     return (
                       <>
-                        <DirectoryRootPage
-                          directories={
-                            data ? data.getRootDirectories : undefined
-                          }
-                          disabled={loading}
-                          loading={loading}
-                          onAdd={() =>
-                            navigate(
-                              mergeQs(params, {
-                                modal: "create-directory",
-                              }),
-                            )
-                          }
-                          onNextPage={dummy}
-                          onPreviousPage={dummy}
-                          onRowClick={handleRowClick}
-                        />
+                        <Paginator
+                          pageInfo={maybe(
+                            () => data.getRootDirectories.pageInfo,
+                          )}
+                          paginationState={paginationState}
+                          queryString={params}
+                        >
+                          {({ loadNextPage, loadPreviousPage, pageInfo }) => (
+                            <DirectoryRootPage
+                              directories={maybe(() =>
+                                data.getRootDirectories.edges.map(
+                                  edge => edge.node,
+                                ),
+                              )}
+                              disabled={loading}
+                              loading={loading}
+                              onAdd={() =>
+                                navigate(
+                                  mergeQs(params, {
+                                    modal: "create-directory",
+                                  }),
+                                )
+                              }
+                              onNextPage={loadNextPage}
+                              onPreviousPage={loadPreviousPage}
+                              onRowClick={handleRowClick}
+                              pageInfo={pageInfo}
+                            />
+                          )}
+                        </Paginator>
                         <FormDialog
                           onClose={() =>
                             navigate(

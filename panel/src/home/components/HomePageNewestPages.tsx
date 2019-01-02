@@ -5,11 +5,11 @@ import { FileText } from "react-feather";
 import i18n from "../../i18n";
 import { renderCollection, maybe } from "../../utils";
 import ListElement from "../../components/ListElement";
-import { Viewer_viewer_pages } from "../queries/types/Viewer";
+import { Viewer_viewer_pages_edges_node } from "../queries/types/Viewer";
 
 interface Props {
   disabled: boolean;
-  pages: Viewer_viewer_pages[];
+  pages: Viewer_viewer_pages_edges_node[];
   onPageClick: (id: string) => void;
 }
 

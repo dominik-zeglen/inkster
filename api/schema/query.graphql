@@ -1,12 +1,12 @@
 type Query {
   getDirectory(id: ID!): Directory
-  getDirectories(sort: DirectorySort): [Directory]
-  getRootDirectories(sort: DirectorySort): [Directory]
+  getDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
+  getRootDirectories(sort: DirectorySort, paginate: PaginationInput!): DirectoryConnection
 
   page(id: ID!): Page
-  pages(sort: PageSort): [Page]
+  pages(sort: PageSort, paginate: PaginationInput!): PageConnection
 
   user(id: ID!): User
-  users(sort: UserSort): [User]
+  users(sort: UserSort, paginate: PaginationInput!): UserConnection
   viewer: User
 }

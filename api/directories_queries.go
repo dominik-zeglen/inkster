@@ -48,24 +48,36 @@ func (res *Resolver) GetDirectory(
 }
 
 type DirectoriesArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate PaginationInput
 }
 
 func (res *Resolver) GetDirectories(
 	args DirectoriesArgs,
-) (*[]*directoryResolver, error) {
-	return resolveDirectories(res.dataSource, args.Sort, nil)
+) (*directoryConnectionResolver, error) {
+	return resolveDirectories(
+		res.dataSource,
+		args.Sort,
+		getPaginationData(args.Paginate),
+		nil,
+	)
 }
 
 type RootDirectoriesArgs struct {
-	Sort *Sort
+	Sort     *Sort
+	Paginate PaginationInput
 }
 
 func (res *Resolver) GetRootDirectories(
 	args RootDirectoriesArgs,
-) (*[]*directoryResolver, error) {
+) (*directoryConnectionResolver, error) {
 	where := func(query *orm.Query) *orm.Query {
 		return query.Where("parent_id IS NULL OR parent_id = 0")
 	}
-	return resolveDirectories(res.dataSource, args.Sort, &where)
+	return resolveDirectories(
+		res.dataSource,
+		args.Sort,
+		getPaginationData(args.Paginate),
+		&where,
+	)
 }

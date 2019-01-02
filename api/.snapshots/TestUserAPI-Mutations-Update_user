@@ -6,16 +6,22 @@
                 "id": "dXNlcjox",
                 "email": "new_email@example.com",
                 "isActive": false,
-                "pages": [
-                    {
-                        "id": "cGFnZTox",
-                        "name": "Page 1"
-                    },
-                    {
-                        "id": "cGFnZToy",
-                        "name": "Page 2"
-                    }
-                ]
+                "pages": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": "cGFnZTox",
+                                "name": "Page 1"
+                            }
+                        },
+                        {
+                            "node": {
+                                "id": "cGFnZToy",
+                                "name": "Page 2"
+                            }
+                        }
+                    ]
+                }
             }
         }
     }

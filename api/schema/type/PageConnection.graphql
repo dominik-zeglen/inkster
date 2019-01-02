@@ -1,0 +1,4 @@
+type PageConnection {
+    edges: [PageConnectionEdge!]!
+    pageInfo: PageInfo!
+}

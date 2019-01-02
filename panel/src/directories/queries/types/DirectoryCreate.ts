@@ -16,11 +16,6 @@ export interface DirectoryCreate_createDirectory_directory_parent {
   id: string;
 }
 
-export interface DirectoryCreate_createDirectory_directory_pages {
-  __typename: "Page";
-  id: string;
-}
-
 export interface DirectoryCreate_createDirectory_directory {
   __typename: "Directory";
   id: string;
@@ -29,7 +24,6 @@ export interface DirectoryCreate_createDirectory_directory {
   name: string;
   isPublished: boolean;
   parent: DirectoryCreate_createDirectory_directory_parent | null;
-  pages: (DirectoryCreate_createDirectory_directory_pages | null)[] | null;
 }
 
 export interface DirectoryCreate_createDirectory {

@@ -2,14 +2,16 @@ package api
 
 import (
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 )
 
 func resolvePages(
 	dataSource core.AbstractDataContext,
 	sort *Sort,
+	paginationInput Paginate,
 	where *func(*orm.Query) *orm.Query,
-) (*[]*pageResolver, error) {
+) (*pageConnectionResolver, error) {
 	pages := []core.Page{}
 
 	query := dataSource.
@@ -20,45 +22,76 @@ func resolvePages(
 		query = (*where)(query)
 	}
 
-	query = sortPages(query, sort).OrderExpr("created_at ASC")
+	query = sortPages(query, sort)
+	query = query.OrderExpr("id ASC")
+	query, offset, didOffsetReset := paginate(query, paginationInput)
 	err := query.Select()
 
 	if err != nil {
-		return nil, err
-	}
-
-	resolvers := make([]*pageResolver, len(pages))
-	for i := range pages {
-		resolvers[i] = &pageResolver{
-			dataSource: dataSource,
-			data:       &pages[i],
+		if err != pg.ErrNoRows {
+			return nil, err
 		}
 	}
 
-	return &resolvers, nil
+	pageInfo := PageInfo{}
+
+	if paginationInput.First != nil {
+		if int(*paginationInput.First) < len(pages) {
+			pages = pages[:len(pages)-1]
+			pageInfo.hasNextPage = true
+		}
+	} else if paginationInput.Last != nil {
+		if int(*paginationInput.Last) < len(pages) {
+			if paginationInput.Before != nil || (paginationInput.Before == nil && !didOffsetReset) {
+				pageInfo.hasPreviousPage = true
+			}
+			pages = pages[1:]
+		}
+	}
+
+	if paginationInput.Last != nil {
+		offset = offset + 1
+	}
+
+	if len(pages) > 0 {
+		endCursor := Cursor(offset + len(pages) - 1)
+		pageInfo.endCursor = &endCursor
+
+		startCursor := Cursor(offset)
+		pageInfo.startCursor = &startCursor
+	}
+
+	return &pageConnectionResolver{
+		dataSource: dataSource,
+		data:       pages,
+		pageInfo:   pageInfo,
+		offset:     offset,
+	}, nil
 }
 
 func sortPages(query *orm.Query, sort *Sort) *orm.Query {
 	if sort != nil {
+		orderColumn := "id"
 		switch sort.Field {
 		case "AUTHOR":
 			query = query.Relation("Author")
-			return query.OrderExpr("Author.email " + sort.Order)
+			orderColumn = "Author.email"
 
 		case "IS_PUBLISHED":
-			return query.OrderExpr("is_published " + sort.Order)
+			orderColumn = "is_published"
 
 		case "NAME":
-			return query.OrderExpr("name " + sort.Order)
+			orderColumn = "name"
 
 		case "SLUG":
-			return query.OrderExpr("slug " + sort.Order)
+			orderColumn = "slug"
 
 		case "UPDATED_AT":
-			return query.OrderExpr("updated_at " + sort.Order)
+			orderColumn = "updated_at"
 		}
 
+		return query.OrderExpr(orderColumn + " " + sort.Order)
 	}
 
-	return query.OrderExpr("created_at ASC")
+	return query
 }

@@ -14,7 +14,7 @@ type pageResolver struct {
 }
 
 func (res *pageResolver) ID() gql.ID {
-	globalID := toGlobalID("page", res.data.ID)
+	globalID := toGlobalID(gqlPage, res.data.ID)
 	return gql.ID(globalID)
 }
 
@@ -121,7 +121,7 @@ type pageFieldResolver struct {
 }
 
 func (res *pageFieldResolver) ID() gql.ID {
-	globalID := toGlobalID("pageField", res.data.ID)
+	globalID := toGlobalID(gqlPageField, res.data.ID)
 	return gql.ID(globalID)
 }
 
@@ -135,4 +135,46 @@ func (res *pageFieldResolver) Type() string {
 
 func (res *pageFieldResolver) Value() *string {
 	return &res.data.Value
+}
+
+type pageConnectionResolver struct {
+	dataSource core.AbstractDataContext
+	data       []core.Page
+	pageInfo   PageInfo
+	offset     int
+}
+
+func (res pageConnectionResolver) Edges() []pageConnectionEdgeResolver {
+	resolvers := make([]pageConnectionEdgeResolver, len(res.data))
+	for resolverIndex := range resolvers {
+		resolvers[resolverIndex] = pageConnectionEdgeResolver{
+			dataSource: &res.dataSource,
+			data:       res.data[resolverIndex],
+			cursor:     pageCursor(resolverIndex + res.offset),
+		}
+	}
+	return resolvers
+}
+
+func (res pageConnectionResolver) PageInfo() pageInfoResolver {
+	return pageInfoResolver{
+		pageInfo: res.pageInfo,
+	}
+}
+
+type pageConnectionEdgeResolver struct {
+	dataSource *core.AbstractDataContext
+	data       core.Page
+	cursor     pageCursor
+}
+
+func (res pageConnectionEdgeResolver) Cursor() string {
+	return toGlobalID(gqlCursor, int(res.cursor))
+}
+
+func (res pageConnectionEdgeResolver) Node() *pageResolver {
+	return &pageResolver{
+		dataSource: *res.dataSource,
+		data:       &res.data,
+	}
 }

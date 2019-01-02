@@ -1,68 +1,91 @@
 {
     "data": {
-        "pages": [
-            {
-                "id": "cGFnZTox",
-                "author": {
-                    "id": "dXNlcjox",
-                    "email": "user1@example.com"
-                },
-                "createdAt": "2007-07-07T10:00:00Z",
-                "updatedAt": "2007-07-07T10:00:00Z",
-                "name": "Page 1",
-                "slug": "page-1",
-                "isPublished": false,
-                "fields": [
-                    {
-                        "name": "Field 1",
-                        "type": "text"
-                    },
-                    {
-                        "name": "Field 2",
-                        "type": "text"
+        "pages": {
+            "edges": [
+                {
+                    "node": {
+                        "id": "cGFnZTo0",
+                        "author": {
+                            "id": "dXNlcjoz",
+                            "email": "user3@example.com"
+                        },
+                        "createdAt": "2007-07-07T13:00:00Z",
+                        "updatedAt": "2007-07-07T13:00:00Z",
+                        "name": "Page 4",
+                        "slug": "page-4",
+                        "isPublished": true,
+                        "fields": []
                     }
-                ]
-            },
-            {
-                "id": "cGFnZToy",
-                "author": {
-                    "id": "dXNlcjox",
-                    "email": "user1@example.com"
                 },
-                "createdAt": "2007-07-07T11:00:00Z",
-                "updatedAt": "2007-07-07T11:00:00Z",
-                "name": "Page 2",
-                "slug": "page-2",
-                "isPublished": false,
-                "fields": [
-                    {
-                        "name": "Field 3",
-                        "type": "text"
-                    },
-                    {
-                        "name": "Field 4",
-                        "type": "file"
+                {
+                    "node": {
+                        "id": "cGFnZToz",
+                        "author": {
+                            "id": "dXNlcjoy",
+                            "email": "user2@example.com"
+                        },
+                        "createdAt": "2007-07-07T12:00:00Z",
+                        "updatedAt": "2007-07-07T12:00:00Z",
+                        "name": "Page 3",
+                        "slug": "page-3",
+                        "isPublished": false,
+                        "fields": [
+                            {
+                                "name": "Field 5",
+                                "type": "text"
+                            }
+                        ]
                     }
-                ]
-            },
-            {
-                "id": "cGFnZToz",
-                "author": {
-                    "id": "dXNlcjoy",
-                    "email": "user2@example.com"
                 },
-                "createdAt": "2007-07-07T12:00:00Z",
-                "updatedAt": "2007-07-07T12:00:00Z",
-                "name": "Page 3",
-                "slug": "page-3",
-                "isPublished": false,
-                "fields": [
-                    {
-                        "name": "Field 5",
-                        "type": "text"
+                {
+                    "node": {
+                        "id": "cGFnZToy",
+                        "author": {
+                            "id": "dXNlcjox",
+                            "email": "user1@example.com"
+                        },
+                        "createdAt": "2007-07-07T11:00:00Z",
+                        "updatedAt": "2007-07-07T11:00:00Z",
+                        "name": "Page 2",
+                        "slug": "page-2",
+                        "isPublished": false,
+                        "fields": [
+                            {
+                                "name": "Field 3",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Field 4",
+                                "type": "file"
+                            }
+                        ]
                     }
-                ]
-            }
-        ]
+                },
+                {
+                    "node": {
+                        "id": "cGFnZTox",
+                        "author": {
+                            "id": "dXNlcjox",
+                            "email": "user1@example.com"
+                        },
+                        "createdAt": "2007-07-07T10:00:00Z",
+                        "updatedAt": "2007-07-07T10:00:00Z",
+                        "name": "Page 1",
+                        "slug": "page-1",
+                        "isPublished": false,
+                        "fields": [
+                            {
+                                "name": "Field 1",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Field 2",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
     }
 }

@@ -11,6 +11,7 @@ import {
   Query,
   QueryResult,
 } from "react-apollo";
+import gql from "graphql-tag";
 
 import Notificator, { NotificationType } from "./components/Notificator";
 import i18n from "./i18n";
@@ -149,3 +150,12 @@ export function TypedQuery<TData, TVariables>(query: DocumentNode) {
     </AppProgress>
   );
 }
+
+export const pageInfoFragment = gql`
+  fragment PageInfoFragment on PageInfo {
+    startCursor
+    endCursor
+    hasPreviousPage
+    hasNextPage
+  }
+`;

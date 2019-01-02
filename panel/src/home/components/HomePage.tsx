@@ -6,6 +6,7 @@ import PageHeader from "../../components/PageHeader";
 import i18n from "../../i18n";
 import HomePageNewestPages from "./HomePageNewestPages";
 import { Viewer_viewer } from "../queries/types/Viewer";
+import { maybe } from "../../utils";
 
 export interface Props {
   disabled: boolean;
@@ -38,7 +39,7 @@ export const HomePage = decorate<Props>(
         <div>
           <HomePageNewestPages
             disabled={disabled}
-            pages={user ? user.pages : undefined}
+            pages={maybe(() => user.pages.edges.map(edge => edge.node))}
             onPageClick={onPageClick}
           />
         </div>
