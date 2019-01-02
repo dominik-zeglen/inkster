@@ -3,14 +3,14 @@
         "pages": {
             "edges": [
                 {
-                    "cursor": "Y3Vyc29yOjA=",
+                    "cursor": "Y3Vyc29yOjE=",
                     "node": {
                         "id": "cGFnZTox",
                         "name": "Page 1"
                     }
                 },
                 {
-                    "cursor": "Y3Vyc29yOjE=",
+                    "cursor": "Y3Vyc29yOjI=",
                     "node": {
                         "id": "cGFnZToy",
                         "name": "Page 2"
@@ -18,10 +18,10 @@
                 }
             ],
             "pageInfo": {
-                "endCursor": "Y3Vyc29yOjE=",
+                "endCursor": "Y3Vyc29yOjI=",
                 "hasNextPage": false,
                 "hasPreviousPage": false,
-                "startCursor": "Y3Vyc29yOjA="
+                "startCursor": "Y3Vyc29yOjE="
             }
         }
     }

@@ -24,7 +24,7 @@ func resolveUsers(
 
 	query = sortPages(query, sort)
 	query = query.OrderExpr("id ASC")
-	query, offset := paginate(query, paginationInput)
+	query, offset, didOffsetReset := paginate(query, paginationInput)
 	err := query.Select()
 
 	if err != nil {
@@ -42,15 +42,15 @@ func resolveUsers(
 		}
 	} else if paginationInput.Last != nil {
 		if int(*paginationInput.Last) < len(users) {
-			if paginationInput.Before != nil {
-				if offset > 0 {
-					pageInfo.hasPreviousPage = true
-				}
-			} else {
-				users = users[1:]
+			if paginationInput.Before != nil || (paginationInput.Before == nil && !didOffsetReset) {
 				pageInfo.hasPreviousPage = true
 			}
+			users = users[1:]
 		}
+	}
+
+	if paginationInput.Last != nil {
+		offset = offset + 1
 	}
 
 	if len(users) > 0 {

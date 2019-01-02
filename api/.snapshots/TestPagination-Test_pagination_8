@@ -5,15 +5,15 @@
                 {
                     "cursor": "Y3Vyc29yOjE=",
                     "node": {
-                        "id": "cGFnZToy",
-                        "name": "Page 2"
+                        "id": "cGFnZTox",
+                        "name": "Page 1"
                     }
                 }
             ],
             "pageInfo": {
                 "endCursor": "Y3Vyc29yOjE=",
                 "hasNextPage": false,
-                "hasPreviousPage": true,
+                "hasPreviousPage": false,
                 "startCursor": "Y3Vyc29yOjE="
             }
         }

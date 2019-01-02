@@ -24,7 +24,7 @@ func resolvePages(
 
 	query = sortPages(query, sort)
 	query = query.OrderExpr("id ASC")
-	query, offset := paginate(query, paginationInput)
+	query, offset, didOffsetReset := paginate(query, paginationInput)
 	err := query.Select()
 
 	if err != nil {
@@ -42,11 +42,15 @@ func resolvePages(
 		}
 	} else if paginationInput.Last != nil {
 		if int(*paginationInput.Last) < len(pages) {
-			pages = pages[1:]
-			if (paginationInput.Before != nil && offset > 0) || paginationInput.Before == nil {
+			if paginationInput.Before != nil || (paginationInput.Before == nil && !didOffsetReset) {
 				pageInfo.hasPreviousPage = true
 			}
+			pages = pages[1:]
 		}
+	}
+
+	if paginationInput.Last != nil {
+		offset = offset + 1
 	}
 
 	if len(pages) > 0 {

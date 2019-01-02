@@ -7,11 +7,12 @@ import (
 func paginate(
 	query *orm.Query,
 	paginate Paginate,
-) (*orm.Query, int) {
+) (*orm.Query, int, bool) {
 	pager := orm.Pager{
 		Offset: 0,
 		Limit:  100,
 	}
+	didOffsetReset := false
 
 	if paginate.First == nil && paginate.Last == nil {
 		panic(ErrNoPaginationLimits())
@@ -38,12 +39,13 @@ func paginate(
 		if pager.Offset < 0 {
 			pager.Limit += pager.Offset
 			pager.Offset = 0
+			didOffsetReset = true
 		}
 	}
 
 	query = query.Apply(pager.Paginate)
 
-	return query, pager.Offset
+	return query, pager.Offset, didOffsetReset
 }
 
 func getPaginationData(paginationInput PaginationInput) Paginate {
