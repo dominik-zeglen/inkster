@@ -12,6 +12,7 @@ import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
 import DirectoryStatus from "./DirectoryStatus";
 import { Directory_getDirectory } from "../queries/types/Directory";
+import { maybe } from "../../utils";
 
 interface FormData {
   name: string;
@@ -77,7 +78,9 @@ export const DirectoryDetailsPage = decorate<Props>(
                 onChange={change}
               />
               <DirectoryPages
-                pages={directory ? directory.pages : undefined}
+                pages={maybe(() =>
+                  directory.pages.edges.map(edge => edge.node),
+                )}
                 disabled={disabled || loading}
                 pageInfo={pageInfo}
                 onAdd={onAdd}

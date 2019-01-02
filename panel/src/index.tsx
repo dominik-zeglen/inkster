@@ -124,7 +124,7 @@ export interface PaginationInfo {
   hasPreviousPage: boolean;
 }
 export interface PaginatedListProps {
-  pageInfo?: PaginationInfo;
+  pageInfo: PaginationInfo;
   onNextPage: () => void;
   onPreviousPage: () => void;
   onRowClick: (id: string) => () => void;
@@ -143,3 +143,5 @@ export interface FormViewProps<T> extends ViewProps {
   onDelete?: () => void;
   onSubmit: (data: T) => void;
 }
+
+export const PAGINATE_BY = 10;

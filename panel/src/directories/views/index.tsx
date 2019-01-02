@@ -16,6 +16,8 @@ const DirectoryList: React.StatelessComponent<RouteComponentProps<{}>> = ({
   const qs = parseQs(location.search.substr(1));
   const params: DirectoryRootQueryParams = {
     modal: qs.modal,
+    after: qs.after,
+    before: qs.before,
   };
 
   return <DirectoryRoot params={params} />;
@@ -27,6 +29,8 @@ const DirectoryDetails: React.StatelessComponent<RouteComponentProps<any>> = ({
   const qs = parseQs(location.search.substr(1));
   const params: DirectoryDetailsQueryParams = {
     modal: qs.modal,
+    after: qs.after,
+    before: qs.before,
   };
 
   return (

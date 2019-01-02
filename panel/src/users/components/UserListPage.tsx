@@ -8,10 +8,10 @@ import IconButton from "../../components/IconButton";
 import { ListViewProps } from "../../";
 import PageHeader from "../../components/PageHeader";
 import UserList from "./UserList";
-import { UserList_users } from "../queries/types/UserList";
+import { UserList_users_edges_node } from "../queries/types/UserList";
 
 interface Props extends ListViewProps<{ email: string }> {
-  users: UserList_users[];
+  users: UserList_users_edges_node[];
 }
 
 const decorate = withStyles(

@@ -1,15 +1,23 @@
 import gql from "graphql-tag";
 
-import { TypedQuery } from "../../api";
-import { UserList } from "./types/UserList";
+import { TypedQuery, pageInfoFragment } from "../../api";
+import { UserList, UserListVariables } from "./types/UserList";
 
 const qUsers = gql`
-  query UserList {
-    users {
-      id
-      email
-      isActive
+  ${pageInfoFragment}
+  query UserList($paginate: PaginationInput!) {
+    users(paginate: $paginate) {
+      edges {
+        node {
+          id
+          email
+          isActive
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
     }
   }
 `;
-export default TypedQuery<UserList, {}>(qUsers);
+export default TypedQuery<UserList, UserListVariables>(qUsers);

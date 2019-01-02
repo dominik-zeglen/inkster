@@ -7,17 +7,18 @@ import Navigator from "../../../components/Navigator";
 import Notificator from "../../../components/Notificator";
 import urls from "../../../urls";
 import i18n from "../../../i18n";
-import { TransactionState } from "../../../";
+import { TransactionState, PAGINATE_BY } from "../../../";
 import { maybe, mergeQs } from "../../../utils";
-import { Modal } from "../../../types";
+import { Modal, Pagination } from "../../../types";
 import ActionDialog from "../../../components/ActionDialog";
 import FormDialog from "../../../components/FormDialog";
 import Input from "../../../components/Input";
 import { PageCreate } from "../../queries/types/PageCreate";
+import Paginator, {
+  createPaginationState,
+} from "../../../components/Paginator";
 
-const dummy = () => {};
-
-export type QueryParams = Partial<Modal<"remove" | "create-page">>;
+export type QueryParams = Partial<Modal<"remove" | "create-page"> & Pagination>;
 interface Props {
   id: string;
   params: QueryParams;
@@ -62,8 +63,12 @@ export class DirectoryDetails extends React.Component<Props, State> {
                 });
                 navigate(urls.directoryList, true);
               };
+              const paginationState = createPaginationState(
+                PAGINATE_BY,
+                params,
+              );
               return (
-                <Directory variables={{ id }}>
+                <Directory variables={{ id, paginate: paginationState }}>
                   {directory => (
                     <MutationProvider
                       id={id}
@@ -73,52 +78,66 @@ export class DirectoryDetails extends React.Component<Props, State> {
                     >
                       {({ createPage, deleteDirectory, updateDirectory }) => (
                         <>
-                          <DirectoryDetailsPage
-                            directory={maybe(() => directory.data.getDirectory)}
-                            disabled={directory.loading}
-                            loading={directory.loading}
-                            transaction={
-                              updateDirectory.opts.loading
-                                ? "loading"
-                                : this.state.transaction
-                            }
-                            onAdd={() =>
-                              navigate(
-                                mergeQs(params, {
-                                  modal: "create-page",
-                                }),
-                              )
-                            }
-                            onBack={
-                              directory.data && directory.data.getDirectory
-                                ? directory.data.getDirectory.parent &&
-                                  directory.data.getDirectory.parent.id
-                                  ? () =>
-                                      navigate(
-                                        urls.directoryDetails(
-                                          directory.data.getDirectory.parent.id,
-                                        ),
-                                      )
-                                  : () => navigate(urls.directoryList)
-                                : () => window.history.back()
-                            }
-                            onDelete={() =>
-                              navigate(
-                                mergeQs(params, {
-                                  modal: "remove",
-                                }),
-                              )
-                            }
-                            onNextPage={dummy}
-                            onPreviousPage={dummy}
-                            onRowClick={handleRowClick}
-                            onSubmit={formData =>
-                              updateDirectory.mutate({
-                                ...formData,
-                                id,
-                              })
-                            }
-                          />
+                          <Paginator
+                            pageInfo={maybe(
+                              () => directory.data.getDirectory.pages.pageInfo,
+                            )}
+                            paginationState={paginationState}
+                            queryString={params}
+                          >
+                            {({ loadNextPage, loadPreviousPage, pageInfo }) => (
+                              <DirectoryDetailsPage
+                                directory={maybe(
+                                  () => directory.data.getDirectory,
+                                )}
+                                disabled={directory.loading}
+                                loading={directory.loading}
+                                transaction={
+                                  updateDirectory.opts.loading
+                                    ? "loading"
+                                    : this.state.transaction
+                                }
+                                pageInfo={pageInfo}
+                                onAdd={() =>
+                                  navigate(
+                                    mergeQs(params, {
+                                      modal: "create-page",
+                                    }),
+                                  )
+                                }
+                                onBack={
+                                  directory.data && directory.data.getDirectory
+                                    ? directory.data.getDirectory.parent &&
+                                      directory.data.getDirectory.parent.id
+                                      ? () =>
+                                          navigate(
+                                            urls.directoryDetails(
+                                              directory.data.getDirectory.parent
+                                                .id,
+                                            ),
+                                          )
+                                      : () => navigate(urls.directoryList)
+                                    : () => window.history.back()
+                                }
+                                onDelete={() =>
+                                  navigate(
+                                    mergeQs(params, {
+                                      modal: "remove",
+                                    }),
+                                  )
+                                }
+                                onNextPage={loadNextPage}
+                                onPreviousPage={loadPreviousPage}
+                                onRowClick={handleRowClick}
+                                onSubmit={formData =>
+                                  updateDirectory.mutate({
+                                    ...formData,
+                                    id,
+                                  })
+                                }
+                              />
+                            )}
+                          </Paginator>
                           <ActionDialog
                             show={params.modal === "remove"}
                             size="xs"

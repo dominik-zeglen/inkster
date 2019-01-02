@@ -4,12 +4,12 @@ import { User as UserIcon } from "react-feather";
 
 import i18n from "../../i18n";
 import ListElement from "../../components/ListElement";
-import Paginator from "../../components/Paginator";
+import PaginationArrows from "../../components/PaginationArrows";
 import { ViewProps, PaginatedListProps } from "../..";
-import { UserList_users } from "../queries/types/UserList";
+import { UserList_users_edges_node } from "../queries/types/UserList";
 
 interface Props extends ViewProps, PaginatedListProps {
-  users: UserList_users[];
+  users: UserList_users_edges_node[];
 }
 
 export const UserListPage: React.StatelessComponent<Props> = ({
@@ -41,7 +41,7 @@ export const UserListPage: React.StatelessComponent<Props> = ({
       )}
     </Panel.Body>
     <Panel.Footer>
-      <Paginator
+      <PaginationArrows
         pageInfo={pageInfo}
         onNextPage={onNextPage}
         onPreviousPage={onPreviousPage}

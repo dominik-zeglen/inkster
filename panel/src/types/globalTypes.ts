@@ -28,6 +28,13 @@ export interface PageUpdateInput {
   isPublished?: boolean | null;
 }
 
+export interface PaginationInput {
+  after?: string | null;
+  before?: string | null;
+  first?: number | null;
+  last?: number | null;
+}
+
 export interface UserCreateInput {
   email: string;
   password?: string | null;

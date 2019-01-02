@@ -5,13 +5,13 @@ import { FileText, Plus } from "react-feather";
 import { PaginatedListProps } from "../..";
 import ListElement from "../../components/ListElement";
 import IconButton from "../../components/IconButton";
-import Paginator from "../../components/Paginator";
+import PaginationArrows from "../../components/PaginationArrows";
 import i18n from "../../i18n";
-import { Directory_getDirectory_pages } from "../queries/types/Directory";
+import { Directory_getDirectory_pages_edges_node } from "../queries/types/Directory";
 
 interface Props extends PaginatedListProps {
   disabled: boolean;
-  pages: Directory_getDirectory_pages[];
+  pages: Directory_getDirectory_pages_edges_node[];
   onAdd: () => void;
 }
 
@@ -48,7 +48,7 @@ export const DirectoryRootList: React.StatelessComponent<Props> = ({
       )}
     </Panel.Body>
     <Panel.Footer>
-      <Paginator
+      <PaginationArrows
         pageInfo={pageInfo}
         onNextPage={onNextPage}
         onPreviousPage={onPreviousPage}

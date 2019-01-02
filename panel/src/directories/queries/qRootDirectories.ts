@@ -1,15 +1,28 @@
 import gql from "graphql-tag";
 
-import { TypedQuery } from "../../api";
-import { RootDirectories } from "./types/RootDirectories";
+import { TypedQuery, pageInfoFragment } from "../../api";
+import {
+  RootDirectories,
+  RootDirectoriesVariables,
+} from "./types/RootDirectories";
 
 const qRootDirectories = gql`
-  query RootDirectories {
-    getRootDirectories {
-      id
-      name
-      isPublished
+  ${pageInfoFragment}
+  query RootDirectories($paginate: PaginationInput!) {
+    getRootDirectories(paginate: $paginate) {
+      edges {
+        node {
+          id
+          name
+          isPublished
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
     }
   }
 `;
-export default TypedQuery<RootDirectories, {}>(qRootDirectories);
+export default TypedQuery<RootDirectories, RootDirectoriesVariables>(
+  qRootDirectories,
+);

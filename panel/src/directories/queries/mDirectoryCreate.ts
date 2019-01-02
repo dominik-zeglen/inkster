@@ -22,9 +22,6 @@ const mDirectoryCreate = gql`
         parent {
           id
         }
-        pages {
-          id
-        }
       }
     }
   }
