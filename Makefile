@@ -29,7 +29,7 @@ migrate: ; $(info $(M) Migrating database...)
 test: schema migrate ; $(info $(M) Testing application...)
 	GOCACHE=off go test ./... -p 1
 
-test-update: schema migrate ; $(info $(M) Testing application and updating snapshots...)
+test-update: schema migrate ; $(info $(M) Updating snapshots...)
 	UPDATE_SNAPSHOTS=1 GOCACHE=off go test ./... -p 1
 
 .PHONY: build clean dep image schema setup server
