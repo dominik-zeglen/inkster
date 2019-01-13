@@ -1,0 +1,5 @@
+input WebsiteUpdateInput {
+    name: String
+    description: String
+    domain: String
+}

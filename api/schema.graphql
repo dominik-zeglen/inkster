@@ -67,6 +67,11 @@ input UserUpdateInput {
   isActive: Boolean
   email: String
 }
+input WebsiteUpdateInput {
+    name: String
+    description: String
+    domain: String
+}
 type Mutation {
   createDirectory(input: DirectoryCreateInput!): DirectoryOperationResult
   updateDirectory(
@@ -97,6 +102,8 @@ type Mutation {
 
   login(email: String!, password: String!): LoginResult!
   verifyToken(token: String!): VerifyTokenResult
+
+  updateWebsite(input: WebsiteUpdateInput!): WebsiteOperationResult!
 }
 type Query {
   getDirectory(id: ID!): Directory
@@ -109,6 +116,8 @@ type Query {
   user(id: ID!): User
   users(sort: UserSort, paginate: PaginationInput!): UserConnection
   viewer: User
+
+  website: Website!
 }
 schema {
   query: Query
@@ -241,5 +250,14 @@ enum UserSortableField {
 type VerifyTokenResult {
   result: Boolean!
   user: User
+}
+type Website {
+    name: String!
+    description: String!
+    domain: String!
+}
+type WebsiteOperationResult {
+    errors: [InputError!]!
+    website: Website
 }
 

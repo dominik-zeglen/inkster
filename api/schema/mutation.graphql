@@ -28,4 +28,6 @@ type Mutation {
 
   login(email: String!, password: String!): LoginResult!
   verifyToken(token: String!): VerifyTokenResult
+
+  updateWebsite(input: WebsiteUpdateInput!): WebsiteOperationResult!
 }

@@ -9,4 +9,6 @@ type Query {
   user(id: ID!): User
   users(sort: UserSort, paginate: PaginationInput!): UserConnection
   viewer: User
+
+  website: Website!
 }
