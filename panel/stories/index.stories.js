@@ -13,3 +13,5 @@ require("./users/UserDetailsPage.tsx");
 require("./users/UserListPage.tsx");
 
 require("./home/HomePage.tsx");
+
+require("./website/WebsitePage.tsx");

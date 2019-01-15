@@ -1,15 +1,13 @@
 import * as React from "react";
 
-export type FormChildren<T extends {}> =
-  | ((
-      props: {
-        data: T;
-        hasChanged: boolean;
-        change: (event: React.ChangeEvent<any>) => void;
-        submit: (event: React.FormEvent<any>) => void;
-      }
-    ) => React.ReactElement<any>)
-  | React.ReactNode;
+export type FormChildren<T extends {}> = ((
+  props: {
+    data: T;
+    hasChanged: boolean;
+    change: (event: React.ChangeEvent<any>) => void;
+    submit: (event: React.FormEvent<any>) => void;
+  },
+) => React.ReactElement<any>);
 
 export interface FormProps<T extends {}> {
   children: FormChildren<T>;
@@ -54,7 +52,7 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
         onSubmit(this.state);
       } else {
         (this.form.current.querySelectorAll("input") as any).forEach(input =>
-          input.reportValidity()
+          input.reportValidity(),
         );
       }
     }
@@ -62,21 +60,14 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
 
   public render() {
     const { children } = this.props;
-
-    let contents = children;
-
-    if (typeof children === "function") {
-      contents = children({
-        change: this.handleChange,
-        data: this.state,
-        hasChanged: !shallowCompare(this.props.initial, this.state),
-        submit: this.handleSubmit
-      });
-    }
-
     return (
       <form ref={this.form} onSubmit={this.handleSubmit}>
-        {contents}
+        {children({
+          change: this.handleChange,
+          data: this.state,
+          hasChanged: !shallowCompare(this.props.initial, this.state),
+          submit: this.handleSubmit,
+        })}
       </form>
     );
   }
