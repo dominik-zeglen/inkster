@@ -4,21 +4,24 @@ import withStyles from "react-jss";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
-import { FormViewProps } from "../../";
 import PageHeader from "../../components/PageHeader";
 import { Website_website } from "../queries/types/Website";
 import i18n from "../../i18n";
 import { maybe } from "../../utils";
 import { Panel } from "react-bootstrap";
 import Input from "../../components/Input";
+import { TransactionState } from "../..";
 
 interface FormData {
   name: string;
   description: string;
   domain: string;
 }
-interface Props extends FormViewProps<FormData> {
+interface Props {
+  disabled: boolean;
   website: Website_website;
+  transaction: TransactionState;
+  onSubmit: (data: FormData) => void;
 }
 
 const decorate = withStyles(
@@ -35,17 +38,21 @@ const decorate = withStyles(
   { displayName: "UserDetailsPage" },
 );
 export const WebsitePage = decorate<Props>(
-  ({ classes, disabled, onBack, onSubmit, transaction, website }) => {
+  ({ classes, disabled, onSubmit, transaction, website }) => {
     const initialForm: FormData = {
       description: maybe(() => website.description),
       domain: maybe(() => website.domain),
       name: maybe(() => website.name),
     };
     return (
-      <Form initial={initialForm} onSubmit={onSubmit}>
+      <Form
+        initial={initialForm}
+        onSubmit={onSubmit}
+        key={JSON.stringify(website)}
+      >
         {({ change, data, hasChanged, submit }) => (
           <Container width="md">
-            <PageHeader title={i18n.t("Website Settings")} onBack={onBack} />
+            <PageHeader title={i18n.t("Website Settings")} />
             <div className={classes.root}>
               <div>
                 <div className={classes.container}>

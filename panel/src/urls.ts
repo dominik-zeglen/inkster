@@ -1,9 +1,10 @@
 import * as urlJoin from "url-join";
 
-const home = "/";
-const directorySection = "/directories/";
-const pageSection = "/pages/";
-const userSection = "/users/";
+export const home = "/";
+export const directorySection = "/directories/";
+export const pageSection = "/pages/";
+export const userSection = "/users/";
+export const websiteSettingsSection = "/website/";
 
 export const paths = {
   directoryList: directorySection,
@@ -14,6 +15,7 @@ export const paths = {
   userList: userSection,
   userDetails: (id: string) => urlJoin(userSection, id),
   passwordRecovery: "/recover-password/",
+  websiteSettings: websiteSettingsSection,
 };
 
 export const urls = {
@@ -26,5 +28,6 @@ export const urls = {
   userList: paths.userList,
   userDetails: (id: string) => paths.userDetails(encodeURIComponent(id)),
   passwordRecovery: paths.passwordRecovery,
+  websiteSettings: websiteSettingsSection,
 };
 export default urls;

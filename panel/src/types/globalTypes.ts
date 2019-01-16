@@ -45,6 +45,12 @@ export interface UserUpdateInput {
   email?: string | null;
 }
 
+export interface WebsiteUpdateInput {
+  name?: string | null;
+  description?: string | null;
+  domain?: string | null;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================

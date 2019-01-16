@@ -5,7 +5,7 @@ import { ApolloProvider } from "react-apollo";
 import * as React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { HttpLink } from "apollo-link-http";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
 
@@ -51,7 +51,14 @@ const authLink = setContext((_, context) => {
 });
 
 const apolloClient = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    dataIdFromObject: (obj: any) => {
+      if (["Website"].indexOf(obj.__typename) !== -1) {
+        return obj.__typename;
+      }
+      return defaultDataIdFromObject(obj);
+    },
+  }),
   link: invalidTokenLink.concat(
     authLink.concat(
       new HttpLink({
