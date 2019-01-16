@@ -1,6 +1,14 @@
 import * as React from "react";
 import withStyles from "react-jss";
-import { Box, Home, LogOut, Maximize2, Minimize2, Users } from "react-feather";
+import {
+  Box,
+  Home,
+  LogOut,
+  Maximize2,
+  Minimize2,
+  Users,
+  Settings,
+} from "react-feather";
 import * as classNames from "classnames";
 
 import IconButton from "./IconButton";
@@ -133,6 +141,16 @@ export const AppLayout = decorate<Props>(
               <span className={classes.menuText}>{i18n.t("Users")}</span>
             </div>
             <div className={classes.spacer} />
+            <div
+              className={classNames({
+                [classes.link]: true,
+                [classes.active]: section === "settings",
+              })}
+              onClick={onSectionClick("settings")}
+            >
+              <Settings />
+              <span className={classes.menuText}>{i18n.t("Settings")}</span>
+            </div>
             <div className={classes.link} onClick={onLogout}>
               <LogOut />
               <span className={classes.menuText}>
