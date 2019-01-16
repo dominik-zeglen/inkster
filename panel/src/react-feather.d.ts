@@ -1,12 +1,12 @@
-declare module 'react-feather' {
-  import {StatelessComponent} from 'react'
-  import * as ReactFeather from 'react-feather'
+declare module "react-feather" {
+  import { StatelessComponent } from "react";
+  import * as ReactFeather from "react-feather";
 
   export interface FeatherIcon {
     size?: number;
     color?: string;
   }
-  
+
   export interface ReactFeatherModule {
     [key: string]: StatelessComponent<FeatherIcon>;
   }
@@ -29,9 +29,9 @@ declare module 'react-feather' {
   export const Maximize2: StatelessComponent<FeatherIcon>;
   export const Minimize2: StatelessComponent<FeatherIcon>;
   export const Plus: StatelessComponent<FeatherIcon>;
+  export const Settings: StatelessComponent<FeatherIcon>;
   export const Trash: StatelessComponent<FeatherIcon>;
-  export const Users: StatelessComponent<FeatherIcon>;
   export const User: StatelessComponent<FeatherIcon>;
+  export const Users: StatelessComponent<FeatherIcon>;
   export const X: StatelessComponent<FeatherIcon>;
 }
-

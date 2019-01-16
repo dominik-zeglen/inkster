@@ -1,0 +1,4 @@
+type WebsiteOperationResult {
+    errors: [InputError!]!
+    website: Website
+}

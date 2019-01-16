@@ -1,0 +1,5 @@
+type Website {
+    name: String!
+    description: String!
+    domain: String!
+}

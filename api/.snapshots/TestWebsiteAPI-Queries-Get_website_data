@@ -1,0 +1,9 @@
+{
+    "data": {
+        "website": {
+            "name": "Inkster",
+            "description": "Test website",
+            "domain": "http://localhost:8000/"
+        }
+    }
+}

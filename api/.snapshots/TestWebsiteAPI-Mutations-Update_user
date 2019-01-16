@@ -1,0 +1,12 @@
+{
+    "data": {
+        "updateWebsite": {
+            "errors": [],
+            "website": {
+                "name": "Updated name",
+                "description": "Updated description",
+                "domain": "http://updateddomain.example.com"
+            }
+        }
+    }
+}

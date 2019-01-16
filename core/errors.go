@@ -3,6 +3,7 @@ package core
 import (
 	"errors"
 	"fmt"
+
 	"github.com/gosimple/slug"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -75,6 +76,7 @@ const (
 	ErrNotEqual     = 105
 	ErrNotSlug      = 106
 	ErrEqual        = 107
+	ErrNotUrl       = 108
 
 	// Model errors
 	ErrNotUnique    = 200
@@ -158,6 +160,12 @@ func (err ValidationError) Error() string {
 			err.Field,
 			*err.Param,
 		)
+
+	case ErrNotUrl:
+		return fmt.Sprintf(
+			"Property %s must be valid url",
+			err.Field,
+		)
 	}
 
 	return "Unknown error"
@@ -191,6 +199,10 @@ func ToValidationError(err validator.FieldError) ValidationError {
 		validationError.Code = ErrNotSlug
 	case "oneof":
 		validationError.Code = ErrEqual
+	case "url":
+		validationError.Code = ErrNotUrl
+		param := err.Param()
+		validationError.Param = &param
 	}
 
 	return validationError
