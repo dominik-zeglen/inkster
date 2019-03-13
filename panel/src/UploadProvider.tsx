@@ -6,7 +6,7 @@ interface State {
   progress: number;
 }
 interface Props {
-  children: ((props: State) => React.ReactElement<any>) | React.ReactNode;
+  children: ((props: State) => React.ReactElement<any>);
 }
 interface FileUploadOptions {
   file: any;
@@ -18,17 +18,17 @@ interface Context {
 }
 export const {
   Provider: UploadContextProvider,
-  Consumer: WithUpload
+  Consumer: WithUpload,
 } = React.createContext<{
   uploadFile: (opts: FileUploadOptions) => void;
 }>({
-  uploadFile: () => {}
+  uploadFile: () => {},
 } as Context);
 
 export class UploadProvider extends React.Component<Props, State> {
   state = {
     active: false,
-    progress: 0
+    progress: 0,
   };
 
   handleUpload = (opts: FileUploadOptions) => {
@@ -43,14 +43,14 @@ export class UploadProvider extends React.Component<Props, State> {
             ? progressEvent.total
             : progressEvent.target.getResponseHeader("content-length") ||
               progressEvent.target.getResponseHeader(
-                "x-decompressed-content-length"
+                "x-decompressed-content-length",
               );
           if (totalLength !== null) {
             this.setState({
-              progress: Math.round((progressEvent.loaded * 100) / totalLength)
+              progress: Math.round((progressEvent.loaded * 100) / totalLength),
             });
           }
-        }
+        },
       })
       .then(res => {
         this.setState({ active: false });
@@ -66,7 +66,7 @@ export class UploadProvider extends React.Component<Props, State> {
     const { children } = this.props;
     return (
       <UploadContextProvider value={{ uploadFile: this.handleUpload }}>
-        {typeof children === "function" ? children(this.state) : children}
+        {children(this.state)}
       </UploadContextProvider>
     );
   }

@@ -17,33 +17,33 @@ export interface TypographyProps extends StandardProps {
 
 const decorate = withStyles(theme => ({
   anchor: {
-    ...theme.typography.anchor
+    ...theme.typography.anchor,
   },
   body: {
-    ...theme.typography.body
+    ...theme.typography.body,
   },
   caption: {
-    ...theme.typography.caption
+    ...theme.typography.caption,
   },
   button: {
-    ...theme.typography.button
+    ...theme.typography.button,
   },
   mainHeading: {
-    ...theme.typography.mainHeading
+    ...theme.typography.mainHeading,
   },
   subHeading: {
-    ...theme.typography.subHeading
-  }
+    ...theme.typography.subHeading,
+  },
 }));
 export const Typography = decorate<TypographyProps>(
   ({ className, classes, component, variant = "body", ...props }) => {
-    const Component = component || "div";
+    const Component: any = component || "div";
     return (
       <Component
         className={classNames([className, classes[variant]])}
         {...props}
       />
     );
-  }
+  },
 );
 export default Typography;

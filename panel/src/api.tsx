@@ -32,7 +32,9 @@ export function TypedMutation<TData, TVariables>(
   update?: MutationUpdaterFn<TData>,
 ) {
   const StrictTypedMutation: React.ComponentType<
-    MutationProps<TData, TVariables>
+    MutationProps<TData, TVariables> & {
+      variables?: any;
+    }
   > = Mutation;
   return ({
     children,
@@ -103,7 +105,9 @@ class QueryProgress extends React.Component<QueryProgressProps, {}> {
 
 export function TypedQuery<TData, TVariables>(query: DocumentNode) {
   const StrictTypedQuery: React.ComponentType<
-    QueryProps<TData, TVariables>
+    QueryProps<TData, TVariables> & {
+      variables?: any;
+    }
   > = Query;
   return ({
     children,

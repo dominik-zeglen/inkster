@@ -11,16 +11,14 @@ import TokenVerifyMutation from "../../queries/mTokenVerify";
 import LoginMutation from "../../queries/mLogin";
 
 interface AuthProviderOperationsProps {
-  children:
-    | ((
-        props: {
-          hasToken: boolean;
-          isAuthenticated: boolean;
-          loginLoading: boolean;
-          tokenVerifyLoading: boolean;
-        },
-      ) => React.ReactElement<any>)
-    | React.ReactNode;
+  children: ((
+    props: {
+      hasToken: boolean;
+      isAuthenticated: boolean;
+      loginLoading: boolean;
+      tokenVerifyLoading: boolean;
+    },
+  ) => React.ReactNode);
   onError?: () => void;
 }
 const AuthProviderOperations: React.StatelessComponent<
@@ -45,16 +43,14 @@ const AuthProviderOperations: React.StatelessComponent<
 };
 
 interface AuthProviderProps {
-  children:
-    | ((
-        props: {
-          hasToken: boolean;
-          isAuthenticated: boolean;
-          loginLoading: boolean;
-          tokenVerifyLoading: boolean;
-        },
-      ) => React.ReactElement<any>)
-    | React.ReactNode;
+  children: ((
+    props: {
+      hasToken: boolean;
+      isAuthenticated: boolean;
+      loginLoading: boolean;
+      tokenVerifyLoading: boolean;
+    },
+  ) => React.ReactNode);
   login: any;
   tokenVerify: any;
 }
@@ -122,14 +118,12 @@ class AuthProvider extends React.Component<
       <UserContext.Provider
         value={{ user, login: this.login, logout: this.logout }}
       >
-        {typeof children === "function"
-          ? children({
-              hasToken: !!getAuthToken(),
-              isAuthenticated,
-              loginLoading: login.loading,
-              tokenVerifyLoading: tokenVerify.loading,
-            })
-          : children}
+        {children({
+          hasToken: !!getAuthToken(),
+          isAuthenticated,
+          loginLoading: login.loading,
+          tokenVerifyLoading: tokenVerify.loading,
+        })}
       </UserContext.Provider>
     );
   }

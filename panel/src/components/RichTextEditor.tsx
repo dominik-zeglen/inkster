@@ -2,9 +2,9 @@ import * as React from "react";
 import { ControlLabel, FormGroup, HelpBlock } from "react-bootstrap";
 import withStyles, { WithStyles } from "react-jss";
 import { EditorState, convertFromRaw, convertToRaw, RichUtils } from "draft-js";
-import Editor, { composeDecorators } from "draft-js-plugins-editor";
+import DraftEditor, { composeDecorators } from "draft-js-plugins-editor";
 import createInlineToolbarPlugin, {
-  Separator
+  Separator,
 } from "draft-js-inline-toolbar-plugin";
 import {
   ItalicButton,
@@ -15,7 +15,7 @@ import {
   HeadlineThreeButton,
   UnorderedListButton,
   OrderedListButton,
-  BlockquoteButton
+  BlockquoteButton,
 } from "draft-js-buttons";
 import createImagePlugin from "draft-js-image-plugin";
 import createAlignmentPlugin from "draft-js-alignment-plugin";
@@ -50,26 +50,26 @@ const decorator = composeDecorators(
   resizeablePlugin.decorator,
   alignmentPlugin.decorator,
   focusPlugin.decorator,
-  blockDndPlugin.decorator
+  blockDndPlugin.decorator,
 );
 const imagePlugin = createImagePlugin({ decorator });
 
 const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
   handleUpload: mockUpload,
-  addImage: imagePlugin.addImage
+  addImage: imagePlugin.addImage,
 });
 
 const decorate = withStyles((theme: any) => ({
   editor: {
     "&.active": {
       borderBottomColor: theme.colors.secondary.main,
-      boxShadow: `0 1px ${theme.colors.secondary.main}`
+      boxShadow: `0 1px ${theme.colors.secondary.main}`,
     },
     borderBottom: `1px solid ${theme.colors.disabled}`,
     marginBottom: theme.spacing,
     marginTop: theme.spacing,
     paddingBottom: theme.spacing,
-    transition: theme.transition.time
+    transition: theme.transition.time,
   },
   headlineButton: {
     background: "transparent",
@@ -80,15 +80,15 @@ const decorate = withStyles((theme: any) => ({
     position: "relative" as "relative",
     top: -1,
     height: 34,
-    width: 36
+    width: 36,
   },
   headlineButtonWrapper: {
-    display: "inline-block" as "inline-block"
+    display: "inline-block" as "inline-block",
   },
   toolbar: {
     display: "flex" as "flex",
-    position: "absolute" as "absolute"
-  }
+    position: "absolute" as "absolute",
+  },
 }));
 
 class HeadlinesPicker extends React.Component<any, any> {
@@ -108,7 +108,9 @@ class HeadlinesPicker extends React.Component<any, any> {
     const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
     return (
       <div>
-        {buttons.map((Button, i) => <Button key={i} {...this.props} />)}
+        {buttons.map((Button, i) => (
+          <Button key={i} {...this.props} />
+        ))}
       </div>
     );
   }
@@ -135,8 +137,9 @@ const HeadlinesButton = decorate(
         </div>
       );
     }
-  }
+  },
 );
+const Editor: any = DraftEditor;
 export const RichTextEditor = decorate<Props>(
   class RichTextEditorComponent extends React.Component<
     Props &
@@ -149,10 +152,10 @@ export const RichTextEditor = decorate<Props>(
       editorState:
         this.props.initialValue && this.props.initialValue !== ""
           ? EditorState.createWithContent(
-              convertFromRaw(JSON.parse(this.props.initialValue))
+              convertFromRaw(JSON.parse(this.props.initialValue)),
             )
           : EditorState.createEmpty(),
-      focused: false
+      focused: false,
     };
 
     editor: any = null;
@@ -165,8 +168,8 @@ export const RichTextEditor = decorate<Props>(
         HeadlinesButton,
         UnorderedListButton,
         OrderedListButton,
-        BlockquoteButton
-      ]
+        BlockquoteButton,
+      ],
     });
 
     handleKeyCommand(command: any, editorState: any) {
@@ -182,10 +185,10 @@ export const RichTextEditor = decorate<Props>(
 
     onChange = (editorState: any) => {
       const value = JSON.stringify(
-        convertToRaw(editorState.getCurrentContent())
+        convertToRaw(editorState.getCurrentContent()),
       );
       const event = {
-        target: { name: this.props.name, value }
+        target: { name: this.props.name, value },
       };
       this.props.onChange(event as any);
       this.setState({ editorState });
@@ -203,7 +206,7 @@ export const RichTextEditor = decorate<Props>(
         focusPlugin,
         alignmentPlugin,
         resizeablePlugin,
-        imagePlugin
+        imagePlugin,
       ];
       return (
         <FormGroup controlId={id} validationState={error ? "error" : null}>
@@ -211,7 +214,7 @@ export const RichTextEditor = decorate<Props>(
           <div
             className={[
               classes.editor,
-              this.state.focused ? "active" : undefined
+              this.state.focused ? "active" : undefined,
             ].join(" ")}
           >
             <Editor
@@ -221,9 +224,6 @@ export const RichTextEditor = decorate<Props>(
               onBlur={this.onBlur}
               onChange={this.onChange}
               onFocus={this.onFocus}
-              ref={(element: any) => {
-                this.editor = element;
-              }}
             />
             <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
             <AlignmentTool />
@@ -232,6 +232,6 @@ export const RichTextEditor = decorate<Props>(
         </FormGroup>
       );
     }
-  }
+  },
 );
 export default RichTextEditor;
