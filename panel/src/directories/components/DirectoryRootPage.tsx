@@ -10,7 +10,7 @@ import IconButton from "../../components/IconButton";
 import DirectoryRootList from "./DirectoryRootList";
 import { RootDirectories_getRootDirectories_edges_node } from "../queries/types/RootDirectories";
 
-interface Props extends ListViewProps<{ name: string }> {
+interface Props extends ListViewProps {
   directories: RootDirectories_getRootDirectories_edges_node[];
 }
 

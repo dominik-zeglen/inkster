@@ -18,7 +18,7 @@ interface FormData {
   name: string;
   isPublished: boolean;
 }
-interface Props extends FormViewProps<FormData>, ListViewProps<{}> {
+interface Props extends FormViewProps<FormData>, ListViewProps {
   directory: Directory_getDirectory;
   onDelete: () => void;
 }

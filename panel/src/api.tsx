@@ -4,10 +4,8 @@ import * as React from "react";
 import {
   Mutation,
   MutationFn,
-  MutationProps,
   MutationResult,
   MutationUpdaterFn,
-  QueryProps,
   Query,
   QueryResult,
 } from "react-apollo";
@@ -31,39 +29,41 @@ export function TypedMutation<TData, TVariables>(
   mutation: DocumentNode,
   update?: MutationUpdaterFn<TData>,
 ) {
-  const StrictTypedMutation: React.ComponentType<
-    MutationProps<TData, TVariables> & {
-      variables?: any;
-    }
-  > = Mutation;
-  return ({
-    children,
-    onCompleted,
-    onError,
-    variables,
-  }: TypedMutationInnerProps<TData, TVariables>) => (
-    <Notificator>
-      {notify => (
-        <StrictTypedMutation
-          mutation={mutation}
-          onCompleted={onCompleted}
-          onError={err => {
-            const msg = i18n.t("Something went wrong: {{ message }}", {
-              message: err.message,
-            });
-            notify({ text: msg, type: NotificationType.ERROR });
-            if (onError) {
-              onError(err);
-            }
-          }}
-          variables={variables}
-          update={update}
-        >
-          {children}
-        </StrictTypedMutation>
-      )}
-    </Notificator>
-  );
+  class StrictTypedMutation extends Mutation<TData, TVariables> {}
+  return (props: TypedMutationInnerProps<TData, TVariables>) => {
+    const {
+      children,
+      onCompleted,
+      onError,
+      variables,
+    } = props as JSX.LibraryManagedAttributes<
+      typeof StrictTypedMutation,
+      typeof props
+    >;
+    return (
+      <Notificator>
+        {notify => (
+          <StrictTypedMutation
+            mutation={mutation}
+            onCompleted={onCompleted}
+            onError={err => {
+              const msg = i18n.t("Something went wrong: {{ message }}", {
+                message: err.message,
+              });
+              notify({ text: msg, type: NotificationType.ERROR });
+              if (onError) {
+                onError(err);
+              }
+            }}
+            variables={variables}
+            update={update}
+          >
+            {children}
+          </StrictTypedMutation>
+        )}
+      </Notificator>
+    );
+  };
 }
 
 interface TypedQueryInnerProps<TData, TVariables> {
@@ -104,55 +104,57 @@ class QueryProgress extends React.Component<QueryProgressProps, {}> {
 }
 
 export function TypedQuery<TData, TVariables>(query: DocumentNode) {
-  const StrictTypedQuery: React.ComponentType<
-    QueryProps<TData, TVariables> & {
-      variables?: any;
-    }
-  > = Query;
-  return ({
-    children,
-    displayLoader,
-    skip,
-    variables,
-  }: TypedQueryInnerProps<TData, TVariables>) => (
-    <AppProgress>
-      {({ funcs: changeProgressState }) => (
-        <Notificator>
-          {notify => (
-            <StrictTypedQuery
-              fetchPolicy="cache-and-network"
-              query={query}
-              variables={variables}
-              skip={skip}
-            >
-              {queryData => {
-                if (queryData.error) {
-                  const msg = i18n.t("Something went wrong: {{ message }}", {
-                    message: queryData.error.message,
-                  });
-                  notify({ text: msg, type: NotificationType.ERROR });
-                }
+  class StrictTypedQuery extends Query<TData, TVariables> {}
+  return (props: TypedQueryInnerProps<TData, TVariables>) => {
+    const {
+      children,
+      displayLoader,
+      skip,
+      variables,
+    } = props as JSX.LibraryManagedAttributes<
+      typeof StrictTypedQuery,
+      typeof props
+    >;
+    return (
+      <AppProgress>
+        {({ funcs: changeProgressState }) => (
+          <Notificator>
+            {notify => (
+              <StrictTypedQuery
+                fetchPolicy="cache-and-network"
+                query={query}
+                variables={variables}
+                skip={skip}
+              >
+                {queryData => {
+                  if (queryData.error) {
+                    const msg = i18n.t("Something went wrong: {{ message }}", {
+                      message: queryData.error.message,
+                    });
+                    notify({ text: msg, type: NotificationType.ERROR });
+                  }
 
-                if (displayLoader) {
-                  return (
-                    <QueryProgress
-                      loading={queryData.loading}
-                      onCompleted={changeProgressState.disable}
-                      onLoading={changeProgressState.enable}
-                    >
-                      {children(queryData)}
-                    </QueryProgress>
-                  );
-                }
+                  if (displayLoader) {
+                    return (
+                      <QueryProgress
+                        loading={queryData.loading}
+                        onCompleted={changeProgressState.disable}
+                        onLoading={changeProgressState.enable}
+                      >
+                        {children(queryData)}
+                      </QueryProgress>
+                    );
+                  }
 
-                return children(queryData);
-              }}
-            </StrictTypedQuery>
-          )}
-        </Notificator>
-      )}
-    </AppProgress>
-  );
+                  return children(queryData);
+                }}
+              </StrictTypedQuery>
+            )}
+          </Notificator>
+        )}
+      </AppProgress>
+    );
+  };
 }
 
 export const pageInfoFragment = gql`

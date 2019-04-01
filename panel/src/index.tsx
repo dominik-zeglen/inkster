@@ -8,10 +8,13 @@ import { HttpLink } from "apollo-link-http";
 import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
+import AuroraTheme from "aurora-ui-kit/dist/theme";
+import Baseline from "aurora-ui-kit/dist/components/Baseline";
+import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/styled-components";
 
 import App from "./App";
 import AppRoot from "./AppRoot";
-import GlobalStylesheet from "./Stylesheet";
+// import GlobalStylesheet from "./Stylesheet";
 import theme from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
@@ -25,6 +28,7 @@ import PasswordRecovery from "./auth/views/PasswordRecovery";
 import { NotificationProvider } from "./components/Notificator";
 import urls from "./urls";
 import { AppProgressProvider } from "./components/AppProgress";
+import GlobalStylesheet from "./Stylesheet";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -78,44 +82,51 @@ render(
             <BrowserRouter
               basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
             >
-              <ThemeProvider theme={theme}>
-                <>
-                  <GlobalStylesheet />
-                  <NotificationProvider>
-                    <AuthProvider>
-                      {({
-                        hasToken,
-                        isAuthenticated,
-                        loginLoading,
-                        tokenVerifyLoading,
-                      }) =>
-                        isAuthenticated ? (
-                          <>
-                            <AppRoot>
-                              <App />
-                            </AppRoot>
-                            {uploadState.active && (
-                              <LoaderOverlay progress={uploadState.progress} />
-                            )}
-                          </>
-                        ) : hasToken && tokenVerifyLoading ? (
-                          <span />
-                        ) : (
-                          <Switch>
-                            <Route
-                              path={urls.passwordRecovery}
-                              component={PasswordRecovery}
-                            />
-                            <Route
-                              component={() => <Login loading={loginLoading} />}
-                            />
-                          </Switch>
-                        )
-                      }
-                    </AuthProvider>
-                  </NotificationProvider>
-                </>
-              </ThemeProvider>
+              <AuroraThemeProvider theme={AuroraTheme}>
+                <ThemeProvider theme={theme}>
+                  <>
+                    <GlobalStylesheet />
+                    <Baseline />
+                    <NotificationProvider>
+                      <AuthProvider>
+                        {({
+                          hasToken,
+                          isAuthenticated,
+                          loginLoading,
+                          tokenVerifyLoading,
+                        }) =>
+                          isAuthenticated ? (
+                            <>
+                              <AppRoot>
+                                <App />
+                              </AppRoot>
+                              {uploadState.active && (
+                                <LoaderOverlay
+                                  progress={uploadState.progress}
+                                />
+                              )}
+                            </>
+                          ) : hasToken && tokenVerifyLoading ? (
+                            <span />
+                          ) : (
+                            <Switch>
+                              <Route
+                                path={urls.passwordRecovery}
+                                component={PasswordRecovery}
+                              />
+                              <Route
+                                component={() => (
+                                  <Login loading={loginLoading} />
+                                )}
+                              />
+                            </Switch>
+                          )
+                        }
+                      </AuthProvider>
+                    </NotificationProvider>
+                  </>
+                </ThemeProvider>
+              </AuroraThemeProvider>
             </BrowserRouter>
           </ApolloProvider>
         )}
@@ -141,8 +152,8 @@ export interface ViewProps {
   loading: boolean;
   title?: string;
 }
-export interface ListViewProps<T> extends ViewProps, PaginatedListProps {
-  onAdd: (data?: T) => void;
+export interface ListViewProps extends ViewProps, PaginatedListProps {
+  onAdd: () => void;
 }
 export interface FormViewProps<T> extends ViewProps {
   transaction: TransactionState;
