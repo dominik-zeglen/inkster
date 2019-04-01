@@ -19,26 +19,26 @@ export interface Props {
 
 const initialForm: FormData = {
   password: "",
-  passwordConfirm: ""
+  passwordConfirm: "",
 };
-const decorate = withStyles(theme => ({
+const decorate = withStyles({
   buttonContainer: {
     display: "flex" as "flex",
-    justifyContent: "flex-end" as "flex-end"
-  }
-}));
+    justifyContent: "flex-end" as "flex-end",
+  },
+});
 export const PasswordResetPage = decorate<Props>(
   ({ classes, disabled, onSubmit }) => (
     <Form initial={initialForm} onSubmit={onSubmit}>
       {({ change, data, hasChanged }) => (
         <PageLayout
           header={i18n.t("Reset password", {
-            context: "header"
+            context: "header",
           })}
         >
           <Input
             label={i18n.t("New password", {
-              context: "label"
+              context: "label",
             })}
             name="password"
             type="password"
@@ -48,12 +48,12 @@ export const PasswordResetPage = decorate<Props>(
           <Input
             error={data.password !== data.passwordConfirm}
             label={i18n.t("Confirm password", {
-              context: "label"
+              context: "label",
             })}
             helperText={
               data.password !== data.passwordConfirm
                 ? i18n.t("Passwords do not match", {
-                    context: "caption"
+                    context: "caption",
                   })
                 : undefined
             }
@@ -66,7 +66,9 @@ export const PasswordResetPage = decorate<Props>(
             <Button
               bsStyle="primary"
               disabled={
-                disabled || !hasChanged || data.password !== data.passwordConfirm
+                disabled ||
+                !hasChanged ||
+                data.password !== data.passwordConfirm
               }
               type="submit"
             >
@@ -76,6 +78,6 @@ export const PasswordResetPage = decorate<Props>(
         </PageLayout>
       )}
     </Form>
-  )
+  ),
 );
 export default PasswordResetPage;

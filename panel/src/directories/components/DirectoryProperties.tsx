@@ -15,11 +15,12 @@ interface Props {
 export const DirectoryProperties: React.StatelessComponent<Props> = ({
   disabled,
   data,
-  onChange
+  onChange,
 }) => (
   <Panel>
     <Panel.Body>
       <Input
+        disabled={disabled}
         label={i18n.t("Name")}
         name="name"
         placeholder={i18n.t("Name")}

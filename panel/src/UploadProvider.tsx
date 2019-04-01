@@ -6,7 +6,7 @@ interface State {
   progress: number;
 }
 interface Props {
-  children: ((props: State) => React.ReactElement<any>);
+  children: (props: State) => React.ReactElement<any>;
 }
 interface FileUploadOptions {
   file: any;
@@ -56,7 +56,7 @@ export class UploadProvider extends React.Component<Props, State> {
         this.setState({ active: false });
         opts.onSuccess(res.data.filename);
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({ active: false });
         opts.onError();
       });

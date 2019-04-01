@@ -8,22 +8,22 @@ interface Props {
   header: string;
 }
 
-const decorate = withStyles(theme => ({
+const decorate = withStyles({
   header: {
     textAlign: "center" as "center",
-    textTransform: "uppercase" as "uppercase"
+    textTransform: "uppercase" as "uppercase",
   },
   panel: {
     padding: 60,
-    width: "100%"
+    width: "100%",
   },
   root: {
     alignItems: "center" as "center",
     display: "flex" as "flex",
     height: "100vh",
-    padding: 80
-  }
-}));
+    padding: 80,
+  },
+});
 export const PageLayout = decorate<Props>(({ classes, children, header }) => (
   <Container width="xs">
     <div className={classes.root}>

@@ -60,9 +60,9 @@ const decorate = withStyles(theme => ({
   },
 }));
 export const LoginPage = decorate<Props>(
-  ({ classes, disabled, error, passwordRecoveryHref, onSubmit }) => (
+  ({ classes, error, passwordRecoveryHref, onSubmit }) => (
     <Form initial={initialForm} onSubmit={onSubmit}>
-      {({ change, data, hasChanged }) => (
+      {({ change, data }) => (
         <PageLayout
           header={i18n.t("Log in", {
             context: "header",

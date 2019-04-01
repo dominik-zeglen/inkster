@@ -29,7 +29,7 @@ export interface FormData {
 }
 interface Props extends ViewProps, FormViewProps<FormData> {
   onUpload: (
-    cb: (event: React.ChangeEvent<any>) => void
+    cb: (event: React.ChangeEvent<any>) => void,
   ) => (event: React.ChangeEvent<any>) => void;
 }
 
@@ -38,10 +38,10 @@ const decorate = withStyles(
     root: {
       display: "grid" as "grid",
       gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr"
-    }
+      gridTemplateColumns: "2fr 1fr",
+    },
   }),
-  { displayName: "PageCreatePage" }
+  { displayName: "PageCreatePage" },
 );
 export const PageCreatePage = decorate<Props>(
   ({
@@ -52,19 +52,16 @@ export const PageCreatePage = decorate<Props>(
     transaction,
     onBack,
     onUpload,
-    onSubmit
+    onSubmit,
   }) => {
     const initialForm = {
       name: "",
       slug: "",
       addFields: [] as PageField[],
-      removeFields: [] as string[]
+      removeFields: [] as string[],
     };
     return (
-      <Form
-        initial={initialForm}
-        onSubmit={onSubmit}
-      >
+      <Form initial={initialForm} onSubmit={onSubmit}>
         {({ change, data, hasChanged, submit }) => {
           const handleFieldAdd = (field: { type: string }) => {
             change({
@@ -76,149 +73,126 @@ export const PageCreatePage = decorate<Props>(
                     type: field.type,
                     id: "new-" + data.addFields.length,
                     name: "",
-                    value: ""
-                  }
-                ]
-              }
+                    value: "",
+                  },
+                ],
+              },
             } as any);
           };
           const handleFieldRemove = (name: string, id: string) => () => {
             change({
               target: {
                 name,
-                value: data[name].filter((f: PageField) => f.id !== id)
-              }
+                value: data[name].filter((f: PageField) => f.id !== id),
+              },
             } as any);
             if (name === "fields") {
               change({
                 target: {
                   name: "removeFields",
-                  value: [id, ...data.removeFields]
-                }
+                  value: [id, ...data.removeFields],
+                },
               } as any);
             }
           };
           const handleChange = (name: string, id: string) => (
-            event: React.ChangeEvent<any>
+            event: React.ChangeEvent<any>,
           ) =>
             change({
               target: {
                 name,
-                value: data[name].map(
-                  (f: PageField) =>
-                    f.id === id
-                      ? { ...f, [event.target.name]: event.target.value }
-                      : f
-                )
-              }
+                value: data[name].map((f: PageField) =>
+                  f.id === id
+                    ? { ...f, [event.target.name]: event.target.value }
+                    : f,
+                ),
+              },
             } as any);
           return (
             <Toggle>
-              {(openedRemoveDialog, { toggle: toggleRemoveDialog }) => (
-                <Toggle>
-                  {(openedFieldAddDialog, { toggle: toggleFieldAddDialog }) => (
-                    <Toggle>
-                      {(
-                        openedFieldRemoveDialog,
-                        { toggle: toggleFieldRemoveDialog }
-                      ) => (
-                        <>
-                          <Container width="md">
-                            <PageHeader onBack={onBack} title={title}>
-                              <IconButton
-                                disabled={disabled || loading}
-                                icon={Plus}
-                                onClick={toggleFieldAddDialog}
-                              />
-                            </PageHeader>
-                            <div className={classes.root}>
-                              <div>
-                                <PageProperties
-                                  data={data}
-                                  disabled={disabled || loading}
-                                  onChange={change}
-                                />
-                                {data.addFields.map((field, index) => (
-                                  <PageFieldProperties
-                                    data={field}
-                                    key={field.id + index}
-                                    name="addFields"
-                                    onChange={handleChange(
-                                      "addFields",
-                                      field.id
-                                    )}
-                                    onDelete={handleFieldRemove(
-                                      "addFields",
-                                      field.id
-                                    )}
-                                    onUpload={onUpload}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                            <FormSave
-                              disabled={disabled || loading || !hasChanged}
-                              onConfirm={submit}
-                              variant={transaction}
-                            />
-                          </Container>
-                          {!disabled &&
-                            !loading && (
+              {(openedFieldAddDialog, { toggle: toggleFieldAddDialog }) => (
+                <>
+                  <Container width="md">
+                    <PageHeader onBack={onBack} title={title}>
+                      <IconButton
+                        disabled={disabled || loading}
+                        icon={Plus}
+                        onClick={toggleFieldAddDialog}
+                      />
+                    </PageHeader>
+                    <div className={classes.root}>
+                      <div>
+                        <PageProperties
+                          data={data}
+                          disabled={disabled || loading}
+                          onChange={change}
+                        />
+                        {data.addFields.map((field, index) => (
+                          <PageFieldProperties
+                            data={field}
+                            key={field.id + index}
+                            name="addFields"
+                            onChange={handleChange("addFields", field.id)}
+                            onDelete={handleFieldRemove("addFields", field.id)}
+                            onUpload={onUpload}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <FormSave
+                      disabled={disabled || loading || !hasChanged}
+                      onConfirm={submit}
+                      variant={transaction}
+                    />
+                  </Container>
+                  {!disabled && !loading && (
+                    <>
+                      <Form
+                        initial={{ type: "text" }}
+                        onSubmit={handleFieldAdd}
+                      >
+                        {({
+                          change: handleAddFieldChange,
+                          data: addFieldData,
+                          submit: addField,
+                        }) => (
+                          <ActionDialog
+                            show={openedFieldAddDialog}
+                            size="xs"
+                            title={i18n.t("Add page field")}
+                            onClose={toggleFieldAddDialog}
+                            onConfirm={addField as () => void}
+                          >
+                            <Input
+                              name="type"
+                              label={i18n.t("Type")}
+                              value={addFieldData.type}
+                              onChange={handleAddFieldChange}
+                              type="select"
+                            >
                               <>
-                                <Form
-                                  initial={{ type: "text" }}
-                                  onSubmit={handleFieldAdd}
-                                >
-                                  {({
-                                    change: handleAddFieldChange,
-                                    data: addFieldData,
-                                    submit: addField
-                                  }) => (
-                                    <ActionDialog
-                                      show={openedFieldAddDialog}
-                                      size="xs"
-                                      title={i18n.t("Add page field")}
-                                      onClose={toggleFieldAddDialog}
-                                      onConfirm={addField as () => void}
-                                    >
-                                      <Input
-                                        name="type"
-                                        label={i18n.t("Type")}
-                                        value={addFieldData.type}
-                                        onChange={handleAddFieldChange}
-                                        type="select"
-                                      >
-                                        <>
-                                          <option value="text">
-                                            {i18n.t("Short text")}
-                                          </option>
-                                          <option value="longText">
-                                            {i18n.t("Long text")}
-                                          </option>
-                                          <option value="image">
-                                            {i18n.t("Image")}
-                                          </option>
-                                          <option value="file">
-                                            {i18n.t("File")}
-                                          </option>
-                                        </>
-                                      </Input>
-                                    </ActionDialog>
-                                  )}
-                                </Form>
+                                <option value="text">
+                                  {i18n.t("Short text")}
+                                </option>
+                                <option value="longText">
+                                  {i18n.t("Long text")}
+                                </option>
+                                <option value="image">{i18n.t("Image")}</option>
+                                <option value="file">{i18n.t("File")}</option>
                               </>
-                            )}
-                        </>
-                      )}
-                    </Toggle>
+                            </Input>
+                          </ActionDialog>
+                        )}
+                      </Form>
+                    </>
                   )}
-                </Toggle>
+                </>
               )}
             </Toggle>
           );
         }}
       </Form>
     );
-  }
+  },
 );
 export default PageCreatePage;

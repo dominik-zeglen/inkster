@@ -17,7 +17,6 @@ interface Props extends ViewProps, PaginatedListProps {
 export const DirectoryDetailsList: React.StatelessComponent<Props> = ({
   directories,
   disabled,
-  loading,
   pageInfo,
   onNextPage,
   onPreviousPage,

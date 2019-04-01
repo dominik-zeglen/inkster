@@ -17,21 +17,21 @@ export interface Props {
 }
 
 const initialForm: FormData = {
-  email: ""
+  email: "",
 };
-const decorate = withStyles(theme => ({
+const decorate = withStyles({
   buttonContainer: {
     display: "flex" as "flex",
-    justifyContent: "flex-end" as "flex-end"
-  }
-}));
+    justifyContent: "flex-end" as "flex-end",
+  },
+});
 export const PasswordResetSendEmailPage = decorate<Props>(
   ({ classes, disabled, onSubmit }) => (
     <Form initial={initialForm} onSubmit={onSubmit}>
       {({ change, data, hasChanged }) => (
         <PageLayout
           header={i18n.t("Reset password", {
-            context: "header"
+            context: "header",
           })}
         >
           <Input
@@ -40,8 +40,8 @@ export const PasswordResetSendEmailPage = decorate<Props>(
             helperText={i18n.t(
               "Enter your e-mail address, so we can send you message with further instructions",
               {
-                context: "caption"
-              }
+                context: "caption",
+              },
             )}
             type="email"
             value={data.email}
@@ -59,6 +59,6 @@ export const PasswordResetSendEmailPage = decorate<Props>(
         </PageLayout>
       )}
     </Form>
-  )
+  ),
 );
 export default PasswordResetSendEmailPage;
