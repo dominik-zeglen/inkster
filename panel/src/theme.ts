@@ -1,5 +1,6 @@
 import * as ColorFunc from "color";
 import { Breakpoint, Color, Theme, Typography } from "react-jss";
+import baseAuroraTheme from "aurora-ui-kit/dist/theme";
 
 const breakpoints = {
   xs: 576,
@@ -126,4 +127,13 @@ export const theme: Theme = {
     time: "500ms",
   },
 };
+
+export const auroraTheme: typeof baseAuroraTheme = {
+  ...baseAuroraTheme,
+  colors: {
+    ...baseAuroraTheme.colors,
+    secondary: baseAuroraTheme.colors.blue,
+  },
+};
+
 export default theme;

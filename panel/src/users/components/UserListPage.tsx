@@ -1,16 +1,16 @@
 import * as React from "react";
 import { Plus } from "react-feather";
 import withStyles from "react-jss";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
 import Container from "../../components/Container";
 import i18n from "../../i18n";
-import IconButton from "../../components/IconButton";
 import { ListViewProps } from "../../";
 import PageHeader from "../../components/PageHeader";
 import UserList from "./UserList";
 import { UserList_users_edges_node } from "../queries/types/UserList";
 
-interface Props extends ListViewProps<{ email: string }> {
+interface Props extends ListViewProps {
   users: UserList_users_edges_node[];
 }
 
@@ -38,11 +38,9 @@ export const UserListPage = decorate<Props>(
   }) => (
     <Container width="md">
       <PageHeader title={i18n.t("Users")}>
-        <IconButton
-          disabled={disabled || loading}
-          icon={Plus}
-          onClick={onAdd}
-        />
+        <IconButton disabled={disabled || loading} onClick={onAdd}>
+          <Plus />
+        </IconButton>
       </PageHeader>
       <div className={classes.root}>
         <div>

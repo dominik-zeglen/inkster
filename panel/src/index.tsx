@@ -8,14 +8,12 @@ import { HttpLink } from "apollo-link-http";
 import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { render } from "react-dom";
 import { ThemeProvider } from "react-jss";
-import AuroraTheme from "aurora-ui-kit/dist/theme";
 import Baseline from "aurora-ui-kit/dist/components/Baseline";
 import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/styled-components";
 
 import App from "./App";
 import AppRoot from "./AppRoot";
-// import GlobalStylesheet from "./Stylesheet";
-import theme from "./theme";
+import theme, { auroraTheme } from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
 import { DateProvider } from "./components/Date";
@@ -82,7 +80,7 @@ render(
             <BrowserRouter
               basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
             >
-              <AuroraThemeProvider theme={AuroraTheme}>
+              <AuroraThemeProvider theme={auroraTheme}>
                 <ThemeProvider theme={theme}>
                   <>
                     <GlobalStylesheet />

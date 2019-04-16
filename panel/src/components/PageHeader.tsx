@@ -1,8 +1,8 @@
 import * as React from "react";
 import withStyles from "react-jss";
 import { ArrowLeft } from "react-feather";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
-import IconButton from "./IconButton";
 import Skeleton from "./Skeleton";
 
 interface Props {
@@ -30,7 +30,11 @@ export const PageHeader = decorate<Props>(
   ({ children, classes, title, onBack }) => (
     <div className={classes.root}>
       <div className={classes.container}>
-        {!!onBack ? <IconButton icon={ArrowLeft} onClick={onBack} /> : <div />}
+        {!!onBack ? (
+          <IconButton onClick={onBack}>
+            <ArrowLeft />
+          </IconButton>
+        ) : null}
         <span className={classes.title}>
           {title ? title : <Skeleton style={{ width: "14rem" }} />}
         </span>

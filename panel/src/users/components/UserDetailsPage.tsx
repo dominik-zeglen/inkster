@@ -1,12 +1,12 @@
 import * as React from "react";
 import withStyles from "react-jss";
 import { Trash } from "react-feather";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
 import { FormViewProps } from "../../";
-import IconButton from "../../components/IconButton";
 import PageHeader from "../../components/PageHeader";
 import UserStatus from "./UserStatus";
 import UserProperties from "./UserProperties";
@@ -53,14 +53,12 @@ export const UserDetailsPage = decorate<Props>(
       onSubmit={onSubmit}
       key={JSON.stringify(user)}
     >
-      {({ change, data, hasChanged, submit }) => (
+      {({ change, data, hasChanged }) => (
         <Container width="md">
           <PageHeader title={user ? user.email : undefined} onBack={onBack}>
-            <IconButton
-              disabled={disabled || loading}
-              icon={Trash}
-              onClick={onDelete}
-            />
+            <IconButton disabled={disabled || loading} onClick={onDelete}>
+              <Trash />
+            </IconButton>
           </PageHeader>
           <div className={classes.root}>
             <div>
@@ -82,7 +80,7 @@ export const UserDetailsPage = decorate<Props>(
           <FormSave
             disabled={disabled || !hasChanged}
             variant={transaction}
-            onConfirm={submit}
+            onConfirm={() => undefined}
           />
         </Container>
       )}

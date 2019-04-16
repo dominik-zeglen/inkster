@@ -3,7 +3,7 @@ import { Theme } from "react-jss";
 export default (theme: Theme) =>
   ({
     "@import": [
-      "url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i')"
+      "url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i')","url('https://rsms.me/inter/inter.css')"
     ],
     "@global": {
       html: {

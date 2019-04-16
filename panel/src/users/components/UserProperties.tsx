@@ -1,8 +1,11 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
-import Input from '../../components/Input'
-import i18n from '../../i18n'
+import i18n from "../../i18n";
 
 interface Props {
   data: {
@@ -15,20 +18,27 @@ interface Props {
 export const UserProperties: React.StatelessComponent<Props> = ({
   data,
   disabled,
-  onChange
+  onChange,
 }) => (
-  <Panel>
-    <Panel.Heading>
-      <Panel.Title>{i18n.t("General information")}</Panel.Title>
-    </Panel.Heading>
-    <Panel.Body>
+  <Card>
+    <CardHeader>
+      <CardTitle>{i18n.t("General information")}</CardTitle>
+    </CardHeader>
+    <CardContent>
       <Input
         disabled={disabled}
-        name="email"
+        label={i18n.t("User e-mail")}
         value={data.email}
-        onChange={onChange}
+        onChange={value =>
+          onChange({
+            target: {
+              name: "email",
+              value,
+            },
+          } as any)
+        }
       />
-    </Panel.Body>
-  </Panel>
+    </CardContent>
+  </Card>
 );
 export default UserProperties;

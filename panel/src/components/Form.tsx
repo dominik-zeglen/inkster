@@ -1,13 +1,11 @@
 import * as React from "react";
 
-export type FormChildren<T extends {}> = ((
-  props: {
-    data: T;
-    hasChanged: boolean;
-    change: (event: React.ChangeEvent<any>) => void;
-    submit: (event: React.FormEvent<any>) => void;
-  },
-) => React.ReactElement<any>);
+export type FormChildren<T extends {}> = (props: {
+  data: T;
+  hasChanged: boolean;
+  change: (event: React.ChangeEvent<any>) => void;
+  submit: (event: React.FormEvent<any>) => void;
+}) => React.ReactElement<any>;
 
 export interface FormProps<T extends {}> {
   children: FormChildren<T>;
@@ -46,6 +44,7 @@ class Form<T extends {} = {}> extends React.Component<FormProps<T>, T> {
 
   private handleSubmit = (event: React.FormEvent<any>) => {
     const { onSubmit } = this.props;
+    event.stopPropagation();
     event.preventDefault();
     if (!!this.form.current) {
       if (this.form.current.checkValidity()) {

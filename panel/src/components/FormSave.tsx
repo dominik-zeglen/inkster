@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "react-bootstrap";
+import Button from "aurora-ui-kit/dist/components/Button";
 import withStyles from "react-jss";
 
 import { StandardProps } from "./";
@@ -16,13 +16,13 @@ const decorate = withStyles(
   (theme: any) => ({
     root: {
       marginBottom: theme.spacing * 2,
-      display: "flex" as "flex"
+      display: "flex" as "flex",
     },
     spacer: {
-      flex: 1
-    }
+      flex: 1,
+    },
   }),
-  { displayName: "FormSave" }
+  { displayName: "FormSave" },
 );
 export const FormSave = decorate<Props>(
   ({ classes, disabled, variant, onConfirm, ...props }) => (
@@ -31,14 +31,14 @@ export const FormSave = decorate<Props>(
       <div className={classes.root}>
         <div className={classes.spacer} />
         <Button
-          bsStyle={
+          color={
             variant === "success"
               ? "success"
               : variant === "error"
-                ? "danger"
-                : variant === "loading"
-                  ? "primary"
-                  : "primary"
+              ? "error"
+              : variant === "loading"
+              ? "secondary"
+              : "secondary"
           }
           disabled={variant === "loading" || disabled}
           onClick={onConfirm}
@@ -46,13 +46,13 @@ export const FormSave = decorate<Props>(
           {variant === "success"
             ? i18n.t("Saved")
             : variant === "error"
-              ? i18n.t("Error")
-              : variant === "loading"
-                ? i18n.t("Loading")
-                : i18n.t("Save")}
+            ? i18n.t("Error")
+            : variant === "loading"
+            ? i18n.t("Loading")
+            : i18n.t("Save")}
         </Button>
       </div>
     </div>
-  )
+  ),
 );
 export default FormSave;

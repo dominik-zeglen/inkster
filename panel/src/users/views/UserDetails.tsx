@@ -77,11 +77,7 @@ export const UserDetails: React.StatelessComponent<Props> = ({
                                 }),
                               )
                             }
-                            title={
-                              userData.data && userData.data.user
-                                ? userData.data.user.email
-                                : undefined
-                            }
+                            title={maybe(() => userData.data.user.email)}
                             transaction={
                               userData.loading ? "loading" : "default"
                             }

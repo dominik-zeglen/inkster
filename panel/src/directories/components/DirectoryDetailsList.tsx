@@ -43,6 +43,7 @@ export const DirectoryDetailsList: React.StatelessComponent<Props> = ({
     </Panel.Body>
     <Panel.Footer>
       <PaginationArrows
+        disabled={disabled}
         pageInfo={pageInfo}
         onNextPage={onNextPage}
         onPreviousPage={onPreviousPage}

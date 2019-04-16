@@ -49,6 +49,7 @@ const decorate = withStyles(theme => ({
     borderRadius: 5,
     cursor: "pointer" as "pointer",
     display: "flex" as "flex",
+    height: 48,
     marginBottom: theme.spacing,
     overflow: "hidden",
     padding: theme.spacing,
@@ -62,7 +63,9 @@ const decorate = withStyles(theme => ({
     display: "flex" as "flex",
   },
   shrinkMenu: {
+    alignItems: "center",
     display: "flex" as "flex",
+    height: 48,
     justifyContent: "center" as "center",
     marginBottom: theme.spacing,
   },

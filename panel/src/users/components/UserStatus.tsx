@@ -1,9 +1,12 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
 import withStyles from "react-jss";
+import Checkbox from "aurora-ui-kit/dist/components/Checkbox";
 
 import i18n from "../../i18n";
-import Checkbox from "../../components/Checkbox";
 import Date from "../../components/Date";
 import Skeleton from "../../components/Skeleton";
 
@@ -19,18 +22,18 @@ interface Props {
 const decorate = withStyles(
   (theme: any) => ({
     label: {
-      marginRight: theme.spacing
-    }
+      marginRight: theme.spacing,
+    },
   }),
-  { displayName: "UserStatus" }
+  { displayName: "UserStatus" },
 );
 export const UserStatus = decorate<Props>(
   ({ classes, createdAt, data, updatedAt, onChange }) => (
-    <Panel>
-      <Panel.Heading>
-        <Panel.Title>{i18n.t("Status")}</Panel.Title>
-      </Panel.Heading>
-      <Panel.Body>
+    <Card>
+      <CardHeader>
+        <CardTitle>{i18n.t("Status")}</CardTitle>
+      </CardHeader>
+      <CardContent>
         <p>
           {createdAt ? (
             <>
@@ -52,13 +55,19 @@ export const UserStatus = decorate<Props>(
           <br />
         </p>
         <Checkbox
+          checked={data.isActive}
           label={i18n.t("Active")}
-          name="isActive"
-          value={data.isActive}
-          onChange={onChange}
+          onChange={value =>
+            onChange({
+              target: {
+                name: "isActive",
+                value,
+              },
+            } as any)
+          }
         />
-      </Panel.Body>
-    </Panel>
-  )
+      </CardContent>
+    </Card>
+  ),
 );
 export default UserStatus;
