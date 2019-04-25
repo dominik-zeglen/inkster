@@ -1,9 +1,14 @@
 import * as React from "react";
-import { Button, Modal as BsModal } from "react-bootstrap";
+import Button from "aurora-ui-kit/dist/components/Button";
+import Dialog from "aurora-ui-kit/dist/components/Dialog";
+import DialogActions from "aurora-ui-kit/dist/components/DialogActions";
+import DialogContent from "aurora-ui-kit/dist/components/DialogContent";
+import DialogHeader from "aurora-ui-kit/dist/components/DialogHeader";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
+import { X } from "react-feather";
 
 import i18n from "../i18n";
 import Form, { FormChildren } from "./Form";
-import Modal from "./Modal";
 
 interface Props<T extends {}> {
   children: FormChildren<T>;
@@ -27,37 +32,47 @@ export class FormDialog<T extends {} = {}> extends React.Component<
       width,
       title,
       onClose,
-      onConfirm
+      onConfirm,
     } = this.props;
-    const handleSubmit = (data: T) => {
-      onConfirm(data);
-      onClose();
-    };
     return (
-      <Modal show={show} onHide={onClose} width={width}>
-        <Form initial={initial} onSubmit={handleSubmit}>
+      <Dialog isOpen={show} onClose={onClose} size={width}>
+        <Form initial={initial} onSubmit={onConfirm}>
           {formData => (
             <>
-              <BsModal.Header>
-                <BsModal.Title>{title}</BsModal.Title>
-              </BsModal.Header>
-              <BsModal.Body>
-                {typeof children === "function" ? children(formData) : children}
-              </BsModal.Body>
-              <BsModal.Footer>
-                <Button onClick={onClose}>{i18n.t("Close")}</Button>
+              <DialogHeader title={title}>
+                <IconButton onClick={onClose}>
+                  <X />
+                </IconButton>
+              </DialogHeader>
+              <DialogContent>{children(formData)}</DialogContent>
+              <DialogActions>
                 <Button
-                  bsStyle="primary"
+                  componentProps={
+                    {
+                      type: "button",
+                    } as any
+                  }
+                  variant="outlined"
+                  onClick={onClose}
+                >
+                  {i18n.t("Close")}
+                </Button>
+                <Button
+                  componentProps={
+                    {
+                      type: "submit",
+                    } as any
+                  }
+                  variant="default"
                   onClick={formData.submit}
-                  type="submit"
                 >
                   {i18n.t("Confirm")}
                 </Button>
-              </BsModal.Footer>
+              </DialogActions>
             </>
           )}
         </Form>
-      </Modal>
+      </Dialog>
     );
   }
 }

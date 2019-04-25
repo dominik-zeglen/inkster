@@ -17,9 +17,7 @@ const UserDetails: React.StatelessComponent<
   RouteComponentProps<UserDetailsRouteParams>
 > = ({ match, location }) => {
   const qs = parseQs(location.search.substr(1));
-  const params: UserDetailsQueryParams = {
-    modal: qs.modal,
-  };
+  const params: UserDetailsQueryParams = qs;
   const decodedId = decodeURIComponent(match.params.id);
   return <UserDetailsComponent id={decodedId} params={params} />;
 };

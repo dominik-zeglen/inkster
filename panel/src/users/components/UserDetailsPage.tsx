@@ -6,17 +6,20 @@ import IconButton from "aurora-ui-kit/dist/components/IconButton";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
-import { FormViewProps } from "../../";
+import { FormViewProps, PaginatedListProps } from "../../";
 import PageHeader from "../../components/PageHeader";
 import UserStatus from "./UserStatus";
 import UserProperties from "./UserProperties";
 import { UserDetails_user } from "../queries/types/UserDetails";
+import Spacer from "../../components/Spacer";
+import UserPages from "./UserPages";
+import { maybe } from "../../utils";
 
 interface FormData {
   email: string;
   isActive: boolean;
 }
-interface Props extends FormViewProps<FormData> {
+interface Props extends FormViewProps<FormData>, PaginatedListProps {
   user: UserDetails_user;
   onDelete: () => void;
 }
@@ -44,6 +47,7 @@ export const UserDetailsPage = decorate<Props>(
     onBack,
     onDelete,
     onSubmit,
+    ...listProps
   }) => (
     <Form
       initial={{
@@ -66,6 +70,13 @@ export const UserDetailsPage = decorate<Props>(
                 data={data}
                 disabled={disabled || loading}
                 onChange={change}
+              />
+              <Spacer />
+              <UserPages
+                disabled={disabled}
+                loading={loading}
+                pages={maybe(() => user.pages.edges.map(edge => edge.node))}
+                {...listProps}
               />
             </div>
             <div>

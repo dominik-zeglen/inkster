@@ -1,4 +1,5 @@
 import * as React from "react";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import CreateUserMutation from "../queries/mCreateUser";
 import Users from "../queries/qUsers";
@@ -11,7 +12,6 @@ import { CreateUser } from "../queries/types/CreateUser";
 import { Modal, Pagination } from "../../types";
 import FormDialog from "../../components/FormDialog";
 import { mergeQs, maybe } from "../../utils";
-import Input from "../../components/Input";
 import Paginator, { createPaginationState } from "../../components/Paginator";
 import { PAGINATE_BY } from "../..";
 
@@ -95,11 +95,21 @@ export const UserList: React.StatelessComponent<Props> = ({ params }) => (
                         >
                           {({ change, data }) => (
                             <Input
-                              name="email"
-                              onChange={change}
+                              onChange={email =>
+                                change({
+                                  target: {
+                                    name: "email",
+                                    value: email,
+                                  },
+                                } as any)
+                              }
+                              InputProps={{
+                                componentProps: {
+                                  type: "email",
+                                },
+                              }}
                               value={data.email}
                               label={i18n.t("User email")}
-                              type="email"
                             />
                           )}
                         </FormDialog>

@@ -1,6 +1,12 @@
 import * as React from "react";
-import { Button, Modal } from "react-bootstrap";
 import withStyles from "react-jss";
+import Button from "aurora-ui-kit/dist/components/Button";
+import Dialog from "aurora-ui-kit/dist/components/Dialog";
+import DialogActions from "aurora-ui-kit/dist/components/DialogActions";
+import DialogContent from "aurora-ui-kit/dist/components/DialogContent";
+import DialogHeader from "aurora-ui-kit/dist/components/DialogHeader";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
+import { X } from "react-feather";
 
 import i18n from "../i18n";
 
@@ -19,33 +25,37 @@ const decorate = withStyles(
         [theme.breakpoints.up(current)]: {
           marginLeft: "auto",
           marginRight: "auto",
-          maxWidth: theme.breakpoints.width(current)
-        }
+          maxWidth: theme.breakpoints.width(current),
+        },
       };
       return prev;
     }, {}),
-  { displayName: "ActionDialog" }
+  { displayName: "ActionDialog" },
 );
 export const ActionDialog = decorate<Props>(
-  ({ classes, children, show, size, title, onClose, onConfirm }) => {
+  ({ children, show, size, title, onClose, onConfirm }) => {
     const handleSubmit = (event: any) => {
       onConfirm(event);
       onClose();
     };
     return (
-      <Modal show={show} onHide={onClose} className={classes[size]}>
-        <Modal.Header>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{children}</Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onClose}>{i18n.t("Close")}</Button>
-          <Button bsStyle="primary" onClick={handleSubmit} type="submit">
+      <Dialog isOpen={show} onClose={onClose} size={size}>
+        <DialogHeader title={title}>
+          <IconButton onClick={onClose}>
+            <X />
+          </IconButton>
+        </DialogHeader>
+        <DialogContent>{children}</DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={onClose}>
+            {i18n.t("Close")}
+          </Button>
+          <Button variant="default" onClick={handleSubmit}>
             {i18n.t("Confirm")}
           </Button>
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     );
-  }
+  },
 );
 export default ActionDialog;
