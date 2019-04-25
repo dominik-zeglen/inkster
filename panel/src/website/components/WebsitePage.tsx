@@ -1,5 +1,10 @@
 import * as React from "react";
 import withStyles from "react-jss";
+import Input from "aurora-ui-kit/dist/components/TextInput";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
 
 import Container from "../../components/Container";
 import Form from "../../components/Form";
@@ -8,8 +13,6 @@ import PageHeader from "../../components/PageHeader";
 import { Website_website } from "../queries/types/Website";
 import i18n from "../../i18n";
 import { maybe } from "../../utils";
-import { Panel } from "react-bootstrap";
-import Input from "../../components/Input";
 import { TransactionState } from "../..";
 
 interface FormData {
@@ -56,50 +59,72 @@ export const WebsitePage = decorate<Props>(
             <div className={classes.root}>
               <div>
                 <div className={classes.container}>
-                  <Panel>
-                    <Panel.Heading>
-                      <Panel.Title>{i18n.t("Basic settings")}</Panel.Title>
-                    </Panel.Heading>
-                    <Panel.Body>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{i18n.t("Basic settings")}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
                       <div className={classes.container}>
                         <Input
                           disabled={disabled}
-                          name={"name" as keyof FormData}
                           value={data.name}
                           label={i18n.t("Website name")}
-                          onChange={change}
+                          onChange={value =>
+                            change({
+                              target: {
+                                name: "name",
+                                value,
+                              },
+                            } as any)
+                          }
                         />
                       </div>
                       <div className={classes.container}>
                         <Input
                           disabled={disabled}
-                          name={"description" as keyof FormData}
                           value={data.description}
                           label={i18n.t("Website description")}
-                          onChange={change}
+                          onChange={value =>
+                            change({
+                              target: {
+                                name: "description",
+                                value,
+                              },
+                            } as any)
+                          }
                         />
                       </div>
-                    </Panel.Body>
-                  </Panel>
+                    </CardContent>
+                  </Card>
                 </div>
                 <div className={classes.container}>
-                  <Panel>
-                    <Panel.Heading>
-                      <Panel.Title>{i18n.t("Advanced settings")}</Panel.Title>
-                    </Panel.Heading>
-                    <Panel.Body>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{i18n.t("Advanced settings")}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
                       <div className={classes.container}>
                         <Input
                           disabled={disabled}
-                          name={"domain" as keyof FormData}
                           value={data.domain}
                           label={i18n.t("Website domain")}
-                          type="url"
-                          onChange={change}
+                          InputProps={{
+                            componentProps: {
+                              type: "url",
+                            },
+                          }}
+                          onChange={value =>
+                            change({
+                              target: {
+                                name: "domain",
+                                value,
+                              },
+                            } as any)
+                          }
                         />
                       </div>
-                    </Panel.Body>
-                  </Panel>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
