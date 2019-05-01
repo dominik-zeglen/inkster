@@ -16,6 +16,7 @@ export interface Directory_getDirectory_pages_edges_node {
   __typename: "Page";
   id: string;
   name: string;
+  isPublished: boolean;
 }
 
 export interface Directory_getDirectory_pages_edges {

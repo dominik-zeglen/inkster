@@ -16,11 +16,11 @@ interface Props {
 export const PageProperties: React.StatelessComponent<Props> = ({
   data,
   disabled,
-  onChange
+  onChange,
 }) => (
   <Panel>
     <Panel.Heading>
-      <Panel.Title>{i18n.t("General information")}</Panel.Title>
+      <Panel.Title>{i18n.t("General Informations")}</Panel.Title>
     </Panel.Heading>
     <Panel.Body>
       <Input

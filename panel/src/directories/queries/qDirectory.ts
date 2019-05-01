@@ -20,6 +20,7 @@ const qDirectory = gql`
           node {
             id
             name
+            isPublished
           }
         }
         pageInfo {

@@ -46,7 +46,7 @@ export const UserPages = withStyles(styles)<Props>(
         <TableHead>
           <TableCell>{i18n.t("Title")}</TableCell>
           <TableCell>{i18n.t("Created")}</TableCell>
-          <TableCell>{i18n.t("Published")}</TableCell>
+          <TableCell>{i18n.t("Status")}</TableCell>
         </TableHead>
         <TableFooter>
           <TableRow>

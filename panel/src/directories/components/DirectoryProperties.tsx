@@ -1,8 +1,11 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
-import Input from "../../components/Input";
 import i18n from "../../i18n";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
 
 interface Props {
   data: {
@@ -17,17 +20,26 @@ export const DirectoryProperties: React.StatelessComponent<Props> = ({
   data,
   onChange,
 }) => (
-  <Panel>
-    <Panel.Body>
+  <Card>
+    <CardHeader>
+      <CardTitle>{i18n.t("General Informations")}</CardTitle>
+    </CardHeader>
+    <CardContent>
       <Input
         disabled={disabled}
         label={i18n.t("Name")}
-        name="name"
         placeholder={i18n.t("Name")}
         value={data.name}
-        onChange={onChange}
+        onChange={value =>
+          onChange({
+            target: {
+              name: "name",
+              value,
+            },
+          } as any)
+        }
       />
-    </Panel.Body>
-  </Panel>
+    </CardContent>
+  </Card>
 );
 export default DirectoryProperties;

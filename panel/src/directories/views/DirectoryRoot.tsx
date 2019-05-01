@@ -1,4 +1,5 @@
 import * as React from "react";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import RootDirectories from "../queries/qRootDirectories";
 import DirectoryCreateMutation from "../queries/mDirectoryCreate";
@@ -11,7 +12,6 @@ import {
   DirectoryCreateVariables,
   DirectoryCreate,
 } from "../queries/types/DirectoryCreate";
-import Input from "../../components/Input";
 import FormDialog from "../../components/FormDialog";
 import { mergeQs, maybe } from "../../utils";
 import { Modal, Pagination } from "../../types";
@@ -99,8 +99,14 @@ export const DirectoryRoot: React.StatelessComponent<Props> = ({ params }) => (
                         >
                           {({ change, data: formData }) => (
                             <Input
-                              name="name"
-                              onChange={change}
+                              onChange={value =>
+                                change({
+                                  target: {
+                                    name: "name",
+                                    value,
+                                  },
+                                } as any)
+                              }
                               value={formData.name}
                               label={i18n.t("Directory name")}
                             />

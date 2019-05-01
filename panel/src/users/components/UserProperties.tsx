@@ -22,7 +22,7 @@ export const UserProperties: React.StatelessComponent<Props> = ({
 }) => (
   <Card>
     <CardHeader>
-      <CardTitle>{i18n.t("General information")}</CardTitle>
+      <CardTitle>{i18n.t("General Informations")}</CardTitle>
     </CardHeader>
     <CardContent>
       <Input

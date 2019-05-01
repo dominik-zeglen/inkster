@@ -1,10 +1,13 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
 import withStyles from "react-jss";
+import Checkbox from "aurora-ui-kit/dist/components/Checkbox";
 
 import i18n from "../../i18n";
 import Date from "../../components/Date";
-import Checkbox from "../../components/Checkbox";
 import Skeleton from "../../components/Skeleton";
 
 interface Props {
@@ -19,18 +22,18 @@ interface Props {
 const decorate = withStyles(
   (theme: any) => ({
     label: {
-      marginRight: theme.spacing
-    }
+      marginRight: theme.spacing,
+    },
   }),
-  { displayName: "DirectoryStatus" }
+  { displayName: "DirectoryStatus" },
 );
 export const DirectoryStatus = decorate<Props>(
   ({ classes, createdAt, data, updatedAt, onChange }) => (
-    <Panel>
-      <Panel.Heading>
-        <Panel.Title>{i18n.t("Status")}</Panel.Title>
-      </Panel.Heading>
-      <Panel.Body>
+    <Card>
+      <CardHeader>
+        <CardTitle>{i18n.t("Status")}</CardTitle>
+      </CardHeader>
+      <CardContent>
         <p>
           {createdAt ? (
             <>
@@ -53,12 +56,18 @@ export const DirectoryStatus = decorate<Props>(
         </p>
         <Checkbox
           label={i18n.t("Published")}
-          name="isPublished"
-          value={data.isPublished}
-          onChange={onChange}
+          checked={data.isPublished}
+          onChange={value =>
+            onChange({
+              target: {
+                name: "isPublished",
+                value,
+              },
+            } as any)
+          }
         />
-      </Panel.Body>
-    </Panel>
-  )
+      </CardContent>
+    </Card>
+  ),
 );
 export default DirectoryStatus;

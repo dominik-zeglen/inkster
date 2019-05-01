@@ -25,7 +25,7 @@ const styles: CSSProperties = {
     cursor: "pointer",
   },
 };
-export const HomePageNewestPages = withStyles(styles)<Props>(
+const HomePageNewestPages = withStyles(styles)<Props>(
   ({ classes, disabled, pages, onPageClick }) => (
     <Card>
       <CardHeader>
