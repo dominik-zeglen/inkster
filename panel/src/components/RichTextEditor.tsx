@@ -68,12 +68,12 @@ const decorate = withStyles(theme => ({
     background: theme.mixins.fade(theme.colors.primary.main, 0.05),
     border: `1px solid ${theme.colors.primary.lightest}`,
     marginBottom: theme.spacing,
-    marginTop: theme.spacing,
+    marginTop: 0,
     padding: theme.spacing,
     transition: theme.transition.time,
   },
   editorContainer: {
-    marginTop: theme.spacing * 3,
+    paddingTop: theme.spacing * 3,
   },
   headlineButton: {
     background: "transparent",

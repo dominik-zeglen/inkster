@@ -1,11 +1,17 @@
 import * as React from "react";
-import { Button, Image, ControlLabel, Panel } from "react-bootstrap";
+import { Image, ControlLabel } from "react-bootstrap";
 import { Image as ImageIcon, File as FileIcon, X } from "react-feather";
+import Button from "aurora-ui-kit/dist/components/Button";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
-import IconButton from "../../components/IconButton";
-import Input from "../../components/Input";
 import RichTextEditor from "../../components/RichTextEditor";
 import i18n from "../../i18n";
+import Spacer from "../../components/Spacer";
 
 interface Props {
   data: {
@@ -18,7 +24,7 @@ interface Props {
   onChange: (event: React.ChangeEvent<any>) => void;
   onDelete: () => void;
   onUpload: (
-    cb: (event: React.ChangeEvent<any>) => void
+    cb: (event: React.ChangeEvent<any>) => void,
   ) => (event: React.ChangeEvent<any>) => void;
 }
 
@@ -32,18 +38,27 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
 }) => {
   this.refs = {};
   return (
-    <Panel {...props}>
-      <Panel.Heading>
-        <Panel.Title>{i18n.t("Field properties")}</Panel.Title>
-        <IconButton icon={X} onClick={onDelete} />
-      </Panel.Heading>
-      <Panel.Body>
+    <Card {...props}>
+      <CardHeader>
+        <CardTitle>{i18n.t("Field properties")}</CardTitle>
+        <IconButton onClick={onDelete}>
+          <X />
+        </IconButton>
+      </CardHeader>
+      <CardContent>
         <Input
           label={i18n.t("Name")}
-          name="name"
           value={data.name}
-          onChange={onChange}
+          onChange={value =>
+            onChange({
+              target: {
+                name: "name",
+                value,
+              },
+            } as any)
+          }
         />
+        <Spacer />
         {data.type === "longText" ? (
           <RichTextEditor
             label={i18n.t("Field value")}
@@ -88,7 +103,7 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                     style={{
                       display: "block" as "block",
                       margin: "20px auto",
-                      width: 64
+                      width: 64,
                     }}
                   >
                     <ImageIcon size={64} />
@@ -122,7 +137,7 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                 <>
                   <a href={"/static/" + data.value}>
                     {i18n.t("Download {{ filename }}", {
-                      filename: data.value
+                      filename: data.value,
                     })}
                   </a>
                   <Button
@@ -140,7 +155,7 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                     style={{
                       display: "block" as "block",
                       margin: "20px auto",
-                      width: 64
+                      width: 64,
                     }}
                   >
                     <FileIcon size={64} />
@@ -160,13 +175,19 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
         ) : (
           <Input
             label={i18n.t("Value")}
-            name="value"
             value={data.value}
-            onChange={onChange}
+            onChange={value =>
+              onChange({
+                target: {
+                  name: "value",
+                  value,
+                },
+              } as any)
+            }
           />
         )}
-      </Panel.Body>
-    </Panel>
+      </CardContent>
+    </Card>
   );
 };
 
