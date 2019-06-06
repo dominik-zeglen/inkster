@@ -23,6 +23,13 @@ function makeColor(
         .darken(0.2)
         .rgb()
         .string(),
+    darkest:
+      dark ||
+      ColorFunc(main)
+        .darken(0.2)
+        .blacken(0.85)
+        .rgb()
+        .string(),
     light:
       light ||
       ColorFunc(main)
@@ -51,8 +58,8 @@ const palette = {
   white: makeColor("#fdfdfd", "#f6f6f6"),
 };
 const colors = {
-  primary: palette.blue,
-  secondary: palette.green,
+  primary: palette.green,
+  secondary: palette.blue,
   success: palette.green,
   error: palette.red,
   disabled: palette.lightGray.dark,
@@ -67,7 +74,7 @@ const baseTypography: Typography = {
 };
 export const theme: Theme = {
   colors,
-  spacing: 10,
+  spacing: 8,
   breakpoints: {
     down: (bp: Breakpoint) => {
       return `@media (max-width: ${breakpoints[bp] - 0.02}px)`;
@@ -126,13 +133,14 @@ export const theme: Theme = {
   transition: {
     time: "500ms",
   },
+  mixins: baseAuroraTheme.mixins,
 };
 
 export const auroraTheme: typeof baseAuroraTheme = {
   ...baseAuroraTheme,
   colors: {
     ...baseAuroraTheme.colors,
-    secondary: baseAuroraTheme.colors.blue,
+    ...colors,
   },
 };
 

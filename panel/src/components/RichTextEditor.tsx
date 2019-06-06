@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ControlLabel, FormGroup, HelpBlock } from "react-bootstrap";
 import withStyles, { WithStyles } from "react-jss";
 import { EditorState, convertFromRaw, convertToRaw, RichUtils } from "draft-js";
 import DraftEditor, { composeDecorators } from "draft-js-plugins-editor";
@@ -23,6 +22,11 @@ import createFocusPlugin from "draft-js-focus-plugin";
 import createResizeablePlugin from "draft-js-resizeable-plugin";
 import createBlockDndPlugin from "draft-js-drag-n-drop-plugin";
 import createDragNDropUploadPlugin from "@mikeljames/draft-js-drag-n-drop-upload-plugin";
+import InputFocus from "aurora-ui-kit/dist/components/InputFocus";
+import InputLabel from "aurora-ui-kit/dist/components/InputLabel";
+import Typography from "aurora-ui-kit/dist/components/Typography";
+
+import i18n from "../i18n";
 
 interface Props {
   id?: string;
@@ -59,17 +63,17 @@ const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
   addImage: imagePlugin.addImage,
 });
 
-const decorate = withStyles((theme: any) => ({
+const decorate = withStyles(theme => ({
   editor: {
-    "&.active": {
-      borderBottomColor: theme.colors.secondary.main,
-      boxShadow: `0 1px ${theme.colors.secondary.main}`,
-    },
-    borderBottom: `1px solid ${theme.colors.disabled}`,
+    background: theme.mixins.fade(theme.colors.primary.main, 0.05),
+    border: `1px solid ${theme.colors.primary.lightest}`,
     marginBottom: theme.spacing,
     marginTop: theme.spacing,
-    paddingBottom: theme.spacing,
+    padding: theme.spacing,
     transition: theme.transition.time,
+  },
+  editorContainer: {
+    marginTop: theme.spacing * 3,
   },
   headlineButton: {
     background: "transparent",
@@ -144,7 +148,11 @@ export const RichTextEditor = decorate<Props>(
   class RichTextEditorComponent extends React.Component<
     Props &
       WithStyles<
-        "editor" | "toolbar" | "headlineButton" | "headlineButtonWrapper"
+        | "editor"
+        | "editorContainer"
+        | "toolbar"
+        | "headlineButton"
+        | "headlineButtonWrapper"
       >,
     State
   > {
@@ -197,7 +205,7 @@ export const RichTextEditor = decorate<Props>(
     onFocus = () => this.setState({ focused: true });
 
     render() {
-      const { classes, id, error, label, helperText } = this.props;
+      const { classes, label, helperText } = this.props;
       const { InlineToolbar } = this.inlineToolbarPlugin;
       const plugins = [
         this.inlineToolbarPlugin,
@@ -209,27 +217,32 @@ export const RichTextEditor = decorate<Props>(
         imagePlugin,
       ];
       return (
-        <FormGroup controlId={id} validationState={error ? "error" : null}>
-          {label && <ControlLabel>{label}</ControlLabel>}
-          <div
-            className={[
-              classes.editor,
-              this.state.focused ? "active" : undefined,
-            ].join(" ")}
-          >
-            <Editor
-              editorState={this.state.editorState}
-              handleKeyCommand={this.handleKeyCommand}
-              plugins={plugins}
-              onBlur={this.onBlur}
-              onChange={this.onChange}
-              onFocus={this.onFocus}
-            />
-            <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
-            <AlignmentTool />
-          </div>
-          {helperText && <HelpBlock>{helperText}</HelpBlock>}
-        </FormGroup>
+        <div className={classes.editorContainer}>
+          {label && <InputLabel label={label}>{null}</InputLabel>}
+          <InputFocus focused={this.state.focused}>
+            <div
+              className={[
+                classes.editor,
+                this.state.focused ? "active" : undefined,
+              ].join(" ")}
+            >
+              <Editor
+                editorState={this.state.editorState}
+                handleKeyCommand={this.handleKeyCommand}
+                plugins={plugins}
+                onBlur={this.onBlur}
+                onChange={this.onChange}
+                onFocus={this.onFocus}
+              />
+              <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
+              {this.state.focused && <AlignmentTool />}
+            </div>
+          </InputFocus>
+          <Typography variant="caption">
+            {helperText ||
+              i18n.t("Select text to enable text formatting tools")}
+          </Typography>
+        </div>
       );
     }
   },

@@ -1,5 +1,6 @@
 import * as React from "react";
 
-const { Provider, Consumer } = React.createContext<number>(0);
+const DateContext = React.createContext<number>(0);
 
-export { Consumer, Provider };
+export const { Consumer, Provider } = DateContext;
+export default DateContext;

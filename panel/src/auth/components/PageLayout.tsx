@@ -1,6 +1,6 @@
 import * as React from "react";
 import withStyles from "react-jss";
-import { Panel } from "react-bootstrap";
+import Card from "aurora-ui-kit/dist/components/Card";
 
 import Container from "../../components/Container";
 
@@ -27,10 +27,10 @@ const decorate = withStyles({
 export const PageLayout = decorate<Props>(({ classes, children, header }) => (
   <Container width="xs">
     <div className={classes.root}>
-      <Panel className={classes.panel}>
+      <Card className={classes.panel}>
         <h2 className={classes.header}>{header}</h2>
         {children}
-      </Panel>
+      </Card>
     </div>
   </Container>
 ));

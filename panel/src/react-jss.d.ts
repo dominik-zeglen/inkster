@@ -5,14 +5,13 @@ declare module "react-jss" {
   export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | string;
   export interface Color {
     dark: string;
+    darkest: string;
     light: string;
     lightest: string;
     main: string;
   }
 
-  export type Typography = {
-    [T in keyof CSSProperties]?: CSSProperties[T]
-  };
+  export type Typography = { [T in keyof CSSProperties]?: CSSProperties[T] };
 
   export interface Theme {
     colors: {
@@ -48,6 +47,7 @@ declare module "react-jss" {
     transition: {
       time: string;
     };
+    mixins;
   }
 
   // Module definition
@@ -83,9 +83,9 @@ declare module "react-jss" {
 
   function injectSheet<ClassKey extends string>(
     style: StyleRules<ClassKey> | ((theme: Theme) => StyleRules<ClassKey>),
-    options?: any
+    options?: any,
   ): <P>(
-    component: React.ComponentType<P & WithStyles<ClassKey>>
+    component: React.ComponentType<P & WithStyles<ClassKey>>,
   ) => React.ComponentType<P & StyledComponentProps<ClassKey>>;
 
   export const jss: any;

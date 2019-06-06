@@ -1,8 +1,12 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
-import Input from "../../components/Input";
 import i18n from "../../i18n";
+import Spacer from "../../components/Spacer";
 
 interface Props {
   data: {
@@ -18,26 +22,39 @@ export const PageProperties: React.StatelessComponent<Props> = ({
   disabled,
   onChange,
 }) => (
-  <Panel>
-    <Panel.Heading>
-      <Panel.Title>{i18n.t("General Informations")}</Panel.Title>
-    </Panel.Heading>
-    <Panel.Body>
+  <Card>
+    <CardHeader>
+      <CardTitle>{i18n.t("General Informations")}</CardTitle>
+    </CardHeader>
+    <CardContent>
       <Input
-        name="name"
         disabled={disabled}
         label={i18n.t("Name")}
         value={data.name}
-        onChange={onChange}
+        onChange={value =>
+          onChange({
+            target: {
+              name: "name",
+              value,
+            },
+          } as any)
+        }
       />
+      <Spacer />
       <Input
-        name="slug"
         disabled={disabled}
         label={i18n.t("Slug")}
         value={data.slug}
-        onChange={onChange}
+        onChange={value =>
+          onChange({
+            target: {
+              name: "slug",
+              value,
+            },
+          } as any)
+        }
       />
-    </Panel.Body>
-  </Panel>
+    </CardContent>
+  </Card>
 );
 export default PageProperties;

@@ -1,6 +1,9 @@
 import * as React from "react";
-import { Panel } from "react-bootstrap";
 import withStyles from "react-jss";
+import Card from "aurora-ui-kit/dist/components/Card";
+import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
+import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import CardContent from "aurora-ui-kit/dist/components/CardContent";
 
 import i18n from "../../i18n";
 import Checkbox from "../../components/Checkbox";
@@ -17,20 +20,20 @@ interface Props {
 }
 
 const decorate = withStyles(
-  (theme: any) => ({
+  theme => ({
     label: {
-      marginRight: theme.spacing
-    }
+      marginRight: theme.spacing,
+    },
   }),
-  { displayName: "PageStatus" }
+  { displayName: "PageStatus" },
 );
 export const PageStatus = decorate<Props>(
   ({ classes, createdAt, data, updatedAt, onChange }) => (
-    <Panel>
-      <Panel.Heading>
-        <Panel.Title>{i18n.t("Status")}</Panel.Title>
-      </Panel.Heading>
-      <Panel.Body>
+    <Card>
+      <CardHeader>
+        <CardTitle>{i18n.t("Status")}</CardTitle>
+      </CardHeader>
+      <CardContent>
         <p>
           {createdAt ? (
             <>
@@ -57,8 +60,8 @@ export const PageStatus = decorate<Props>(
           value={data.isPublished}
           onChange={onChange}
         />
-      </Panel.Body>
-    </Panel>
-  )
+      </CardContent>
+    </Card>
+  ),
 );
 export default PageStatus;
