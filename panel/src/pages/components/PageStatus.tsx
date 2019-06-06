@@ -2,11 +2,11 @@ import * as React from "react";
 import Card from "aurora-ui-kit/dist/components/Card";
 import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
 import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
+import Checkbox from "aurora-ui-kit/dist/components/Checkbox";
 import CardContent from "aurora-ui-kit/dist/components/CardContent";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 
 import i18n from "../../i18n";
-import Checkbox from "../../components/Checkbox";
 import Date from "../../components/Date";
 
 interface Props {
@@ -47,10 +47,16 @@ export const PageStatus: React.FC<Props> = ({
         <br />
       </p>
       <Checkbox
+        checked={data.isPublished}
         label={i18n.t("Published")}
-        name="isPublished"
-        value={data.isPublished}
-        onChange={onChange}
+        onChange={value =>
+          onChange({
+            target: {
+              name: "isPublished",
+              value,
+            },
+          } as any)
+        }
       />
     </CardContent>
   </Card>

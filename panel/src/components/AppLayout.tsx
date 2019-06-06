@@ -32,6 +32,7 @@ const decorate = withStyles(theme => ({
   active: {},
   content: {
     flexGrow: 1,
+    padding: `0 ${theme.spacing * 3}px`,
   },
   link: {
     "&$active": {

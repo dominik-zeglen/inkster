@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Image, ControlLabel } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { Image as ImageIcon, File as FileIcon, X } from "react-feather";
 import Button from "aurora-ui-kit/dist/components/Button";
 import Card from "aurora-ui-kit/dist/components/Card";
@@ -8,6 +8,7 @@ import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
 import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
 import Input from "aurora-ui-kit/dist/components/TextInput";
+import InputLabel from "aurora-ui-kit/dist/components/InputLabel";
 
 import RichTextEditor from "../../components/RichTextEditor";
 import i18n from "../../i18n";
@@ -68,17 +69,18 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
           />
         ) : data.type === "image" ? (
           <>
-            <ControlLabel>{i18n.t("Image")}</ControlLabel>
-            <input
-              name="value"
-              type="file"
-              ref={ref => {
-                this.refs[data.name] = ref;
-              }}
-              accept="image/*"
-              style={{ display: "none" as "none" }}
-              onChange={onUpload(onChange)}
-            />
+            <InputLabel label={i18n.t("Image")}>
+              <input
+                name="value"
+                type="file"
+                ref={ref => {
+                  this.refs[data.name] = ref;
+                }}
+                accept="image/*"
+                style={{ display: "none" as "none" }}
+                onChange={onUpload(onChange)}
+              />
+            </InputLabel>
             <div>
               {data.value ? (
                 <>
@@ -93,6 +95,8 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                       this.refs ? () => this.refs[data.name].click() : undefined
                     }
                     style={{ width: "100%" }}
+                    variant="outlined"
+                    color="secondary"
                   >
                     {i18n.t("Change image")}
                   </Button>
@@ -113,6 +117,8 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                       this.refs ? () => this.refs[data.name].click() : undefined
                     }
                     style={{ width: "100%" }}
+                    variant="outlined"
+                    color="secondary"
                   >
                     {i18n.t("Upload image")}
                   </Button>
@@ -122,16 +128,17 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
           </>
         ) : data.type === "file" ? (
           <>
-            <ControlLabel>{i18n.t("File")}</ControlLabel>
-            <input
-              name="value"
-              type="file"
-              ref={ref => {
-                this.refs[data.name] = ref;
-              }}
-              style={{ display: "none" as "none" }}
-              onChange={onUpload(onChange)}
-            />
+            <InputLabel label={i18n.t("File")}>
+              <input
+                name="value"
+                type="file"
+                ref={ref => {
+                  this.refs[data.name] = ref;
+                }}
+                style={{ display: "none" as "none" }}
+                onChange={onUpload(onChange)}
+              />
+            </InputLabel>
             <div>
               {data.value ? (
                 <>
@@ -145,6 +152,8 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                       this.refs ? () => this.refs[data.name].click() : undefined
                     }
                     style={{ width: "100%" }}
+                    variant="outlined"
+                    color="secondary"
                   >
                     {i18n.t("Change file")}
                   </Button>
@@ -165,6 +174,8 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
                       this.refs ? () => this.refs[data.name].click() : undefined
                     }
                     style={{ width: "100%" }}
+                    variant="outlined"
+                    color="secondary"
                   >
                     {i18n.t("Upload file")}
                   </Button>
