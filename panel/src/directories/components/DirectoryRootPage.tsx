@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Plus } from "react-feather";
 import withStyles from "react-jss";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
 import { ListViewProps } from "../../";
 import i18n from "../../i18n";
 import Container from "../../components/Container";
 import PageHeader from "../../components/PageHeader";
-import IconButton from "../../components/IconButton";
 import DirectoryRootList from "./DirectoryRootList";
 import { RootDirectories_getRootDirectories_edges_node } from "../queries/types/RootDirectories";
 
@@ -38,11 +38,9 @@ export const DirectoryRootPage = decorate<Props>(
   }) => (
     <Container width="md">
       <PageHeader title={i18n.t("Directories")}>
-        <IconButton
-          disabled={disabled || loading}
-          icon={Plus}
-          onClick={onAdd}
-        />
+        <IconButton disabled={disabled || loading} onClick={onAdd}>
+          <Plus />
+        </IconButton>
       </PageHeader>
       <div className={classes.root}>
         <div>

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Alert } from "react-bootstrap";
 import { AlertTriangle, Info } from "react-feather";
 import withStyles from "react-jss";
 
@@ -36,15 +35,17 @@ const decorate = withStyles(theme => ({
   },
 }));
 
+const Alert: React.FC<any> = () => null;
+
 const NotificationComponent = decorate<NotificationComponentProps>(
   ({ classes, onDismiss, onPointerEnter, onPointerLeave, text, type }) => (
     <Alert
-      bsStyle={
+      color={
         type === NotificationType.ERROR
           ? "danger"
           : type === NotificationType.WARNING
-            ? "warning"
-            : "info"
+          ? "warning"
+          : "info"
       }
       onDismiss={onDismiss}
       onPointerEnter={onPointerEnter}

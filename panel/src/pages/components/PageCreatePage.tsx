@@ -2,10 +2,10 @@ import * as React from "react";
 import { Plus } from "react-feather";
 import withStyles from "react-jss";
 import Select from "aurora-ui-kit/dist/components/Select";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
 import PageHeader from "../../components/PageHeader";
 import Container from "../../components/Container";
-import IconButton from "../../components/IconButton";
 import ActionDialog from "../../components/ActionDialog";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
@@ -117,9 +117,10 @@ export const PageCreatePage = decorate<Props>(
                     <PageHeader onBack={onBack} title={title}>
                       <IconButton
                         disabled={disabled || loading}
-                        icon={Plus}
                         onClick={toggleFieldAddDialog}
-                      />
+                      >
+                        <Plus />
+                      </IconButton>
                     </PageHeader>
                     <div className={classes.root}>
                       <div>

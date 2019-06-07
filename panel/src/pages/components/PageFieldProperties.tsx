@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Image } from "react-bootstrap";
 import { Image as ImageIcon, File as FileIcon, X } from "react-feather";
 import Button from "aurora-ui-kit/dist/components/Button";
 import Card from "aurora-ui-kit/dist/components/Card";
@@ -68,7 +67,11 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
             onChange={onChange}
           />
         ) : data.type === "image" ? (
-          <>
+          <div
+            style={{
+              paddingTop: 16,
+            }}
+          >
             <InputLabel label={i18n.t("Image")}>
               <input
                 name="value"
@@ -83,49 +86,41 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
             </InputLabel>
             <div>
               {data.value ? (
-                <>
-                  <Image
-                    src={"/static/" + data.value}
-                    rounded={true}
-                    responsive={true}
-                    style={{ margin: "10px 0" }}
-                  />
-                  <Button
-                    onClick={
-                      this.refs ? () => this.refs[data.name].click() : undefined
-                    }
-                    style={{ width: "100%" }}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    {i18n.t("Change image")}
-                  </Button>
-                </>
+                <img
+                  src={"/static/" + data.value}
+                  style={{
+                    borderRadius: 6,
+                    height: "auto",
+                    display: "block",
+                    maxWidth: "100%",
+                    margin: "10px 0",
+                  }}
+                />
               ) : (
-                <>
-                  <span
-                    style={{
-                      display: "block" as "block",
-                      margin: "20px auto",
-                      width: 64,
-                    }}
-                  >
-                    <ImageIcon size={64} />
-                  </span>
-                  <Button
-                    onClick={
-                      this.refs ? () => this.refs[data.name].click() : undefined
-                    }
-                    style={{ width: "100%" }}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    {i18n.t("Upload image")}
-                  </Button>
-                </>
+                <span
+                  style={{
+                    display: "block" as "block",
+                    margin: "20px auto",
+                    width: 64,
+                  }}
+                >
+                  <ImageIcon size={64} />
+                </span>
               )}
+              <Button
+                onClick={
+                  this.refs ? () => this.refs[data.name].click() : undefined
+                }
+                componentProps={{
+                  style: { width: "100%" },
+                }}
+                variant="outlined"
+                color="secondary"
+              >
+                {i18n.t("Upload image")}
+              </Button>
             </div>
-          </>
+          </div>
         ) : data.type === "file" ? (
           <>
             <InputLabel label={i18n.t("File")}>
@@ -141,46 +136,34 @@ export const PageFieldProperties: React.StatelessComponent<Props> = ({
             </InputLabel>
             <div>
               {data.value ? (
-                <>
-                  <a href={"/static/" + data.value}>
-                    {i18n.t("Download {{ filename }}", {
-                      filename: data.value,
-                    })}
-                  </a>
-                  <Button
-                    onClick={
-                      this.refs ? () => this.refs[data.name].click() : undefined
-                    }
-                    style={{ width: "100%" }}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    {i18n.t("Change file")}
-                  </Button>
-                </>
+                <a href={"/static/" + data.value}>
+                  {i18n.t("Download {{ filename }}", {
+                    filename: data.value,
+                  })}
+                </a>
               ) : (
-                <>
-                  <span
-                    style={{
-                      display: "block" as "block",
-                      margin: "20px auto",
-                      width: 64,
-                    }}
-                  >
-                    <FileIcon size={64} />
-                  </span>
-                  <Button
-                    onClick={
-                      this.refs ? () => this.refs[data.name].click() : undefined
-                    }
-                    style={{ width: "100%" }}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    {i18n.t("Upload file")}
-                  </Button>
-                </>
+                <span
+                  style={{
+                    display: "block" as "block",
+                    margin: "20px auto",
+                    width: 64,
+                  }}
+                >
+                  <FileIcon size={64} />
+                </span>
               )}
+              <Button
+                onClick={
+                  this.refs ? () => this.refs[data.name].click() : undefined
+                }
+                componentProps={{
+                  style: { width: "100%" },
+                }}
+                variant="outlined"
+                color="secondary"
+              >
+                {i18n.t("Change file")}
+              </Button>
             </div>
           </>
         ) : (

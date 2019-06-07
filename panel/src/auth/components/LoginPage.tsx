@@ -5,14 +5,15 @@ import Checkbox from "aurora-ui-kit/dist/components/Checkbox";
 import Button from "aurora-ui-kit/dist/components/Button";
 import Card from "aurora-ui-kit/dist/components/Card";
 import CardContent from "aurora-ui-kit/dist/components/CardContent";
+import Typography from "aurora-ui-kit/dist/components/Typography";
 import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import PageLayout from "./PageLayout";
 import Form from "../../components/Form";
 import Link from "../../components/Link";
-import Typography from "../../components/Typography";
 import i18n from "../../i18n";
 import Spacer from "../../components/Spacer";
+import auroraTheme from "aurora-ui-kit/dist/theme";
 
 export interface FormData {
   email: string;
@@ -124,6 +125,7 @@ export const LoginPage = decorate<Props>(
                 } as any)
               }
             />
+            <Spacer />
             <Checkbox
               checked={data.remember}
               label={i18n.t("Remember me")}
@@ -145,7 +147,11 @@ export const LoginPage = decorate<Props>(
               className={classes.forgotPasswordLink}
               href={passwordRecoveryHref}
             >
-              <Typography component="span" variant="anchor">
+              <Typography
+                componentProps={{
+                  style: auroraTheme.typography.anchor,
+                }}
+              >
                 {i18n.t("Reset password", {
                   context: "link",
                 })}

@@ -1,12 +1,12 @@
 import * as React from "react";
 import withStyles from "react-jss";
 import { Trash } from "react-feather";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
 import PageHeader from "../../components/PageHeader";
-import IconButton from "../../components/IconButton";
 import { FormViewProps, ListViewProps } from "../../";
 import DirectoryProperties from "./DirectoryProperties";
 import DirectoryPages from "./DirectoryPages";
@@ -65,11 +65,9 @@ export const DirectoryDetailsPage = decorate<Props>(
             title={directory ? directory.name : undefined}
             onBack={onBack}
           >
-            <IconButton
-              disabled={disabled || loading}
-              icon={Trash}
-              onClick={onDelete}
-            />
+            <IconButton disabled={disabled || loading} onClick={onDelete}>
+              <Trash />
+            </IconButton>
           </PageHeader>
           <div className={classes.root}>
             <div>

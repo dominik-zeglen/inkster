@@ -26,7 +26,6 @@ import PasswordRecovery from "./auth/views/PasswordRecovery";
 import { NotificationProvider } from "./components/Notificator";
 import urls from "./urls";
 import { AppProgressProvider } from "./components/AppProgress";
-import GlobalStylesheet from "./Stylesheet";
 
 interface ResponseError extends ErrorResponse {
   networkError?: Error & {
@@ -83,7 +82,6 @@ render(
               <AuroraThemeProvider theme={auroraTheme}>
                 <ThemeProvider theme={theme}>
                   <>
-                    <GlobalStylesheet />
                     <Baseline />
                     <NotificationProvider>
                       <AuthProvider>

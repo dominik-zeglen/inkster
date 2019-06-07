@@ -10,8 +10,8 @@ import {
   Settings,
 } from "react-feather";
 import * as classNames from "classnames";
+import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
-import IconButton from "./IconButton";
 import Toggle from "./Toggle";
 import i18n from "../i18n";
 
@@ -163,11 +163,9 @@ export const AppLayout = decorate<Props>(
                 })}
               </span>
             </div>
-            <IconButton
-              className={classes.shrinkMenu}
-              icon={isMenuShrunken ? Maximize2 : Minimize2}
-              onClick={shrinkMenu}
-            />
+            <IconButton className={classes.shrinkMenu} onClick={shrinkMenu}>
+              {isMenuShrunken ? <Maximize2 /> : <Minimize2 />}
+            </IconButton>
           </div>
           <div className={classes.content}>{children}</div>
         </div>

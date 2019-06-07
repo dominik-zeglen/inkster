@@ -13,7 +13,12 @@ interface Props extends StandardProps {
 }
 
 const decorate = withStyles(
-  (theme: any) => ({
+  theme => ({
+    hr: {
+      height: 1,
+      background: theme.mixins.fade(theme.colors.gray.main, 0.2),
+      border: "none",
+    },
     root: {
       marginBottom: theme.spacing * 2,
       display: "flex" as "flex",
@@ -27,7 +32,7 @@ const decorate = withStyles(
 export const FormSave = decorate<Props>(
   ({ classes, disabled, variant, onConfirm, ...props }) => (
     <div {...props}>
-      <hr />
+      <hr className={classes.hr} />
       <div className={classes.root}>
         <div className={classes.spacer} />
         <Button
