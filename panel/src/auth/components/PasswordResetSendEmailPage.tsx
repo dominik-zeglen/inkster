@@ -1,10 +1,10 @@
 import * as React from "react";
 import withStyles from "react-jss";
-import { Button } from "react-bootstrap";
+import Button from "aurora-ui-kit/dist/components/Button";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import PageLayout from "./PageLayout";
 import Form from "../../components/Form";
-import Input from "../../components/Input";
 import i18n from "../../i18n";
 
 export interface FormData {
@@ -36,20 +36,30 @@ export const PasswordResetSendEmailPage = decorate<Props>(
         >
           <Input
             label={i18n.t("E-mail")}
-            name="email"
-            helperText={i18n.t(
+            helpText={i18n.t(
               "Enter your e-mail address, so we can send you message with further instructions",
               {
                 context: "caption",
               },
             )}
-            type="email"
+            InputProps={{
+              componentProps: {
+                type: "email",
+              },
+            }}
             value={data.email}
-            onChange={change}
+            onChange={value =>
+              change({
+                target: {
+                  name: "email",
+                  value,
+                },
+              } as any)
+            }
           />
           <div className={classes.buttonContainer}>
             <Button
-              bsStyle="primary"
+              color="primary"
               disabled={disabled || !hasChanged}
               type="submit"
             >

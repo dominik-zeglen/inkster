@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Plus } from "react-feather";
 import withStyles from "react-jss";
+import Select from "aurora-ui-kit/dist/components/Select";
 
 import PageHeader from "../../components/PageHeader";
 import Container from "../../components/Container";
 import IconButton from "../../components/IconButton";
 import ActionDialog from "../../components/ActionDialog";
-import Input from "../../components/Input";
 import Form from "../../components/Form";
 import FormSave from "../../components/FormSave";
 import Toggle from "../../components/Toggle";
@@ -14,6 +14,7 @@ import { ViewProps, FormViewProps } from "../../";
 import i18n from "../../i18n";
 import PageProperties from "./PageProperties";
 import PageFieldProperties from "./PageFieldProperties";
+import { fieldTypes } from "../misc";
 
 interface PageField {
   id: string;
@@ -163,24 +164,27 @@ export const PageCreatePage = decorate<Props>(
                             onClose={toggleFieldAddDialog}
                             onConfirm={addField as () => void}
                           >
-                            <Input
-                              name="type"
-                              label={i18n.t("Type")}
+                            <Select
+                              // label={i18n.t("Type")}
+                              onChange={value =>
+                                handleAddFieldChange({
+                                  target: {
+                                    name: "type",
+                                    value,
+                                  },
+                                } as any)
+                              }
+                              color="primary"
+                              disabled={false}
+                              displayValue={fieldTypes()
+                                .find(
+                                  fieldType =>
+                                    fieldType.value === addFieldData.type,
+                                )
+                                .label.toString()}
+                              options={fieldTypes()}
                               value={addFieldData.type}
-                              onChange={handleAddFieldChange}
-                              type="select"
-                            >
-                              <>
-                                <option value="text">
-                                  {i18n.t("Short text")}
-                                </option>
-                                <option value="longText">
-                                  {i18n.t("Long text")}
-                                </option>
-                                <option value="image">{i18n.t("Image")}</option>
-                                <option value="file">{i18n.t("File")}</option>
-                              </>
-                            </Input>
+                            />
                           </ActionDialog>
                         )}
                       </Form>

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Plus, Trash } from "react-feather";
 import withStyles from "react-jss";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
-import Select, { ISelectOption } from "aurora-ui-kit/dist/components/Select";
+import Select from "aurora-ui-kit/dist/components/Select";
 
 import PageHeader from "../../components/PageHeader";
 import Container from "../../components/Container";
@@ -17,25 +17,7 @@ import PageFieldProperties from "./PageFieldProperties";
 import PageStatus from "./PageStatus";
 import { Page_page } from "../queries/types/Page";
 import Spacer from "../../components/Spacer";
-
-const fieldTypes: ISelectOption[] = [
-  {
-    label: i18n.t("Short text"),
-    value: "text",
-  },
-  {
-    label: i18n.t("Long text"),
-    value: "longText",
-  },
-  {
-    label: i18n.t("Image"),
-    value: "image",
-  },
-  {
-    label: i18n.t("File"),
-    value: "file",
-  },
-];
+import { fieldTypes } from "../misc";
 
 interface PageField {
   id: string;
@@ -240,13 +222,13 @@ export const PageDetailsPage = decorate<Props>(
                             }
                             color="primary"
                             disabled={false}
-                            displayValue={fieldTypes
+                            displayValue={fieldTypes()
                               .find(
                                 fieldType =>
                                   fieldType.value === addFieldData.type,
                               )
                               .label.toString()}
-                            options={fieldTypes}
+                            options={fieldTypes()}
                             value={addFieldData.type}
                           />
                         </ActionDialog>

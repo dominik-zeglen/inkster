@@ -1,10 +1,10 @@
 import * as React from "react";
 import withStyles from "react-jss";
-import { Button } from "react-bootstrap";
+import Button from "aurora-ui-kit/dist/components/Button";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import PageLayout from "./PageLayout";
 import Form from "../../components/Form";
-import Input from "../../components/Input";
 import i18n from "../../i18n";
 
 export interface FormData {
@@ -40,31 +40,51 @@ export const PasswordResetPage = decorate<Props>(
             label={i18n.t("New password", {
               context: "label",
             })}
-            name="password"
-            type="password"
+            InputProps={{
+              componentProps: {
+                type: "password",
+              },
+            }}
             value={data.password}
-            onChange={change}
+            onChange={value =>
+              change({
+                target: {
+                  name: "password",
+                  value,
+                },
+              } as any)
+            }
           />
           <Input
             error={data.password !== data.passwordConfirm}
             label={i18n.t("Confirm password", {
               context: "label",
             })}
-            helperText={
+            helpText={
               data.password !== data.passwordConfirm
                 ? i18n.t("Passwords do not match", {
                     context: "caption",
                   })
                 : undefined
             }
-            name="passwordConfirm"
-            type="password"
+            InputProps={{
+              componentProps: {
+                type: "password",
+              },
+            }}
             value={data.passwordConfirm}
-            onChange={change}
+            onChange={value =>
+              change({
+                target: {
+                  name: "passwordConfirm",
+                  value,
+                },
+              } as any)
+            }
           />
           <div className={classes.buttonContainer}>
             <Button
-              bsStyle="primary"
+              color="primary"
               disabled={
                 disabled ||
                 !hasChanged ||

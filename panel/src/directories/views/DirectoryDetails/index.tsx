@@ -1,4 +1,5 @@
 import * as React from "react";
+import Input from "aurora-ui-kit/dist/components/TextInput";
 
 import MutationProvider from "./MutationProvider";
 import Directory from "../../queries/qDirectory";
@@ -12,7 +13,6 @@ import { maybe, mergeQs } from "../../../utils";
 import { Modal, Pagination } from "../../../types";
 import ActionDialog from "../../../components/ActionDialog";
 import FormDialog from "../../../components/FormDialog";
-import Input from "../../../components/Input";
 import { PageCreate } from "../../queries/types/PageCreate";
 import Paginator, {
   createPaginationState,
@@ -181,8 +181,14 @@ export class DirectoryDetails extends React.Component<Props, State> {
                           >
                             {({ change, data: formData }) => (
                               <Input
-                                name="name"
-                                onChange={change}
+                                onChange={value =>
+                                  change({
+                                    target: {
+                                      name: "name",
+                                      value,
+                                    },
+                                  } as any)
+                                }
                                 value={formData.name}
                                 label={i18n.t("Page name")}
                               />
