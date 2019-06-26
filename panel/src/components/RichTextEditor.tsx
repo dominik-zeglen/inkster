@@ -1,5 +1,4 @@
 import * as React from "react";
-import withStyles, { WithStyles } from "react-jss";
 import { EditorState, convertFromRaw, convertToRaw, RichUtils } from "draft-js";
 import DraftEditor, { composeDecorators } from "draft-js-plugins-editor";
 import createInlineToolbarPlugin, {
@@ -27,6 +26,8 @@ import InputLabel from "aurora-ui-kit/dist/components/InputLabel";
 import Typography from "aurora-ui-kit/dist/components/Typography";
 
 import i18n from "../i18n";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface Props {
   id?: string;
@@ -63,14 +64,14 @@ const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
   addImage: imagePlugin.addImage,
 });
 
-const decorate = withStyles(theme => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   editor: {
     background: theme.mixins.fade(theme.colors.primary.main, 0.05),
     border: `1px solid ${theme.colors.primary.lightest}`,
     marginBottom: theme.spacing,
     marginTop: 0,
     padding: theme.spacing,
-    transition: theme.transition.time,
+    transition: theme.transition.default,
   },
   editorContainer: {
     paddingTop: theme.spacing * 3,
@@ -120,131 +121,137 @@ class HeadlinesPicker extends React.Component<any, any> {
   }
 }
 
-const HeadlinesButton = decorate(
-  class HeadlinesButtonComponent extends React.Component<any, any> {
-    onMouseDown = (event: any) => event.preventDefault();
+class HeadlinesButtonComponent extends React.Component<any, any> {
+  onMouseDown = (event: any) => event.preventDefault();
 
-    onClick = () => this.props.onOverrideContent(HeadlinesPicker);
+  onClick = () => this.props.onOverrideContent(HeadlinesPicker);
 
-    render() {
-      return (
-        <div
-          onMouseDown={this.onMouseDown}
-          className={this.props.classes.headlineButtonWrapper}
+  render() {
+    return (
+      <div
+        onMouseDown={this.onMouseDown}
+        className={this.props.classes.headlineButtonWrapper}
+      >
+        <button
+          onClick={this.onClick}
+          className={this.props.classes.headlineButton}
         >
-          <button
-            onClick={this.onClick}
-            className={this.props.classes.headlineButton}
-          >
-            H
-          </button>
-        </div>
-      );
-    }
-  },
-);
+          H
+        </button>
+      </div>
+    );
+  }
+}
+
+const HeadlinesButton: React.FC = props => {
+  const classes = useStyles();
+  return <HeadlinesButtonComponent {...props} classes={classes} />;
+};
 const Editor: any = DraftEditor;
-export const RichTextEditor = decorate<Props>(
-  class RichTextEditorComponent extends React.Component<
-    Props &
-      WithStyles<
-        | "editor"
-        | "editorContainer"
-        | "toolbar"
-        | "headlineButton"
-        | "headlineButtonWrapper"
-      >,
-    State
-  > {
-    state = {
-      editorState:
-        this.props.initialValue && this.props.initialValue !== ""
-          ? EditorState.createWithContent(
-              convertFromRaw(JSON.parse(this.props.initialValue)),
-            )
-          : EditorState.createEmpty(),
-      focused: false,
-    };
 
-    editor: any = null;
-    inlineToolbarPlugin = createInlineToolbarPlugin({
-      structure: [
-        BoldButton,
-        ItalicButton,
-        UnderlineButton,
-        Separator,
-        HeadlinesButton,
-        UnorderedListButton,
-        OrderedListButton,
-        BlockquoteButton,
-      ],
-    });
-
-    handleKeyCommand(command: any, editorState: any) {
-      const newState = RichUtils.handleKeyCommand(editorState, command);
-      if (newState) {
-        this.onChange(newState);
-        return "handled";
-      }
-      return "not-handled";
-    }
-
-    onBlur = () => this.setState({ focused: false });
-
-    onChange = (editorState: any) => {
-      const value = JSON.stringify(
-        convertToRaw(editorState.getCurrentContent()),
-      );
-      const event = {
-        target: { name: this.props.name, value },
-      };
-      this.props.onChange(event as any);
-      this.setState({ editorState });
-    };
-
-    onFocus = () => this.setState({ focused: true });
-
-    render() {
-      const { classes, label, helperText } = this.props;
-      const { InlineToolbar } = this.inlineToolbarPlugin;
-      const plugins = [
-        this.inlineToolbarPlugin,
-        dragNDropFileUploadPlugin,
-        blockDndPlugin,
-        focusPlugin,
-        alignmentPlugin,
-        resizeablePlugin,
-        imagePlugin,
-      ];
-      return (
-        <div className={classes.editorContainer}>
-          {label && <InputLabel label={label}>{null}</InputLabel>}
-          <InputFocus focused={this.state.focused}>
-            <div
-              className={[
-                classes.editor,
-                this.state.focused ? "active" : undefined,
-              ].join(" ")}
-            >
-              <Editor
-                editorState={this.state.editorState}
-                handleKeyCommand={this.handleKeyCommand}
-                plugins={plugins}
-                onBlur={this.onBlur}
-                onChange={this.onChange}
-                onFocus={this.onFocus}
-              />
-              <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
-              {this.state.focused && <AlignmentTool />}
-            </div>
-          </InputFocus>
-          <Typography variant="caption">
-            {helperText ||
-              i18n.t("Select text to enable text formatting tools")}
-          </Typography>
-        </div>
-      );
-    }
+class RichTextEditorComponent extends React.Component<
+  Props & {
+    classes: Record<
+      | "editor"
+      | "editorContainer"
+      | "toolbar"
+      | "headlineButton"
+      | "headlineButtonWrapper",
+      string
+    >;
   },
-);
+  State
+> {
+  state = {
+    editorState:
+      this.props.initialValue && this.props.initialValue !== ""
+        ? EditorState.createWithContent(
+            convertFromRaw(JSON.parse(this.props.initialValue)),
+          )
+        : EditorState.createEmpty(),
+    focused: false,
+  };
+
+  editor: any = null;
+  inlineToolbarPlugin = createInlineToolbarPlugin({
+    structure: [
+      BoldButton,
+      ItalicButton,
+      UnderlineButton,
+      Separator,
+      HeadlinesButton,
+      UnorderedListButton,
+      OrderedListButton,
+      BlockquoteButton,
+    ],
+  });
+
+  handleKeyCommand(command: any, editorState: any) {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return "handled";
+    }
+    return "not-handled";
+  }
+
+  onBlur = () => this.setState({ focused: false });
+
+  onChange = (editorState: any) => {
+    const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+    const event = {
+      target: { name: this.props.name, value },
+    };
+    this.props.onChange(event as any);
+    this.setState({ editorState });
+  };
+
+  onFocus = () => this.setState({ focused: true });
+
+  render() {
+    const { classes, label, helperText } = this.props;
+    const { InlineToolbar } = this.inlineToolbarPlugin;
+    const plugins = [
+      this.inlineToolbarPlugin,
+      dragNDropFileUploadPlugin,
+      blockDndPlugin,
+      focusPlugin,
+      alignmentPlugin,
+      resizeablePlugin,
+      imagePlugin,
+    ];
+    return (
+      <div className={classes.editorContainer}>
+        {label && <InputLabel label={label}>{null}</InputLabel>}
+        <InputFocus focused={this.state.focused}>
+          <div
+            className={[
+              classes.editor,
+              this.state.focused ? "active" : undefined,
+            ].join(" ")}
+          >
+            <Editor
+              editorState={this.state.editorState}
+              handleKeyCommand={this.handleKeyCommand}
+              plugins={plugins}
+              onBlur={this.onBlur}
+              onChange={this.onChange}
+              onFocus={this.onFocus}
+            />
+            <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
+            {this.state.focused && <AlignmentTool />}
+          </div>
+        </InputFocus>
+        <Typography variant="caption">
+          {helperText || i18n.t("Select text to enable text formatting tools")}
+        </Typography>
+      </div>
+    );
+  }
+}
+
+export const RichTextEditor: React.FC<Props> = props => {
+  const classes = useStyles();
+  return <RichTextEditorComponent {...props} classes={classes} />;
+};
 export default RichTextEditor;

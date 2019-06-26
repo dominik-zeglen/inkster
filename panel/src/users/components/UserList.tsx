@@ -8,33 +8,33 @@ import TableHead from "aurora-ui-kit/dist/components/TableHead";
 import TableFooter from "aurora-ui-kit/dist/components/TableFooter";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 import Status from "aurora-ui-kit/dist/components/Status";
-import withStyles, { CSSProperties } from "react-jss";
 
 import i18n from "../../i18n";
 import PaginationArrows from "../../components/PaginationArrows";
 import { ViewProps, PaginatedListProps } from "../..";
 import { UserList_users_edges_node } from "../queries/types/UserList";
 import { maybe, renderCollection } from "../../utils";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends ViewProps, PaginatedListProps {
   users: UserList_users_edges_node[];
 }
 
-const styles: CSSProperties = {
+const useStyles = createUseStyles({
   row: {
     cursor: "pointer",
   },
-};
-export const UserListPage = withStyles(styles)<Props>(
-  ({
-    classes,
-    disabled,
-    pageInfo,
-    users,
-    onNextPage,
-    onPreviousPage,
-    onRowClick,
-  }) => (
+});
+export const UserListPage: React.FC<Props> = ({
+  disabled,
+  pageInfo,
+  users,
+  onNextPage,
+  onPreviousPage,
+  onRowClick,
+}) => {
+  const classes = useStyles();
+  return (
     <Card>
       <Table>
         <TableHead>
@@ -85,6 +85,6 @@ export const UserListPage = withStyles(styles)<Props>(
         </TableBody>
       </Table>
     </Card>
-  ),
-);
+  );
+};
 export default UserListPage;

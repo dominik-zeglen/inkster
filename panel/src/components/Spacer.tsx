@@ -1,13 +1,15 @@
 import * as React from "react";
-import withStyles from "react-jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
-const decorate = withStyles(theme => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   root: {
     marginBottom: theme.spacing * 2,
   },
 }));
-export const Spacer = decorate(({ classes }) => (
-  <div className={classes.root} />
-));
+export const Spacer: React.FC = () => {
+  const classes = useStyles();
+  return <div className={classes.root} />;
+};
 Spacer.displayName = "Spacer";
 export default Spacer;

@@ -1,5 +1,4 @@
 import * as React from "react";
-import withStyles from "react-jss";
 
 import Container from "../../components/Container";
 import PageHeader from "../../components/PageHeader";
@@ -7,6 +6,8 @@ import i18n from "../../i18n";
 import HomePageNewestPages from "./HomePageNewestPages";
 import { Viewer_viewer } from "../queries/types/Viewer";
 import { maybe } from "../../utils";
+import { ITheme } from "aurora-ui-kit/dist/theme";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 export interface Props {
   disabled: boolean;
@@ -14,7 +15,7 @@ export interface Props {
   onPageClick: (id: string) => void;
 }
 
-const decorate = withStyles(theme => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   root: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
@@ -22,8 +23,9 @@ const decorate = withStyles(theme => ({
   },
 }));
 
-export const HomePage = decorate<Props>(
-  ({ classes, disabled, user, onPageClick }) => (
+export const HomePage: React.FC<Props> = ({ disabled, user, onPageClick }) => {
+  const classes = useStyles();
+  return (
     <Container width="md">
       <PageHeader
         title={
@@ -45,6 +47,6 @@ export const HomePage = decorate<Props>(
         </div>
       </div>
     </Container>
-  ),
-);
+  );
+};
 export default HomePage;

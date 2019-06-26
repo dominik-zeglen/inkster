@@ -1,22 +1,18 @@
 import * as React from "react";
-import { ThemeProvider } from "react-jss";
 import { BrowserRouter } from "react-router-dom";
-import auroraTheme from "aurora-ui-kit/dist/theme";
-import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/styled-components";
+import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/jss";
 
-import GlobalStylesheet from "../src/Stylesheet";
 import theme from "../src/theme";
+import Baseline from "aurora-ui-kit/dist/components/Baseline";
 
 export const Decorator = (storyFn: any) => (
   <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <AuroraThemeProvider theme={auroraTheme}>
-        <>
-          <GlobalStylesheet />
-          {storyFn()}
-        </>
-      </AuroraThemeProvider>
-    </ThemeProvider>
+    <AuroraThemeProvider theme={theme}>
+      <>
+        <Baseline />
+        {storyFn()}
+      </>
+    </AuroraThemeProvider>
   </BrowserRouter>
 );
 export default Decorator;

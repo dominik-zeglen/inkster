@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight } from "react-feather";
-import withStyles from "react-jss";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface Props {
   disabled: boolean;
@@ -13,7 +14,7 @@ interface Props {
   onPreviousPage: () => void;
 }
 
-const decorate = withStyles((theme: any) => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   root: {
     display: "grid",
     gridColumnGap: theme.spacing * 3 + "px",
@@ -23,8 +24,14 @@ const decorate = withStyles((theme: any) => ({
   },
 }));
 
-export const PaginationArrows = decorate<Props>(
-  ({ classes, disabled, pageInfo, onNextPage, onPreviousPage }) => (
+export const PaginationArrows: React.FC<Props> = ({
+  disabled,
+  pageInfo,
+  onNextPage,
+  onPreviousPage,
+}) => {
+  const classes = useStyles();
+  return (
     <div className={classes.root}>
       <div />
       <IconButton
@@ -45,6 +52,6 @@ export const PaginationArrows = decorate<Props>(
         <ArrowRight />
       </IconButton>
     </div>
-  ),
-);
+  );
+};
 export default PaginationArrows;

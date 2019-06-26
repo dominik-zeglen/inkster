@@ -1,13 +1,14 @@
 import * as React from "react";
-import withStyles from "react-jss";
 import Progress from "aurora-ui-kit/dist/components/LinearProgress";
 import Typography from "aurora-ui-kit/dist/components/Typography";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface Props {
   progress: number;
 }
 
-const decorate = withStyles((theme: any) => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   center: {
     display: "flex",
     flexDirection: "column" as "column",
@@ -33,18 +34,21 @@ const decorate = withStyles((theme: any) => ({
   },
 }));
 
-export const LoaderOverlay = decorate<Props>(({ classes, progress }) => (
-  <div className={classes.overlay}>
-    <Progress />
-    <div className={classes.center}>
-      <div className={classes.root}>
-        <Typography variant="mainHeading">
-          {progress.toLocaleString("en", {
-            style: "percent",
-          })}
-        </Typography>
+export const LoaderOverlay: React.FC<Props> = ({ progress }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.overlay}>
+      <Progress />
+      <div className={classes.center}>
+        <div className={classes.root}>
+          <Typography variant="mainHeading">
+            {progress.toLocaleString("en", {
+              style: "percent",
+            })}
+          </Typography>
+        </div>
       </div>
     </div>
-  </div>
-));
+  );
+};
 export default LoaderOverlay;

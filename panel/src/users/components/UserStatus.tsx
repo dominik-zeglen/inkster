@@ -3,12 +3,13 @@ import Card from "aurora-ui-kit/dist/components/Card";
 import CardContent from "aurora-ui-kit/dist/components/CardContent";
 import CardHeader from "aurora-ui-kit/dist/components/CardHeader";
 import CardTitle from "aurora-ui-kit/dist/components/CardTitle";
-import withStyles from "react-jss";
 import Checkbox from "aurora-ui-kit/dist/components/Checkbox";
 
 import i18n from "../../i18n";
 import Date from "../../components/Date";
-import Skeleton from "../../components/Skeleton";
+import { ITheme } from "aurora-ui-kit/dist/theme";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 
 interface Props {
   createdAt?: string;
@@ -19,16 +20,19 @@ interface Props {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const decorate = withStyles(
-  (theme: any) => ({
-    label: {
-      marginRight: theme.spacing,
-    },
-  }),
-  { displayName: "UserStatus" },
-);
-export const UserStatus = decorate<Props>(
-  ({ classes, createdAt, data, updatedAt, onChange }) => (
+const useStyles = createUseStyles((theme: ITheme) => ({
+  label: {
+    marginRight: theme.spacing,
+  },
+}));
+export const UserStatus: React.FC<Props> = ({
+  createdAt,
+  data,
+  updatedAt,
+  onChange,
+}) => {
+  const classes = useStyles();
+  return (
     <Card>
       <CardHeader>
         <CardTitle>{i18n.t("Status")}</CardTitle>
@@ -68,6 +72,6 @@ export const UserStatus = decorate<Props>(
         />
       </CardContent>
     </Card>
-  ),
-);
+  );
+};
 export default UserStatus;

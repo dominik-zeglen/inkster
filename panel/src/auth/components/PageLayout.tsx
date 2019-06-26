@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles from "react-jss";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 import Card from "aurora-ui-kit/dist/components/Card";
 
 import Container from "../../components/Container";
@@ -8,7 +8,7 @@ interface Props {
   header: string;
 }
 
-const decorate = withStyles({
+const useStyles = createUseStyles({
   header: {
     textAlign: "center" as "center",
     textTransform: "uppercase" as "uppercase",
@@ -24,14 +24,17 @@ const decorate = withStyles({
     padding: 80,
   },
 });
-export const PageLayout = decorate<Props>(({ classes, children, header }) => (
-  <Container width="xs">
-    <div className={classes.root}>
-      <Card className={classes.panel}>
-        <h2 className={classes.header}>{header}</h2>
-        {children}
-      </Card>
-    </div>
-  </Container>
-));
+export const PageLayout: React.FC<Props> = ({ children, header }) => {
+  const classes = useStyles();
+  return (
+    <Container width="xs">
+      <div className={classes.root}>
+        <Card className={classes.panel}>
+          <h2 className={classes.header}>{header}</h2>
+          {children}
+        </Card>
+      </div>
+    </Container>
+  );
+};
 export default PageLayout;

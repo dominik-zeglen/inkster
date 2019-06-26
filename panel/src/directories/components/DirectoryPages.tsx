@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Plus } from "react-feather";
 import TableRow from "aurora-ui-kit/dist/components/TableRow";
-import withStyles, { CSSProperties } from "react-jss";
 import TableBody from "aurora-ui-kit/dist/components/TableBody";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
@@ -19,6 +18,7 @@ import PaginationArrows from "../../components/PaginationArrows";
 import i18n from "../../i18n";
 import { Directory_getDirectory_pages_edges_node } from "../queries/types/Directory";
 import { renderCollection, maybe } from "../../utils";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends PaginatedListProps {
   disabled: boolean;
@@ -26,22 +26,22 @@ interface Props extends PaginatedListProps {
   onAdd: () => void;
 }
 
-const styles: CSSProperties = {
+const useStyles = createUseStyles({
   row: {
     cursor: "pointer",
   },
-};
-export const DirectoryRootList = withStyles(styles)<Props>(
-  ({
-    classes,
-    disabled,
-    pages,
-    pageInfo,
-    onAdd,
-    onNextPage,
-    onPreviousPage,
-    onRowClick,
-  }) => (
+});
+export const DirectoryRootList: React.FC<Props> = ({
+  disabled,
+  pages,
+  pageInfo,
+  onAdd,
+  onNextPage,
+  onPreviousPage,
+  onRowClick,
+}) => {
+  const classes = useStyles();
+  return (
     <Card>
       <CardHeader>
         <CardTitle>{i18n.t("Pages")}</CardTitle>
@@ -98,6 +98,6 @@ export const DirectoryRootList = withStyles(styles)<Props>(
         </TableBody>
       </Table>
     </Card>
-  ),
-);
+  );
+};
 export default DirectoryRootList;

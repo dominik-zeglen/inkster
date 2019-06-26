@@ -10,7 +10,6 @@ import TableHead from "aurora-ui-kit/dist/components/TableHead";
 import TableFooter from "aurora-ui-kit/dist/components/TableFooter";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 import Status from "aurora-ui-kit/dist/components/Status";
-import withStyles, { CSSProperties } from "react-jss";
 
 import i18n from "../../i18n";
 import PaginationArrows from "../../components/PaginationArrows";
@@ -18,26 +17,27 @@ import { ViewProps, PaginatedListProps } from "../..";
 import { maybe, renderCollection } from "../../utils";
 import { UserDetails_user_pages_edges_node } from "../queries/types/UserDetails";
 import Date from "../../components/Date";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends ViewProps, PaginatedListProps {
   pages: UserDetails_user_pages_edges_node[];
 }
 
-const styles: CSSProperties = {
+const useStyles = createUseStyles({
   row: {
     cursor: "pointer",
   },
-};
-export const UserPages = withStyles(styles)<Props>(
-  ({
-    classes,
-    disabled,
-    pageInfo,
-    pages,
-    onNextPage,
-    onPreviousPage,
-    onRowClick,
-  }) => (
+});
+export const UserPages: React.FC<Props> = ({
+  disabled,
+  pageInfo,
+  pages,
+  onNextPage,
+  onPreviousPage,
+  onRowClick,
+}) => {
+  const classes = useStyles();
+  return (
     <Card>
       <CardHeader>
         <CardTitle>{i18n.t("Written by  user")}</CardTitle>
@@ -104,6 +104,6 @@ export const UserPages = withStyles(styles)<Props>(
         </TableBody>
       </Table>
     </Card>
-  ),
-);
+  );
+};
 export default UserPages;

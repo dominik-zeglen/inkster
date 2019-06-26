@@ -1,5 +1,4 @@
 import * as React from "react";
-import withStyles from "react-jss";
 import { Trash } from "react-feather";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
@@ -14,6 +13,8 @@ import DirectoryStatus from "./DirectoryStatus";
 import { Directory_getDirectory } from "../queries/types/Directory";
 import { maybe } from "../../utils";
 import Spacer from "../../components/Spacer";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface FormData {
   name: string;
@@ -24,32 +25,29 @@ interface Props extends FormViewProps<FormData>, ListViewProps {
   onDelete: () => void;
 }
 
-const decorate = withStyles(
-  (theme: any) => ({
-    root: {
-      display: "grid" as "grid",
-      gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr",
-    },
-  }),
-  { displayName: "DirectoryDetailsPage" },
-);
-export const DirectoryDetailsPage = decorate<Props>(
-  ({
-    classes,
-    directory,
-    disabled,
-    loading,
-    transaction,
-    pageInfo,
-    onAdd,
-    onBack,
-    onDelete,
-    onSubmit,
-    onNextPage,
-    onPreviousPage,
-    onRowClick,
-  }) => (
+const useStyles = createUseStyles((theme: ITheme) => ({
+  root: {
+    display: "grid" as "grid",
+    gridColumnGap: theme.spacing + "px",
+    gridTemplateColumns: "2fr 1fr",
+  },
+}));
+export const DirectoryDetailsPage: React.FC<Props> = ({
+  directory,
+  disabled,
+  loading,
+  transaction,
+  pageInfo,
+  onAdd,
+  onBack,
+  onDelete,
+  onSubmit,
+  onNextPage,
+  onPreviousPage,
+  onRowClick,
+}) => {
+  const classes = useStyles();
+  return (
     <Form
       initial={{
         isPublished:
@@ -106,6 +104,6 @@ export const DirectoryDetailsPage = decorate<Props>(
         </Container>
       )}
     </Form>
-  ),
-);
+  );
+};
 export default DirectoryDetailsPage;

@@ -1,11 +1,12 @@
 import * as React from "react";
-import withStyles from "react-jss";
 
 import Notification, {
   NotificationProps,
-  NotificationType
+  NotificationType,
 } from "./Notification";
 import { NotificatorContext } from ".";
+import { ITheme } from "aurora-ui-kit/dist/theme";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 interface NotificationProviderState {
@@ -16,33 +17,34 @@ interface NotificationProviderState {
   >;
 }
 
-const decorate = withStyles(theme => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   notificationContainer: {
     bottom: theme.spacing * 2,
     marginLeft: theme.spacing * 2,
     maxWidth: 340,
     position: "fixed" as "fixed",
     right: theme.spacing * 2,
-    width: '100%'
-  }
+    width: "100%",
+  },
 }));
-const NotificationContainer = decorate(({ classes, ...props }) => (
-  <div className={classes.notificationContainer} {...props} />
-));
+const NotificationContainer: React.FC = ({ ...props }) => {
+  const classes = useStyles();
+  return <div className={classes.notificationContainer} {...props} />;
+};
 
 export class NotificationProvider extends React.Component<
   {},
   NotificationProviderState
 > {
   state: NotificationProviderState = {
-    notifications: []
+    notifications: [],
   };
 
   handleNotificationClose = (key: string) =>
     this.setState({
       notifications: this.state.notifications.filter(
-        notification => notification.key !== key
-      )
+        notification => notification.key !== key,
+      ),
     });
 
   handleNotificationPush = (notification: {
@@ -52,8 +54,8 @@ export class NotificationProvider extends React.Component<
     this.setState({
       notifications: this.state.notifications.concat({
         ...notification,
-        key: new Date().getTime().toString()
-      })
+        key: new Date().getTime().toString(),
+      }),
     });
 
   render() {

@@ -7,13 +7,12 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { HttpLink } from "apollo-link-http";
 import { InMemoryCache, defaultDataIdFromObject } from "apollo-cache-inmemory";
 import { render } from "react-dom";
-import { ThemeProvider } from "react-jss";
 import Baseline from "aurora-ui-kit/dist/components/Baseline";
-import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/styled-components";
+import { ThemeProvider as AuroraThemeProvider } from "aurora-ui-kit/dist/utils/jss";
 
 import App from "./App";
 import AppRoot from "./AppRoot";
-import theme, { auroraTheme } from "./theme";
+import { theme } from "./theme";
 import UploadProvider from "./UploadProvider";
 import LoaderOverlay from "./components/LoaderOverlay";
 import { DateProvider } from "./components/Date";
@@ -79,49 +78,43 @@ render(
             <BrowserRouter
               basename={process.env.NODE_ENV === "production" ? "/panel/" : "/"}
             >
-              <AuroraThemeProvider theme={auroraTheme}>
-                <ThemeProvider theme={theme}>
-                  <>
-                    <Baseline />
-                    <NotificationProvider>
-                      <AuthProvider>
-                        {({
-                          hasToken,
-                          isAuthenticated,
-                          loginLoading,
-                          tokenVerifyLoading,
-                        }) =>
-                          isAuthenticated ? (
-                            <>
-                              <AppRoot>
-                                <App />
-                              </AppRoot>
-                              {uploadState.active && (
-                                <LoaderOverlay
-                                  progress={uploadState.progress}
-                                />
-                              )}
-                            </>
-                          ) : hasToken && tokenVerifyLoading ? (
-                            <span />
-                          ) : (
-                            <Switch>
-                              <Route
-                                path={urls.passwordRecovery}
-                                component={PasswordRecovery}
-                              />
-                              <Route
-                                component={() => (
-                                  <Login loading={loginLoading} />
-                                )}
-                              />
-                            </Switch>
-                          )
-                        }
-                      </AuthProvider>
-                    </NotificationProvider>
-                  </>
-                </ThemeProvider>
+              <AuroraThemeProvider theme={theme}>
+                <>
+                  <Baseline />
+                  <NotificationProvider>
+                    <AuthProvider>
+                      {({
+                        hasToken,
+                        isAuthenticated,
+                        loginLoading,
+                        tokenVerifyLoading,
+                      }) =>
+                        isAuthenticated ? (
+                          <>
+                            <AppRoot>
+                              <App />
+                            </AppRoot>
+                            {uploadState.active && (
+                              <LoaderOverlay progress={uploadState.progress} />
+                            )}
+                          </>
+                        ) : hasToken && tokenVerifyLoading ? (
+                          <span />
+                        ) : (
+                          <Switch>
+                            <Route
+                              path={urls.passwordRecovery}
+                              component={PasswordRecovery}
+                            />
+                            <Route
+                              component={() => <Login loading={loginLoading} />}
+                            />
+                          </Switch>
+                        )
+                      }
+                    </AuthProvider>
+                  </NotificationProvider>
+                </>
               </AuroraThemeProvider>
             </BrowserRouter>
           </ApolloProvider>

@@ -1,10 +1,11 @@
 import * as React from "react";
 import Button from "aurora-ui-kit/dist/components/Button";
-import withStyles from "react-jss";
 
 import { StandardProps } from "./";
 import { TransactionState } from "../";
 import i18n from "../i18n";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface Props extends StandardProps {
   disabled: boolean;
@@ -12,25 +13,29 @@ interface Props extends StandardProps {
   onConfirm: (event: any) => void;
 }
 
-const decorate = withStyles(
-  theme => ({
-    hr: {
-      height: 1,
-      background: theme.mixins.fade(theme.colors.gray.main, 0.2),
-      border: "none",
-    },
-    root: {
-      marginBottom: theme.spacing * 2,
-      display: "flex" as "flex",
-    },
-    spacer: {
-      flex: 1,
-    },
-  }),
-  { displayName: "FormSave" },
-);
-export const FormSave = decorate<Props>(
-  ({ classes, disabled, variant, onConfirm, ...props }) => (
+const useStyles = createUseStyles((theme: ITheme) => ({
+  hr: {
+    height: 1,
+    background: theme.mixins.fade(theme.colors.gray.main, theme.alpha.default),
+    border: "none",
+  },
+  root: {
+    marginBottom: theme.spacing * 2,
+    display: "flex" as "flex",
+  },
+  spacer: {
+    flex: 1,
+  },
+}));
+export const FormSave: React.FC<Props> = ({
+  disabled,
+  variant,
+  onConfirm,
+  ...props
+}) => {
+  const classes = useStyles();
+
+  return (
     <div {...props}>
       <hr className={classes.hr} />
       <div className={classes.root}>
@@ -58,6 +63,6 @@ export const FormSave = decorate<Props>(
         </Button>
       </div>
     </div>
-  ),
-);
+  );
+};
 export default FormSave;

@@ -8,11 +8,11 @@ import Table from "aurora-ui-kit/dist/components/Table";
 import TableBody from "aurora-ui-kit/dist/components/TableBody";
 import TableRow from "aurora-ui-kit/dist/components/TableRow";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
-import withStyles, { CSSProperties } from "react-jss";
 
 import i18n from "../../i18n";
 import { renderCollection, maybe } from "../../utils";
 import { Viewer_viewer_pages_edges_node } from "../queries/types/Viewer";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props {
   disabled: boolean;
@@ -20,13 +20,18 @@ interface Props {
   onPageClick: (id: string) => void;
 }
 
-const styles: CSSProperties = {
+const useStyles = createUseStyles({
   row: {
     cursor: "pointer",
   },
-};
-const HomePageNewestPages = withStyles(styles)<Props>(
-  ({ classes, disabled, pages, onPageClick }) => (
+});
+const HomePageNewestPages: React.FC<Props> = ({
+  disabled,
+  pages,
+  onPageClick,
+}) => {
+  const classes = useStyles();
+  return (
     <Card>
       <CardHeader>
         <CardTitle>{i18n.t("Your newest pages")}</CardTitle>
@@ -50,6 +55,6 @@ const HomePageNewestPages = withStyles(styles)<Props>(
         </TableBody>
       </Table>
     </Card>
-  ),
-);
+  );
+};
 export default HomePageNewestPages;

@@ -1,5 +1,4 @@
 import * as React from "react";
-import withStyles from "react-jss";
 import { Trash } from "react-feather";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
@@ -14,6 +13,8 @@ import { UserDetails_user } from "../queries/types/UserDetails";
 import Spacer from "../../components/Spacer";
 import UserPages from "./UserPages";
 import { maybe } from "../../utils";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface FormData {
   email: string;
@@ -24,31 +25,28 @@ interface Props extends FormViewProps<FormData>, PaginatedListProps {
   onDelete: () => void;
 }
 
-const decorate = withStyles(
-  theme => ({
-    cardContainer: {
-      marginBottom: theme.spacing,
-    },
-    root: {
-      display: "grid" as "grid",
-      gridColumnGap: theme.spacing + "px",
-      gridTemplateColumns: "2fr 1fr",
-    },
-  }),
-  { displayName: "UserDetailsPage" },
-);
-export const UserDetailsPage = decorate<Props>(
-  ({
-    classes,
-    disabled,
-    loading,
-    transaction,
-    user,
-    onBack,
-    onDelete,
-    onSubmit,
-    ...listProps
-  }) => (
+const useStyles = createUseStyles((theme: ITheme) => ({
+  cardContainer: {
+    marginBottom: theme.spacing,
+  },
+  root: {
+    display: "grid" as "grid",
+    gridColumnGap: theme.spacing + "px",
+    gridTemplateColumns: "2fr 1fr",
+  },
+}));
+export const UserDetailsPage: React.FC<Props> = ({
+  disabled,
+  loading,
+  transaction,
+  user,
+  onBack,
+  onDelete,
+  onSubmit,
+  ...listProps
+}) => {
+  const classes = useStyles();
+  return (
     <Form
       initial={{
         email: user ? user.email : "",
@@ -96,6 +94,6 @@ export const UserDetailsPage = decorate<Props>(
         </Container>
       )}
     </Form>
-  ),
-);
+  );
+};
 export default UserDetailsPage;

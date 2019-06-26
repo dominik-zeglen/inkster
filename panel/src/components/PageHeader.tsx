@@ -1,16 +1,18 @@
 import * as React from "react";
-import withStyles from "react-jss";
 import { ArrowLeft } from "react-feather";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
 
-import Skeleton from "./Skeleton";
+import { ITheme } from "aurora-ui-kit/dist/theme";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import { getFontSize } from "aurora-ui-kit/dist/components/Typography";
+import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 
 interface Props {
   title?: string | React.ReactNode;
   onBack?: () => void;
 }
 
-const decorate = withStyles((theme: any) => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   root: {
     marginTop: theme.spacing * 2.5,
     marginBottom: theme.spacing * 2,
@@ -23,11 +25,12 @@ const decorate = withStyles((theme: any) => ({
     flex: 1,
     marginLeft: theme.spacing,
     marginTop: -2,
-    ...theme.typography.mainHeading,
+    fontSize: getFontSize("mainHeading"),
   },
 }));
-export const PageHeader = decorate<Props>(
-  ({ children, classes, title, onBack }) => (
+export const PageHeader: React.FC<Props> = ({ children, title, onBack }) => {
+  const classes = useStyles();
+  return (
     <div className={classes.root}>
       <div className={classes.container}>
         {!!onBack ? (
@@ -41,6 +44,6 @@ export const PageHeader = decorate<Props>(
         {children}
       </div>
     </div>
-  ),
-);
+  );
+};
 export default PageHeader;

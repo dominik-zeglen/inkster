@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles from "react-jss";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 import Button from "aurora-ui-kit/dist/components/Button";
 import Input from "aurora-ui-kit/dist/components/TextInput";
 
@@ -21,14 +21,16 @@ const initialForm: FormData = {
   password: "",
   passwordConfirm: "",
 };
-const decorate = withStyles({
+const useStyles = createUseStyles({
   buttonContainer: {
     display: "flex" as "flex",
     justifyContent: "flex-end" as "flex-end",
   },
 });
-export const PasswordResetPage = decorate<Props>(
-  ({ classes, disabled, onSubmit }) => (
+export const PasswordResetPage: React.FC<Props> = ({ disabled, onSubmit }) => {
+  const classes = useStyles();
+
+  return (
     <Form initial={initialForm} onSubmit={onSubmit}>
       {({ change, data, hasChanged }) => (
         <PageLayout
@@ -98,6 +100,6 @@ export const PasswordResetPage = decorate<Props>(
         </PageLayout>
       )}
     </Form>
-  ),
-);
+  );
+};
 export default PasswordResetPage;

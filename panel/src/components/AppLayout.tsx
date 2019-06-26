@@ -1,5 +1,5 @@
 import * as React from "react";
-import withStyles from "react-jss";
+import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 import {
   Box,
   Home,
@@ -11,6 +11,7 @@ import {
 } from "react-feather";
 import * as classNames from "classnames";
 import IconButton from "aurora-ui-kit/dist/components/IconButton";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 import Toggle from "./Toggle";
 import i18n from "../i18n";
@@ -28,7 +29,7 @@ interface Props {
   onSectionClick: (section: string) => () => void;
 }
 
-const decorate = withStyles(theme => ({
+const useStyles = createUseStyles((theme: ITheme) => ({
   active: {},
   content: {
     flexGrow: 1,
@@ -54,7 +55,7 @@ const decorate = withStyles(theme => ({
     marginBottom: theme.spacing,
     overflow: "hidden",
     padding: theme.spacing,
-    transition: theme.transition.time,
+    transition: theme.transition.default,
   },
   menuText: {
     left: 0,
@@ -71,8 +72,8 @@ const decorate = withStyles(theme => ({
     marginBottom: theme.spacing,
   },
   sideMenu: {
-    background: `linear-gradient(-45deg, ${theme.colors.black.main}, ${
-      theme.colors.black.dark
+    background: `linear-gradient(45deg, ${theme.colors.gray.darkest}, ${
+      theme.colors.common.black
     })`,
     color: theme.colors.gray.lightest,
     display: "flex" as "flex",
@@ -82,7 +83,7 @@ const decorate = withStyles(theme => ({
     width: SIDEBAR_WIDTH,
     maxWidth: SIDEBAR_WIDTH,
     minHeight: "100vh",
-    transition: theme.transition.time,
+    transition: theme.transition.default,
   },
   sideMenuShrunken: {
     "& $link": {
@@ -102,8 +103,15 @@ const decorate = withStyles(theme => ({
     flex: 1,
   },
 }));
-export const AppLayout = decorate<Props>(
-  ({ classes, children, section, onLogout, onSectionClick }) => (
+export const AppLayout: React.FC<Props> = ({
+  children,
+  section,
+  onLogout,
+  onSectionClick,
+}) => {
+  const classes = useStyles();
+
+  return (
     <Toggle initial={true}>
       {(isMenuShrunken, { toggle: shrinkMenu }) => (
         <div className={classes.root}>
@@ -171,6 +179,6 @@ export const AppLayout = decorate<Props>(
         </div>
       )}
     </Toggle>
-  ),
-);
+  );
+};
 export default AppLayout;
