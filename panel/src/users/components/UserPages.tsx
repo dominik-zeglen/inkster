@@ -10,6 +10,7 @@ import TableHead from "aurora-ui-kit/dist/components/TableHead";
 import TableFooter from "aurora-ui-kit/dist/components/TableFooter";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
 import Status from "aurora-ui-kit/dist/components/Status";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
 
 import i18n from "../../i18n";
 import PaginationArrows from "../../components/PaginationArrows";
@@ -17,13 +18,15 @@ import { ViewProps, PaginatedListProps } from "../..";
 import { maybe, renderCollection } from "../../utils";
 import { UserDetails_user_pages_edges_node } from "../queries/types/UserDetails";
 import Date from "../../components/Date";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends ViewProps, PaginatedListProps {
   pages: UserDetails_user_pages_edges_node[];
 }
 
 const useStyles = createUseStyles({
+  colStatus: css`
+    text-align: center;
+  `,
   row: {
     cursor: "pointer",
   },
@@ -46,7 +49,9 @@ export const UserPages: React.FC<Props> = ({
         <TableHead>
           <TableCell>{i18n.t("Title")}</TableCell>
           <TableCell>{i18n.t("Created")}</TableCell>
-          <TableCell>{i18n.t("Status")}</TableCell>
+          <TableCell className={classes.colStatus}>
+            {i18n.t("Status")}
+          </TableCell>
         </TableHead>
         <TableFooter>
           <TableRow>
@@ -80,7 +85,7 @@ export const UserPages: React.FC<Props> = ({
                     <Skeleton />,
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className={classes.colStatus}>
                   {page && page.isPublished !== undefined ? (
                     <Status color={page.isPublished ? "primary" : "disabled"}>
                       {page.isPublished

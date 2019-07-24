@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import * as React from "react";
 import { EditorState, convertFromRaw, convertToRaw, RichUtils } from "draft-js";
 import DraftEditor, { composeDecorators } from "draft-js-plugins-editor";
@@ -14,9 +15,12 @@ import {
   UnorderedListButton,
   OrderedListButton,
   BlockquoteButton,
+  AlignBlockDefaultButton,
+  AlignBlockLeftButton,
+  AlignBlockCenterButton,
+  AlignBlockRightButton,
 } from "draft-js-buttons";
 import createImagePlugin from "draft-js-image-plugin";
-import createAlignmentPlugin from "draft-js-alignment-plugin";
 import createFocusPlugin from "draft-js-focus-plugin";
 import createResizeablePlugin from "draft-js-resizeable-plugin";
 import createBlockDndPlugin from "draft-js-drag-n-drop-plugin";
@@ -24,10 +28,10 @@ import createDragNDropUploadPlugin from "@mikeljames/draft-js-drag-n-drop-upload
 import InputFocus from "aurora-ui-kit/dist/components/InputFocus";
 import InputLabel from "aurora-ui-kit/dist/components/InputLabel";
 import Typography from "aurora-ui-kit/dist/components/Typography";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
+import { ITheme } from "aurora-ui-kit/dist/theme";
 
 import i18n from "../i18n";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
-import { ITheme } from "aurora-ui-kit/dist/theme";
 
 interface Props {
   id?: string;
@@ -48,25 +52,42 @@ const mockUpload = (opts: any) => console.log(opts);
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
-const alignmentPlugin = createAlignmentPlugin();
-const { AlignmentTool } = alignmentPlugin;
-
-const decorator = composeDecorators(
-  resizeablePlugin.decorator,
-  alignmentPlugin.decorator,
-  focusPlugin.decorator,
-  blockDndPlugin.decorator,
-);
-const imagePlugin = createImagePlugin({ decorator });
-
-const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
-  handleUpload: mockUpload,
-  addImage: imagePlugin.addImage,
-});
 
 const useStyles = createUseStyles((theme: ITheme) => ({
+  button: {
+    "&": css`
+      -webkit-appearance: none;
+      align-items: center;
+      background: ${theme.mixins.fade(
+        theme.colors.primary.main,
+        theme.alpha.light,
+      )};
+      border: none;
+      color: ${theme.colors.gray.dark};
+      cursor: pointer;
+      display: flex;
+      height: 32px;
+      justify-content: center;
+      padding: 0;
+      width: 32px;
+    `,
+    ":focus, &:hover": css`
+      background: ${theme.mixins.fade(
+        theme.colors.primary.main,
+        theme.alpha.default,
+      )};
+    `,
+  },
+  buttonActive: {
+    "&$button": css`
+      background: ${theme.mixins.fade(
+        theme.colors.primary.main,
+        theme.alpha.default,
+      )};
+    `,
+  },
   editor: {
-    background: theme.mixins.fade(theme.colors.primary.main, 0.05),
+    background: theme.mixins.fade(theme.colors.primary.main, theme.alpha.light),
     border: `1px solid ${theme.colors.primary.lightest}`,
     marginBottom: theme.spacing,
     marginTop: 0,
@@ -76,82 +97,116 @@ const useStyles = createUseStyles((theme: ITheme) => ({
   editorContainer: {
     paddingTop: theme.spacing * 3,
   },
-  headlineButton: {
-    background: "transparent",
-    color: "#888",
-    fontSize: 21,
-    border: 0,
-    verticalAlign: "bottom",
-    position: "relative" as "relative",
-    top: -1,
-    height: 34,
-    width: 36,
-  },
+  headlineButton: css`
+    border: 0;
+    color: ${theme.colors.common.black};
+    font-size: 21px;
+    position: relative;
+    vertical-align: bottom;
+  `,
   headlineButtonWrapper: {
     display: "inline-block" as "inline-block",
   },
-  toolbar: {
-    display: "flex" as "flex",
-    position: "absolute" as "absolute",
-  },
+  toolbar: css`
+    background: ${theme.colors.background.main};
+    border: 1px solid
+      ${theme.mixins.fade(theme.colors.gray.main, theme.alpha.default)};
+    border-radius: 2px;
+    display: flex;
+    padding: ${theme.spacing}px;
+    position: absolute;
+  `,
 }));
 
-class HeadlinesPicker extends React.Component<any, any> {
-  componentDidMount() {
-    setTimeout(() => {
-      window.addEventListener("click", this.onWindowClick);
-    });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("click", this.onWindowClick);
-  }
-
-  onWindowClick = () => this.props.onOverrideContent(undefined);
-
-  render() {
-    const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
-    return (
-      <div>
-        {buttons.map((Button, i) => (
-          <Button key={i} {...this.props} />
-        ))}
-      </div>
-    );
-  }
-}
-
-class HeadlinesButtonComponent extends React.Component<any, any> {
-  onMouseDown = (event: any) => event.preventDefault();
-
-  onClick = () => this.props.onOverrideContent(HeadlinesPicker);
-
-  render() {
-    return (
-      <div
-        onMouseDown={this.onMouseDown}
-        className={this.props.classes.headlineButtonWrapper}
-      >
-        <button
-          onClick={this.onClick}
-          className={this.props.classes.headlineButton}
-        >
-          H
-        </button>
-      </div>
-    );
-  }
-}
-
-const HeadlinesButton: React.FC = props => {
+const AlignmentPicker: React.FC<any> = ({ onOverrideContent, ...props }) => {
   const classes = useStyles();
-  return <HeadlinesButtonComponent {...props} classes={classes} />;
+
+  const onWindowClick = () => onOverrideContent(undefined);
+
+  React.useEffect(() => {
+    window.addEventListener("click", onWindowClick);
+
+    return () => window.removeEventListener("click", onWindowClick);
+  });
+
+  const buttons = [
+    AlignBlockDefaultButton,
+    AlignBlockLeftButton,
+    AlignBlockCenterButton,
+    AlignBlockRightButton,
+  ];
+
+  return (
+    <div className={classes.toolbar}>
+      {buttons.map((Button, i) => (
+        <Button key={i} {...props} />
+      ))}
+    </div>
+  );
+};
+const AlignmentButton: React.FC<any> = ({ onOverrideContent }) => {
+  const classes = useStyles();
+
+  return (
+    <div
+      onMouseDown={event => event.preventDefault()}
+      className={classes.headlineButtonWrapper}
+    >
+      <button
+        onClick={() => onOverrideContent(AlignmentPicker)}
+        className={classNames(classes.button, classes.headlineButton)}
+      >
+        A
+      </button>
+    </div>
+  );
+};
+
+const HeadlinesPicker: React.FC<any> = ({ onOverrideContent, ...props }) => {
+  const classes = useStyles();
+
+  const onWindowClick = () => onOverrideContent(undefined);
+
+  React.useEffect(() => {
+    window.addEventListener("click", onWindowClick);
+
+    return () => window.removeEventListener("click", onWindowClick);
+  });
+
+  const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
+
+  return (
+    <div className={classes.toolbar}>
+      {buttons.map((Button, i) => (
+        <Button key={i} {...props} />
+      ))}
+    </div>
+  );
+};
+const HeadlinesButton: React.FC<any> = ({ onOverrideContent }) => {
+  const classes = useStyles();
+
+  return (
+    <div
+      onMouseDown={event => event.preventDefault()}
+      className={classes.headlineButtonWrapper}
+    >
+      <button
+        onClick={() => onOverrideContent(HeadlinesPicker)}
+        className={classNames(classes.button, classes.headlineButton)}
+      >
+        H
+      </button>
+    </div>
+  );
 };
 const Editor: any = DraftEditor;
 
 class RichTextEditorComponent extends React.Component<
   Props & {
     classes: Record<
+      | "button"
+      | "buttonActive"
       | "editor"
       | "editorContainer"
       | "toolbar"
@@ -183,7 +238,36 @@ class RichTextEditorComponent extends React.Component<
       UnorderedListButton,
       OrderedListButton,
       BlockquoteButton,
+      AlignmentButton,
     ],
+    theme: {
+      buttonStyles: {
+        active: this.props.classes.buttonActive,
+        button: this.props.classes.button,
+      },
+      toolbarStyles: {
+        toolbar: this.props.classes.toolbar,
+      },
+    },
+  });
+
+  decorator = composeDecorators(
+    resizeablePlugin.decorator,
+    focusPlugin.decorator,
+    blockDndPlugin.decorator,
+  );
+
+  imagePlugin = createImagePlugin({
+    decorator: this.decorator,
+    theme: {
+      buttonStyles: {
+        active: this.props.classes.buttonActive,
+        button: this.props.classes.button,
+      },
+      toolbarStyles: {
+        toolbar: this.props.classes.toolbar,
+      },
+    },
   });
 
   handleKeyCommand(command: any, editorState: any) {
@@ -211,14 +295,17 @@ class RichTextEditorComponent extends React.Component<
   render() {
     const { classes, label, helperText } = this.props;
     const { InlineToolbar } = this.inlineToolbarPlugin;
+    const dragNDropFileUploadPlugin = createDragNDropUploadPlugin({
+      handleUpload: mockUpload,
+      addImage: this.imagePlugin.addImage,
+    });
     const plugins = [
       this.inlineToolbarPlugin,
       dragNDropFileUploadPlugin,
       blockDndPlugin,
       focusPlugin,
-      alignmentPlugin,
       resizeablePlugin,
-      imagePlugin,
+      this.imagePlugin,
     ];
     return (
       <div className={classes.editorContainer}>
@@ -238,8 +325,7 @@ class RichTextEditorComponent extends React.Component<
               onChange={this.onChange}
               onFocus={this.onFocus}
             />
-            <InlineToolbar className={{ toolbarStyles: classes.toolbar }} />
-            {this.state.focused && <AlignmentTool />}
+            <InlineToolbar />
           </div>
         </InputFocus>
         <Typography variant="caption">

@@ -8,11 +8,11 @@ import Table from "aurora-ui-kit/dist/components/Table";
 import TableBody from "aurora-ui-kit/dist/components/TableBody";
 import TableRow from "aurora-ui-kit/dist/components/TableRow";
 import Skeleton from "aurora-ui-kit/dist/components/Skeleton";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
 
 import i18n from "../../i18n";
 import { renderCollection, maybe } from "../../utils";
 import { Viewer_viewer_pages_edges_node } from "../queries/types/Viewer";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props {
   disabled: boolean;
@@ -21,6 +21,9 @@ interface Props {
 }
 
 const useStyles = createUseStyles({
+  colName: css`
+    text-align: left;
+  `,
   row: {
     cursor: "pointer",
   },
@@ -38,7 +41,9 @@ const HomePageNewestPages: React.FC<Props> = ({
       </CardHeader>
       <Table>
         <TableHead>
-          <TableCell>{i18n.t("Page Title")}</TableCell>
+          <TableCell className={classes.colName}>
+            {i18n.t("Page Title")}
+          </TableCell>
         </TableHead>
         <TableBody>
           {renderCollection(pages, page => (
@@ -47,7 +52,7 @@ const HomePageNewestPages: React.FC<Props> = ({
               hover={!disabled}
               onClick={page ? () => onPageClick(page.id) : undefined}
             >
-              <TableCell>
+              <TableCell className={classes.colName}>
                 {maybe<React.ReactNode>(() => page.name, <Skeleton />)}
               </TableCell>
             </TableRow>

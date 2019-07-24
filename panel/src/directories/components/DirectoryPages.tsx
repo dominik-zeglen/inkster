@@ -12,13 +12,13 @@ import Table from "aurora-ui-kit/dist/components/Table";
 import TableHead from "aurora-ui-kit/dist/components/TableHead";
 import TableCell from "aurora-ui-kit/dist/components/TableCell";
 import Status from "aurora-ui-kit/dist/components/Status";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
 
 import { PaginatedListProps } from "../..";
 import PaginationArrows from "../../components/PaginationArrows";
 import i18n from "../../i18n";
 import { Directory_getDirectory_pages_edges_node } from "../queries/types/Directory";
 import { renderCollection, maybe } from "../../utils";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends PaginatedListProps {
   disabled: boolean;
@@ -27,6 +27,12 @@ interface Props extends PaginatedListProps {
 }
 
 const useStyles = createUseStyles({
+  colName: css`
+    text-align: left;
+  `,
+  colStatus: css`
+    text-align: center;
+  `,
   row: {
     cursor: "pointer",
   },
@@ -51,8 +57,10 @@ export const DirectoryRootList: React.FC<Props> = ({
       </CardHeader>
       <Table>
         <TableHead>
-          <TableCell>{i18n.t("Title")}</TableCell>
-          <TableCell>{i18n.t("Status")}</TableCell>
+          <TableCell className={classes.colName}>{i18n.t("Title")}</TableCell>
+          <TableCell className={classes.colStatus}>
+            {i18n.t("Status")}
+          </TableCell>
         </TableHead>
         <TableFooter>
           <TableCell colSpan={100}>
@@ -73,10 +81,10 @@ export const DirectoryRootList: React.FC<Props> = ({
                 hover={!disabled}
                 onClick={page ? onRowClick(page.id) : undefined}
               >
-                <TableCell>
+                <TableCell className={classes.colName}>
                   {maybe<React.ReactNode>(() => page.name, <Skeleton />)}
                 </TableCell>
-                <TableCell>
+                <TableCell className={classes.colStatus}>
                   {maybe(
                     () =>
                       page.isPublished ? (

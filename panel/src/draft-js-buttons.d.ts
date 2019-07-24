@@ -9,4 +9,8 @@ declare module "draft-js-buttons" {
   export const UnorderedListButton: any;
   export const OrderedListButton: any;
   export const BlockquoteButton: any;
+  export const AlignBlockDefaultButton: any;
+  export const AlignBlockLeftButton: any;
+  export const AlignBlockCenterButton: any;
+  export const AlignBlockRightButton: any;
 }

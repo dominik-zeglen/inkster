@@ -17,10 +17,8 @@ interface Props {
 const useStyles = createUseStyles((theme: ITheme) => ({
   root: {
     display: "grid",
-    gridColumnGap: theme.spacing * 3 + "px",
-    gridTemplateColumns: `1fr ${theme.spacing * 2.5}px ${theme.spacing *
-      2.5}px`,
-    paddingRight: theme.spacing * 2,
+    gridColumnGap: theme.spacing + "px",
+    gridTemplateColumns: `1fr 40px 40px`,
   },
 }));
 

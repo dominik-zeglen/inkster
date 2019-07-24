@@ -1,5 +1,5 @@
 import * as React from "react";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
 import {
   Box,
   Home,
@@ -66,10 +66,12 @@ const useStyles = createUseStyles((theme: ITheme) => ({
   },
   shrinkMenu: {
     alignItems: "center",
+    color: theme.colors.gray.lightest,
     display: "flex" as "flex",
     height: 48,
     justifyContent: "center" as "center",
     marginBottom: theme.spacing,
+    width: 48,
   },
   sideMenu: {
     background: `linear-gradient(45deg, ${theme.colors.gray.darkest}, ${
@@ -99,6 +101,10 @@ const useStyles = createUseStyles((theme: ITheme) => ({
     padding: `${theme.spacing * 2}px ${theme.spacing}px`,
     width: SIDEBAR_WIDTH_SHRUNKEN,
   },
+  shrinkMenuIconContainer: css`
+    display: flex;
+    justify-content: center;
+  `,
   spacer: {
     flex: 1,
   },
@@ -171,9 +177,11 @@ export const AppLayout: React.FC<Props> = ({
                 })}
               </span>
             </div>
-            <IconButton className={classes.shrinkMenu} onClick={shrinkMenu}>
-              {isMenuShrunken ? <Maximize2 /> : <Minimize2 />}
-            </IconButton>
+            <div className={classes.shrinkMenuIconContainer}>
+              <IconButton className={classes.shrinkMenu} onClick={shrinkMenu}>
+                {isMenuShrunken ? <Maximize2 /> : <Minimize2 />}
+              </IconButton>
+            </div>
           </div>
           <div className={classes.content}>{children}</div>
         </div>

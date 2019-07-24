@@ -16,13 +16,16 @@ import PaginationArrows from "../../components/PaginationArrows";
 import i18n from "../../i18n";
 import { RootDirectories_getRootDirectories_edges_node } from "../queries/types/RootDirectories";
 import { maybe, renderCollection } from "../../utils";
-import createUseStyles from "aurora-ui-kit/dist/utils/jss";
+import createUseStyles, { css } from "aurora-ui-kit/dist/utils/jss";
 
 interface Props extends ViewProps, PaginatedListProps {
   directories: RootDirectories_getRootDirectories_edges_node[];
 }
 
 const useStyles = createUseStyles({
+  colStatus: css`
+    text-align: center;
+  `,
   row: {
     cursor: "pointer",
   },
@@ -44,7 +47,9 @@ export const DirectoryRootList: React.FC<Props> = ({
       <Table>
         <TableHead>
           <TableCell>{i18n.t("Name")}</TableCell>
-          <TableCell>{i18n.t("Status")}</TableCell>
+          <TableCell className={classes.colStatus}>
+            {i18n.t("Status")}
+          </TableCell>
         </TableHead>
         <TableFooter>
           <TableCell colSpan={100}>
@@ -68,7 +73,7 @@ export const DirectoryRootList: React.FC<Props> = ({
                 <TableCell>
                   {maybe<React.ReactNode>(() => directory.name, <Skeleton />)}
                 </TableCell>
-                <TableCell>
+                <TableCell className={classes.colStatus}>
                   {maybe(
                     () =>
                       directory.isPublished ? (
