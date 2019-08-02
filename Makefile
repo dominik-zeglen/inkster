@@ -6,15 +6,14 @@ build: schema ; $(info $(M) Building project...)
 clean: ; $(info $(M) Removing generated files... )
 	$(RM) api/schema/bindata.go
 
-dep: setup ; $(info $(M) Ensuring vendored dependencies are up-to-date...)
-	dep ensure
+install: setup ; $(info $(M) Ensuring vendored dependencies are up-to-date...)
+	go mod vendor
 
-schema: dep clean ; $(info $(M) Embedding schema files into binary...)
+schema: install clean ; $(info $(M) Embedding schema files into binary...)
 	go generate ./...
 	go run manage.go print-schema > api/schema.graphql
 
-setup: ; $(info $(M) Fetching github.com/golang/dep and github.com/jteeuwen/go-bindata...)
-	go get github.com/golang/dep/cmd/dep
+setup: ; $(info $(M) Fetching github.com/jteeuwen/go-bindata...)
 	go get github.com/jteeuwen/go-bindata/...
 
 server: schema ; $(info $(M) Starting development server...)
@@ -32,4 +31,4 @@ test: schema migrate ; $(info $(M) Testing application...)
 test-update: schema migrate ; $(info $(M) Updating snapshots...)
 	UPDATE_SNAPSHOTS=1 GOCACHE=off go test ./... -p 1
 
-.PHONY: build clean dep image schema setup server
+.PHONY: build clean install image schema setup server
