@@ -7,7 +7,7 @@ clean: ; $(info $(M) Removing generated files... )
 	$(RM) api/schema/bindata.go
 
 install: setup ; $(info $(M) Ensuring vendored dependencies are up-to-date...)
-	go mod vendor
+	go get ./...
 
 schema: install clean ; $(info $(M) Embedding schema files into binary...)
 	go generate ./...
