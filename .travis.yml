@@ -11,6 +11,7 @@ script:
   - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
 env:
   global:
+    - GO111MODULE=on   
     - POSTGRES_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
     - INKSTER_PORT=8000 
     - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
