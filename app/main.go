@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -95,21 +94,6 @@ func (app *AppServer) Init(configFilePath string) *AppServer {
 }
 
 func (app *AppServer) Run() {
-	http.Handle("/panel/static/",
-		http.StripPrefix(
-			"/panel/static/",
-			http.FileServer(http.Dir("panel/build/static")),
-		))
-	http.Handle("/panel/",
-		http.HandlerFunc(
-			func(w http.ResponseWriter, r *http.Request) {
-				dat, err := ioutil.ReadFile("panel/build/index.html")
-				check(err)
-				_, err = w.Write(dat)
-				check(err)
-			},
-		),
-	)
 	if app.Config.Server.ServeStatic {
 		http.Handle("/static/",
 			http.StripPrefix(
