@@ -1,8 +1,6 @@
 language: go
 go: 
   - "1.10.1"
-node_js:
-  - "8.11.2"
 services: postgresql
 install:                                                                 
   - make schema
@@ -11,7 +9,6 @@ before_script:
   - go run migrations/*.go up
 script:
   - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
-  - npm i && npm run build
 env:
   global:
     - POSTGRES_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
