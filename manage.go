@@ -17,15 +17,19 @@ func main() {
 	app.Action = func(c *cli.Context) error {
 		if c.NArg() > 0 {
 			operation := c.Args().Get(0)
-			serverApp := server.AppServer{}
-			serverApp.Init("config.toml")
 
 			if operation == "runserver" {
+				serverApp := server.AppServer{}
+				serverApp.Init("config.toml")
+
 				serverApp.Run()
 				return nil
 			}
 
 			if operation == "add-user" {
+				serverApp := server.AppServer{}
+				serverApp.Init("config.toml")
+
 				dataSource := serverApp.DataSource
 				email := c.Args().Get(1)
 				password := c.Args().Get(2)
