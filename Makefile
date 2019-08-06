@@ -24,9 +24,9 @@ migrate: ; $(info $(M) Migrating database...)
 	go run migrations/*.go up
 
 test: schema migrate ; $(info $(M) Testing application...)
-	GOCACHE=off go test ./... -p 1
+	go test ./... -p 1
 
 test-update: schema migrate ; $(info $(M) Updating snapshots...)
-	UPDATE_SNAPSHOTS=1 GOCACHE=off go test ./... -p 1
+	UPDATE_SNAPSHOTS=1 go test ./... -p 1
 
 .PHONY: build clean install image schema server

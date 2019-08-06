@@ -8,7 +8,7 @@ before_script:
   - psql -c 'create database test_inkster;' -U postgres
   - go run migrations/*.go up
 script:
-  - GOCACHE=off go test ./... -p 1 -coverprofile=/tmp/go-code-cover
+  - go test ./... -p 1 -coverprofile=/tmp/go-code-cover
 env:
   global:
     - GO111MODULE=on   
