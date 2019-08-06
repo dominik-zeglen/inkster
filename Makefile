@@ -14,7 +14,7 @@ schema: install clean ; $(info $(M) Embedding schema files into binary...)
 	go generate ./...
 	go run manage.go print-schema > api/schema.graphql
 
-server: schema ; $(info $(M) Starting development server...)
+server: schema ; $(info $(M) Starting server...)
 	go run manage.go runserver
 
 image: ; $(info $(M) Building application image...)
