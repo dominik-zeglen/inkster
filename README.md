@@ -1,13 +1,11 @@
 # Inkster - Headless content management solution
-==
 
 Inkster is a open-source headless cms.
 
-### Getting started
-==
+## Getting started
 
 The most comfortable way to set up Inkster is by using [Docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/). Simply run
-```shell
+```Shell
 $ docker-compose build
 $ docker-compose run --rm web /app/migrate
 $ docker-compose run --rm web /app/main add-user admin@example.com admin
