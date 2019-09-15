@@ -1,6 +1,7 @@
 .*
 !.dockerignore
 !.keep
+!.gitkeep
 !.snapshots
 !.gitignore
 !.travis.yml
@@ -9,7 +10,8 @@ node_modules
 vendor
 tmp
 static/*
-panel/build/*
 *debug*
 manage
 !manage.go
+config.override.toml
+build
