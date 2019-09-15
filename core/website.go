@@ -7,7 +7,7 @@ import (
 // Website model stores info about managed website
 // Does not compose BaseModel struct because of its singleton nature
 type Website struct {
-	ID          string `json:"id"`
+	ID          string `json:"-"`
 	Name        string `sql:",notnull" json:"name" validate:"required,min=3"`
 	Description string `json:"description"`
 	Domain      string `sql:",notnull" json:"domain" validate:"required,url"`

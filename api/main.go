@@ -9,7 +9,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
-	"github.com/dominik-zeglen/inkster/middleware"
 )
 
 type Resolver struct {
@@ -81,7 +80,7 @@ func (res *userErrorResolver) Message() string {
 }
 
 func checkPermission(ctx context.Context) bool {
-	user, ok := ctx.Value("user").(*middleware.UserClaims)
+	user, ok := ctx.Value("user").(*core.User)
 	if ok && user != nil {
 		return true
 	}

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -13,9 +12,11 @@ import (
 	_ "github.com/lib/pq"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/dominik-zeglen/inkster/utils"
 	"github.com/go-pg/pg"
 	"github.com/go-testfixtures/testfixtures"
 	gql "github.com/graph-gophers/graphql-go"
@@ -30,14 +31,15 @@ var fixtures *testfixtures.Context
 var ErrNoError = fmt.Errorf("Did not return error")
 
 func init() {
-	dbHost := os.Getenv("POSTGRES_HOST")
+	conf := config.Load()
+	dbHost := conf.Postgres.URI
 	pgOptions, err := pg.ParseURL(dbHost)
 	if err != nil {
 		panic(err)
 	}
 	if os.Getenv("CI") == "" {
 		pgOptions.Database = "test_" + pgOptions.Database
-		dbOptions, err := pq.ParseURL(os.Getenv("POSTGRES_HOST"))
+		dbOptions, err := pq.ParseURL(dbHost)
 		if err != nil {
 			panic(err)
 		}
@@ -74,7 +76,11 @@ func execQuery(query string, variables string, ctx *context.Context) (string, er
 		Email: "user1@example.com",
 		ID:    1,
 	}
-	defaultContext := context.WithValue(context.TODO(), "user", &defaultClaims)
+	defaultContext := context.WithValue(
+		context.TODO(),
+		middleware.UserContextKey,
+		&defaultClaims,
+	)
 
 	userContext := ctx
 	if ctx == nil {
@@ -89,16 +95,8 @@ func execQuery(query string, variables string, ctx *context.Context) (string, er
 	}
 
 	result := schema.Exec(*userContext, query, "", vs)
-	jsonResult, err := json.Marshal(result)
-	if err != nil {
-		return "", err
-	}
-	var out bytes.Buffer
-	err = json.Indent(&out, jsonResult, "", "    ")
-	if err != nil {
-		return "", err
-	}
-	return out.String(), nil
+
+	return utils.PrintJSON(result)
 }
 
 func resetDatabase() {

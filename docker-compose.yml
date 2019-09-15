@@ -20,16 +20,7 @@ services:
     ports:
       - '8000:8000'
     environment:
-      - POSTGRES_HOST=postgres://inkster:inkster@db/inkster?sslmode=disable
-      - INKSTER_PORT=8000 
-      - INKSTER_STATIC=static
-      - INKSTER_SERVE_STATIC=1
-      - INKSTER_DEBUG=1
-      - INKSTER_SMTP_HOST=dummy
-      - INKSTER_SMTP_LOGIN=dummy
-      - INKSTER_SMTP_ADDR=dummy
-      - INKSTER_SMTP_PASS=dummy
-      - INKSTER_SMTP_PORT=dummy
-      - INKSTER_SECRET_KEY=plschangeme
+      - PG_HOST=postgres://inkster:inkster@db/inkster?sslmode=disable
+      - SECRET=plschangeme
     volumes:
       - ./panel/build:/go/src/app/panel/build
