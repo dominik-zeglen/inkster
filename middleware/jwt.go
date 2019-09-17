@@ -7,15 +7,24 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dominik-zeglen/inkster/core"
 )
 
+// UserClaims holds all token data
 type UserClaims struct {
-	Email string `json:"email"`
-	ID    int    `json:"id"`
+	ID int `json:"id"`
 	jwt.StandardClaims
 }
 
-func WithJwt(next http.Handler, key string) http.Handler {
+// UserContextKey defines key holding user data in request context
+const UserContextKey = ContextKey("user")
+
+// WithJwt provides jwt token data to request
+func WithJwt(
+	next http.Handler,
+	key string,
+	dataSource core.DataContext,
+) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			headerContent := r.Header.Get("Authorization")
@@ -38,20 +47,24 @@ func WithJwt(next http.Handler, key string) http.Handler {
 				}
 
 				if claims, valid := token.Claims.(*UserClaims); valid && token.Valid {
-					ctx := context.WithValue(r.Context(), "user", claims)
-					u := ctx.Value("user")
-					if u != nil {
-						next.ServeHTTP(w, r.WithContext(ctx))
-						return
-					}
+					user := core.User{}
+					user.ID = claims.ID
+					dataSource.
+						DB().
+						Model(&user).
+						WherePK().
+						First()
+
+					ctx := context.WithValue(r.Context(), UserContextKey, &user)
+					next.ServeHTTP(w, r.WithContext(ctx))
 				} else {
 					next.ServeHTTP(w, r)
-					return
 				}
 			} else {
 				next.ServeHTTP(w, r)
-				return
 			}
+
+			return
 		},
 	)
 }

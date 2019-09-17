@@ -3,12 +3,14 @@ package api
 import (
 	"bytes"
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/dominik-zeglen/inkster/net"
 )
@@ -45,6 +47,12 @@ func sendError(err error, w http.ResponseWriter, code int) bool {
 	return false
 }
 
+// UploadResponse is a type of success response of UploadHandler
+type UploadResponse struct {
+	filename string
+}
+
+// UploadHandler is handler that allows dropping files to Inkster
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		w.WriteHeader(400)
@@ -70,11 +78,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	filename, err := createFileName(file)
+	savedFilename := filename + "_" + fileHeader.Filename
 	if sendError(err, w, 500) {
 		return
 	}
 	f, err := os.OpenFile(
-		os.Getenv("INKSTER_STATIC")+"/"+filename+"_"+fileHeader.Filename,
+		path.Join("../static", savedFilename),
 		os.O_WRONLY|os.O_CREATE,
 		0666,
 	)
@@ -87,7 +96,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if sendError(err, w, 500) {
 		return
 	}
-	_, err = w.Write([]byte("{\"filename\":\"" + filename + "_" + fileHeader.Filename + "\"}"))
+
+	res, err := json.Marshal(UploadResponse{
+		filename: savedFilename,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = w.Write([]byte(res))
 	if err != nil {
 		log.Fatal(err)
 	}

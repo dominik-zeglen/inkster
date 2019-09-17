@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg"
 )
@@ -24,7 +25,9 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	pgOptions, err := pg.ParseURL(os.Getenv("POSTGRES_HOST"))
+	conf := config.Load("./")
+
+	pgOptions, err := pg.ParseURL(conf.Postgres.URI)
 	if err != nil {
 		exitf(err.Error())
 	}
@@ -40,7 +43,7 @@ func main() {
 		exitf(err.Error())
 	}
 
-	if os.Getenv("CI") == "" {
+	if !conf.Miscellaneous.CI {
 		pgOptions.Database = "test_" + pgOptions.Database
 		fmt.Printf(
 			"Applying migrations to %s database\n",
@@ -54,9 +57,9 @@ func main() {
 	}
 
 	if newVersion != oldVersion {
-		fmt.Printf("migrated from version %d to %d\n", oldVersion, newVersion)
+		fmt.Printf("Migrated from version %d to %d\n", oldVersion, newVersion)
 	} else {
-		fmt.Printf("version is %d\n", oldVersion)
+		fmt.Printf("Version is %d\n", oldVersion)
 	}
 }
 

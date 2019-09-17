@@ -2,11 +2,8 @@
 allowed_hosts = [
     'http://localhost:3000'
 ]
-serve_static = false
-static_path = "./"
+port = 8000
 
-[postgres]
-log_queries = false
 
-[smtp]
-use_dummy = false
+[aws]
+region = "eu-west-1"

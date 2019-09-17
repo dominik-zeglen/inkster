@@ -147,7 +147,7 @@ func (res *Resolver) RemoveUser(
 		return nil, err
 	}
 
-	if user, ok := ctx.Value("user").(*middleware.UserClaims); ok {
+	if user, ok := ctx.Value(middleware.UserContextKey).(*core.User); ok {
 		if user.ID == localID {
 			return nil, errors.New("User cannot remove himself")
 		}

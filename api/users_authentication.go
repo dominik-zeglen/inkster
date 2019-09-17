@@ -63,8 +63,7 @@ func (res *Resolver) Login(args LoginArgs) (*loginResultResolver, error) {
 		return &notAuthorizedOutput, nil
 	}
 	claims := middleware.UserClaims{
-		Email: user.Email,
-		ID:    user.ID,
+		ID: user.ID,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(res.key))

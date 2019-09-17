@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dominik-zeglen/inkster/app"
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg/orm"
 )
@@ -27,14 +27,11 @@ func init() {
 					return err
 				}
 
-				config, err := app.LoadConfig("config.toml")
-				if err != nil {
-					return err
-				}
+				config := config.Load("./")
 
 				website := Website{
 					ID:     "default",
-					Domain: "http://localhost:" + config.Server.Port,
+					Domain: "http://localhost:" + string(config.Server.Port),
 					Name:   "Inkster",
 				}
 

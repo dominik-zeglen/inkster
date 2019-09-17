@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	appConfig "github.com/dominik-zeglen/inkster/config"
+	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
@@ -11,8 +13,10 @@ import (
 
 type GraphQLHandler struct {
 	http.Handler
-	schema    *graphql.Schema
-	secretKey string
+	dataSource core.DataContext
+	schema     *graphql.Schema
+	secretKey  string
+	config     appConfig.Config
 }
 
 func (handler GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -22,21 +26,26 @@ func (handler GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		_, err = w.Write(dat)
 		check(err)
 	} else {
-		middleware.WithJwt(
+		middleware.WithConfig(middleware.WithWebsite(middleware.WithJwt(
 			&relay.Handler{
 				Schema: handler.schema,
 			},
 			handler.secretKey,
-		).ServeHTTP(w, r)
+			handler.dataSource,
+		), handler.dataSource), handler.config).ServeHTTP(w, r)
 	}
 }
 
 func newGraphQLHandler(
 	schema *graphql.Schema,
 	secretKey string,
+	dataSource core.DataContext,
+	config appConfig.Config,
 ) GraphQLHandler {
 	return GraphQLHandler{
-		schema:    schema,
-		secretKey: secretKey,
+		dataSource: dataSource,
+		schema:     schema,
+		secretKey:  secretKey,
+		config:     config,
 	}
 }

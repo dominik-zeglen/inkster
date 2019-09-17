@@ -8,6 +8,7 @@ import (
 
 	"github.com/dominik-zeglen/inkster/api"
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
+	appConfig "github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
@@ -21,21 +22,22 @@ func check(err error) {
 	}
 }
 
-type AppServer struct {
-	Config     AppConfig
+// Server is a type Inkster app uses to hold connections
+type Server struct {
+	Config     appConfig.Config
 	DataSource core.DataContext
 	MailClient mailer.Mailer
 	Schema     *graphql.Schema
 }
 
-func (app *AppServer) initDataSource() *AppServer {
+func (app *Server) initDataSource() *Server {
 	pgOptions, err := pg.ParseURL(app.Config.Postgres.URI)
 	if err != nil {
 		panic(err)
 	}
 
 	pgSession := pg.Connect(pgOptions)
-	if app.Config.Postgres.LogQueries {
+	if app.Config.Debug.LogQueries {
 		pgSession.OnQueryProcessed(func(event *pg.QueryProcessedEvent) {
 			query, err := event.FormattedQuery()
 			if err != nil {
@@ -53,23 +55,13 @@ func (app *AppServer) initDataSource() *AppServer {
 	return app
 }
 
-func (app *AppServer) initMailer() *AppServer {
-	if app.Config.SMTP.UseDummy {
-		app.MailClient = &mailer.MockMailClient{}
-	} else {
-		app.MailClient = mailer.NewSmtpMailClient(
-			app.Config.SMTP.Login,
-			app.Config.SMTP.Address,
-			app.Config.SMTP.Password,
-			app.Config.SMTP.Host,
-			app.Config.SMTP.Port,
-		)
-	}
+func (app *Server) initMailer() *Server {
+	app.MailClient = &mailer.MockMailClient{}
 
 	return app
 }
 
-func (app *AppServer) initSchema() *AppServer {
+func (app *Server) initSchema() *Server {
 	resolver := api.NewResolver(
 		&app.DataSource,
 		app.MailClient,
@@ -80,11 +72,9 @@ func (app *AppServer) initSchema() *AppServer {
 	return app
 }
 
-func (app *AppServer) Init(configFilePath string) *AppServer {
-	appConfig, err := LoadConfig(configFilePath)
-	if err != nil {
-		log.Fatal(err)
-	}
+// Init all settings
+func (app *Server) Init(configPath string) *Server {
+	appConfig := appConfig.Load(configPath)
 
 	app.Config = *appConfig
 	return app.
@@ -93,19 +83,20 @@ func (app *AppServer) Init(configFilePath string) *AppServer {
 		initSchema()
 }
 
-func (app *AppServer) Run() {
-	if app.Config.Server.ServeStatic {
-		http.Handle("/static/",
-			http.StripPrefix(
-				"/static/",
-				http.FileServer(http.Dir(app.Config.Server.StaticPath)),
-			))
-	}
+// Run Inkster app
+func (app *Server) Run() {
+	http.Handle("/static/",
+		http.StripPrefix(
+			"/static/",
+			http.FileServer(http.Dir("/static/")),
+		))
 	http.Handle("/graphql/", middleware.WithCors(
 		app.Config.Server.AllowedHosts,
 		newGraphQLHandler(
 			app.Schema,
 			app.Config.Server.SecretKey,
+			app.DataSource,
+			app.Config,
 		),
 	))
 	http.Handle("/upload", middleware.WithCors(
@@ -113,9 +104,9 @@ func (app *AppServer) Run() {
 		http.HandlerFunc(api.UploadHandler),
 	))
 
-	log.Printf("Running server on port %s\n", app.Config.Server.Port)
+	log.Printf("Running server on port %d\n", app.Config.Server.Port)
 	log.Fatal(http.ListenAndServe(
-		fmt.Sprintf(":%s", app.Config.Server.Port),
+		fmt.Sprintf(":%d", app.Config.Server.Port),
 		nil,
 	))
 }

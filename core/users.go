@@ -23,8 +23,8 @@ type User struct {
 	Active    bool    `sql:",notnull" json:"active"`
 	Email     string  `sql:",notnull,unique" json:"email" validate:"required,email"`
 	Pages     *[]Page `sql:"-" json:"pages"`
-	Password  []byte  `sql:",notnull" json:"password" validate:"required"`
-	Salt      []byte  `sql:",notnull" json:"salt" validate:"required"`
+	Password  []byte  `sql:",notnull" json:"-" validate:"required"`
+	Salt      []byte  `sql:",notnull" json:"-" validate:"required"`
 }
 
 func (user User) AuthPassword(pass string) bool {

@@ -1,21 +1,21 @@
 package api
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/dominik-zeglen/inkster/utils"
 	"github.com/go-pg/pg"
 	"github.com/go-testfixtures/testfixtures"
 	gql "github.com/graph-gophers/graphql-go"
@@ -30,14 +30,15 @@ var fixtures *testfixtures.Context
 var ErrNoError = fmt.Errorf("Did not return error")
 
 func init() {
-	dbHost := os.Getenv("POSTGRES_HOST")
+	conf := config.Load("../")
+	dbHost := conf.Postgres.URI
 	pgOptions, err := pg.ParseURL(dbHost)
 	if err != nil {
 		panic(err)
 	}
-	if os.Getenv("CI") == "" {
+	if !conf.Miscellaneous.CI {
 		pgOptions.Database = "test_" + pgOptions.Database
-		dbOptions, err := pq.ParseURL(os.Getenv("POSTGRES_HOST"))
+		dbOptions, err := pq.ParseURL(dbHost)
 		if err != nil {
 			panic(err)
 		}
@@ -69,15 +70,23 @@ func init() {
 	resetDatabase()
 }
 
-func execQuery(query string, variables string, ctx *context.Context) (string, error) {
-	defaultClaims := middleware.UserClaims{
+func execQuery(
+	query string,
+	variables string,
+	userContext *context.Context,
+) (string, error) {
+	user := core.User{
 		Email: "user1@example.com",
-		ID:    1,
 	}
-	defaultContext := context.WithValue(context.TODO(), "user", &defaultClaims)
+	user.ID = 1
 
-	userContext := ctx
-	if ctx == nil {
+	defaultContext := context.WithValue(
+		context.TODO(),
+		middleware.UserContextKey,
+		&user,
+	)
+
+	if userContext == nil {
 		userContext = &defaultContext
 	}
 
@@ -89,16 +98,8 @@ func execQuery(query string, variables string, ctx *context.Context) (string, er
 	}
 
 	result := schema.Exec(*userContext, query, "", vs)
-	jsonResult, err := json.Marshal(result)
-	if err != nil {
-		return "", err
-	}
-	var out bytes.Buffer
-	err = json.Indent(&out, jsonResult, "", "    ")
-	if err != nil {
-		return "", err
-	}
-	return out.String(), nil
+
+	return utils.PrintJSON(result)
 }
 
 func resetDatabase() {

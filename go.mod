@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/BurntSushi/toml v0.3.1
+	github.com/aws/aws-sdk-go v1.23.7
 	github.com/bradleyjkemp/cupaloy v2.0.0+incompatible
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/dchest/uniuri v0.0.0-20160212164326-8902c56451e9
@@ -15,6 +16,8 @@ require (
 	github.com/go-testfixtures/testfixtures v2.5.1+incompatible
 	github.com/gosimple/slug v1.1.1
 	github.com/graph-gophers/graphql-go v0.0.0-20180411221916-9ebf33af539a
+	github.com/imdario/mergo v0.3.7
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/lib/pq v1.0.0
 	github.com/onsi/ginkgo v1.8.0 // indirect

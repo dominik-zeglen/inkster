@@ -19,28 +19,28 @@ func main() {
 			operation := c.Args().Get(0)
 
 			if operation == "runserver" {
-				serverApp := server.AppServer{}
-				serverApp.Init("config.toml")
+				server := server.Server{}
+				server.Init(".")
 
-				serverApp.Run()
+				server.Run()
 				return nil
 			}
 
 			if operation == "add-user" {
-				serverApp := server.AppServer{}
-				serverApp.Init("config.toml")
+				server := server.Server{}
+				server.Init(".")
 
-				dataSource := serverApp.DataSource
+				dataSource := server.DataSource
 				email := c.Args().Get(1)
 				password := c.Args().Get(2)
 				newUser := core.User{
 					Email:  email,
 					Active: true,
 				}
-				newUser.CreatedAt = serverApp.
+				newUser.CreatedAt = server.
 					DataSource.
 					GetCurrentTime()
-				newUser.UpdatedAt = serverApp.
+				newUser.UpdatedAt = server.
 					DataSource.
 					GetCurrentTime()
 				err := newUser.CreatePassword(password)

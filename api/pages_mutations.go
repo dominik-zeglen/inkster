@@ -74,7 +74,7 @@ func cleanCreatePageInput(
 	*core.Page,
 	error,
 ) {
-	user := ctx.Value("user").(*middleware.UserClaims)
+	user := ctx.Value(middleware.UserContextKey).(*core.User)
 	localID, err := fromGlobalID("directory", input.ParentID)
 	if err != nil {
 		return nil, err
