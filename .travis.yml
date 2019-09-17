@@ -1,8 +1,8 @@
 language: go
-go: 
+go:
   - "1.12.7"
 services: postgresql
-install:                                                                 
+install:
   - make schema
 before_script:
   - psql -c 'create database test_inkster;' -U postgres
@@ -11,10 +11,8 @@ script:
   - go test ./... -p 1 -coverprofile=/tmp/go-code-cover
 env:
   global:
-    - GO111MODULE=on   
-    - POSTGRES_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
-    - INKSTER_PORT=8000 
-    - INKSTER_STATIC=$TRAVIS_BUILD_DIR/static
-    - INKSTER_SECRET_KEY=secret
+    - GO111MODULE=on
+    - PG_HOST=postgres://postgres@localhost:5432/test_inkster?sslmode=disable
+    - SECRET=secret
 addons:
   postgresql: 9.6
