@@ -8,11 +8,12 @@ import (
 )
 
 type envVariables struct {
-	AWSSecretKey string `env:"AWS_SECRET_KEY"`
-	CI           string `env:"CI"`
-	Debug        string `env:"DEBUG"`
-	PgHost       string `env:"PG_HOST,required"`
-	Secret       string `env:"SECRET,required"`
+	AWSSecretKey   string `env:"AWS_SECRET_KEY"`
+	AWSS3SecretKey string `env:"AWS_S3_SECRET_KEY"`
+	CI             string `env:"CI"`
+	Debug          string `env:"DEBUG"`
+	PgHost         string `env:"PG_HOST,required"`
+	Secret         string `env:"SECRET,required"`
 }
 
 func load() envVariables {
