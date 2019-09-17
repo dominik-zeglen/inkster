@@ -37,7 +37,7 @@ func (app *Server) initDataSource() *Server {
 	}
 
 	pgSession := pg.Connect(pgOptions)
-	if app.Config.Postgres.LogQueries {
+	if app.Config.Debug.LogQueries {
 		pgSession.OnQueryProcessed(func(event *pg.QueryProcessedEvent) {
 			query, err := event.FormattedQuery()
 			if err != nil {
@@ -56,22 +56,7 @@ func (app *Server) initDataSource() *Server {
 }
 
 func (app *Server) initMailer() *Server {
-	if app.Config.Mail.WebhookURL != "" {
-		app.MailClient = mailer.NewWebhookMailClient(
-			app.Config.Mail.WebhookURL,
-			app.Config.Mail.WebhookSecret,
-		)
-	} else if app.Config.Mail.SESAccessKey != "" {
-		app.MailClient = mailer.NewSESMailClient(
-			app.Config.Mail.SESAccessKey,
-			app.Config.Mail.SESSecretAccessKey,
-			app.Config.AWS.Region,
-			app.Config.Mail.SESSender,
-		)
-	} else {
-		log.Println("Warning: using dummy mailer")
-		app.MailClient = &mailer.MockMailClient{}
-	}
+	app.MailClient = &mailer.MockMailClient{}
 
 	return app
 }
@@ -88,8 +73,8 @@ func (app *Server) initSchema() *Server {
 }
 
 // Init all settings
-func (app *Server) Init() *Server {
-	appConfig := appConfig.Load()
+func (app *Server) Init(configPath string) *Server {
+	appConfig := appConfig.Load(configPath)
 
 	app.Config = *appConfig
 	return app.
@@ -100,13 +85,11 @@ func (app *Server) Init() *Server {
 
 // Run Inkster app
 func (app *Server) Run() {
-	if app.Config.Server.ServeStatic {
-		http.Handle("/static/",
-			http.StripPrefix(
-				"/static/",
-				http.FileServer(http.Dir(app.Config.Server.StaticPath)),
-			))
-	}
+	http.Handle("/static/",
+		http.StripPrefix(
+			"/static/",
+			http.FileServer(http.Dir("/static/")),
+		))
 	http.Handle("/graphql/", middleware.WithCors(
 		app.Config.Server.AllowedHosts,
 		newGraphQLHandler(

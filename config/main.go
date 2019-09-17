@@ -1,66 +1,65 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
+	"path"
 
 	"github.com/BurntSushi/toml"
 	"github.com/imdario/mergo"
 )
 
 const (
-	configFilePath         = "config.toml"
-	overrideConfigFilePath = "config.override.toml"
+	// ConfigFile holds name of the config file
+	ConfigFile = "config.toml"
+
+	// OverrideConfigFile holds name of the config file used to override
+	// default on
+	OverrideConfigFile = "config.override.toml"
 )
 
-type postgresConfig struct {
+type debugConfig struct {
 	LogQueries bool `toml:"log_queries"`
-	URI        string
+}
+
+type postgresConfig struct {
+	URI string `toml:"-"`
 }
 
 type miscConfig struct {
-	CI bool
+	CI    bool
+	Debug bool
 }
 
 type serverConfig struct {
 	AllowedHosts []string `toml:"allowed_hosts"`
 	Port         uint16   `toml:"port"`
-	SecretKey    string
-	ServeStatic  bool   `toml:"serve_static"`
-	StaticPath   string `toml:"static_path"`
-}
-
-type mailConfig struct {
-	WebhookURL         string `toml:"webhook_url"`
-	WebhookSecret      string
-	SESAccessKey       string `toml:"ses_access_key"`
-	SESSecretAccessKey string
-	SESSender          string `toml:"ses_sender"`
+	SecretKey    string   `toml:"-"`
 }
 
 type awsConfig struct {
-	Region string `toml:"region"`
+	AccessKey       string `toml:"access_key"`
+	Region          string `toml:"region"`
+	SecretAccessKey string `toml:"-"`
 }
 
 // Config defines application config and is propagated through every
 // request handler and GraphQL query resolver
 type Config struct {
-	Postgres      postgresConfig
-	Server        serverConfig
-	Mail          mailConfig `toml:"mail"`
-	Miscellaneous miscConfig
-	AWS           awsConfig `toml:"aws"`
+	AWS           awsConfig      `toml:"aws"`
+	Debug         debugConfig    `toml:"debug"`
+	Miscellaneous miscConfig     `toml:"-"`
+	Postgres      postgresConfig `toml:"-"`
+	Server        serverConfig   `toml:"server"`
 }
 
 // Load reads the config.toml file and environment variables to create
 // valid application config
-func Load() *Config {
+func Load(configPath string) *Config {
 	envs := load()
-	useProductionConfig := envs.Env == "production"
 
 	config := Config{}
 
-	configFile, err := ioutil.ReadFile(configFilePath)
+	configFile, err := ioutil.ReadFile(path.Join(configPath, ConfigFile))
 	if err != nil {
 		panic(err)
 	}
@@ -69,40 +68,34 @@ func Load() *Config {
 	if err != nil {
 		panic(err)
 	}
-	if useProductionConfig {
-		overrideConfig := Config{}
-		override, err := ioutil.ReadFile(overrideConfigFilePath)
-		if err != nil {
-			panic(err)
-		}
 
-		_, err = toml.Decode(string(override), &overrideConfig)
-		if err != nil {
-			panic(err)
-		}
-
-		err = mergo.Merge(&overrideConfig, config)
-		if err != nil {
-			panic(err)
-		}
-		config = overrideConfig
+	// Override config
+	overrideConfig := Config{}
+	override, err := ioutil.ReadFile(path.Join(configPath, OverrideConfigFile))
+	if err != nil {
+		panic(err)
 	}
 
-	config.Mail.WebhookSecret = envs.MailAPIKey
-	config.Mail.SESSecretAccessKey = envs.MailAPIKey
-	config.Miscellaneous.CI = envs.CI != "" && envs.CI != "false"
+	_, err = toml.Decode(string(override), &overrideConfig)
+	if err != nil {
+		panic(err)
+	}
+
+	err = mergo.Merge(&overrideConfig, config)
+	if err != nil {
+		panic(err)
+	}
+	config = overrideConfig
+
+	config.Miscellaneous.CI = toBool(envs.CI)
+
+	// Disable all debug options if not in debug mode
+	if toBool(envs.Debug) {
+		config.Debug.LogQueries = false
+	}
+
 	config.Postgres.URI = envs.PgHost
 	config.Server.SecretKey = envs.Secret
-
-	if useProductionConfig {
-		if config.Server.ServeStatic {
-			panic(fmt.Errorf("Cannot serve static in production mode"))
-		}
-
-		if config.Mail.WebhookURL != "" && config.Mail.WebhookSecret == "" {
-			panic(fmt.Errorf(("Cannot use mail webhook if no secret key was given")))
-		}
-	}
 
 	return &config
 }

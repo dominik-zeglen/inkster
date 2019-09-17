@@ -20,7 +20,7 @@ func main() {
 
 			if operation == "runserver" {
 				server := server.Server{}
-				server.Init()
+				server.Init(".")
 
 				server.Run()
 				return nil
@@ -28,7 +28,7 @@ func main() {
 
 			if operation == "add-user" {
 				server := server.Server{}
-				server.Init()
+				server.Init(".")
 
 				dataSource := server.DataSource
 				email := c.Args().Get(1)

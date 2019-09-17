@@ -68,22 +68,12 @@ func (res *Resolver) Users(
 }
 
 func (res *Resolver) Viewer(ctx context.Context) (*userResolver, error) {
-	viewer, ok := ctx.Value("user").(*middleware.UserClaims)
+	viewer, ok := ctx.Value(middleware.UserContextKey).(*core.User)
 	if ok {
-		user := core.User{}
-		user.ID = viewer.ID
-
-		err := res.
-			dataSource.
-			DB().
-			Model(&user).
-			WherePK().
-			Select()
-
 		return &userResolver{
-			data:       &user,
+			data:       viewer,
 			dataSource: res.dataSource,
-		}, err
+		}, nil
 	}
 	return nil, nil
 }

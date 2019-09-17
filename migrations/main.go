@@ -25,7 +25,7 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	conf := config.Load()
+	conf := config.Load("./")
 
 	pgOptions, err := pg.ParseURL(conf.Postgres.URI)
 	if err != nil {
@@ -43,7 +43,7 @@ func main() {
 		exitf(err.Error())
 	}
 
-	if os.Getenv("CI") == "" && os.Getenv("ENV") != "production" {
+	if !conf.Miscellaneous.CI {
 		pgOptions.Database = "test_" + pgOptions.Database
 		fmt.Printf(
 			"Applying migrations to %s database\n",

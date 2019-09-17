@@ -31,6 +31,7 @@ func (handler GraphQLHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 				Schema: handler.schema,
 			},
 			handler.secretKey,
+			handler.dataSource,
 		), handler.dataSource), handler.config).ServeHTTP(w, r)
 	}
 }

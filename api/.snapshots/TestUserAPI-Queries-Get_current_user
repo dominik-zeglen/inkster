@@ -2,9 +2,9 @@
     "data": {
         "viewer": {
             "id": "dXNlcjox",
-            "createdAt": "2007-07-07T10:00:00Z",
-            "updatedAt": "2007-07-07T10:00:00Z",
-            "isActive": true,
+            "createdAt": "0001-01-01T00:00:00Z",
+            "updatedAt": "0001-01-01T00:00:00Z",
+            "isActive": false,
             "pages": {
                 "edges": [
                     {

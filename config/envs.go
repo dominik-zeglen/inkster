@@ -8,11 +8,11 @@ import (
 )
 
 type envVariables struct {
-	CI         string `env:"CI"`
-	Env        string `env:"ENV"`
-	MailAPIKey string `env:"MAIL_API_KEY"`
-	Secret     string `env:"SECRET,required"`
-	PgHost     string `env:"PG_HOST,required"`
+	AWSSecretKey string `env:"AWS_SECRET_KEY"`
+	CI           string `env:"CI"`
+	Debug        string `env:"DEBUG"`
+	PgHost       string `env:"PG_HOST,required"`
+	Secret       string `env:"SECRET,required"`
 }
 
 func load() envVariables {
@@ -49,4 +49,12 @@ func load() envVariables {
 	}
 
 	return envVars
+}
+
+func toBool(env string) bool {
+	if env == "true" || env == "1" {
+		return true
+	}
+
+	return false
 }

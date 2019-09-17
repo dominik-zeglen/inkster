@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 
 	"github.com/lib/pq"
@@ -31,13 +30,13 @@ var fixtures *testfixtures.Context
 var ErrNoError = fmt.Errorf("Did not return error")
 
 func init() {
-	conf := config.Load()
+	conf := config.Load("../")
 	dbHost := conf.Postgres.URI
 	pgOptions, err := pg.ParseURL(dbHost)
 	if err != nil {
 		panic(err)
 	}
-	if os.Getenv("CI") == "" {
+	if !conf.Miscellaneous.CI {
 		pgOptions.Database = "test_" + pgOptions.Database
 		dbOptions, err := pq.ParseURL(dbHost)
 		if err != nil {
@@ -71,19 +70,23 @@ func init() {
 	resetDatabase()
 }
 
-func execQuery(query string, variables string, ctx *context.Context) (string, error) {
-	defaultClaims := middleware.UserClaims{
+func execQuery(
+	query string,
+	variables string,
+	userContext *context.Context,
+) (string, error) {
+	user := core.User{
 		Email: "user1@example.com",
-		ID:    1,
 	}
+	user.ID = 1
+
 	defaultContext := context.WithValue(
 		context.TODO(),
 		middleware.UserContextKey,
-		&defaultClaims,
+		&user,
 	)
 
-	userContext := ctx
-	if ctx == nil {
+	if userContext == nil {
 		userContext = &defaultContext
 	}
 

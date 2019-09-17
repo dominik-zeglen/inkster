@@ -3,15 +3,7 @@ allowed_hosts = [
     'http://localhost:3000'
 ]
 port = 8000
-serve_static = true
-static_path = "./"
 
-[postgres]
-log_queries = false
-
-[mail]
-ses_access_key = "AKIA2BS23TED4QQUHEUR"
-ses_sender = "flesz3@o2.pl"
 
 [aws]
 region = "eu-west-1"

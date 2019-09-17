@@ -27,7 +27,7 @@ func init() {
 					return err
 				}
 
-				config := config.Load()
+				config := config.Load("./")
 
 				website := Website{
 					ID:     "default",
