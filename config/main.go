@@ -70,22 +70,20 @@ func Load(configPath string) *Config {
 	}
 
 	// Override config
-	overrideConfig := Config{}
 	override, err := ioutil.ReadFile(path.Join(configPath, OverrideConfigFile))
-	if err != nil {
-		panic(err)
-	}
+	if err == nil {
+		overrideConfig := Config{}
+		_, err = toml.Decode(string(override), &overrideConfig)
+		if err != nil {
+			panic(err)
+		}
 
-	_, err = toml.Decode(string(override), &overrideConfig)
-	if err != nil {
-		panic(err)
+		err = mergo.Merge(&overrideConfig, config)
+		if err != nil {
+			panic(err)
+		}
+		config = overrideConfig
 	}
-
-	err = mergo.Merge(&overrideConfig, config)
-	if err != nil {
-		panic(err)
-	}
-	config = overrideConfig
 
 	config.Miscellaneous.CI = toBool(envs.CI)
 
