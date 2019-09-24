@@ -1,18 +1,15 @@
 package api
 
 import (
-	"bytes"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"mime/multipart"
 	"net/http"
-	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/dominik-zeglen/inkster/net"
+	"github.com/dominik-zeglen/inkster/storage"
 )
 
 func closeFile(file interface{ Close() error }, w http.ResponseWriter) {
@@ -26,13 +23,13 @@ func closeFile(file interface{ Close() error }, w http.ResponseWriter) {
 	}
 }
 
-func createFileName(file multipart.File) (string, error) {
-	hash := md5.New()
-	_, err := io.Copy(hash, file)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%x", hash.Sum(nil)), nil
+func createFileName(filename string, datetime string) (string, error) {
+	return fmt.Sprintf(
+		"%x_%x%s",
+		md5.Sum([]byte(filename)),
+		md5.Sum([]byte(datetime)),
+		filepath.Ext(filename),
+	), nil
 }
 
 func sendError(err error, w http.ResponseWriter, code int) bool {
@@ -49,11 +46,16 @@ func sendError(err error, w http.ResponseWriter, code int) bool {
 
 // UploadResponse is a type of success response of UploadHandler
 type UploadResponse struct {
-	filename string
+	Filename string `json:"filename"`
 }
 
 // UploadHandler is handler that allows dropping files to Inkster
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func UploadHandler(
+	w http.ResponseWriter,
+	r *http.Request,
+	uploader storage.FileUploader,
+	currentTime string,
+) {
 	if r.Method == "GET" {
 		w.WriteHeader(400)
 		_, err := w.Write(net.NewNetworkError(http.ErrNoLocation).ToJson())
@@ -71,42 +73,28 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer closeFile(file, w)
-	var buff bytes.Buffer
-	_, err = buff.ReadFrom(file)
+
+	filename, err := createFileName(fileHeader.Filename, currentTime)
 	if sendError(err, w, 500) {
 		return
 	}
 
-	filename, err := createFileName(file)
-	savedFilename := filename + "_" + fileHeader.Filename
-	if sendError(err, w, 500) {
-		return
-	}
-	f, err := os.OpenFile(
-		path.Join("../static", savedFilename),
-		os.O_WRONLY|os.O_CREATE,
-		0666,
-	)
-	if sendError(err, w, 500) {
-		return
-	}
-	defer closeFile(f, w)
-
-	_, err = f.Write(buff.Bytes())
+	url, err := uploader.Upload(file, filename)
 	if sendError(err, w, 500) {
 		return
 	}
 
 	res, err := json.Marshal(UploadResponse{
-		filename: savedFilename,
+		Filename: url,
 	})
-	if err != nil {
-		log.Fatal(err)
+	if sendError(err, w, 500) {
+		return
 	}
 
 	_, err = w.Write([]byte(res))
-	if err != nil {
-		log.Fatal(err)
+	if sendError(err, w, 500) {
+		return
 	}
+
 	return
 }
