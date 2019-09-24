@@ -4,6 +4,5 @@ allowed_hosts = [
 ]
 port = 8000
 
-
-[aws]
-region = "eu-west-1"
+[storage]
+backend = "local"
