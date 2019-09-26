@@ -38,21 +38,24 @@ type serverConfig struct {
 	SecretKey    string   `toml:"-"`
 }
 
-type storageBackend string
+type StorageBackend string
 
-func getStorageBackend(str storageBackend) (storageBackend, error) {
+const awsS3 = "s3"
+const local = "local"
+
+func getStorageBackend(str StorageBackend) (StorageBackend, error) {
 	switch str {
-	case "local":
-		return storageBackend("local"), nil
-	case "s3":
-		return storageBackend("s3"), nil
+	case local:
+		return StorageBackend(local), nil
+	case awsS3:
+		return StorageBackend(awsS3), nil
 	default:
-		return storageBackend(""), fmt.Errorf("Unknown storage backend: %s", str)
+		return StorageBackend(""), fmt.Errorf("Unknown storage backend: %s", str)
 	}
 }
 
 type storageConfig struct {
-	Backend           storageBackend `toml:"backend"`
+	Backend           StorageBackend `toml:"backend"`
 	S3AccessKey       string         `toml:"s3_access_key"`
 	S3SecretAccessKey string         `toml:"-"`
 	S3Bucket          string         `toml:"s3_bucket"`
@@ -118,7 +121,7 @@ func Load(configPath string) *Config {
 	// Fill config with environment variables
 	config.Postgres.URI = envs.PgHost
 	config.Server.SecretKey = envs.Secret
-	if config.Storage.Backend == storageBackend("s3") {
+	if config.Storage.Backend == awsS3 {
 		if envs.AWSS3SecretKey != "" {
 			config.Storage.S3SecretAccessKey = envs.AWSS3SecretKey
 		} else if envs.AWSSecretKey != "" {
@@ -130,7 +133,7 @@ func Load(configPath string) *Config {
 
 	// Perform validation
 	if config.Storage.Backend == "" {
-		config.Storage.Backend = storageBackend("local")
+		config.Storage.Backend = local
 	} else {
 		config.Storage.Backend, err = getStorageBackend(config.Storage.Backend)
 		if err != nil {
@@ -138,7 +141,7 @@ func Load(configPath string) *Config {
 				"Config variable storage.backend cannot be %s. Using local storage instead.",
 				config.Storage.Backend,
 			)
-			config.Storage.Backend = storageBackend("local")
+			config.Storage.Backend = local
 		}
 	}
 
