@@ -1,12 +1,13 @@
 package api
 
 import (
-	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/google/uuid"
 
 	"github.com/dominik-zeglen/inkster/net"
 	"github.com/dominik-zeglen/inkster/storage"
@@ -23,11 +24,16 @@ func closeFile(file interface{ Close() error }, w http.ResponseWriter) {
 	}
 }
 
-func createFileName(filename string, datetime string) (string, error) {
+func createFileName(filename string) (string, error) {
+	id, err := uuid.NewRandom()
+
+	if err != nil {
+		return filename, err
+	}
+
 	return fmt.Sprintf(
-		"%x_%x%s",
-		md5.Sum([]byte(filename)),
-		md5.Sum([]byte(datetime)),
+		"%x%s",
+		id,
 		filepath.Ext(filename),
 	), nil
 }
@@ -54,7 +60,6 @@ func UploadHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 	uploader storage.FileUploader,
-	currentTime string,
 ) {
 	if r.Method == "GET" {
 		w.WriteHeader(400)
@@ -74,7 +79,7 @@ func UploadHandler(
 	}
 	defer closeFile(file, w)
 
-	filename, err := createFileName(fileHeader.Filename, currentTime)
+	filename, err := createFileName(fileHeader.Filename)
 	if sendError(err, w, 500) {
 		return
 	}

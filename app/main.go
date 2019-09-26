@@ -116,10 +116,7 @@ func (app *Server) Run() {
 	))
 	http.Handle("/upload/", middleware.WithCors(
 		app.Config.Server.AllowedHosts,
-		newUploadHandler(
-			app.FileUploader,
-			app.DataSource.GetCurrentTime,
-		),
+		newUploadHandler(app.FileUploader),
 	))
 
 	log.Printf("Running server on port %d\n", app.Config.Server.Port)

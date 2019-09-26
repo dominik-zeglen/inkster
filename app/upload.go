@@ -2,7 +2,6 @@ package app
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/dominik-zeglen/inkster/api"
 	"github.com/dominik-zeglen/inkster/storage"
@@ -10,20 +9,17 @@ import (
 
 type UploadHandler struct {
 	http.Handler
-	fileUploader   storage.FileUploader
-	getCurrentTime func() time.Time
+	fileUploader storage.FileUploader
 }
 
 func (handler UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	api.UploadHandler(w, r, handler.fileUploader, handler.getCurrentTime().String())
+	api.UploadHandler(w, r, handler.fileUploader)
 }
 
 func newUploadHandler(
 	fileUploader storage.FileUploader,
-	getCurrentTime func() time.Time,
 ) UploadHandler {
 	return UploadHandler{
-		fileUploader:   fileUploader,
-		getCurrentTime: getCurrentTime,
+		fileUploader: fileUploader,
 	}
 }
