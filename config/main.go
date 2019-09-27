@@ -55,10 +55,8 @@ func getStorageBackend(str StorageBackend) (StorageBackend, error) {
 }
 
 type storageConfig struct {
-	Backend           StorageBackend `toml:"backend"`
-	S3AccessKey       string         `toml:"s3_access_key"`
-	S3SecretAccessKey string         `toml:"-"`
-	S3Bucket          string         `toml:"s3_bucket"`
+	Backend  StorageBackend `toml:"backend"`
+	S3Bucket string         `toml:"s3_bucket"`
 }
 
 type awsConfig struct {
@@ -121,14 +119,10 @@ func Load(configPath string) *Config {
 	// Fill config with environment variables
 	config.Postgres.URI = envs.PgHost
 	config.Server.SecretKey = envs.Secret
-	if config.Storage.Backend == awsS3 {
-		if envs.AWSS3SecretKey != "" {
-			config.Storage.S3SecretAccessKey = envs.AWSS3SecretKey
-		} else if envs.AWSSecretKey != "" {
-			config.Storage.S3SecretAccessKey = envs.AWSSecretKey
-		} else {
-			log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
-		}
+	config.AWS.SecretAccessKey = envs.AWSSecretKey
+
+	if config.Storage.Backend == awsS3 && envs.AWSSecretKey == "" {
+		log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
 	}
 
 	// Perform validation

@@ -20,19 +20,12 @@ func NewAwsS3FileUploader(config config.Config) AwsS3FileUploader {
 	awsConfig := aws.Config{
 		Region: &config.AWS.Region,
 	}
-	if config.Storage.S3AccessKey != "" {
-		awsConfig.Credentials = credentials.NewStaticCredentials(
-			config.Storage.S3AccessKey,
-			config.Storage.S3SecretAccessKey,
-			"",
-		)
-	} else {
-		awsConfig.Credentials = credentials.NewStaticCredentials(
-			config.AWS.AccessKey,
-			config.AWS.SecretAccessKey,
-			"",
-		)
-	}
+	awsConfig.Credentials = credentials.NewStaticCredentials(
+		config.AWS.AccessKey,
+		config.AWS.SecretAccessKey,
+		"",
+	)
+
 	sess, err := session.NewSession(&awsConfig)
 	if err != nil {
 		panic(err)
