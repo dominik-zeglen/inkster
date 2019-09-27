@@ -22,6 +22,8 @@ github.com/go-playground/universal-translator v0.16.0/go.mod h1:1AnU7NaIRDWWzGEK
 github.com/go-testfixtures/testfixtures v2.5.1+incompatible h1:IBJp7NQjfdUHc4+gDH0j1e76LilPeMZuvm/oEUhDwxo=
 github.com/go-testfixtures/testfixtures v2.5.1+incompatible/go.mod h1:6dKJINxwALMzZdkfvEdsgZGCQLXyJmJySM4vlMYxcDk=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
+github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gosimple/slug v1.1.1 h1:fRu/digW+NMwBIP+RmviTK97Ho/bEj/C9swrCspN3D4=
 github.com/gosimple/slug v1.1.1/go.mod h1:ER78kgg1Mv0NQGlXiDe57DpCyfbNywXXZ9mIorhxAf0=
 github.com/graph-gophers/graphql-go v0.0.0-20180411221916-9ebf33af539a h1:F79KIf7+etH5PWEmEGosHmreY9QaSZQLbYc3ND3mo6M=

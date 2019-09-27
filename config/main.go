@@ -1,7 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
+	"log"
 	"path"
 
 	"github.com/BurntSushi/toml"
@@ -36,6 +38,27 @@ type serverConfig struct {
 	SecretKey    string   `toml:"-"`
 }
 
+type StorageBackend string
+
+const awsS3 = "s3"
+const local = "local"
+
+func getStorageBackend(str StorageBackend) (StorageBackend, error) {
+	switch str {
+	case local:
+		return StorageBackend(local), nil
+	case awsS3:
+		return StorageBackend(awsS3), nil
+	default:
+		return StorageBackend(""), fmt.Errorf("Unknown storage backend: %s", str)
+	}
+}
+
+type storageConfig struct {
+	Backend  StorageBackend `toml:"backend"`
+	S3Bucket string         `toml:"s3_bucket"`
+}
+
 type awsConfig struct {
 	AccessKey       string `toml:"access_key"`
 	Region          string `toml:"region"`
@@ -50,6 +73,7 @@ type Config struct {
 	Miscellaneous miscConfig     `toml:"-"`
 	Postgres      postgresConfig `toml:"-"`
 	Server        serverConfig   `toml:"server"`
+	Storage       storageConfig  `toml:"storage"`
 }
 
 // Load reads the config.toml file and environment variables to create
@@ -92,8 +116,28 @@ func Load(configPath string) *Config {
 		config.Debug.LogQueries = false
 	}
 
+	// Fill config with environment variables
 	config.Postgres.URI = envs.PgHost
 	config.Server.SecretKey = envs.Secret
+	config.AWS.SecretAccessKey = envs.AWSSecretKey
+
+	if config.Storage.Backend == awsS3 && envs.AWSSecretKey == "" {
+		log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
+	}
+
+	// Perform validation
+	if config.Storage.Backend == "" {
+		config.Storage.Backend = local
+	} else {
+		config.Storage.Backend, err = getStorageBackend(config.Storage.Backend)
+		if err != nil {
+			log.Printf(
+				"Config variable storage.backend cannot be %s. Using local storage instead.",
+				config.Storage.Backend,
+			)
+			config.Storage.Backend = local
+		}
+	}
 
 	return &config
 }

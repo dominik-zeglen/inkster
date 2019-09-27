@@ -12,6 +12,7 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mailer"
 	"github.com/dominik-zeglen/inkster/middleware"
+	"github.com/dominik-zeglen/inkster/storage"
 	"github.com/go-pg/pg"
 	"github.com/graph-gophers/graphql-go"
 )
@@ -24,10 +25,11 @@ func check(err error) {
 
 // Server is a type Inkster app uses to hold connections
 type Server struct {
-	Config     appConfig.Config
-	DataSource core.DataContext
-	MailClient mailer.Mailer
-	Schema     *graphql.Schema
+	Config       appConfig.Config
+	DataSource   core.DataContext
+	FileUploader storage.FileUploader
+	MailClient   mailer.Mailer
+	Schema       *graphql.Schema
 }
 
 func (app *Server) initDataSource() *Server {
@@ -72,6 +74,16 @@ func (app *Server) initSchema() *Server {
 	return app
 }
 
+func (app *Server) initStorage() *Server {
+	if app.Config.Storage.Backend == "local" {
+		app.FileUploader = storage.NewLocalFileUploader()
+	} else if app.Config.Storage.Backend == "s3" {
+		app.FileUploader = storage.NewAwsS3FileUploader(app.Config)
+	}
+
+	return app
+}
+
 // Init all settings
 func (app *Server) Init(configPath string) *Server {
 	appConfig := appConfig.Load(configPath)
@@ -80,16 +92,19 @@ func (app *Server) Init(configPath string) *Server {
 	return app.
 		initDataSource().
 		initMailer().
-		initSchema()
+		initSchema().
+		initStorage()
 }
 
 // Run Inkster app
 func (app *Server) Run() {
-	http.Handle("/static/",
-		http.StripPrefix(
-			"/static/",
-			http.FileServer(http.Dir("/static/")),
-		))
+	if app.Config.Storage.Backend == "local" {
+		http.Handle("/static/",
+			http.StripPrefix(
+				"/static/",
+				http.FileServer(http.Dir("/static/")),
+			))
+	}
 	http.Handle("/graphql/", middleware.WithCors(
 		app.Config.Server.AllowedHosts,
 		newGraphQLHandler(
@@ -99,9 +114,9 @@ func (app *Server) Run() {
 			app.Config,
 		),
 	))
-	http.Handle("/upload", middleware.WithCors(
+	http.Handle("/upload/", middleware.WithCors(
 		app.Config.Server.AllowedHosts,
-		http.HandlerFunc(api.UploadHandler),
+		newUploadHandler(app.FileUploader),
 	))
 
 	log.Printf("Running server on port %d\n", app.Config.Server.Port)
