@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
@@ -71,6 +72,7 @@ func (res *Resolver) CreateUser(
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
+	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
 	user := core.User{
 		Email: args.Input.Email,
 	}
@@ -81,8 +83,9 @@ func (res *Resolver) CreateUser(
 		dataSource.
 		GetCurrentTime()
 
+	var pwd string
 	if args.Input.Password == nil {
-		_, _ = user.CreateRandomPassword()
+		pwd, _ = user.CreateRandomPassword()
 		user.Active = false
 	} else {
 		err := user.CreatePassword(*args.Input.Password)
@@ -115,10 +118,17 @@ func (res *Resolver) CreateUser(
 	if args.SendInvitation != nil {
 		sendInvitation := *args.SendInvitation
 		if sendInvitation {
-			// err = res.mailer.Send(user.Email, "Inkster password", pwd)
-			// if err != nil {
-			return nil, err
-			// }
+			err = res.mailer.SendUserInvitation(
+				user.Email,
+				mail.SendUserInvitationTemplateData{
+					User:     user,
+					Website:  website,
+					Password: pwd,
+				},
+			)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 	return &userOperationResultResolver{

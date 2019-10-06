@@ -46,3 +46,10 @@ func (mailer TerminalMailer) SendPasswordResetToken(
 ) error {
 	return mailer.printToTerminal(recipient, data)
 }
+
+func (mailer TerminalMailer) SendUserInvitation(
+	recipient string,
+	data SendUserInvitationTemplateData,
+) error {
+	return mailer.printToTerminal(recipient, data)
+}
