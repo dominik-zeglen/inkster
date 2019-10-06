@@ -13,7 +13,7 @@ import (
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/utils"
 	"github.com/go-pg/pg"
@@ -22,7 +22,7 @@ import (
 )
 
 var dataSource core.MockContext
-var mailClient = mailer.MockMailClient{}
+var mailClient = mail.TerminalMailer{}
 var resolver = NewResolver(&dataSource, &mailClient, "secretKey")
 var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
 var fixtures *testfixtures.Context
@@ -106,5 +106,4 @@ func resetDatabase() {
 	if err := fixtures.Load(); err != nil {
 		panic(err)
 	}
-	mailClient.Reset()
 }

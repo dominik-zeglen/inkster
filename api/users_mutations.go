@@ -81,9 +81,8 @@ func (res *Resolver) CreateUser(
 		dataSource.
 		GetCurrentTime()
 
-	var pwd string
 	if args.Input.Password == nil {
-		pwd, _ = user.CreateRandomPassword()
+		_, _ = user.CreateRandomPassword()
 		user.Active = false
 	} else {
 		err := user.CreatePassword(*args.Input.Password)
@@ -116,10 +115,10 @@ func (res *Resolver) CreateUser(
 	if args.SendInvitation != nil {
 		sendInvitation := *args.SendInvitation
 		if sendInvitation {
-			err = res.mailer.Send(user.Email, "Inkster password", pwd)
-			if err != nil {
-				return nil, err
-			}
+			// err = res.mailer.Send(user.Email, "Inkster password", pwd)
+			// if err != nil {
+			return nil, err
+			// }
 		}
 	}
 	return &userOperationResultResolver{
