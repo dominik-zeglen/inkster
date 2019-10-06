@@ -18,7 +18,7 @@ func NewTerminalMailer(config config.Config) TerminalMailer {
 	}
 }
 
-func (mailer TerminalMailer) printToTerminal(
+func (mailer *TerminalMailer) printToTerminal(
 	recipient string,
 	data interface{},
 ) error {

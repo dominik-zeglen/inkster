@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dominik-zeglen/inkster/config"
@@ -126,30 +125,18 @@ func (res *Resolver) SendUserPasswordResetToken(
 		return false, nil
 	}
 
-	claims := ActionTokenClaims{
-		ID:            user.ID,
-		AllowedAction: RESET_PASSWORD,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: res.
-				dataSource.
-				GetCurrentTime().
-				Add(time.Hour * 24).
-				Unix(),
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	key := fmt.Sprintf("%x", appConfig.Server.SecretKey)
-	tokenString, err := token.SignedString([]byte(key))
-	if err != nil {
-		return false, err
-	}
+	token, err := createPasswordResetToken(
+		user.ID,
+		res.dataSource.GetCurrentTime(),
+		appConfig.Server.SecretKey,
+	)
 
 	err = res.mailer.SendPasswordResetToken(
 		args.Email,
 		mail.SendPasswordResetTokenTemplateData{
 			User:    user,
 			Website: website,
-			Token:   tokenString,
+			Token:   token,
 		},
 	)
 	if err != nil {
