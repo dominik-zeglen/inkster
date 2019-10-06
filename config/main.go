@@ -99,13 +99,13 @@ func Load(configPath string) *Config {
 	config.Server.SecretKey = envs.Secret
 	config.AWS.SecretAccessKey = envs.AWSSecretKey
 
-	if config.Storage.Backend == awsS3 && envs.AWSSecretKey == "" {
+	if config.Storage.Backend == StorageAwsS3 && envs.AWSSecretKey == "" {
 		log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
 	}
 
 	// Perform validation
 	if config.Storage.Backend == "" {
-		config.Storage.Backend = local
+		config.Storage.Backend = StorageLocal
 	} else {
 		config.Storage.Backend, err = getStorageBackend(config.Storage.Backend)
 		if err != nil {
@@ -113,7 +113,7 @@ func Load(configPath string) *Config {
 				"Config variable storage.backend cannot be %s. Using local storage instead.",
 				config.Storage.Backend,
 			)
-			config.Storage.Backend = local
+			config.Storage.Backend = StorageLocal
 		}
 	}
 
