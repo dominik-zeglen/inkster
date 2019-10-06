@@ -4,24 +4,13 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/middleware"
 )
 
-func (res *Resolver) Website(ctx context.Context) (*websiteResolver, error) {
-	website := core.Website{}
-	website.ID = core.WEBSITE_DB_ID
-
-	err := res.
-		dataSource.
-		DB().
-		Model(&website).
-		WherePK().
-		Select()
-
-	if err != nil {
-		return nil, err
-	}
+func (res *Resolver) Website(ctx context.Context) *websiteResolver {
+	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
 
 	return &websiteResolver{
 		data: &website,
-	}, nil
+	}
 }

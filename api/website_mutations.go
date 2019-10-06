@@ -105,11 +105,13 @@ func (res *Resolver) UpdateWebsite(
 		}, nil
 	}
 
+	err = res.dataSource.DB().Update(website)
+
 	return &websiteOperationResultResolver{
 		dataSource: res.dataSource,
 		data: websiteOperationResult{
 			errors:  validationErrors,
 			website: website,
 		},
-	}, nil
+	}, err
 }
