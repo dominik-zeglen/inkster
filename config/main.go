@@ -99,10 +99,6 @@ func Load(configPath string) *Config {
 	config.Server.SecretKey = envs.Secret
 	config.AWS.SecretAccessKey = envs.AWSSecretKey
 
-	if config.Storage.Backend == StorageAwsS3 && envs.AWSSecretKey == "" {
-		log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
-	}
-
 	// Perform validation
 	if config.Storage.Backend == "" {
 		config.Storage.Backend = StorageLocal
@@ -114,6 +110,9 @@ func Load(configPath string) *Config {
 				config.Storage.Backend,
 			)
 			config.Storage.Backend = StorageLocal
+		}
+		if config.Storage.Backend == StorageAwsS3 && envs.AWSSecretKey == "" {
+			log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
 		}
 	}
 
