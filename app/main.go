@@ -75,9 +75,9 @@ func (app *Server) initSchema() *Server {
 }
 
 func (app *Server) initStorage() *Server {
-	if app.Config.Storage.Backend == "local" {
+	if app.Config.Storage.Backend == appConfig.StorageLocal {
 		app.FileUploader = storage.NewLocalFileUploader()
-	} else if app.Config.Storage.Backend == "s3" {
+	} else if app.Config.Storage.Backend == appConfig.StorageAwsS3 {
 		app.FileUploader = storage.NewAwsS3FileUploader(app.Config)
 	}
 

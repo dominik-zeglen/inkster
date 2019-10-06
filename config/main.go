@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path"
@@ -36,27 +35,6 @@ type serverConfig struct {
 	AllowedHosts []string `toml:"allowed_hosts"`
 	Port         uint16   `toml:"port"`
 	SecretKey    string   `toml:"-"`
-}
-
-type StorageBackend string
-
-const awsS3 = "s3"
-const local = "local"
-
-func getStorageBackend(str StorageBackend) (StorageBackend, error) {
-	switch str {
-	case local:
-		return StorageBackend(local), nil
-	case awsS3:
-		return StorageBackend(awsS3), nil
-	default:
-		return StorageBackend(""), fmt.Errorf("Unknown storage backend: %s", str)
-	}
-}
-
-type storageConfig struct {
-	Backend  StorageBackend `toml:"backend"`
-	S3Bucket string         `toml:"s3_bucket"`
 }
 
 type awsConfig struct {
