@@ -8,21 +8,21 @@ import (
 	"strings"
 
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
 )
 
 type Resolver struct {
 	dataSource core.AbstractDataContext
 	key        string
-	mailer     mailer.Mailer
+	mailer     mail.Mailer
 }
 
-func NewResolver(dataSource core.AbstractDataContext, mailer mailer.Mailer, key string) Resolver {
+func NewResolver(dataSource core.AbstractDataContext, mailer mail.Mailer, key string) Resolver {
 	return Resolver{
-		dataSource: dataSource,
-		key:        key,
-		mailer:     mailer,
+		dataSource,
+		key,
+		mailer,
 	}
 }
 

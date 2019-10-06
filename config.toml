@@ -4,5 +4,8 @@ allowed_hosts = [
 ]
 port = 8000
 
+[mail]
+sender = "norep"
+
 [storage]
 backend = "local"

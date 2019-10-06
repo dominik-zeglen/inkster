@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/bradleyjkemp/cupaloy"
 )
@@ -206,6 +207,12 @@ func TestUserAPI(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			token, _ := createPasswordResetToken(
+				1,
+				dataSource.GetCurrentTime().Add(-time.Hour),
+				conf.Server.SecretKey,
+			)
+
 			query = `mutation ResetPassword(
 				$token: String!,
 				$password: String!
@@ -215,7 +222,7 @@ func TestUserAPI(t *testing.T) {
 			variables = fmt.Sprintf(`{
 				"password": "examplePassword",
 				"token": "%s"
-			}`, mailClient.Last())
+			}`, token)
 			result, err := execQuery(query, variables, nil)
 			if err != nil {
 				t.Fatal(err)

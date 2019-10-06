@@ -10,7 +10,7 @@ import (
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	appConfig "github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/storage"
 	"github.com/go-pg/pg"
@@ -28,7 +28,7 @@ type Server struct {
 	Config       appConfig.Config
 	DataSource   core.DataContext
 	FileUploader storage.FileUploader
-	MailClient   mailer.Mailer
+	MailClient   mail.Mailer
 	Schema       *graphql.Schema
 }
 
@@ -58,7 +58,11 @@ func (app *Server) initDataSource() *Server {
 }
 
 func (app *Server) initMailer() *Server {
-	app.MailClient = &mailer.MockMailClient{}
+	if app.Config.Mail.Backend == appConfig.MailTerm {
+		app.MailClient = mail.NewTerminalMailer(app.Config)
+	} else if app.Config.Mail.Backend == appConfig.MailAwsSes {
+		app.MailClient = mail.NewAwsSesMailer(app.Config)
+	}
 
 	return app
 }
@@ -75,9 +79,9 @@ func (app *Server) initSchema() *Server {
 }
 
 func (app *Server) initStorage() *Server {
-	if app.Config.Storage.Backend == "local" {
+	if app.Config.Storage.Backend == appConfig.StorageLocal {
 		app.FileUploader = storage.NewLocalFileUploader()
-	} else if app.Config.Storage.Backend == "s3" {
+	} else if app.Config.Storage.Backend == appConfig.StorageAwsS3 {
 		app.FileUploader = storage.NewAwsS3FileUploader(app.Config)
 	}
 

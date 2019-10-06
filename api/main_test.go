@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"regexp"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 
 	apiSchema "github.com/dominik-zeglen/inkster/api/schema"
 	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/dominik-zeglen/inkster/mailer"
+	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
 	"github.com/dominik-zeglen/inkster/utils"
 	"github.com/go-pg/pg"
@@ -21,8 +22,9 @@ import (
 	gql "github.com/graph-gophers/graphql-go"
 )
 
+var conf config.Config
 var dataSource core.MockContext
-var mailClient = mailer.MockMailClient{}
+var mailClient = mail.TerminalMailer{}
 var resolver = NewResolver(&dataSource, &mailClient, "secretKey")
 var schema = gql.MustParseSchema(apiSchema.String(), &resolver)
 var fixtures *testfixtures.Context
@@ -30,7 +32,7 @@ var fixtures *testfixtures.Context
 var ErrNoError = fmt.Errorf("Did not return error")
 
 func init() {
-	conf := config.Load("../")
+	conf = *config.Load("../")
 	dbHost := conf.Postgres.URI
 	pgOptions, err := pg.ParseURL(dbHost)
 	if err != nil {
@@ -67,6 +69,8 @@ func init() {
 		panic(err)
 	}
 
+	jwt.TimeFunc = dataSource.GetCurrentTime
+
 	resetDatabase()
 }
 
@@ -80,8 +84,20 @@ func execQuery(
 	}
 	user.ID = 1
 
+	website := core.Website{}
+	website.ID = core.WEBSITE_DB_ID
+	dataSource.DB().Model(&website).WherePK().Select()
+
 	defaultContext := context.WithValue(
-		context.TODO(),
+		context.WithValue(
+			context.WithValue(
+				context.Background(),
+				middleware.ConfigContextKey,
+				conf,
+			),
+			middleware.WebsiteContextKey,
+			website,
+		),
 		middleware.UserContextKey,
 		&user,
 	)
@@ -106,5 +122,4 @@ func resetDatabase() {
 	if err := fixtures.Load(); err != nil {
 		panic(err)
 	}
-	mailClient.Reset()
 }

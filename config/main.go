@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"path"
@@ -38,27 +37,6 @@ type serverConfig struct {
 	SecretKey    string   `toml:"-"`
 }
 
-type StorageBackend string
-
-const awsS3 = "s3"
-const local = "local"
-
-func getStorageBackend(str StorageBackend) (StorageBackend, error) {
-	switch str {
-	case local:
-		return StorageBackend(local), nil
-	case awsS3:
-		return StorageBackend(awsS3), nil
-	default:
-		return StorageBackend(""), fmt.Errorf("Unknown storage backend: %s", str)
-	}
-}
-
-type storageConfig struct {
-	Backend  StorageBackend `toml:"backend"`
-	S3Bucket string         `toml:"s3_bucket"`
-}
-
 type awsConfig struct {
 	AccessKey       string `toml:"access_key"`
 	Region          string `toml:"region"`
@@ -70,6 +48,7 @@ type awsConfig struct {
 type Config struct {
 	AWS           awsConfig      `toml:"aws"`
 	Debug         debugConfig    `toml:"debug"`
+	Mail          mailConfig     `toml:"mail"`
 	Miscellaneous miscConfig     `toml:"-"`
 	Postgres      postgresConfig `toml:"-"`
 	Server        serverConfig   `toml:"server"`
@@ -121,13 +100,15 @@ func Load(configPath string) *Config {
 	config.Server.SecretKey = envs.Secret
 	config.AWS.SecretAccessKey = envs.AWSSecretKey
 
-	if config.Storage.Backend == awsS3 && envs.AWSSecretKey == "" {
-		log.Fatal("Config variable storage.backend set to s3 but no secret access key given.")
-	}
-
 	// Perform validation
+	// --
+	// Validate server
+	valueOrFatal(config.Server.SecretKey, "server.secret_key")
+	valueOrFatal(string(config.Server.Port), "server.port")
+
+	// Validate storage
 	if config.Storage.Backend == "" {
-		config.Storage.Backend = local
+		config.Storage.Backend = StorageLocal
 	} else {
 		config.Storage.Backend, err = getStorageBackend(config.Storage.Backend)
 		if err != nil {
@@ -135,9 +116,30 @@ func Load(configPath string) *Config {
 				"Config variable storage.backend cannot be %s. Using local storage instead.",
 				config.Storage.Backend,
 			)
-			config.Storage.Backend = local
+			config.Storage.Backend = StorageLocal
+		}
+		if config.Storage.Backend == StorageAwsS3 && envs.AWSSecretKey == "" {
+			log.Fatal("Config variable storage.backend set to s3 but no aws secret access key given.")
 		}
 	}
+
+	// Validate mails
+	if config.Mail.Backend == "" {
+		config.Mail.Backend = MailTerm
+	} else {
+		config.Mail.Backend, err = getMailBackend(config.Mail.Backend)
+		if err != nil {
+			log.Printf(
+				"Config variable mail.backend cannot be %s. Using terminal output instead.",
+				config.Mail.Backend,
+			)
+			config.Mail.Backend = MailTerm
+		}
+		if config.Mail.Backend == MailAwsSes && envs.AWSSecretKey == "" {
+			log.Fatal("Config variable mail.backend set to ses but no aws secret access key given.")
+		}
+	}
+	valueOrFatal(config.Mail.Sender, "mail.sender")
 
 	return &config
 }

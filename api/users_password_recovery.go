@@ -6,7 +6,10 @@ import (
 	"fmt"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/mail"
+	"github.com/dominik-zeglen/inkster/middleware"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -60,6 +63,7 @@ func (res *Resolver) ResetUserPassword(
 	ctx context.Context,
 	args ResetUserPasswordArgs,
 ) (bool, error) {
+	appConfig := ctx.Value(middleware.ConfigContextKey).(config.Config)
 	tokenObject, err := jwt.ParseWithClaims(
 		args.Token,
 		&ActionTokenClaims{},
@@ -68,26 +72,7 @@ func (res *Resolver) ResetUserPassword(
 				return nil, errors.New("Invalid signing method")
 			}
 
-			claims, ok := token.Claims.(*ActionTokenClaims)
-			if !ok {
-				return nil, errors.New("Invalid token claims")
-			}
-
-			user := core.User{}
-			user.ID = claims.ID
-
-			err := res.
-				dataSource.
-				DB().
-				Model(&user).
-				WherePK().
-				Select()
-
-			if err != nil {
-				return nil, err
-			}
-
-			key := fmt.Sprintf("%x", user.Password)
+			key := fmt.Sprintf("%x", appConfig.Server.SecretKey)
 
 			return []byte(key), nil
 		},
@@ -126,6 +111,8 @@ func (res *Resolver) SendUserPasswordResetToken(
 	ctx context.Context,
 	args SendUserPasswordResetTokenArgs,
 ) (bool, error) {
+	appConfig := ctx.Value(middleware.ConfigContextKey).(config.Config)
+	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
 	user := core.User{}
 	err := res.
 		dataSource.
@@ -138,18 +125,20 @@ func (res *Resolver) SendUserPasswordResetToken(
 		return false, nil
 	}
 
-	claims := ActionTokenClaims{
-		ID:            user.ID,
-		AllowedAction: RESET_PASSWORD,
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	key := fmt.Sprintf("%x", user.Password)
-	tokenString, err := token.SignedString([]byte(key))
-	if err != nil {
-		return false, err
-	}
+	token, err := createPasswordResetToken(
+		user.ID,
+		res.dataSource.GetCurrentTime(),
+		appConfig.Server.SecretKey,
+	)
 
-	err = res.mailer.Send(args.Email, "Inkster reset password", tokenString)
+	err = res.mailer.SendPasswordResetToken(
+		args.Email,
+		mail.SendPasswordResetTokenTemplateData{
+			User:    user,
+			Website: website,
+			Token:   token,
+		},
+	)
 	if err != nil {
 		return false, err
 	}

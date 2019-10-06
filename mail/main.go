@@ -1,0 +1,27 @@
+package mail
+
+import "github.com/dominik-zeglen/inkster/core"
+
+type SendPasswordResetTokenTemplateData struct {
+	User    core.User    `json:"user"`
+	Website core.Website `json:"website"`
+	Token   string       `json:"token"`
+}
+
+type SendUserInvitationTemplateData struct {
+	User     core.User    `json:"user"`
+	Website  core.Website `json:"website"`
+	Password string       `json:"password"`
+}
+
+type Mailer interface {
+	SendPasswordResetToken(
+		string,
+		SendPasswordResetTokenTemplateData,
+	) error
+
+	SendUserInvitation(
+		string,
+		SendUserInvitationTemplateData,
+	) error
+}
