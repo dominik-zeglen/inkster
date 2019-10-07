@@ -96,7 +96,7 @@ func TestDirectoryAPI(t *testing.T) {
 			defer resetDatabase()
 			variables := `{	
 				"input": {	
-					"name": "a"	
+					"name": ""	
 				}	
 			}`
 			result, err := execQuery(createDirectory, variables, nil)

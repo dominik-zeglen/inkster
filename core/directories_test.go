@@ -4,33 +4,31 @@ import (
 	"testing"
 )
 
-const (
-	DIR_NAME   = "directory name"
-	DIR_PARENT = 2
-)
-
 func TestDirectoryValidation(t *testing.T) {
+	dirName := "directory name"
+	dirParent := 2
+
 	testSuites := []struct {
 		directory Directory
 		expected  []ValidationError
 	}{
 		{
 			Directory{
-				Name:        DIR_NAME,
-				ParentID:    DIR_PARENT,
+				Name:        dirName,
+				ParentID:    &dirParent,
 				IsPublished: true,
 			},
 			[]ValidationError{},
 		},
 		{
 			Directory{
-				Name:        "a",
-				ParentID:    DIR_PARENT,
+				Name:        "",
+				ParentID:    &dirParent,
 				IsPublished: true,
 			},
 			[]ValidationError{
 				ValidationError{
-					Code:  ErrMinLength,
+					Code:  ErrRequired,
 					Field: "Name",
 				},
 			},

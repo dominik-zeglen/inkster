@@ -33,48 +33,12 @@ func (res *directoryOperationResultResolver) Directory() *directoryResolver {
 }
 
 type createDirectoryInput struct {
-	Name        string `validate:"min=3"`
+	Name        string
 	ParentID    *string
 	IsPublished *bool
 }
 type createDirectoryArgs struct {
-	Input createDirectoryInput `validate:"dive"`
-}
-
-func (args createDirectoryArgs) validate(dataSource core.AbstractDataContext) (
-	[]core.ValidationError,
-	error,
-) {
-	validationErrors := core.ValidateModel(args)
-
-	if args.Input.ParentID != nil {
-		localID, err := fromGlobalID("directory", *args.Input.ParentID)
-		if err != nil {
-			return nil, err
-		}
-
-		directory := core.Directory{}
-		directory.ID = localID
-		err = dataSource.
-			DB().
-			Model(&directory).
-			WherePK().
-			Select()
-
-		if err != nil {
-			if err == pg.ErrNoRows {
-				validationErrors = append(validationErrors, core.ValidationError{
-					Code:  core.ErrDoesNotExist,
-					Field: "ParentID",
-					Param: args.Input.ParentID,
-				})
-			} else {
-				return nil, err
-			}
-		}
-	}
-
-	return validationErrors, nil
+	Input createDirectoryInput
 }
 
 func (res *Resolver) CreateDirectory(
@@ -85,52 +49,35 @@ func (res *Resolver) CreateDirectory(
 		return nil, errNoPermissions
 	}
 
+	input := args.Input
+
 	directory := core.Directory{}
-	directory.CreatedAt = res.dataSource.GetCurrentTime()
-	directory.UpdatedAt = res.dataSource.GetCurrentTime()
 	directory.Name = args.Input.Name
 
-	input := args.Input
+	if input.IsPublished != nil {
+		directory.IsPublished = *input.IsPublished
+	}
+
 	if input.ParentID != nil {
 		parentID, err := fromGlobalID("directory", *input.ParentID)
 		if err != nil {
 			return nil, err
 		}
-		directory.ParentID = parentID
-	}
-	if input.IsPublished != nil {
-		directory.IsPublished = *input.IsPublished
+		directory.ParentID = &parentID
 	}
 
-	validationErrors, err := args.validate(res.dataSource)
-	if err != nil {
-		return nil, err
-	}
-	if len(validationErrors) > 0 {
-		return &directoryOperationResultResolver{
-			dataSource: res.dataSource,
-			data: directoryOperationResult{
-				validationErrors: validationErrors,
-				directory:        nil,
-			},
-		}, nil
-	}
+	insertedDirectory, validationErrors, err := core.CreateDirectory(
+		directory,
+		res.dataSource,
+	)
 
-	_, err = res.dataSource.
-		DB().
-		Model(&directory).
-		Insert()
-
-	if err != nil {
-		return nil, err
-	}
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
-			directory:        &directory,
+			directory:        insertedDirectory,
 			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
-	}, nil
+	}, err
 }
 
 type updateDirectoryArgs struct {
@@ -243,7 +190,7 @@ func (res *Resolver) UpdateDirectory(
 		if err != nil {
 			return nil, err
 		}
-		directory.ParentID = parentID
+		directory.ParentID = &parentID
 		query = query.Column("parent_id")
 	}
 
