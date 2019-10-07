@@ -42,36 +42,3 @@ func TestDirectoryValidation(t *testing.T) {
 		testValidation(testData.expected, result, index, t)
 	}
 }
-
-func TestDirectoryInputValidation(t *testing.T) {
-	dirName := DIR_NAME
-	newDirName := "a"
-
-	testSuites := []struct {
-		directoryInput DirectoryInput
-		expected       []ValidationError
-	}{
-		{
-			DirectoryInput{
-				Name: &dirName,
-			},
-			[]ValidationError{},
-		},
-		{
-			DirectoryInput{
-				Name: &newDirName,
-			},
-			[]ValidationError{
-				ValidationError{
-					Code:  ErrMinLength,
-					Field: "Name",
-				},
-			},
-		},
-	}
-
-	for index, testData := range testSuites {
-		result := ValidateModel(testData.directoryInput)
-		testValidation(testData.expected, result, index, t)
-	}
-}

@@ -12,8 +12,8 @@ import (
 )
 
 type userOperationResult struct {
-	errors []core.ValidationError
-	user   *core.User
+	user             *core.User
+	validationErrors []core.ValidationError
 }
 
 type userOperationResultResolver struct {
@@ -21,17 +21,8 @@ type userOperationResultResolver struct {
 	data       userOperationResult
 }
 
-func (res *userOperationResultResolver) Errors() []*inputErrorResolver {
-	var resolverList []*inputErrorResolver
-	for i := range res.data.errors {
-		resolverList = append(
-			resolverList,
-			&inputErrorResolver{
-				err: res.data.errors[i],
-			},
-		)
-	}
-	return resolverList
+func (res *userOperationResultResolver) Errors() []inputErrorResolver {
+	return createInputErrorResolvers(res.data.validationErrors)
 }
 
 func (res *userOperationResultResolver) User() *userResolver {
@@ -100,8 +91,8 @@ func (res *Resolver) CreateUser(
 		return &userOperationResultResolver{
 			dataSource: res.dataSource,
 			data: userOperationResult{
-				errors: validationErrs,
-				user:   nil,
+				validationErrors: validationErrs,
+				user:             nil,
 			},
 		}, nil
 	}
@@ -134,8 +125,8 @@ func (res *Resolver) CreateUser(
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,
 		data: userOperationResult{
-			errors: []core.ValidationError{},
-			user:   &user,
+			validationErrors: []core.ValidationError{},
+			user:             &user,
 		},
 	}, nil
 }
@@ -259,8 +250,8 @@ func (res *Resolver) UpdateUser(
 		return &userOperationResultResolver{
 			dataSource: res.dataSource,
 			data: userOperationResult{
-				errors: validationErrors,
-				user:   cleanedUser,
+				validationErrors: validationErrors,
+				user:             cleanedUser,
 			},
 		}, nil
 	}
@@ -296,8 +287,8 @@ func (res *Resolver) UpdateUser(
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,
 		data: userOperationResult{
-			errors: []core.ValidationError{},
-			user:   &user,
+			validationErrors: []core.ValidationError{},
+			user:             &user,
 		},
 	}, nil
 }

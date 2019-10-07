@@ -9,8 +9,8 @@ import (
 )
 
 type directoryOperationResult struct {
-	errors    []core.ValidationError
-	directory *core.Directory
+	directory        *core.Directory
+	validationErrors []core.ValidationError
 }
 
 type directoryOperationResultResolver struct {
@@ -18,17 +18,8 @@ type directoryOperationResultResolver struct {
 	data       directoryOperationResult
 }
 
-func (res *directoryOperationResultResolver) Errors() []*inputErrorResolver {
-	var resolverList []*inputErrorResolver
-	for i := range res.data.errors {
-		resolverList = append(
-			resolverList,
-			&inputErrorResolver{
-				err: res.data.errors[i],
-			},
-		)
-	}
-	return resolverList
+func (res *directoryOperationResultResolver) Errors() []inputErrorResolver {
+	return createInputErrorResolvers(res.data.validationErrors)
 }
 
 func (res *directoryOperationResultResolver) Directory() *directoryResolver {
@@ -41,13 +32,13 @@ func (res *directoryOperationResultResolver) Directory() *directoryResolver {
 	}
 }
 
-type directoryAddInput struct {
+type createDirectoryInput struct {
 	Name        string `validate:"min=3"`
 	ParentID    *string
 	IsPublished *bool
 }
 type createDirectoryArgs struct {
-	Input directoryAddInput `validate:"dive"`
+	Input createDirectoryInput `validate:"dive"`
 }
 
 func (args createDirectoryArgs) validate(dataSource core.AbstractDataContext) (
@@ -119,8 +110,8 @@ func (res *Resolver) CreateDirectory(
 		return &directoryOperationResultResolver{
 			dataSource: res.dataSource,
 			data: directoryOperationResult{
-				errors:    validationErrors,
-				directory: nil,
+				validationErrors: validationErrors,
+				directory:        nil,
 			},
 		}, nil
 	}
@@ -135,8 +126,8 @@ func (res *Resolver) CreateDirectory(
 	}
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
-			directory: &directory,
-			errors:    validationErrors,
+			directory:        &directory,
+			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
 	}, nil
@@ -208,8 +199,8 @@ func (res *Resolver) UpdateDirectory(
 	if len(validationErrors) > 0 {
 		return &directoryOperationResultResolver{
 			data: directoryOperationResult{
-				directory: nil,
-				errors:    validationErrors,
+				directory:        nil,
+				validationErrors: validationErrors,
 			},
 			dataSource: res.dataSource,
 		}, nil
@@ -266,8 +257,8 @@ func (res *Resolver) UpdateDirectory(
 
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
-			directory: &directory,
-			errors:    validationErrors,
+			directory:        &directory,
+			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
 	}, nil

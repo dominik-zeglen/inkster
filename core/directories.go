@@ -13,13 +13,6 @@ type Directory struct {
 	IsPublished bool       `sql:",notnull" bson:"isPublished" json:"isPublished"`
 }
 
-// DirectoryInput is transactional model of an update properties
-type DirectoryInput struct {
-	Name        *string `bson:"name,omitempty" validate:"min=3"`
-	ParentID    *int    `bson:"parentId,omitempty"`
-	IsPublished *bool   `bson:"isPublished,omitempty"`
-}
-
 func (directory Directory) String() string {
 	return fmt.Sprintf("Directory<%s>", directory.Name)
 }

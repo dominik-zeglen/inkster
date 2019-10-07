@@ -7,8 +7,8 @@ import (
 )
 
 type websiteOperationResult struct {
-	errors  []core.ValidationError
-	website *core.Website
+	website          *core.Website
+	validationErrors []core.ValidationError
 }
 
 type websiteOperationResultResolver struct {
@@ -16,17 +16,8 @@ type websiteOperationResultResolver struct {
 	data       websiteOperationResult
 }
 
-func (res *websiteOperationResultResolver) Errors() []*inputErrorResolver {
-	var resolverList []*inputErrorResolver
-	for i := range res.data.errors {
-		resolverList = append(
-			resolverList,
-			&inputErrorResolver{
-				err: res.data.errors[i],
-			},
-		)
-	}
-	return resolverList
+func (res *websiteOperationResultResolver) Errors() []inputErrorResolver {
+	return createInputErrorResolvers(res.data.validationErrors)
 }
 
 func (res *websiteOperationResultResolver) Website() *websiteResolver {
@@ -99,8 +90,8 @@ func (res *Resolver) UpdateWebsite(
 		return &websiteOperationResultResolver{
 			dataSource: res.dataSource,
 			data: websiteOperationResult{
-				errors:  validationErrors,
-				website: website,
+				validationErrors: validationErrors,
+				website:          website,
 			},
 		}, nil
 	}
@@ -110,8 +101,8 @@ func (res *Resolver) UpdateWebsite(
 	return &websiteOperationResultResolver{
 		dataSource: res.dataSource,
 		data: websiteOperationResult{
-			errors:  validationErrors,
-			website: website,
+			validationErrors: validationErrors,
+			website:          website,
 		},
 	}, err
 }
