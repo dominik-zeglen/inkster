@@ -18,5 +18,16 @@ func (directory Directory) String() string {
 }
 
 func (directory Directory) Validate() []ValidationError {
-	return ValidateModel(directory)
+	validationErrors := ValidateModel(directory)
+	if directory.ParentID != nil {
+		if directory.ID == *directory.ParentID {
+			message := "its ID"
+			validationErrors = append(validationErrors, ValidationError{
+				Code:  ErrNotEqual,
+				Field: "ParentID",
+				Param: &message,
+			})
+		}
+	}
+	return validationErrors
 }

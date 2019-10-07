@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
-	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -80,55 +79,14 @@ func (res *Resolver) CreateDirectory(
 	}, err
 }
 
+type updateDirectoryInput struct {
+	Name        *string
+	ParentID    *string
+	IsPublished *bool
+}
 type updateDirectoryArgs struct {
 	ID    gql.ID
-	Input struct {
-		Name        *string `validate:"omitempty,min=3"`
-		ParentID    *string
-		IsPublished *bool
-	}
-}
-
-func (args updateDirectoryArgs) validate(dataSource core.AbstractDataContext) (
-	[]core.ValidationError,
-	error,
-) {
-	validationErrors := core.ValidateModel(args)
-
-	if args.Input.ParentID != nil {
-		if string(args.ID) == *args.Input.ParentID {
-			validationErrors = append(validationErrors, core.ValidationError{
-				Code:  core.ErrNotEqual,
-				Field: "ParentID",
-				Param: args.Input.ParentID,
-			})
-		} else {
-			localID, err := fromGlobalID("directory", *args.Input.ParentID)
-			if err != nil {
-				return nil, err
-			}
-			directory := core.Directory{}
-			directory.ID = localID
-			err = dataSource.
-				DB().
-				Model(&directory).
-				WherePK().
-				Select()
-			if err != nil {
-				if err == pg.ErrNoRows {
-					validationErrors = append(validationErrors, core.ValidationError{
-						Code:  core.ErrDoesNotExist,
-						Field: "ParentID",
-						Param: args.Input.ParentID,
-					})
-				} else {
-					return nil, err
-				}
-			}
-		}
-	}
-
-	return validationErrors, nil
+	Input updateDirectoryInput
 }
 
 func (res *Resolver) UpdateDirectory(
@@ -137,20 +95,6 @@ func (res *Resolver) UpdateDirectory(
 ) (*directoryOperationResultResolver, error) {
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
-	}
-
-	validationErrors, err := args.validate(res.dataSource)
-	if err != nil {
-		return nil, err
-	}
-	if len(validationErrors) > 0 {
-		return &directoryOperationResultResolver{
-			data: directoryOperationResult{
-				directory:        nil,
-				validationErrors: validationErrors,
-			},
-			dataSource: res.dataSource,
-		}, nil
 	}
 
 	localID, err := fromGlobalID("directory", string(args.ID))
@@ -167,23 +111,11 @@ func (res *Resolver) UpdateDirectory(
 		Model(&directory).
 		Select()
 
-	directory.UpdatedAt = res.
-		dataSource.
-		GetCurrentTime()
-
-	query := res.
-		dataSource.
-		DB().
-		Model(&directory).
-		Column("updated_at")
-
 	if args.Input.IsPublished != nil {
 		directory.IsPublished = *args.Input.IsPublished
-		query = query.Column("is_published")
 	}
 	if args.Input.Name != nil {
 		directory.Name = *args.Input.Name
-		query = query.Column("name")
 	}
 	if args.Input.ParentID != nil {
 		parentID, err := fromGlobalID("directory", string(*args.Input.ParentID))
@@ -191,20 +123,16 @@ func (res *Resolver) UpdateDirectory(
 			return nil, err
 		}
 		directory.ParentID = &parentID
-		query = query.Column("parent_id")
 	}
 
-	_, err = query.
-		WherePK().
-		Update()
-
-	if err != nil {
-		return nil, err
-	}
+	updatedDirectory, validationErrors, err := core.UpdateDirectory(
+		directory,
+		res.dataSource,
+	)
 
 	return &directoryOperationResultResolver{
 		data: directoryOperationResult{
-			directory:        &directory,
+			directory:        updatedDirectory,
 			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
@@ -212,7 +140,7 @@ func (res *Resolver) UpdateDirectory(
 }
 
 type removeDirectoryArgs struct {
-	Id string
+	ID string
 }
 
 func (res *Resolver) RemoveDirectory(
@@ -222,15 +150,12 @@ func (res *Resolver) RemoveDirectory(
 	if !checkPermission(ctx) {
 		return false, errNoPermissions
 	}
-	localID, err := fromGlobalID("directory", args.Id)
+	localID, err := fromGlobalID("directory", args.ID)
 	if err != nil {
 		return false, err
 	}
 
-	_, err = res.
-		dataSource.
-		DB().
-		Exec("DELETE FROM directories WHERE id = ?", localID)
+	err = core.RemoveDirectory(localID, res.dataSource)
 
 	if err != nil {
 		return false, err
