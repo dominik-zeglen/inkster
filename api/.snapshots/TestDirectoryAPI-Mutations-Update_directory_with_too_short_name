@@ -3,9 +3,9 @@
         "updateDirectory": {
             "errors": [
                 {
-                    "code": 101,
+                    "code": 100,
                     "field": "Name",
-                    "message": "Property Name must be at least 3 characters long"
+                    "message": "Property cannot be omitted: Name"
                 }
             ],
             "directory": null

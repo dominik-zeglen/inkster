@@ -7,17 +7,10 @@ import (
 // Directory is used to create tree-like structures
 type Directory struct {
 	BaseModel   `bson:",inline"`
-	Name        string     `sql:",notnull" json:"name" validate:"required,min=3"`
-	ParentID    int        `sql:",on_delete:CASCADE" bson:"parentId,omitempty" json:"parentId"`
+	Name        string     `sql:",notnull" json:"name" validate:"required"`
+	ParentID    *int       `sql:",on_delete:CASCADE" bson:"parentId,omitempty" json:"parentId"`
 	Parent      *Directory `json:"-"`
 	IsPublished bool       `sql:",notnull" bson:"isPublished" json:"isPublished"`
-}
-
-// DirectoryInput is transactional model of an update properties
-type DirectoryInput struct {
-	Name        *string `bson:"name,omitempty" validate:"min=3"`
-	ParentID    *int    `bson:"parentId,omitempty"`
-	IsPublished *bool   `bson:"isPublished,omitempty"`
 }
 
 func (directory Directory) String() string {
@@ -25,5 +18,16 @@ func (directory Directory) String() string {
 }
 
 func (directory Directory) Validate() []ValidationError {
-	return ValidateModel(directory)
+	validationErrors := ValidateModel(directory)
+	if directory.ParentID != nil {
+		if directory.ID == *directory.ParentID {
+			message := "its ID"
+			validationErrors = append(validationErrors, ValidationError{
+				Code:  ErrNotEqual,
+				Field: "ParentID",
+				Param: &message,
+			})
+		}
+	}
+	return validationErrors
 }

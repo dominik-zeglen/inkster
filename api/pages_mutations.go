@@ -11,8 +11,8 @@ import (
 )
 
 type pageCreateResult struct {
-	validationErrors []core.ValidationError
 	page             *core.Page
+	validationErrors []core.ValidationError
 }
 
 type pageCreateResultResolver struct {
@@ -27,19 +27,7 @@ func (res *pageCreateResultResolver) Page() *pageResolver {
 	}
 }
 func (res *pageCreateResultResolver) Errors() []inputErrorResolver {
-	resolverList := []inputErrorResolver{}
-	if res.data.validationErrors == nil {
-		return nil
-	}
-	for i := range res.data.validationErrors {
-		resolverList = append(
-			resolverList,
-			inputErrorResolver{
-				err: res.data.validationErrors[i],
-			},
-		)
-	}
-	return resolverList
+	return createInputErrorResolvers(res.data.validationErrors)
 }
 
 type pageRemoveResult struct {

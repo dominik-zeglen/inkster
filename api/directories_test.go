@@ -96,7 +96,7 @@ func TestDirectoryAPI(t *testing.T) {
 			defer resetDatabase()
 			variables := `{	
 				"input": {	
-					"name": "a"	
+					"name": ""	
 				}	
 			}`
 			result, err := execQuery(createDirectory, variables, nil)
@@ -159,7 +159,7 @@ func TestDirectoryAPI(t *testing.T) {
 			variables := fmt.Sprintf(`{	
 				"id": "%s",	
 				"input": {	
-					"name": "a"	
+					"name": ""	
 				}	
 			}`, id)
 			result, err := execQuery(updateDirectory, variables, nil)

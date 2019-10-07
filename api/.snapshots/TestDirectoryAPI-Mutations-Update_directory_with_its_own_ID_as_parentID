@@ -5,7 +5,7 @@
                 {
                     "code": 105,
                     "field": "ParentID",
-                    "message": "Property ParentID cannot be equal ZGlyZWN0b3J5OjQ="
+                    "message": "Property ParentID cannot be equal its ID"
                 }
             ],
             "directory": null

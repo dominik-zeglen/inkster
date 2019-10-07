@@ -32,11 +32,11 @@ func (res *directoryResolver) IsPublished() bool {
 	return res.data.IsPublished
 }
 func (res *directoryResolver) Parent() *directoryResolver {
-	if res.data.ParentID == 0 {
+	if res.data.ParentID == nil {
 		return nil
 	}
 	parent := core.Directory{}
-	parent.ID = res.data.ParentID
+	parent.ID = *res.data.ParentID
 	err := res.
 		dataSource.
 		DB().

@@ -135,11 +135,7 @@ func (err ValidationError) Error() string {
 		)
 
 	case ErrDoesNotExist:
-		return fmt.Sprintf(
-			"Object with %s %s does not exist",
-			err.Field,
-			*err.Param,
-		)
+		return "Object does not exist"
 
 	case ErrNotEqual:
 		return fmt.Sprintf(
