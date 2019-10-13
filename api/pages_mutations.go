@@ -53,14 +53,16 @@ type createPageArgs struct {
 	Input createPageArgsInput
 }
 
-func cleanCreatePageInput(
-	input createPageArgsInput,
-	dataSource core.AbstractDataContext,
+func (res *Resolver) CreatePage(
 	ctx context.Context,
-) (
-	*core.Page,
-	error,
-) {
+	args createPageArgs,
+) (*pageCreateResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
+	input := args.Input
+
 	user := ctx.Value(middleware.UserContextKey).(*core.User)
 	localID, err := fromGlobalID("directory", input.ParentID)
 	if err != nil {
@@ -71,8 +73,6 @@ func cleanCreatePageInput(
 		Name:     input.Name,
 		ParentID: localID,
 	}
-	page.CreatedAt = dataSource.GetCurrentTime()
-	page.UpdatedAt = dataSource.GetCurrentTime()
 	page.AuthorID = user.ID
 
 	if input.Slug != nil {
@@ -89,56 +89,16 @@ func cleanCreatePageInput(
 		page.Fields = *input.Fields
 	}
 
-	return &page, nil
-}
-
-func (res *Resolver) CreatePage(
-	ctx context.Context,
-	args createPageArgs,
-) (*pageCreateResultResolver, error) {
-	if !checkPermission(ctx) {
-		return nil, errNoPermissions
-	}
-
-	page, err := cleanCreatePageInput(args.Input, res.dataSource, ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	errs := page.Validate()
-	if len(errs) > 0 {
-		return &pageCreateResultResolver{
-			dataSource: res.dataSource,
-			data: pageCreateResult{
-				validationErrors: errs,
-				page:             nil,
-			},
-		}, nil
-	}
-
-	_, err = res.
-		dataSource.
-		DB().
-		Model(page).
-		Insert()
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = res.
-		dataSource.
-		DB().
-		Model(page).
-		Relation("Author").
-		WherePK().
-		Select()
+	insertedPage, validationErrors, err := core.CreatePage(
+		page,
+		res.dataSource,
+	)
 
 	return &pageCreateResultResolver{
 		dataSource: res.dataSource,
 		data: pageCreateResult{
-			validationErrors: errs,
-			page:             page,
+			validationErrors: validationErrors,
+			page:             insertedPage,
 		},
 	}, err
 }

@@ -9,8 +9,8 @@ type Page struct {
 	BaseModel
 	AuthorID    int         `sql:",notnull" json:"authorId" validate:"required"`
 	Author      *User       `json:"-"`
-	Name        string      `sql:",notnull" json:"name" validate:"required,min=3"`
-	Slug        string      `sql:",notnull" json:"slug" validate:"omitempty,slug,min=3"`
+	Name        string      `sql:",notnull" json:"name" validate:"required"`
+	Slug        string      `sql:",notnull" json:"slug" validate:"omitempty,slug"`
 	ParentID    int         `sql:",notnull" json:"parentId" validate:"required"`
 	Parent      *Directory  `json:"-"`
 	IsPublished bool        `sql:",notnull" json:"isPublished"`
@@ -22,13 +22,51 @@ func (page Page) String() string {
 }
 
 // Validate checks if page can be put into database
-func (page Page) Validate() []ValidationError {
-	return ValidateModel(page)
-}
+func (page Page) Validate(
+	dataSource AbstractDataContext,
+) ([]ValidationError, error) {
+	validationErrors := ValidateModel(page)
 
-func NewPage() Page {
-	page := Page{}
-	return page
+	for aInd, a := range page.Fields {
+		for bInd, b := range page.Fields {
+			if aInd == bInd {
+				break
+			}
+			if a.Slug == b.Slug {
+				validationErrors = append(validationErrors, ValidationError{
+					Code:  ErrNotUnique,
+					Field: "Fields",
+					Param: &b.Slug,
+				})
+			}
+		}
+	}
+
+	parentExists, err := checkIfDirectoryExist(page.ParentID, dataSource)
+	if err != nil {
+		return validationErrors, err
+	}
+
+	if !parentExists {
+		validationErrors = append(validationErrors, ValidationError{
+			Code:  ErrDoesNotExist,
+			Field: "ParentId",
+		})
+	}
+
+	authorExists, err := checkIfUserExist(page.AuthorID, dataSource)
+	if err != nil {
+		return validationErrors, err
+	}
+
+	if !authorExists {
+		validationErrors = append(validationErrors, ValidationError{
+			Code:  ErrDoesNotExist,
+			Field: "AuthorId",
+		})
+	}
+
+	return validationErrors, nil
 }
 
 // PageField represents a single field in page
