@@ -89,7 +89,7 @@ func (res *Resolver) CreatePage(
 		page.Fields = *input.Fields
 	}
 
-	insertedPage, validationErrors, err := core.CreatePage(
+	insertedPage, validationErrors, err := core.CreateDirectory(
 		page,
 		res.dataSource,
 	)
