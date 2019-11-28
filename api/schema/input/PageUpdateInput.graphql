@@ -1,6 +1,7 @@
 input PageUpdateInput {
-  name: String
-  slug: String
-  parentId: ID
+  fields: [PageFieldInput!]
   isPublished: Boolean
+  name: String
+  parentId: ID
+  slug: String
 }

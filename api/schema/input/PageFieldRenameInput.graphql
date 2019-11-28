@@ -1,4 +1,0 @@
-input PageFieldRenameInput {
-  name: String!
-  renameTo: String!
-}

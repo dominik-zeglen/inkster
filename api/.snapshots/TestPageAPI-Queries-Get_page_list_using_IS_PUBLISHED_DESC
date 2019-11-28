@@ -31,11 +31,11 @@
                         "isPublished": false,
                         "fields": [
                             {
-                                "name": "Field 1",
+                                "slug": "Field 1",
                                 "type": "text"
                             },
                             {
-                                "name": "Field 2",
+                                "slug": "Field 2",
                                 "type": "text"
                             }
                         ]
@@ -55,11 +55,11 @@
                         "isPublished": false,
                         "fields": [
                             {
-                                "name": "Field 3",
+                                "slug": "Field 3",
                                 "type": "text"
                             },
                             {
-                                "name": "Field 4",
+                                "slug": "Field 4",
                                 "type": "file"
                             }
                         ]
@@ -79,7 +79,7 @@
                         "isPublished": false,
                         "fields": [
                             {
-                                "name": "Field 5",
+                                "slug": "Field 5",
                                 "type": "text"
                             }
                         ]

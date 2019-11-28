@@ -33,12 +33,9 @@ func NewPage() Page {
 
 // PageField represents a single field in page
 type PageField struct {
-	BaseModel
-	Page   *Page  `json:"-"`
-	PageID int    `sql:",notnull,on_delete:CASCADE" json:"-"`
-	Type   string `json:"type" validate:"required,oneof=text longText image file"`
-	Slug   string `json:"name" validate:"required,slug"`
-	Value  string `json:"value"`
+	Type  string `json:"type" validate:"required,oneof=text longText image file"`
+	Slug  string `json:"slug" validate:"required,slug"`
+	Value string `json:"value"`
 }
 
 // Validate checks if field can be put into database
@@ -47,8 +44,7 @@ func (field PageField) Validate() []ValidationError {
 }
 
 func (field PageField) String() string {
-	return fmt.Sprintf("PageField<%d: %s (%s)>",
-		field.ID,
+	return fmt.Sprintf("PageField<%s (%s)>",
 		field.Slug,
 		field.Type,
 	)

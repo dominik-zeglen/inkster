@@ -9,12 +9,12 @@ func TestPageValidation(t *testing.T) {
 		AuthorID: 1,
 		Fields: []PageField{
 			PageField{
-				Name:  "field1",
+				Slug:  "field1",
 				Type:  "text",
 				Value: "Example value",
 			},
 			PageField{
-				Name:  "field2",
+				Slug:  "field2",
 				Type:  "text",
 				Value: "Example value",
 			},
@@ -74,8 +74,8 @@ func TestPageValidation(t *testing.T) {
 				IsPublished: defaultPage.IsPublished,
 				Fields: []PageField{
 					{
+						Slug:  "",
 						Type:  "invalid",
-						Name:  "",
 						Value: "",
 					},
 				},
@@ -87,7 +87,7 @@ func TestPageValidation(t *testing.T) {
 				},
 				ValidationError{
 					Code:  ErrRequired,
-					Field: "Name",
+					Field: "Slug",
 				},
 			},
 		},

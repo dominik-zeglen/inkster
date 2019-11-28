@@ -13,7 +13,7 @@ func TestPageAPI(t *testing.T) {
 			mutation CreatePage(
 				$name: String!,
 				$parentId: ID!,
-				$fields: [PageFieldCreateInput!],
+				$fields: [PageFieldInput!],
 			) {
 				createPage(
 					input: {
@@ -38,7 +38,7 @@ func TestPageAPI(t *testing.T) {
 						slug
 						isPublished
 						fields {
-							name
+							slug
 							type
 							value
 						}
@@ -52,17 +52,11 @@ func TestPageAPI(t *testing.T) {
 		updatePage := `
 				mutation UpdatePage(
 					$id: ID!
-					$input: PageUpdateInput
-					$addFields: [PageFieldCreateInput!]
-					$updateFields: [PageFieldUpdate!]
-					$removeFields: [String!]
+					$input: PageUpdateInput!
 				) {
 					updatePage(
 					id: $id 
 					input: $input
-					addFields: $addFields
-					updateFields: $updateFields
-					removeFields: $removeFields
 				) {
 					errors {
 						code
@@ -81,8 +75,7 @@ func TestPageAPI(t *testing.T) {
 						slug
 						isPublished
 						fields {
-							id
-							name
+							slug
 							type
 							value
 						}
@@ -97,12 +90,12 @@ func TestPageAPI(t *testing.T) {
 				"parentId": "%s",
 				"fields": [
 					{
-						"name": "Field 1",
+						"slug": "field1",
 						"type": "text",
 						"value": "Value 1"
 					},
 					{
-						"name": "Field 2",
+						"slug": "field2",
 						"type": "text",
 						"value": "Value 2"
 					}
@@ -144,64 +137,32 @@ func TestPageAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Add page fields", func(t *testing.T) {
+		t.Run("Update page fields", func(t *testing.T) {
 			defer resetDatabase()
 
 			id := toGlobalID(gqlPage, 1)
 			variables := fmt.Sprintf(`{
 				"id": "%s",
-				"addFields": [
-					{
-						"name": "Field 3",
-						"type": "text",
-						"value": "some value"
-					}
-				]
+				"input": {
+					"fields": [
+						{
+							"slug": "updated_slug",
+							"type": "text",
+							"value": "Updated value"
+						},
+						{
+							"slug": "field2",
+							"type": "text",
+							"value": "Value 2"
+						}
+					]
+				}
 			}`, id)
 			result, err := execQuery(updatePage, variables, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			cupaloy.SnapshotT(t, result)
-		})
-		t.Run("Update page fields", func(t *testing.T) {
-			defer resetDatabase()
-
-			id := toGlobalID(gqlPage, 1)
-			pageFieldID := toGlobalID(gqlPageField, 100)
-			variables := fmt.Sprintf(`{
-				"id": "%s",
-				"updateFields": [
-					{
-						"id": "%s",
-						"input": {
-							"name": "Updated name",
-							"value": "Updated value"
-						}
-					}
-				]
-			}`, id, pageFieldID)
-			result, err := execQuery(updatePage, variables, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			cupaloy.SnapshotT(t, result)
-		})
-		t.Run("Remove page fields", func(t *testing.T) {
-			defer resetDatabase()
-
-			id := toGlobalID(gqlPage, 1)
-			pageFieldID := toGlobalID(gqlPageField, 100)
-			variables := fmt.Sprintf(`{
-				"id": "%s",
-				"removeFields": ["%s"]
-			}`, id, pageFieldID)
-			result, err := execQuery(updatePage, variables, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
 			cupaloy.SnapshotT(t, result)
 		})
 		t.Run("Remove page", func(t *testing.T) {
@@ -239,7 +200,7 @@ func TestPageAPI(t *testing.T) {
 					slug
 					isPublished
 					fields {
-						name
+						slug
 						type
 						value
 					}
@@ -265,7 +226,7 @@ func TestPageAPI(t *testing.T) {
 							slug
 							isPublished
 							fields {
-								name
+								slug
 								type
 							}
 						}
