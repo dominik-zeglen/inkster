@@ -14,7 +14,7 @@ type Page struct {
 	ParentID    int         `sql:",notnull" json:"parentId" validate:"required"`
 	Parent      *Directory  `json:"-"`
 	IsPublished bool        `sql:",notnull" json:"isPublished"`
-	Fields      []PageField `json:"fields" validate:"dive"`
+	Fields      []PageField `json:"fields" sql:"type:jsonb" validate:"dive"`
 }
 
 func (page Page) String() string {
@@ -31,14 +31,11 @@ func NewPage() Page {
 	return page
 }
 
-// PageField represents a single field in template
+// PageField represents a single field in page
 type PageField struct {
-	BaseModel
-	Page   *Page  `json:"-"`
-	PageID int    `sql:",notnull,on_delete:CASCADE" json:"-"`
-	Type   string `json:"type" validate:"required,oneof=text longText image file"`
-	Name   string `json:"name" validate:"required,min=3"`
-	Value  string `json:"value"`
+	Type  string `json:"type" validate:"required,oneof=text longText image file"`
+	Slug  string `json:"slug" validate:"required,slug"`
+	Value string `json:"value"`
 }
 
 // Validate checks if field can be put into database
@@ -47,9 +44,8 @@ func (field PageField) Validate() []ValidationError {
 }
 
 func (field PageField) String() string {
-	return fmt.Sprintf("PageField<%d: %s (%s)>",
-		field.ID,
-		field.Name,
+	return fmt.Sprintf("PageField<%s (%s)>",
+		field.Slug,
 		field.Type,
 	)
 }

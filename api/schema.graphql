@@ -13,41 +13,27 @@ input DirectoryUpdateInput {
   isPublished: Boolean
 }
 input PageCreateInput {
-  fields: [PageFieldCreateInput!]
+  fields: [PageFieldInput!]
   isPublished: Boolean
   name: String!
   parentId: ID!
   slug: String
 }
-input PageFieldCreateInput {
-  name: String!
+input PageFieldInput {
+  slug: String!
   type: String!
   value: String!
-}
-input PageFieldRemoveInput {
-  name: String!
-}
-input PageFieldRenameInput {
-  name: String!
-  renameTo: String!
-}
-input PageFieldUpdate {
-    id: ID!
-    input: PageFieldUpdateInput!
-}
-input PageFieldUpdateInput {
-  name: String
-  value: String
 }
 input PageSort {
     field: PageSortableField!
     order: SortOrder!
 }
 input PageUpdateInput {
-  name: String
-  slug: String
-  parentId: ID
+  fields: [PageFieldInput!]
   isPublished: Boolean
+  name: String
+  parentId: ID
+  slug: String
 }
 input PaginationInput {
     after: String
@@ -81,13 +67,7 @@ type Mutation {
   removeDirectory(id: ID!): Boolean!
 
   createPage(input: PageCreateInput!): PageOperationResult
-  updatePage(
-    id: ID!
-    input: PageUpdateInput
-    addFields: [PageFieldCreateInput!]
-    updateFields: [PageFieldUpdate!]
-    removeFields: [String!]
-  ): PageOperationResult
+  updatePage(id: ID!, input: PageUpdateInput!): PageOperationResult
   removePage(id: ID!): PageRemoveResult
 
   changeUserPassword(id: ID!, password: String!): Boolean!
@@ -180,8 +160,7 @@ type PageConnectionEdge {
     node: Page!
 }
 type PageField {
-  id: ID!
-  name: String!
+  slug: String!
   type: String!
   value: String
 }

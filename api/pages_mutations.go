@@ -5,7 +5,6 @@ import (
 
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/go-pg/pg/orm"
 	"github.com/gosimple/slug"
 	gql "github.com/graph-gophers/graphql-go"
 )
@@ -127,29 +126,10 @@ func (res *Resolver) CreatePage(
 		return nil, err
 	}
 
-	for fieldIndex, _ := range page.Fields {
-		page.Fields[fieldIndex].PageID = page.ID
-	}
-
-	if len(page.Fields) > 0 {
-		_, err = res.
-			dataSource.
-			DB().
-			Model(&page.Fields).
-			Insert()
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	err = res.
 		dataSource.
 		DB().
 		Model(page).
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
 		Relation("Author").
 		WherePK().
 		Select()
@@ -163,63 +143,25 @@ func (res *Resolver) CreatePage(
 	}, err
 }
 
-type UpdatePageFieldsInput struct {
-	Name  *string
-	Value *string
-}
-type UpdatePageFields struct {
-	ID    gql.ID
-	Input UpdatePageFieldsInput
-}
 type UpdatePageInput struct {
+	Fields      *[]core.PageField
 	Name        *string
 	Slug        *string
 	ParentID    *string
 	IsPublished *bool
 }
 type UpdatePageArgs struct {
-	ID           gql.ID
-	Input        *UpdatePageInput
-	AddFields    *[]core.PageField
-	UpdateFields *[]UpdatePageFields
-	RemoveFields *[]string
+	ID    gql.ID
+	Input UpdatePageInput
 }
 
 func cleanUpdatePageInput(
 	id int,
-	input *UpdatePageInput,
+	input UpdatePageInput,
 	dataSource core.AbstractDataContext,
 ) (core.PageInput, []core.ValidationError, error) {
 	validationErrors := []core.ValidationError{}
 	pageInput := core.PageInput{}
-
-	if input == nil {
-		return pageInput, validationErrors, nil
-	}
-
-	if input.Slug != nil {
-		foundPage := core.Page{}
-
-		err := dataSource.
-			DB().
-			Model(&foundPage).
-			Where("slug = ?", &input.Slug).
-			Select()
-
-		if err == nil {
-			if foundPage.ID != id {
-				validationErrors = append(
-					validationErrors,
-					core.ValidationError{
-						Code:  core.ErrNotUnique,
-						Field: "Slug",
-						Param: input.Slug,
-					},
-				)
-			}
-		}
-		pageInput.Slug = input.Slug
-	}
 
 	if input.ParentID != nil {
 		localID, err := fromGlobalID("page", *input.ParentID)
@@ -236,19 +178,6 @@ func cleanUpdatePageInput(
 	return pageInput, validationErrors, nil
 }
 
-func cleanUpdatePageAddFields(addFields []core.PageField) []core.ValidationError {
-	validationErrors := []core.ValidationError{}
-
-	for _, field := range addFields {
-		validationErrors = append(
-			validationErrors,
-			field.Validate()...,
-		)
-	}
-
-	return validationErrors
-}
-
 func (res *Resolver) UpdatePage(
 	ctx context.Context,
 	args UpdatePageArgs,
@@ -263,185 +192,88 @@ func (res *Resolver) UpdatePage(
 	}
 
 	page := core.Page{}
+	page.ID = localID
 
 	err = res.
 		dataSource.
 		DB().
 		Model(&page).
-		Where("id = ?", localID).
-		Relation("Fields").
+		WherePK().
 		Select()
 
 	if err != nil {
 		return nil, err
 	}
 
-	if args.Input != nil ||
-		args.AddFields != nil ||
-		args.UpdateFields != nil ||
-		args.RemoveFields != nil {
-		_, validationErrors, err := cleanUpdatePageInput(
-			localID,
-			args.Input,
-			res.dataSource,
-		)
+	_, validationErrors, err := cleanUpdatePageInput(
+		localID,
+		args.Input,
+		res.dataSource,
+	)
 
-		if err != nil {
-			return nil, err
-		}
-
-		if args.AddFields != nil {
-			errs := cleanUpdatePageAddFields(*args.AddFields)
-			validationErrors = append(validationErrors, errs...)
-		}
-
-		if len(validationErrors) > 0 {
-			return &pageCreateResultResolver{
-				dataSource: res.dataSource,
-				data: pageCreateResult{
-					page:             nil,
-					validationErrors: validationErrors,
-				},
-			}, nil
-		}
-
-		page.ID = localID
-		page.UpdatedAt = res.
-			dataSource.
-			GetCurrentTime()
-
-		query := res.
-			dataSource.
-			DB().
-			Model(&page).
-			Column("updated_at")
-
-		if args.AddFields != nil {
-			addPageFields := *args.AddFields
-			for pageFieldIndex := range addPageFields {
-				addPageFields[pageFieldIndex].CreatedAt = res.
-					dataSource.
-					GetCurrentTime()
-				addPageFields[pageFieldIndex].UpdatedAt = res.
-					dataSource.
-					GetCurrentTime()
-				addPageFields[pageFieldIndex].PageID = localID
-			}
-			_, err = res.
-				dataSource.
-				DB().
-				Model(args.AddFields).
-				Insert()
-
-			if err != nil {
-				return nil, err
-			}
-		}
-		if args.UpdateFields != nil {
-			for _, inputPageField := range *args.UpdateFields {
-				localPageFieldID, err := fromGlobalID(
-					"pageField",
-					string(inputPageField.ID),
-				)
-				if err != nil {
-					return nil, err
-				}
-
-				field := core.PageField{}
-				field.ID = localPageFieldID
-				field.UpdatedAt = res.
-					dataSource.
-					GetCurrentTime()
-
-				query := res.
-					dataSource.
-					DB().
-					Model(&field).
-					Column("updated_at")
-
-				if inputPageField.Input.Name != nil {
-					field.Name = *inputPageField.Input.Name
-					query = query.Column("name")
-				}
-				if inputPageField.Input.Value != nil {
-					field.Value = *inputPageField.Input.Value
-					query = query.Column("value")
-				}
-
-				_, err = query.
-					WherePK().
-					Update()
-
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-		if args.RemoveFields != nil {
-			removePageFields := []core.PageField{}
-			for _, pageFieldID := range *args.RemoveFields {
-				localPageFieldID, err := fromGlobalID("pageField", pageFieldID)
-				if err != nil {
-					return nil, err
-				}
-
-				pageField := core.PageField{}
-				pageField.ID = localPageFieldID
-				removePageFields = append(removePageFields, pageField)
-			}
-
-			_, err = res.
-				dataSource.
-				DB().
-				Model(&removePageFields).
-				Delete()
-
-			if err != nil {
-				return nil, err
-			}
-		}
-		if args.Input != nil {
-			if args.Input.IsPublished != nil {
-				page.IsPublished = *args.Input.IsPublished
-				query = query.Column("is_published")
-			}
-			if args.Input.Name != nil {
-				page.Name = *args.Input.Name
-				query = query.Column("name")
-			}
-			if args.Input.ParentID != nil {
-				localParentID, err := fromGlobalID("directory", *args.Input.ParentID)
-				if err != nil {
-					return nil, err
-				}
-				page.ParentID = localParentID
-				query = query.Column("parent_id")
-			}
-			if args.Input.Slug != nil {
-				page.Slug = *args.Input.Slug
-				query = query.Column("slug")
-			}
-		}
-
-		_, err = query.
-			WherePK().
-			Update()
-
-		if err != nil {
-			return nil, err
-		}
+	if err != nil {
+		return nil, err
 	}
 
-	page.Fields = []core.PageField{}
+	if len(validationErrors) > 0 {
+		return &pageCreateResultResolver{
+			dataSource: res.dataSource,
+			data: pageCreateResult{
+				page:             nil,
+				validationErrors: validationErrors,
+			},
+		}, nil
+	}
+
+	page.ID = localID
+	page.UpdatedAt = res.
+		dataSource.
+		GetCurrentTime()
+
+	query := res.
+		dataSource.
+		DB().
+		Model(&page).
+		Column("updated_at")
+
+	if args.Input.IsPublished != nil {
+		page.IsPublished = *args.Input.IsPublished
+		query = query.Column("is_published")
+	}
+	if args.Input.Name != nil {
+		page.Name = *args.Input.Name
+		query = query.Column("name")
+	}
+	if args.Input.ParentID != nil {
+		localParentID, err := fromGlobalID("directory", *args.Input.ParentID)
+		if err != nil {
+			return nil, err
+		}
+		page.ParentID = localParentID
+		query = query.Column("parent_id")
+	}
+	if args.Input.Slug != nil {
+		page.Slug = *args.Input.Slug
+		query = query.Column("slug")
+	}
+	if args.Input.Fields != nil {
+		page.Fields = *args.Input.Fields
+		query = query.Column("fields")
+	}
+
+	_, err = query.
+		WherePK().
+		Update()
+
+	if err != nil {
+		return nil, err
+	}
+
 	err = res.
 		dataSource.
 		DB().
 		Model(&page).
-		Where("page.id = ?", localID).
-		Relation("Fields", func(query *orm.Query) (*orm.Query, error) {
-			return query.OrderExpr("id ASC"), nil
-		}).
-		Relation("Author").
+		WherePK().
 		Select()
 
 	if err != nil {

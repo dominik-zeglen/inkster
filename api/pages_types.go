@@ -64,21 +64,7 @@ func (res *pageResolver) IsPublished() bool {
 func (res *pageResolver) Fields() (*[]*pageFieldResolver, error) {
 	var resolverList []*pageFieldResolver
 	fields := res.data.Fields
-	if fields == nil {
-		err := res.
-			dataSource.
-			DB().
-			Model(&fields).
-			Where("page_id = ?", res.data.ID).
-			OrderExpr("id ASC").
-			Select()
 
-		if err != nil {
-			return nil, err
-		}
-
-		res.data.Fields = fields
-	}
 	for i := range fields {
 		resolverList = append(
 			resolverList,
@@ -120,13 +106,8 @@ type pageFieldResolver struct {
 	data       *core.PageField
 }
 
-func (res *pageFieldResolver) ID() gql.ID {
-	globalID := toGlobalID(gqlPageField, res.data.ID)
-	return gql.ID(globalID)
-}
-
-func (res *pageFieldResolver) Name() string {
-	return res.data.Name
+func (res *pageFieldResolver) Slug() string {
+	return res.data.Slug
 }
 
 func (res *pageFieldResolver) Type() string {

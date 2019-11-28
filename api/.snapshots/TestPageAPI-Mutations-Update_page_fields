@@ -15,16 +15,14 @@
                 "isPublished": false,
                 "fields": [
                     {
-                        "id": "cGFnZUZpZWxkOjEwMA==",
-                        "name": "Updated name",
+                        "slug": "updated_slug",
                         "type": "text",
                         "value": "Updated value"
                     },
                     {
-                        "id": "cGFnZUZpZWxkOjEwMQ==",
-                        "name": "Field 2",
+                        "slug": "field2",
                         "type": "text",
-                        "value": "Some text"
+                        "value": "Value 2"
                     }
                 ]
             }

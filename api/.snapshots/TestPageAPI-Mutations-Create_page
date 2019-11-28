@@ -14,22 +14,12 @@
                 "isPublished": false,
                 "fields": [
                     {
-                        "name": "Field 1",
+                        "slug": "field1",
                         "type": "text",
                         "value": "Value 1"
                     },
                     {
-                        "name": "Field 2",
-                        "type": "text",
-                        "value": "Value 2"
-                    },
-                    {
-                        "name": "Field 1",
-                        "type": "text",
-                        "value": "Value 1"
-                    },
-                    {
-                        "name": "Field 2",
+                        "slug": "field2",
                         "type": "text",
                         "value": "Value 2"
                     }

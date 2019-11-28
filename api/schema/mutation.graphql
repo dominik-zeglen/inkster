@@ -7,13 +7,7 @@ type Mutation {
   removeDirectory(id: ID!): Boolean!
 
   createPage(input: PageCreateInput!): PageOperationResult
-  updatePage(
-    id: ID!
-    input: PageUpdateInput
-    addFields: [PageFieldCreateInput!]
-    updateFields: [PageFieldUpdate!]
-    removeFields: [String!]
-  ): PageOperationResult
+  updatePage(id: ID!, input: PageUpdateInput!): PageOperationResult
   removePage(id: ID!): PageRemoveResult
 
   changeUserPassword(id: ID!, password: String!): Boolean!

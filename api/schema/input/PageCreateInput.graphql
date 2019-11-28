@@ -1,5 +1,5 @@
 input PageCreateInput {
-  fields: [PageFieldCreateInput!]
+  fields: [PageFieldInput!]
   isPublished: Boolean
   name: String!
   parentId: ID!
