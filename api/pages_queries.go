@@ -45,7 +45,7 @@ func (res *Resolver) Page(
 
 	return &pageResolver{
 		dataSource: res.dataSource,
-		data:       &page,
+		data:       page,
 	}, nil
 }
 

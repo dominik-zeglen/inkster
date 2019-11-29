@@ -10,7 +10,7 @@ import (
 
 type pageResolver struct {
 	dataSource core.AbstractDataContext
-	data       *core.Page
+	data       core.Page
 }
 
 func (res *pageResolver) ID() gql.ID {
@@ -129,7 +129,7 @@ func (res pageConnectionResolver) Edges() []pageConnectionEdgeResolver {
 	resolvers := make([]pageConnectionEdgeResolver, len(res.data))
 	for resolverIndex := range resolvers {
 		resolvers[resolverIndex] = pageConnectionEdgeResolver{
-			dataSource: &res.dataSource,
+			dataSource: res.dataSource,
 			data:       res.data[resolverIndex],
 			cursor:     pageCursor(resolverIndex + res.offset),
 		}
@@ -144,7 +144,7 @@ func (res pageConnectionResolver) PageInfo() pageInfoResolver {
 }
 
 type pageConnectionEdgeResolver struct {
-	dataSource *core.AbstractDataContext
+	dataSource core.AbstractDataContext
 	data       core.Page
 	cursor     pageCursor
 }
@@ -155,7 +155,7 @@ func (res pageConnectionEdgeResolver) Cursor() string {
 
 func (res pageConnectionEdgeResolver) Node() *pageResolver {
 	return &pageResolver{
-		dataSource: *res.dataSource,
-		data:       &res.data,
+		dataSource: res.dataSource,
+		data:       res.data,
 	}
 }

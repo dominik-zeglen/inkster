@@ -1,10 +1,10 @@
 - created_at: "2007-07-07T10:00:00.000Z"
   author_id: 1
   fields:
-    - slug: Field 1
+    - slug: field-1
       type: text
       value: "1"
-    - slug: Field 2
+    - slug: field-2
       type: text
       value: Some text
   id: 1
@@ -16,10 +16,10 @@
 - created_at: "2007-07-07T11:00:00.000Z"
   author_id: 1
   fields:
-    - slug: Field 3
+    - slug: field-3
       type: text
       value: "2"
-    - slug: Field 4
+    - slug: field-4
       type: file
       value: example.com/file
   id: 2
@@ -31,7 +31,7 @@
 - created_at: "2007-07-07T12:00:00.000Z"
   author_id: 2
   fields:
-    - slug: Field 5
+    - slug: field-5
       type: text
       value: Some textual text
   id: 3

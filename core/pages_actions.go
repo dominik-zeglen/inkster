@@ -1,9 +1,5 @@
 package core
 
-import (
-	"github.com/go-pg/pg"
-)
-
 func CreatePage(
 	page Page,
 	dataSource AbstractDataContext,
@@ -17,14 +13,39 @@ func CreatePage(
 	page.CreatedAt = dataSource.GetCurrentTime()
 	page.UpdatedAt = dataSource.GetCurrentTime()
 
-	err = dataSource.DB().RunInTransaction(func(tx *pg.Tx) error {
-		_, err = tx.
-			DB().
-			Model(&page).
-			Insert()
-
-		return err
-	})
+	_, err = dataSource.
+		DB().
+		Model(&page).
+		Insert()
 
 	return &page, validationErrors, err
+}
+
+func UpdatePage(
+	page Page,
+	dataSource AbstractDataContext,
+) (*Page, []ValidationError, error) {
+	validationErrors, err := page.Validate(dataSource)
+
+	if err != nil || len(validationErrors) > 0 {
+		return nil, validationErrors, err
+	}
+
+	page.UpdatedAt = dataSource.GetCurrentTime()
+
+	_, err = dataSource.
+		DB().
+		Model(&page).
+		WherePK().
+		Update()
+
+	return &page, validationErrors, err
+}
+
+func RemovePage(id int, dataSource AbstractDataContext) error {
+	_, err := dataSource.
+		DB().
+		Exec("DELETE FROM pages WHERE id = ?", id)
+
+	return err
 }
