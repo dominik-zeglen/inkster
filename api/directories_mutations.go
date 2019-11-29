@@ -109,6 +109,7 @@ func (res *Resolver) UpdateDirectory(
 		dataSource.
 		DB().
 		Model(&directory).
+		WherePK().
 		Select()
 
 	if args.Input.IsPublished != nil {
@@ -136,7 +137,7 @@ func (res *Resolver) UpdateDirectory(
 			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
-	}, nil
+	}, err
 }
 
 type removeDirectoryArgs struct {
