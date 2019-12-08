@@ -11,10 +11,7 @@ type Mutation {
   removePage(id: ID!): PageRemoveResult
 
   changeUserPassword(id: ID!, password: String!): Boolean!
-  createUser(
-    input: UserCreateInput!
-    sendInvitation: Boolean
-  ): UserOperationResult!
+  createUser(input: UserCreateInput!): UserOperationResult!
   removeUser(id: ID!): UserRemoveResult!
   updateUser(id: ID!, input: UserUpdateInput!): UserOperationResult!
   resetUserPassword(token: String!, password: String!): Boolean!

@@ -9,9 +9,9 @@ type SendPasswordResetTokenTemplateData struct {
 }
 
 type SendUserInvitationTemplateData struct {
-	User     core.User    `json:"user"`
-	Website  core.Website `json:"website"`
-	Password string       `json:"password"`
+	User    core.User    `json:"user"`
+	Website core.Website `json:"website"`
+	Token   string       `json:"token"`
 }
 
 type Mailer interface {

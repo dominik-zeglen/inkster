@@ -1,4 +1,3 @@
 input UserCreateInput {
   email: String!
-  password: String
 }

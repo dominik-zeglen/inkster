@@ -71,20 +71,6 @@ func TestUserAPI(t *testing.T) {
 			defer resetDatabase()
 			variables := `{
 				"input": {
-					"email": "new_user@example.com",
-					"password": "examplepassword"
-				}
-			}`
-			result, err := execQuery(createUser, variables, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			cupaloy.SnapshotT(t, result)
-		})
-		t.Run("Create user without password", func(t *testing.T) {
-			defer resetDatabase()
-			variables := `{
-				"input": {
 					"email": "new_user@example.com"
 				}
 			}`

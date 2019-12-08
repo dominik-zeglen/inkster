@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/dominik-zeglen/inkster/config"
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
@@ -48,12 +49,10 @@ func (res *userRemoveResultResolver) RemovedObjectID() *gql.ID {
 }
 
 type UserCreateInput struct {
-	Email    string
-	Password *string
+	Email string
 }
 type UserCreateMutationArgs struct {
-	Input          UserCreateInput
-	SendInvitation *bool
+	Input UserCreateInput
 }
 
 func (res *Resolver) CreateUser(
@@ -63,10 +62,13 @@ func (res *Resolver) CreateUser(
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
+
+	appConfig := ctx.Value(middleware.ConfigContextKey).(config.Config)
 	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
 	user := core.User{
 		Email: args.Input.Email,
 	}
+
 	user.CreatedAt = res.
 		dataSource.
 		GetCurrentTime()
@@ -74,17 +76,7 @@ func (res *Resolver) CreateUser(
 		dataSource.
 		GetCurrentTime()
 
-	var pwd string
-	if args.Input.Password == nil {
-		pwd, _ = user.CreateRandomPassword()
-		user.Active = false
-	} else {
-		err := user.CreatePassword(*args.Input.Password)
-		if err != nil {
-			return nil, err
-		}
-		user.Active = true
-	}
+	_, err := user.CreateRandomPassword()
 
 	validationErrs := user.Validate()
 	if len(validationErrs) > 0 {
@@ -94,41 +86,46 @@ func (res *Resolver) CreateUser(
 				validationErrors: validationErrs,
 				user:             nil,
 			},
-		}, nil
+		}, err
 	}
 
-	_, err := res.
+	_, err = res.
 		dataSource.
 		DB().
 		Model(&user).
 		Insert()
 
 	if err != nil {
-		return nil, err
+		return &userOperationResultResolver{
+			dataSource: res.dataSource,
+			data: userOperationResult{
+				validationErrors: []core.ValidationError{},
+				user:             &user,
+			},
+		}, err
 	}
-	if args.SendInvitation != nil {
-		sendInvitation := *args.SendInvitation
-		if sendInvitation {
-			err = res.mailer.SendUserInvitation(
-				user.Email,
-				mail.SendUserInvitationTemplateData{
-					User:     user,
-					Website:  website,
-					Password: pwd,
-				},
-			)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
+
+	token, err := createPasswordResetToken(
+		user.ID,
+		res.dataSource.GetCurrentTime(),
+		appConfig.Server.SecretKey,
+	)
+	err = res.mailer.SendUserInvitation(
+		user.Email,
+		mail.SendUserInvitationTemplateData{
+			User:    user,
+			Website: website,
+			Token:   token,
+		},
+	)
+
 	return &userOperationResultResolver{
 		dataSource: res.dataSource,
 		data: userOperationResult{
 			validationErrors: []core.ValidationError{},
 			user:             &user,
 		},
-	}, nil
+	}, err
 }
 
 type UserRemoveMutationArgs struct {
