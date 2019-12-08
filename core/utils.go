@@ -1,6 +1,9 @@
 package core
 
-import "gopkg.in/go-playground/validator.v9"
+import (
+	"github.com/go-pg/pg"
+	"gopkg.in/go-playground/validator.v9"
+)
 
 func ValidateModel(model interface{}) []ValidationError {
 	validationErrors := []ValidationError{}
@@ -68,4 +71,28 @@ func checkIfUserExist(
 	}
 
 	return exists, nil
+}
+
+func getUserByEmail(
+	email string,
+	dataSource AbstractDataContext,
+) (*int, error) {
+	user := User{
+		Email: email,
+	}
+	err := dataSource.
+		DB().
+		Model(&user).
+		Where("email = ?", user.Email).
+		First()
+
+	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		} else {
+			return nil, err
+		}
+	}
+
+	return &user.ID, nil
 }

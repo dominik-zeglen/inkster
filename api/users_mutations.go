@@ -8,7 +8,6 @@ import (
 	"github.com/dominik-zeglen/inkster/core"
 	"github.com/dominik-zeglen/inkster/mail"
 	"github.com/dominik-zeglen/inkster/middleware"
-	"github.com/go-pg/pg"
 	gql "github.com/graph-gophers/graphql-go"
 )
 
@@ -36,23 +35,9 @@ func (res *userOperationResultResolver) User() *userResolver {
 	}
 }
 
-type userRemoveResult struct {
-	id *gql.ID
-}
-
-type userRemoveResultResolver struct {
-	data userRemoveResult
-}
-
-func (res *userRemoveResultResolver) RemovedObjectID() *gql.ID {
-	return res.data.id
-}
-
-type UserCreateInput struct {
-	Email string
-}
 type UserCreateMutationArgs struct {
-	Input UserCreateInput
+	Input          core.UserCreateInput
+	SendInvitation *bool
 }
 
 func (res *Resolver) CreateUser(
@@ -65,42 +50,18 @@ func (res *Resolver) CreateUser(
 
 	appConfig := ctx.Value(middleware.ConfigContextKey).(config.Config)
 	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
-	user := core.User{
-		Email: args.Input.Email,
-	}
 
-	user.CreatedAt = res.
-		dataSource.
-		GetCurrentTime()
-	user.UpdatedAt = res.
-		dataSource.
-		GetCurrentTime()
+	user, validationErrors, err := core.CreateUser(
+		args.Input,
+		res.dataSource,
+	)
 
-	_, err := user.CreateRandomPassword()
-
-	validationErrs := user.Validate()
-	if len(validationErrs) > 0 {
+	if err != nil || len(validationErrors) != 0 {
 		return &userOperationResultResolver{
 			dataSource: res.dataSource,
 			data: userOperationResult{
-				validationErrors: validationErrs,
+				validationErrors: validationErrors,
 				user:             nil,
-			},
-		}, err
-	}
-
-	_, err = res.
-		dataSource.
-		DB().
-		Model(&user).
-		Insert()
-
-	if err != nil {
-		return &userOperationResultResolver{
-			dataSource: res.dataSource,
-			data: userOperationResult{
-				validationErrors: []core.ValidationError{},
-				user:             &user,
 			},
 		}, err
 	}
@@ -110,10 +71,11 @@ func (res *Resolver) CreateUser(
 		res.dataSource.GetCurrentTime(),
 		appConfig.Server.SecretKey,
 	)
+
 	err = res.mailer.SendUserInvitation(
 		user.Email,
 		mail.SendUserInvitationTemplateData{
-			User:    user,
+			User:    *user,
 			Website: website,
 			Token:   token,
 		},
@@ -123,107 +85,18 @@ func (res *Resolver) CreateUser(
 		dataSource: res.dataSource,
 		data: userOperationResult{
 			validationErrors: []core.ValidationError{},
-			user:             &user,
+			user:             user,
 		},
 	}, err
 }
 
-type UserRemoveMutationArgs struct {
-	ID gql.ID
-}
-
-func (res *Resolver) RemoveUser(
-	ctx context.Context,
-	args UserRemoveMutationArgs,
-) (*userRemoveResultResolver, error) {
-	if !checkPermission(ctx) {
-		return nil, errNoPermissions
-	}
-	localID, err := fromGlobalID("user", string(args.ID))
-	if err != nil {
-		return nil, err
-	}
-
-	if user, ok := ctx.Value(middleware.UserContextKey).(*core.User); ok {
-		if user.ID == localID {
-			return nil, errors.New("User cannot remove himself")
-		}
-	}
-
-	user := core.User{}
-	user.ID = localID
-	_, err = res.
-		dataSource.
-		DB().
-		Model(&user).
-		WherePK().
-		Delete()
-	if err != nil {
-		return nil, err
-	}
-
-	return &userRemoveResultResolver{
-		data: userRemoveResult{
-			id: &args.ID,
-		},
-	}, nil
-}
-
 type UserUpdateInput struct {
 	IsActive *bool
-	Email    *string `validate:"omitempty,email"`
+	Email    *string
 }
 type UserUpdateMutationArgs struct {
 	ID    gql.ID
-	Input UserUpdateInput `validate:"dive"`
-}
-
-func (args UserUpdateMutationArgs) validate(
-	dataSource core.AbstractDataContext,
-	userID int,
-) (
-	[]core.ValidationError,
-	*core.User,
-	error,
-) {
-	errors := []core.ValidationError{}
-	errors = append(errors, core.ValidateModel(args)...)
-
-	user := core.User{}
-	user.ID = userID
-
-	err := dataSource.
-		DB().
-		Model(&user).
-		WherePK().
-		Select()
-
-	if err != nil {
-		return errors, nil, err
-	}
-
-	if args.Input.Email != nil && *args.Input.Email != user.Email {
-		user := core.User{}
-		err := dataSource.
-			DB().
-			Model(&user).
-			Where("email = ?", *args.Input.Email).
-			First()
-
-		if err != nil {
-			if err != pg.ErrNoRows {
-				return errors, nil, err
-			}
-		} else {
-			errors = append(errors, core.ValidationError{
-				Code:  core.ErrNotUnique,
-				Field: "email",
-				Param: args.Input.Email,
-			})
-		}
-	}
-
-	return errors, &user, nil
+	Input UserUpdateInput
 }
 
 func (res *Resolver) UpdateUser(
@@ -239,53 +112,83 @@ func (res *Resolver) UpdateUser(
 		return nil, err
 	}
 
-	validationErrors, cleanedUser, err := args.validate(res.dataSource, localID)
-	if err != nil {
-		return nil, err
-	}
-	if len(validationErrors) > 0 {
-		return &userOperationResultResolver{
-			dataSource: res.dataSource,
-			data: userOperationResult{
-				validationErrors: validationErrors,
-				user:             cleanedUser,
-			},
-		}, nil
-	}
-
-	user := *cleanedUser
+	user := core.User{}
 	user.ID = localID
-	user.UpdatedAt = res.
-		dataSource.
-		GetCurrentTime()
 
-	query := res.
+	err = res.
 		dataSource.
 		DB().
 		Model(&user).
-		Column("updated_at")
-
-	if args.Input.Email != nil {
-		user.Email = *args.Input.Email
-		query = query.Column("email")
-	}
-	if args.Input.IsActive != nil {
-		user.Active = *args.Input.IsActive
-		query = query.Column("active")
-	}
-
-	_, err = query.
 		WherePK().
-		Update()
+		Select()
 
 	if err != nil {
 		return nil, err
 	}
+
+	if args.Input.Email != nil {
+		user.Email = *args.Input.Email
+	}
+	if args.Input.IsActive != nil {
+		user.Active = *args.Input.IsActive
+	}
+
+	updatedUser, validationErrors, err := core.UpdateUser(
+		user,
+		res.dataSource,
+	)
+
 	return &userOperationResultResolver{
-		dataSource: res.dataSource,
 		data: userOperationResult{
-			validationErrors: []core.ValidationError{},
-			user:             &user,
+			user:             updatedUser,
+			validationErrors: validationErrors,
+		},
+		dataSource: res.dataSource,
+	}, err
+}
+
+type userRemoveResult struct {
+	id *gql.ID
+}
+
+type userRemoveResultResolver struct {
+	data userRemoveResult
+}
+
+func (res *userRemoveResultResolver) RemovedObjectID() *gql.ID {
+	return res.data.id
+}
+
+type userRemoveMutationArgs struct {
+	ID gql.ID
+}
+
+func (res *Resolver) RemoveUser(
+	ctx context.Context,
+	args userRemoveMutationArgs,
+) (*userRemoveResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+	localID, err := fromGlobalID("user", string(args.ID))
+	if err != nil {
+		return nil, err
+	}
+
+	if user, ok := ctx.Value(middleware.UserContextKey).(*core.User); ok {
+		if user.ID == localID {
+			return nil, errors.New("User cannot remove himself")
+		}
+	}
+
+	err = core.RemoveUser(localID, res.dataSource)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userRemoveResultResolver{
+		data: userRemoveResult{
+			id: &args.ID,
 		},
 	}, nil
 }
