@@ -9,23 +9,27 @@ import (
 	gql "github.com/graph-gophers/graphql-go"
 )
 
-type pageCreateResult struct {
+type pageOperationResult struct {
 	page             *core.Page
 	validationErrors []core.ValidationError
 }
 
-type pageCreateResultResolver struct {
+type pageOperationResultResolver struct {
 	dataSource core.AbstractDataContext
-	data       pageCreateResult
+	data       pageOperationResult
 }
 
-func (res *pageCreateResultResolver) Page() *pageResolver {
+func (res *pageOperationResultResolver) Page() *pageResolver {
+	if res.data.page == nil {
+		return nil
+	}
+
 	return &pageResolver{
 		dataSource: res.dataSource,
-		data:       res.data.page,
+		data:       *res.data.page,
 	}
 }
-func (res *pageCreateResultResolver) Errors() []inputErrorResolver {
+func (res *pageOperationResultResolver) Errors() []inputErrorResolver {
 	return createInputErrorResolvers(res.data.validationErrors)
 }
 
@@ -53,14 +57,16 @@ type createPageArgs struct {
 	Input createPageArgsInput
 }
 
-func cleanCreatePageInput(
-	input createPageArgsInput,
-	dataSource core.AbstractDataContext,
+func (res *Resolver) CreatePage(
 	ctx context.Context,
-) (
-	*core.Page,
-	error,
-) {
+	args createPageArgs,
+) (*pageOperationResultResolver, error) {
+	if !checkPermission(ctx) {
+		return nil, errNoPermissions
+	}
+
+	input := args.Input
+
 	user := ctx.Value(middleware.UserContextKey).(*core.User)
 	localID, err := fromGlobalID("directory", input.ParentID)
 	if err != nil {
@@ -71,8 +77,6 @@ func cleanCreatePageInput(
 		Name:     input.Name,
 		ParentID: localID,
 	}
-	page.CreatedAt = dataSource.GetCurrentTime()
-	page.UpdatedAt = dataSource.GetCurrentTime()
 	page.AuthorID = user.ID
 
 	if input.Slug != nil {
@@ -89,56 +93,16 @@ func cleanCreatePageInput(
 		page.Fields = *input.Fields
 	}
 
-	return &page, nil
-}
+	insertedPage, validationErrors, err := core.CreatePage(
+		page,
+		res.dataSource,
+	)
 
-func (res *Resolver) CreatePage(
-	ctx context.Context,
-	args createPageArgs,
-) (*pageCreateResultResolver, error) {
-	if !checkPermission(ctx) {
-		return nil, errNoPermissions
-	}
-
-	page, err := cleanCreatePageInput(args.Input, res.dataSource, ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	errs := page.Validate()
-	if len(errs) > 0 {
-		return &pageCreateResultResolver{
-			dataSource: res.dataSource,
-			data: pageCreateResult{
-				validationErrors: errs,
-				page:             nil,
-			},
-		}, nil
-	}
-
-	_, err = res.
-		dataSource.
-		DB().
-		Model(page).
-		Insert()
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = res.
-		dataSource.
-		DB().
-		Model(page).
-		Relation("Author").
-		WherePK().
-		Select()
-
-	return &pageCreateResultResolver{
+	return &pageOperationResultResolver{
 		dataSource: res.dataSource,
-		data: pageCreateResult{
-			validationErrors: errs,
-			page:             page,
+		data: pageOperationResult{
+			validationErrors: validationErrors,
+			page:             insertedPage,
 		},
 	}, err
 }
@@ -155,33 +119,10 @@ type UpdatePageArgs struct {
 	Input UpdatePageInput
 }
 
-func cleanUpdatePageInput(
-	id int,
-	input UpdatePageInput,
-	dataSource core.AbstractDataContext,
-) (core.PageInput, []core.ValidationError, error) {
-	validationErrors := []core.ValidationError{}
-	pageInput := core.PageInput{}
-
-	if input.ParentID != nil {
-		localID, err := fromGlobalID("page", *input.ParentID)
-		if err != nil {
-			return pageInput, validationErrors, err
-		}
-		pageInput.ParentID = &localID
-	}
-	pageInput.Name = input.Name
-	pageInput.IsPublished = input.IsPublished
-
-	validationErrors = append(validationErrors, pageInput.Validate()...)
-
-	return pageInput, validationErrors, nil
-}
-
 func (res *Resolver) UpdatePage(
 	ctx context.Context,
 	args UpdatePageArgs,
-) (*pageCreateResultResolver, error) {
+) (*pageOperationResultResolver, error) {
 	if !checkPermission(ctx) {
 		return nil, errNoPermissions
 	}
@@ -205,87 +146,37 @@ func (res *Resolver) UpdatePage(
 		return nil, err
 	}
 
-	_, validationErrors, err := cleanUpdatePageInput(
-		localID,
-		args.Input,
-		res.dataSource,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if len(validationErrors) > 0 {
-		return &pageCreateResultResolver{
-			dataSource: res.dataSource,
-			data: pageCreateResult{
-				page:             nil,
-				validationErrors: validationErrors,
-			},
-		}, nil
-	}
-
-	page.ID = localID
-	page.UpdatedAt = res.
-		dataSource.
-		GetCurrentTime()
-
-	query := res.
-		dataSource.
-		DB().
-		Model(&page).
-		Column("updated_at")
-
 	if args.Input.IsPublished != nil {
 		page.IsPublished = *args.Input.IsPublished
-		query = query.Column("is_published")
 	}
 	if args.Input.Name != nil {
 		page.Name = *args.Input.Name
-		query = query.Column("name")
-	}
-	if args.Input.ParentID != nil {
-		localParentID, err := fromGlobalID("directory", *args.Input.ParentID)
-		if err != nil {
-			return nil, err
-		}
-		page.ParentID = localParentID
-		query = query.Column("parent_id")
-	}
-	if args.Input.Slug != nil {
-		page.Slug = *args.Input.Slug
-		query = query.Column("slug")
 	}
 	if args.Input.Fields != nil {
 		page.Fields = *args.Input.Fields
-		query = query.Column("fields")
 	}
-
-	_, err = query.
-		WherePK().
-		Update()
-
-	if err != nil {
-		return nil, err
+	if args.Input.Slug != nil {
+		page.Slug = *args.Input.Slug
 	}
-
-	err = res.
-		dataSource.
-		DB().
-		Model(&page).
-		WherePK().
-		Select()
-
-	if err != nil {
-		return nil, err
+	if args.Input.ParentID != nil {
+		parentID, err := fromGlobalID("directory", string(*args.Input.ParentID))
+		if err != nil {
+			return nil, err
+		}
+		page.ParentID = parentID
 	}
+	updatedPage, validationErrors, err := core.UpdatePage(
+		page,
+		res.dataSource,
+	)
 
-	return &pageCreateResultResolver{
-		dataSource: res.dataSource,
-		data: pageCreateResult{
-			page: &page,
+	return &pageOperationResultResolver{
+		data: pageOperationResult{
+			page:             updatedPage,
+			validationErrors: validationErrors,
 		},
-	}, nil
+		dataSource: res.dataSource,
+	}, err
 }
 
 type removePageArgs struct {
@@ -305,14 +196,11 @@ func (res *Resolver) RemovePage(
 		return nil, err
 	}
 
-	_, err = res.
-		dataSource.
-		DB().
-		Exec("DELETE FROM pages WHERE id = ?", localID)
-
+	err = core.RemovePage(localID, res.dataSource)
 	if err != nil {
 		return nil, err
 	}
+
 	return &pageRemoveResultResolver{
 		dataSource: res.dataSource,
 		data: pageRemoveResult{

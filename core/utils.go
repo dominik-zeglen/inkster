@@ -12,3 +12,60 @@ func ValidateModel(model interface{}) []ValidationError {
 	}
 	return validationErrors
 }
+
+func checkIfDirectoryExist(
+	id int,
+	dataSource AbstractDataContext,
+) (bool, error) {
+	directory := Directory{}
+	directory.ID = id
+	exists, err := dataSource.
+		DB().
+		Model(&directory).
+		WherePK().
+		Exists()
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func checkIfPageExist(
+	id int,
+	dataSource AbstractDataContext,
+) (bool, error) {
+	page := Page{}
+	page.ID = id
+	exists, err := dataSource.
+		DB().
+		Model(&page).
+		WherePK().
+		Exists()
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func checkIfUserExist(
+	id int,
+	dataSource AbstractDataContext,
+) (bool, error) {
+	user := User{}
+	user.ID = id
+	exists, err := dataSource.
+		DB().
+		Model(&user).
+		WherePK().
+		Exists()
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}

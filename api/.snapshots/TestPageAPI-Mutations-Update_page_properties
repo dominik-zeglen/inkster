@@ -15,12 +15,12 @@
                 "isPublished": true,
                 "fields": [
                     {
-                        "slug": "Field 1",
+                        "slug": "field-1",
                         "type": "text",
                         "value": "1"
                     },
                     {
-                        "slug": "Field 2",
+                        "slug": "field-2",
                         "type": "text",
                         "value": "Some text"
                     }

@@ -109,6 +109,7 @@ func (res *Resolver) UpdateDirectory(
 		dataSource.
 		DB().
 		Model(&directory).
+		WherePK().
 		Select()
 
 	if args.Input.IsPublished != nil {
@@ -136,7 +137,7 @@ func (res *Resolver) UpdateDirectory(
 			validationErrors: validationErrors,
 		},
 		dataSource: res.dataSource,
-	}, nil
+	}, err
 }
 
 type removeDirectoryArgs struct {
@@ -150,15 +151,16 @@ func (res *Resolver) RemoveDirectory(
 	if !checkPermission(ctx) {
 		return false, errNoPermissions
 	}
+
 	localID, err := fromGlobalID("directory", args.ID)
 	if err != nil {
 		return false, err
 	}
 
 	err = core.RemoveDirectory(localID, res.dataSource)
-
 	if err != nil {
 		return false, err
 	}
+
 	return true, nil
 }

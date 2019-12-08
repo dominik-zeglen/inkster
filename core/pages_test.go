@@ -36,7 +36,7 @@ func TestPageValidation(t *testing.T) {
 		{
 			Page{
 				AuthorID:    defaultPage.AuthorID,
-				Name:        "a",
+				Name:        "",
 				Slug:        defaultPage.Slug,
 				ParentID:    defaultPage.ParentID,
 				IsPublished: defaultPage.IsPublished,
@@ -44,7 +44,7 @@ func TestPageValidation(t *testing.T) {
 			},
 			[]ValidationError{
 				ValidationError{
-					Code:  ErrMinLength,
+					Code:  ErrRequired,
 					Field: "Name",
 				},
 			},
@@ -91,10 +91,62 @@ func TestPageValidation(t *testing.T) {
 				},
 			},
 		},
+		{
+			Page{
+				AuthorID:    defaultPage.AuthorID,
+				Name:        defaultPage.Name,
+				Slug:        defaultPage.Slug,
+				ParentID:    defaultPage.ParentID,
+				IsPublished: defaultPage.IsPublished,
+				Fields:      append(defaultPage.Fields, defaultPage.Fields[0]),
+			},
+			[]ValidationError{
+				ValidationError{
+					Code:  ErrNotUnique,
+					Field: "Fields",
+				},
+			},
+		},
+		{
+			Page{
+				AuthorID:    99,
+				Name:        defaultPage.Name,
+				Slug:        defaultPage.Slug,
+				ParentID:    defaultPage.ParentID,
+				IsPublished: defaultPage.IsPublished,
+				Fields:      defaultPage.Fields,
+			},
+			[]ValidationError{
+				ValidationError{
+					Code:  ErrDoesNotExist,
+					Field: "AuthorId",
+				},
+			},
+		},
+		{
+			Page{
+				AuthorID:    defaultPage.AuthorID,
+				Name:        defaultPage.Name,
+				Slug:        defaultPage.Slug,
+				ParentID:    99,
+				IsPublished: defaultPage.IsPublished,
+				Fields:      defaultPage.Fields,
+			},
+			[]ValidationError{
+				ValidationError{
+					Code:  ErrDoesNotExist,
+					Field: "ParentId",
+				},
+			},
+		},
 	}
 
 	for index, testData := range testSuites {
-		result := testData.page.Validate()
+		result, err := testData.page.Validate(dataSource)
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testValidation(testData.expected, result, index, t)
 	}
 }
