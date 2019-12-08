@@ -165,6 +165,34 @@ func TestPageAPI(t *testing.T) {
 
 			cupaloy.SnapshotT(t, result)
 		})
+		t.Run("Update page with duplicated fields", func(t *testing.T) {
+			defer resetDatabase()
+
+			id := toGlobalID(gqlPage, 1)
+			variables := fmt.Sprintf(`{
+				"id": "%s",
+				"input": {
+					"fields": [
+						{
+							"slug": "field1",
+							"type": "text",
+							"value": "Value 1"
+						},
+						{
+							"slug": "field1",
+							"type": "text",
+							"value": "Value 1"
+						}
+					]
+				}
+			}`, id)
+			result, err := execQuery(updatePage, variables, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			cupaloy.SnapshotT(t, result)
+		})
 		t.Run("Remove page", func(t *testing.T) {
 			defer resetDatabase()
 			query := `mutation RemovePage(

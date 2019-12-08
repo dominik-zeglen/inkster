@@ -1,0 +1,14 @@
+{
+    "data": {
+        "updatePage": {
+            "errors": [
+                {
+                    "code": 200,
+                    "field": "Fields",
+                    "message": "Object with Fields field1 already exists"
+                }
+            ],
+            "page": null
+        }
+    }
+}

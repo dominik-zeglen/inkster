@@ -8,27 +8,7 @@
                     "message": "Property Email is not of type email"
                 }
             ],
-            "user": {
-                "id": "dXNlcjox",
-                "email": "user1@example.com",
-                "isActive": true,
-                "pages": {
-                    "edges": [
-                        {
-                            "node": {
-                                "id": "cGFnZTox",
-                                "name": "Page 1"
-                            }
-                        },
-                        {
-                            "node": {
-                                "id": "cGFnZToy",
-                                "name": "Page 2"
-                            }
-                        }
-                    ]
-                }
-            }
+            "user": null
         }
     }
 }
