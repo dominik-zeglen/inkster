@@ -33,7 +33,7 @@ func TestWebsiteAPI(t *testing.T) {
 		}
 	`
 	t.Run("Mutations", func(t *testing.T) {
-		t.Run("Update user", func(t *testing.T) {
+		t.Run("Update website", func(t *testing.T) {
 			defer resetDatabase()
 			variables := `{
 				"input": {
@@ -48,7 +48,7 @@ func TestWebsiteAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Update user with incorrect name", func(t *testing.T) {
+		t.Run("Update website with incorrect name", func(t *testing.T) {
 			defer resetDatabase()
 			variables := `{
 				"input": {
@@ -61,7 +61,7 @@ func TestWebsiteAPI(t *testing.T) {
 			}
 			cupaloy.SnapshotT(t, result)
 		})
-		t.Run("Update user with incorrect domain", func(t *testing.T) {
+		t.Run("Update website with incorrect domain", func(t *testing.T) {
 			defer resetDatabase()
 			variables := `{
 				"input": {
