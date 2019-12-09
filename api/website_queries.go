@@ -11,6 +11,6 @@ func (res *Resolver) Website(ctx context.Context) *websiteResolver {
 	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
 
 	return &websiteResolver{
-		data: &website,
+		data: website,
 	}
 }

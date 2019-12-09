@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/dominik-zeglen/inkster/core"
+	"github.com/dominik-zeglen/inkster/middleware"
 )
 
 type websiteOperationResult struct {
@@ -21,8 +22,12 @@ func (res *websiteOperationResultResolver) Errors() []inputErrorResolver {
 }
 
 func (res *websiteOperationResultResolver) Website() *websiteResolver {
+	if res.data.website == nil {
+		return nil
+	}
+
 	return &websiteResolver{
-		data: res.data.website,
+		data: *res.data.website,
 	}
 }
 
@@ -35,44 +40,6 @@ type updateWebsiteArgs struct {
 	Input websiteUpdateInput
 }
 
-func (args updateWebsiteArgs) validate(dataSource core.AbstractDataContext) (
-	[]core.ValidationError,
-	*core.Website,
-	error,
-) {
-	errors := []core.ValidationError{}
-
-	website := core.Website{}
-	website.ID = core.WEBSITE_DB_ID
-
-	err := dataSource.
-		DB().
-		Model(&website).
-		WherePK().
-		Select()
-
-	if err != nil {
-		return errors, nil, err
-	}
-
-	cleanedWebsite := website
-	if args.Input.Name != nil {
-		cleanedWebsite.Name = *args.Input.Name
-	}
-	if args.Input.Description != nil {
-		cleanedWebsite.Description = *args.Input.Description
-	}
-	if args.Input.Domain != nil {
-		cleanedWebsite.Domain = *args.Input.Domain
-	}
-
-	errors = append(errors, cleanedWebsite.Validate()...)
-	if len(errors) > 0 {
-		return errors, &website, err
-	}
-	return errors, &cleanedWebsite, err
-}
-
 func (res *Resolver) UpdateWebsite(
 	ctx context.Context,
 	args updateWebsiteArgs,
@@ -81,28 +48,28 @@ func (res *Resolver) UpdateWebsite(
 		return nil, errNoPermissions
 	}
 
-	validationErrors, website, err := args.validate(res.dataSource)
-	if err != nil {
-		return nil, err
+	website := ctx.Value(middleware.WebsiteContextKey).(core.Website)
+
+	if args.Input.Name != nil {
+		website.Name = *args.Input.Name
+	}
+	if args.Input.Description != nil {
+		website.Description = *args.Input.Description
+	}
+	if args.Input.Domain != nil {
+		website.Domain = *args.Input.Domain
 	}
 
-	if len(validationErrors) > 0 {
-		return &websiteOperationResultResolver{
-			dataSource: res.dataSource,
-			data: websiteOperationResult{
-				validationErrors: validationErrors,
-				website:          website,
-			},
-		}, nil
-	}
-
-	err = res.dataSource.DB().Update(website)
+	updatedWebsite, validationErrors, err := core.UpdateWebsite(
+		website,
+		res.dataSource,
+	)
 
 	return &websiteOperationResultResolver{
-		dataSource: res.dataSource,
 		data: websiteOperationResult{
+			website:          updatedWebsite,
 			validationErrors: validationErrors,
-			website:          website,
 		},
+		dataSource: res.dataSource,
 	}, err
 }
