@@ -8,11 +8,7 @@
                     "message": "Property Name must be at least 3 characters long"
                 }
             ],
-            "website": {
-                "name": "Inkster",
-                "description": "Test website",
-                "domain": "http://localhost:8000/"
-            }
+            "website": null
         }
     }
 }

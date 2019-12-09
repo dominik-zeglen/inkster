@@ -5,7 +5,7 @@ import (
 )
 
 type websiteResolver struct {
-	data *core.Website
+	data core.Website
 }
 
 func (res *websiteResolver) Name() string {
